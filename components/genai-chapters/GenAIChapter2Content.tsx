@@ -4,6 +4,36 @@ import React, { useState } from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function NeuralNetworkDiagram() {
+  const items = [
+    { label: 'Input Layer', sublabel: 'Raw features — pixels, numbers, text tokens', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '📥' },
+    { label: 'Hidden Layer 1', sublabel: 'Weights + ReLU activation — simple patterns', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '⚙️' },
+    { label: 'Hidden Layer 2', sublabel: 'Higher-level features — combines previous', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '🔧' },
+    { label: 'Output Layer', sublabel: 'Prediction — class probabilities via softmax', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.4)', icon: '📤' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Neural Network — Forward Pass</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓ forward pass &nbsp;|&nbsp; ↑ backprop</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Neuron Visualization Demo ─────────────────────────────────────────────────
 
 function NeuronDemo() {
@@ -150,6 +180,8 @@ export default function GenAIChapter2Content() {
           GPT-4, DALL-E, Claude — sab neural networks hain. Inke andar kya hota hai — aaj demystify karte hain.
         </p>
       </div>
+
+      <NeuralNetworkDiagram />
 
       {/* ConceptCard 1: Perceptron */}
       <div id="perceptron">

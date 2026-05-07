@@ -53,6 +53,34 @@ const tsQuiz: QuizQuestion[] = [
   },
 ]
 
+function NarrowingFlowDiagram() {
+  const items = [
+    { label: 'value: string | number', sublabel: 'Union type — could be either, TypeScript tracks both possibilities', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '❓' },
+    { label: 'typeof value === "string" check', sublabel: 'TypeScript reads this condition — control flow analysis begins', color: '#0EA5E9', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)', icon: '🔎' },
+    { label: 'true branch → value: string', sublabel: '.toUpperCase() · .length · .split() — all string methods available', color: '#6366F1', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)', icon: '🔤' },
+    { label: 'false branch → value: number', sublabel: '.toFixed() · .toPrecision() · Math ops — all number methods available', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '🔢' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Type Narrowing — Control Flow Analysis</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function TSChapter9Content() {
   return (
     <div className="space-y-8">
@@ -73,6 +101,8 @@ export default function TSChapter9Content() {
           Ab sawaal ye aata hai — kab TypeScript khud narrow nahi kar paata? Tab custom type predicates kaam aate hain. Ye runtime check functions hain jo TypeScript ko explicitly batate hain "is function true return kare toh ye type hai." Exhaustiveness checking toh aur powerful hai — naya union member add karo, compiler khud guide karta hai kahan kahan handle karna hai. Is chapter mein ye poora narrowing system samjhenge.
         </p>
       </div>
+
+      <NarrowingFlowDiagram />
 
       <div id="typeof-instanceof">
         <ConceptCard

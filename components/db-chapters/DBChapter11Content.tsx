@@ -53,6 +53,31 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function DesignPatternsDiagram() {
+  const items = [
+    { label: 'Repository Pattern', sublabel: 'Abstract DB access · Swap PostgreSQL ↔ MongoDB · Mock for testing', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '🏛️' },
+    { label: 'Soft Deletes', sublabel: 'deleted_at timestamp · Data recoverable · GDPR compliant · Audit friendly', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '🗑️' },
+    { label: 'Audit Trail', sublabel: 'Who + What + When + Before/After · Compliance ready · Trigger-driven', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '📋' },
+    { label: 'Event Sourcing', sublabel: 'Store events not state · Full history replay · Time-travel debugging', color: '#FF6B35', bg: 'rgba(255,107,53,0.08)', border: 'rgba(255,107,53,0.25)', icon: '📜' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Database Design Patterns</p>
+      <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
+        {items.map((item, i) => (
+          <div key={i} className="rounded-xl px-4 py-3.5 flex items-start gap-3" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+            <span className="text-xl mt-0.5">{item.icon}</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+              <p className="text-xs text-[#71717A] mt-0.5 leading-snug">{item.sublabel}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function DBChapter11Content() {
   return (
     <div className="space-y-8">
@@ -67,6 +92,8 @@ export default function DBChapter11Content() {
           Ye patterns har project mein use nahi hote — lekin jab zaroorat padti hai, inhe jaanana aur implement karna senior engineer ki pehchan hai.
         </p>
       </div>
+
+      <DesignPatternsDiagram />
 
       <div id="repository-pattern">
         <ConceptCard

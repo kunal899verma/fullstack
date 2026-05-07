@@ -135,6 +135,64 @@ const jsxQuiz = [
   },
 ]
 
+// ── Chapter Overview Diagram ───────────────────────────────────────────────────
+
+function JsxTransformDiagram() {
+  const items = [
+    {
+      label: 'JSX Syntax',
+      sublabel: '<div className="x"><h1>{name}</h1></div>',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '✍️',
+    },
+    {
+      label: 'Babel / SWC Transforms',
+      sublabel: 'Compiler converts JSX to plain JavaScript at build time',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '⚙️',
+    },
+    {
+      label: 'React.createElement() Calls',
+      sublabel: 'React.createElement("div", { className: "x" }, React.createElement("h1", null, name))',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.1)',
+      border: 'rgba(16,185,129,0.3)',
+      icon: '🔧',
+    },
+    {
+      label: 'Virtual DOM Object',
+      sublabel: 'Lightweight JS object — { type: "div", props: { className: "x" }, children: [...] }',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '🌳',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">JSX Transform Pipeline — Syntactic Sugar in Action</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function ReactChapter2Content() {
@@ -149,6 +207,8 @@ export default function ReactChapter2Content() {
           Ruko — JSX HTML nahi hai. Ye bahut logo ki galti hai. JSX actually JavaScript hai jo HTML jaisi dikhti hai. Browser JSX directly nahi samajhta — Babel ya TypeScript compiler ise pure JavaScript mein convert karta hai. Jab tum {'<div className="x">'} likhte ho, compiler ise React.createElement('div', {'{ className: "x" }'}) bana deta hai. Ye samajhna zaroori hai — tab JSX ke rules automatic sense karenge.
         </p>
       </div>
+
+      <JsxTransformDiagram />
 
       {/* ConceptCard 1: JSX Kya Hai Actually? */}
       <div id="jsx-what-is">

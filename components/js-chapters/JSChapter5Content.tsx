@@ -55,6 +55,55 @@ const quizQuestions = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function ArrayMethodsDiagram() {
+  const categories = [
+    {
+      label: 'Mutating Methods',
+      sublabel: 'push / pop / splice / sort / reverse',
+      note: '⚠️ Changes the original array',
+      color: '#F97316',
+      bg: 'rgba(249,115,22,0.1)',
+      border: 'rgba(249,115,22,0.3)',
+      icon: '✏️',
+    },
+    {
+      label: 'Non-Mutating',
+      sublabel: 'map / filter / reduce / slice',
+      note: '✅ Returns a new array — original safe',
+      color: '#F59E0B',
+      bg: 'rgba(245,158,11,0.1)',
+      border: 'rgba(245,158,11,0.3)',
+      icon: '🔥',
+    },
+    {
+      label: 'Search Methods',
+      sublabel: 'find / some / every / includes',
+      note: '🔍 Returns value or boolean — no new array',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '🔎',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Array Methods — 3 Categories</p>
+      <div className="max-w-lg mx-auto grid grid-cols-3 gap-3">
+        {categories.map((item, i) => (
+          <div key={i} className="rounded-xl px-4 py-4 flex flex-col gap-2" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+            <span className="text-xl text-center">{item.icon}</span>
+            <p className="font-bold text-sm text-center" style={{ color: item.color }}>{item.label}</p>
+            <code className="text-xs text-[#A1A1AA] text-center block leading-relaxed">{item.sublabel}</code>
+            <p className="text-xs text-[#71717A] text-center mt-1">{item.note}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function JSChapter5Content() {
@@ -81,6 +130,8 @@ export default function JSChapter5Content() {
           </p>
         </div>
       </div>
+
+      <ArrayMethodsDiagram />
 
       {/* Akshay-style insight box */}
       <div

@@ -5,6 +5,72 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import DiffBlock from '@/components/learn/DiffBlock'
 import QuizSection from '@/components/learn/QuizSection'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function AsyncEvolutionDiagram() {
+  const steps = [
+    {
+      label: 'Callbacks',
+      sublabel: 'readFile(path, (err, data) => { ... })',
+      note: 'Error-first convention, deeply nested, hard to follow',
+      color: '#EF4444',
+      bg: 'rgba(239,68,68,0.1)',
+      border: 'rgba(239,68,68,0.3)',
+      icon: '📞',
+      complexity: '████████░░',
+    },
+    {
+      label: 'Promises',
+      sublabel: 'readFile(path).then(data => ...).catch(err => ...)',
+      note: 'Chainable, single .catch(), but .then() nesting possible',
+      color: '#F59E0B',
+      bg: 'rgba(245,158,11,0.1)',
+      border: 'rgba(245,158,11,0.3)',
+      icon: '🤝',
+      complexity: '█████░░░░░',
+    },
+    {
+      label: 'async / await',
+      sublabel: 'const data = await readFile(path)',
+      note: 'Linear code, try/catch, reads like synchronous — cleanest!',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.1)',
+      border: 'rgba(16,185,129,0.3)',
+      icon: '✨',
+      complexity: '██░░░░░░░░',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Async Callbacks — Visual Overview</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {steps.map((step, i) => (
+          <div key={i} className="relative">
+            <div className="rounded-xl px-5 py-3.5 flex items-start gap-4" style={{ background: step.bg, border: `1px solid ${step.border}` }}>
+              <span className="text-xl mt-0.5">{step.icon}</span>
+              <div className="flex-1">
+                <div className="flex items-center justify-between gap-2 mb-0.5">
+                  <p className="font-bold text-sm" style={{ color: step.color }}>{step.label}</p>
+                  <p className="text-[10px] font-mono tracking-wider" style={{ color: step.color }}>{step.complexity}</p>
+                </div>
+                <p className="text-[11px] font-mono text-[#A1A1AA]">{step.sublabel}</p>
+                <p className="text-[10px] text-[#71717A] mt-0.5">{step.note}</p>
+              </div>
+            </div>
+            {i < steps.length - 1 && (
+              <div className="flex justify-center py-1 items-center gap-1">
+                <span className="text-[#71717A] text-[10px]">evolves →</span>
+                <span className="text-[#71717A] text-xs">↓</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <p className="text-[10px] text-[#52525B] text-center mt-3">Complexity bar: more filled = more boilerplate code</p>
+    </div>
+  )
+}
+
 // ── Promise State Machine Visual ──────────────────────────────────────────────
 
 function PromiseStateMachine() {
@@ -155,6 +221,8 @@ export default function Chapter6Content() {
           ))}
         </div>
       </div>
+
+      <AsyncEvolutionDiagram />
 
       {/* ── ConceptCard 1: Callbacks ─────────────────────────────────────── */}
       <div id="callbacks">

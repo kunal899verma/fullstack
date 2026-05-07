@@ -5,6 +5,63 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function TestingPyramidDiagram() {
+  const layers = [
+    {
+      label: 'E2E Tests',
+      sublabel: 'Few, slow, expensive — real browser flows',
+      width: '45%',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.12)',
+      border: 'rgba(124,58,237,0.35)',
+      icon: '🌐',
+    },
+    {
+      label: 'Integration Tests',
+      sublabel: 'Moderate — API routes, DB queries, module interactions',
+      width: '70%',
+      color: '#F97316',
+      bg: 'rgba(249,115,22,0.12)',
+      border: 'rgba(249,115,22,0.35)',
+      icon: '🔗',
+    },
+    {
+      label: 'Unit Tests',
+      sublabel: 'Many, fast, cheap — pure functions, components',
+      width: '100%',
+      color: '#F59E0B',
+      bg: 'rgba(245,158,11,0.12)',
+      border: 'rgba(245,158,11,0.35)',
+      icon: '⚡',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">The Testing Pyramid — 70 / 20 / 10 Rule</p>
+      <div className="max-w-lg mx-auto flex flex-col items-center gap-2">
+        {layers.map((item, i) => (
+          <div key={i} className="flex flex-col items-center gap-0 w-full">
+            <div
+              className="rounded-xl px-5 py-3 flex items-center gap-4"
+              style={{ background: item.bg, border: `1px solid ${item.border}`, width: item.width }}
+            >
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5 leading-tight">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < layers.length - 1 && <div className="flex justify-center py-0.5"><span className="text-[#71717A] text-xs">↓ more below</span></div>}
+          </div>
+        ))}
+        <p className="text-[10px] text-[#52525B] mt-2">Wider = more tests. Unit tests are the foundation.</p>
+      </div>
+    </div>
+  )
+}
+
 const testingQuiz: QuizQuestion[] = [
   {
     question: 'Testing pyramid mein sabse zyada tests kaunse level pe hone chahiye?',
@@ -76,6 +133,8 @@ export default function JSChapter19Content() {
           Is chapter mein hum practical testing patterns cover karenge jo aap real projects mein immediately use kar sako. Testing pyramid, Jest basics, mocking, async testing, TDD — ye sab professional developer ke essential tools hain.
         </p>
       </div>
+
+      <TestingPyramidDiagram />
 
       <div id="testing-pyramid">
         <ConceptCard

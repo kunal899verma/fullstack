@@ -53,6 +53,36 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function MongoPipelineDiagram() {
+  const items = [
+    { label: '$match', sublabel: 'Filter documents early · SQL WHERE equivalent · Always put first', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '🔍' },
+    { label: '$group', sublabel: 'Aggregate documents · COUNT, SUM, AVG · SQL GROUP BY', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '📦' },
+    { label: '$lookup', sublabel: 'Join another collection · SQL LEFT JOIN · Expensive — use sparingly', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '🔗' },
+    { label: '$project', sublabel: 'Shape the output · Include/exclude fields · Reduce payload', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '✂️' },
+    { label: '$sort', sublabel: 'Order results · -1 descending · 1 ascending', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '🔢' },
+    { label: '$limit', sublabel: 'Restrict output count · Pagination · Always last for efficiency', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '✅' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">MongoDB Aggregation Pipeline Stages</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function DBChapter6Content() {
   return (
     <div className="space-y-8">
@@ -67,6 +97,8 @@ export default function DBChapter6Content() {
           Aur schema design — MongoDB mein embed vs reference ka decision ek baar wrong ho gayi toh refactor karna bahut expensive hai. Is chapter mein sahi patterns seekhenge, aur ye bhi samjhenge ki MongoDB ka $lookup (JOIN equivalent) kyun SQL JOIN se expensive hai.
         </p>
       </div>
+
+      <MongoPipelineDiagram />
 
       <div id="find-operators">
         <ConceptCard

@@ -53,6 +53,34 @@ const sqlCrudQuiz: QuizQuestion[] = [
   },
 ]
 
+function SqlCrudDiagram() {
+  const items = [
+    { label: 'SELECT', sublabel: 'Read data · HTTP GET · Danger: none · Safe to run anytime', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '📖' },
+    { label: 'INSERT', sublabel: 'Create data · HTTP POST · Danger: low · Creates new row', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '➕' },
+    { label: 'UPDATE', sublabel: 'Modify data · HTTP PUT/PATCH · Danger: HIGH · Always use WHERE', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '✏️' },
+    { label: 'DELETE', sublabel: 'Remove data · HTTP DELETE · Danger: CRITICAL · Always use WHERE', color: '#EF4444', bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.25)', icon: '🗑️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">SQL CRUD Operations Flow</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function DBChapter2Content() {
   return (
     <div className="space-y-8">
@@ -70,6 +98,8 @@ export default function DBChapter2Content() {
           Lekin dhyan raho: SQL mein ek galat command — UPDATE bina WHERE ke, DELETE bina WHERE ke — production disaster hai. Isliye har command ke saath "dangerous cases" bhi samjhenge. Real-world examples ke saath — WHERE conditions, filtering, sorting, pagination sab cover hoga. Code likhne se pehle samjho ki database engine under the hood kya kar raha hai.
         </p>
       </div>
+
+      <SqlCrudDiagram />
 
       <div id="select-basics">
         <ConceptCard

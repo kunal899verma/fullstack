@@ -135,6 +135,39 @@ const chapterQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function AgentLoopDiagram() {
+  const items = [
+    { label: 'User Request', sublabel: 'Goal or task handed to the agent', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '👤' },
+    { label: 'LLM Thinks (Reasoning)', sublabel: 'Thought: "What tool should I use next?"', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🧠' },
+    { label: 'LLM Acts (Tool Call)', sublabel: 'Action: web_search / run_code / call_api', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '🛠️' },
+    { label: 'Tool Executes', sublabel: 'Developer code runs the actual function', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '⚙️' },
+    { label: 'Observation', sublabel: 'Result fed back to the LLM as context', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '👁️' },
+    { label: 'LLM Thinks Again → Repeat or Stop', sublabel: 'Loop continues until stop_reason = end_turn', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '🔁' },
+    { label: 'Final Answer', sublabel: 'Task complete — result returned to user', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '✅' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">ReAct Agent Loop — Perceive → Reason → Act → Observe</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function GenAIChapter13Content() {
@@ -167,6 +200,8 @@ export default function GenAIChapter13Content() {
           </p>
         </div>
       </div>
+
+      <AgentLoopDiagram />
 
       {/* Card 1: AI Agent Kya Hai */}
       <div id="agent-intro">

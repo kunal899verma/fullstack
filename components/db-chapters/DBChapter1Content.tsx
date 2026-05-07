@@ -44,6 +44,31 @@ const dbOverviewQuiz: QuizQuestion[] = [
   },
 ]
 
+function DatabaseTypesDiagram() {
+  const items = [
+    { label: 'PostgreSQL', sublabel: 'Relational · ACID · SQL · Best overall choice', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '🐘' },
+    { label: 'MongoDB', sublabel: 'Document · Flexible schema · High write throughput', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '🍃' },
+    { label: 'Redis', sublabel: 'In-memory · Key-value · Microsecond latency', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '⚡' },
+    { label: 'Cassandra', sublabel: 'Wide column · Massive scale · High availability', color: '#FF6B35', bg: 'rgba(255,107,53,0.08)', border: 'rgba(255,107,53,0.25)', icon: '🏔️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Database Types Overview</p>
+      <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
+        {items.map((item, i) => (
+          <div key={i} className="rounded-xl px-4 py-3.5 flex items-start gap-3" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+            <span className="text-xl mt-0.5">{item.icon}</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+              <p className="text-xs text-[#71717A] mt-0.5 leading-snug">{item.sublabel}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function DBChapter1Content() {
   return (
     <div className="space-y-8">
@@ -61,6 +86,8 @@ export default function DBChapter1Content() {
           Sawaal ye nahi ki "kaunsa database best hai" — sawaal ye hai ki "mere use case ke liye kaunsa sahi hai?" Is chapter mein hum SQL vs NoSQL ka real difference samjhenge, ACID properties kyun zaroori hain — ek bank transfer example se, relational model ka math samjhenge, aur ye decide karna seekhenge ki aapke project ke liye kaunsa database choose karo.
         </p>
       </div>
+
+      <DatabaseTypesDiagram />
 
       <div id="sql-vs-nosql">
         <ConceptCard

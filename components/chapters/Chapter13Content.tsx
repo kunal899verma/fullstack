@@ -3,6 +3,53 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function DatabaseChoiceDiagram() {
+  const sql = {
+    title: 'SQL', db: 'PostgreSQL', icon: '🏛️',
+    color: '#10B981', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.3)',
+    traits: ['Structured tables + schemas', 'ACID transactions', 'JOINs & complex queries', 'Row-level security'],
+    useCases: ['E-commerce orders', 'SaaS billing', 'Financial systems'],
+  }
+  const nosql = {
+    title: 'NoSQL', db: 'MongoDB', icon: '🍃',
+    color: '#06B6D4', bg: 'rgba(6,182,212,0.08)', border: 'rgba(6,182,212,0.3)',
+    traits: ['Flexible JSON documents', 'Horizontal sharding', 'No rigid schema', 'High write throughput'],
+    useCases: ['Content management', 'Event logs / IoT', 'Catalog (varying attrs)'],
+  }
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Databases & ORMs — Visual Overview</p>
+      <div className="flex gap-3 flex-wrap justify-center">
+        {[sql, nosql].map((col, i) => (
+          <div key={i} className="flex-1 min-w-[160px] rounded-xl p-4" style={{ background: col.bg, border: `1px solid ${col.border}` }}>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">{col.icon}</span>
+              <div>
+                <p className="font-bold text-sm" style={{ color: col.color }}>{col.title}</p>
+                <p className="text-[10px] text-[#71717A]">{col.db}</p>
+              </div>
+            </div>
+            <div className="space-y-1 mb-3">
+              {col.traits.map((t, j) => (
+                <p key={j} className="text-[10px] flex gap-1" style={{ color: col.color }}>
+                  <span>•</span><span>{t}</span>
+                </p>
+              ))}
+            </div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#52525B] mb-1">Use cases</p>
+            {col.useCases.map((u, j) => (
+              <p key={j} className="text-[10px] text-[#71717A] flex gap-1"><span>→</span><span>{u}</span></p>
+            ))}
+          </div>
+        ))}
+      </div>
+      <p className="text-[10px] text-[#52525B] text-center mt-3">Wrong choice = expensive migration later — decide early based on data shape</p>
+    </div>
+  )
+}
+
 export default function Chapter13Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +67,8 @@ export default function Chapter13Content() {
           ORM (Object-Relational Mapper) ek container ki tarah hai jo tumhare TypeScript objects aur database rows ke beech ka kaam karta hai. Lekin is container ke andar kya ho raha hai — ek ORM magic nahi hai, woh SQL generate karta hai. Aur agar tum woh SQL nahi samjho, toh N+1 problem ek khamoshi se maarne wala bug hai jo production mein tum par attack karta hai.
         </p>
       </div>
+
+      <DatabaseChoiceDiagram />
 
       <div id="postgres-vs-mongo">
         <ConceptCard

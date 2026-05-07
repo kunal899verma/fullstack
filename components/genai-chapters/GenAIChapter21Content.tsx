@@ -135,6 +135,34 @@ const chapterQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function AiPatternsDiagram() {
+  const patterns = [
+    { label: 'Request-Response', sublabel: 'Sync — simple single call, short tasks (<3s)', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '↔️', when: 'Classification, short Q&A' },
+    { label: 'Streaming', sublabel: 'Token by token — perceived speed, chat UI', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🌊', when: 'Chat, long-form generation' },
+    { label: 'Event-Driven', sublabel: 'Queue-based async — BullMQ, reliable long tasks', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '📨', when: 'Document analysis, agents' },
+    { label: 'Batch Processing', sublabel: 'Bulk offline — cost-efficient, non-urgent', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '📦', when: 'Nightly embed, bulk summary' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">AI Architecture Patterns — When to Use Each</p>
+      <div className="max-w-2xl mx-auto grid grid-cols-2 gap-3">
+        {patterns.map((item, i) => (
+          <div key={i} className="rounded-xl px-4 py-3.5 flex flex-col gap-2" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+            <div className="flex items-center gap-2">
+              <span className="text-lg">{item.icon}</span>
+              <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+            </div>
+            <p className="text-xs text-[#71717A] leading-tight">{item.sublabel}</p>
+            <p className="text-xs font-semibold leading-tight" style={{ color: item.color }}>Use: {item.when}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function GenAIChapter21Content() {
@@ -167,6 +195,8 @@ export default function GenAIChapter21Content() {
           </p>
         </div>
       </div>
+
+      <AiPatternsDiagram />
 
       {/* Card 1: Async AI Processing */}
       <div id="async-processing">

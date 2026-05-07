@@ -5,6 +5,75 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ───────────────────────────────────────────────────
+
+function ContextTreeDiagram() {
+  const items = [
+    {
+      label: 'App — AuthContext.Provider value={user}',
+      sublabel: 'Provider broadcasts value to ALL descendants — no prop passing needed',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '🏠',
+    },
+    {
+      label: 'Layout (no props needed)',
+      sublabel: 'Middle component — does NOT receive or forward user prop',
+      color: '#71717A',
+      bg: 'rgba(113,113,122,0.08)',
+      border: 'rgba(113,113,122,0.2)',
+      icon: '📐',
+    },
+    {
+      label: 'Header — useAuth() → gets user directly',
+      sublabel: 'Consumer — calls useContext(AuthContext) — gets value from nearest Provider',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '🎯',
+    },
+    {
+      label: 'AdminMenu (5 levels deep) — useAuth() → gets user',
+      sublabel: 'Deep consumer — ZERO prop drilling — direct access regardless of depth',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.1)',
+      border: 'rgba(16,185,129,0.3)',
+      icon: '✅',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Context API — Prop Drilling vs Context Solution</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div
+              className="rounded-xl px-5 py-3.5 flex items-center gap-4"
+              style={{
+                background: item.bg,
+                border: `1px solid ${item.border}`,
+                marginLeft: `${i * 16}px`,
+              }}
+            >
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && (
+              <div className="flex py-1" style={{ paddingLeft: `${(i + 0.5) * 16 + 20}px` }}>
+                <span className="text-[#71717A] text-xs">↓</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const contextQuiz: QuizQuestion[] = [
   {
     question: 'Prop drilling kya problem hai?',
@@ -76,6 +145,8 @@ export default function ReactChapter9Content() {
           Lekin Context bhi perfect nahi hai — unnecessary re-renders ka trap hai. Is chapter mein setup se le kar optimization tak sab samjhenge.
         </p>
       </div>
+
+      <ContextTreeDiagram />
 
       <div id="prop-drilling-problem">
         <ConceptCard

@@ -5,6 +5,37 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function ErrorPropagationDiagram() {
+  const steps = [
+    { label: 'Error Thrown', sublabel: 'throw new Error() — runtime exception', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.35)', icon: '💥' },
+    { label: 'catch block found?', sublabel: 'Yes → handle it gracefully & recover', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', icon: '🔍' },
+    { label: 'No catch → Propagates Up', sublabel: 'Bubbles through call stack frames', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.35)', icon: '⬆️' },
+    { label: 'Reaches Top of Stack?', sublabel: 'uncaughtException / unhandledRejection', color: '#7C3AED', bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.35)', icon: '🔴' },
+    { label: 'Process Crash', sublabel: 'App terminates — always handle at boundary!', color: '#7C3AED', bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.35)', icon: '💀' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Error Bubbling Up the Call Stack</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {steps.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < steps.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const errorQuiz: QuizQuestion[] = [
   {
     question: 'TypeError aur ReferenceError mein kya fark hai?',
@@ -73,6 +104,8 @@ export default function JSChapter13Content() {
           Sawaal: empty catch block likhna kyun dangerous hai? Jawab: error silently disappear ho jaata hai — user ko pata nahi kuch hua, developer ko pata nahi bug kahan hai, logs mein kuch nahi. Ye 'error swallowing' hai — production ka worst practice. Is chapter mein error types, try/catch/finally, custom errors, async error handling — sab production-grade patterns ke saath dekhenge.
         </p>
       </div>
+
+      <ErrorPropagationDiagram />
 
       <div id="error-types">
         <ConceptCard

@@ -135,6 +135,50 @@ const chapterQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function MultimodalDiagram() {
+  const inputs = [
+    { label: 'Text Input', sublabel: 'Prompts, instructions, documents', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '📝' },
+    { label: 'Image Input', sublabel: 'CLIP, GPT-4V, Claude Vision — visual understanding', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🖼️' },
+    { label: 'Audio Input', sublabel: 'Whisper — speech-to-text, any language', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '🎙️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Multimodal AI — Inputs → Model → Output</p>
+      <div className="max-w-lg mx-auto">
+        <div className="space-y-2 mb-3">
+          {inputs.map((item, i) => (
+            <div key={i} className="rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓ all modalities fused</span></div>
+        <div className="rounded-xl px-5 py-4 flex items-center gap-4 my-2" style={{ background: 'rgba(249,115,22,0.15)', border: '2px solid rgba(249,115,22,0.5)' }}>
+          <span className="text-2xl">🤖</span>
+          <div className="flex-1">
+            <p className="font-bold text-sm" style={{ color: '#F97316' }}>Multimodal Model</p>
+            <p className="text-xs text-[#71717A] mt-0.5">GPT-4o · Claude 3+ · Gemini — process all inputs together</p>
+          </div>
+        </div>
+        <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>
+        <div className="rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.3)' }}>
+          <span className="text-xl">💬</span>
+          <div className="flex-1">
+            <p className="font-bold text-sm" style={{ color: '#7C3AED' }}>Text Response</p>
+            <p className="text-xs text-[#71717A] mt-0.5">Extracted data, insights, captions, transcripts, analysis</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function GenAIChapter17Content() {
@@ -167,6 +211,8 @@ export default function GenAIChapter17Content() {
           </p>
         </div>
       </div>
+
+      <MultimodalDiagram />
 
       {/* Card 1: Vision Models */}
       <div id="vision-models">

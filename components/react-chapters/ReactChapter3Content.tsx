@@ -135,6 +135,64 @@ const componentPropsQuiz = [
   },
 ]
 
+// ── Chapter Overview Diagram ───────────────────────────────────────────────────
+
+function PropsFlowDiagram() {
+  const items = [
+    {
+      label: 'Parent Component',
+      sublabel: 'Owns state — passes data DOWN via props to children',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '👨',
+    },
+    {
+      label: 'Child Component  ← props flow down (read-only)',
+      sublabel: 'Receives props, uses them, cannot mutate them',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '👦',
+    },
+    {
+      label: 'Grandchild Component  ← props flow down',
+      sublabel: 'Deepest consumer — still read-only props',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.1)',
+      border: 'rgba(16,185,129,0.3)',
+      icon: '👶',
+    },
+    {
+      label: 'Events flow UP ↑ via callback props',
+      sublabel: 'onClick, onChange, onSubmit — child calls parent\'s function to update state',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.07)',
+      border: 'rgba(6,182,212,0.25)',
+      icon: '↩️',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Props Flow — One-Way Data Binding</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function ReactChapter3Content() {
@@ -160,6 +218,8 @@ export default function ReactChapter3Content() {
           </p>
         </div>
       </div>
+
+      <PropsFlowDiagram />
 
       {/* ConceptCard 1: Component Kya Hai? */}
       <div id="what-is-component">

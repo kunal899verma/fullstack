@@ -5,6 +5,37 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function V8OptimizationDiagram() {
+  const steps = [
+    { label: 'JS Code', sublabel: 'Your JavaScript source — functions, objects, loops', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', icon: '📝' },
+    { label: 'Parser', sublabel: 'Tokenize & parse into AST (Abstract Syntax Tree)', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.35)', icon: '🔬' },
+    { label: 'AST', sublabel: 'Tree representation of code structure', color: '#7C3AED', bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.35)', icon: '🌳' },
+    { label: 'Ignition (Interpreter)', sublabel: 'Tier 1 — compiles AST → Bytecode, runs immediately', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', icon: '⚡' },
+    { label: 'Turbofan (JIT Compiler)', sublabel: 'Tier 2 — hot code → optimized Machine Code (3–10× faster)', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.35)', icon: '🚀' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">V8 Optimization Pipeline</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {steps.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < steps.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const perfQuiz: QuizQuestion[] = [
   {
     question: 'Debounce aur Throttle mein kya fark hai?',
@@ -76,6 +107,8 @@ export default function JSChapter17Content() {
           Is chapter mein hum JavaScript performance ke real tools aur techniques cover karenge — measurement se lekar optimization tak. Golden rule yaad rakho: "Pehle measure karo, phir optimize karo!" Guess mat karo.
         </p>
       </div>
+
+      <V8OptimizationDiagram />
 
       <div id="v8-optimization">
         <ConceptCard

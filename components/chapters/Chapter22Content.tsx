@@ -45,6 +45,36 @@ const dockerQuiz = [
   },
 ]
 
+// ── Chapter Diagram ───────────────────────────────────────────────────────────
+
+function ContainerLayersDiagram() {
+  const layers = [
+    { label: 'Your App', sublabel: 'Node.js source code + node_modules', color: '#7C3AED', bg: 'rgba(124,58,237,0.15)', border: 'rgba(124,58,237,0.4)', icon: '📦' },
+    { label: 'Node.js Runtime', sublabel: 'node:20-alpine — V8 engine + libuv', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.35)', icon: '⚙️' },
+    { label: 'Base OS Image', sublabel: 'Alpine Linux — minimal, ~5MB', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🐧' },
+    { label: 'Docker Engine', sublabel: 'Container runtime — manages isolation & networking', color: '#10B981', bg: 'rgba(16,185,129,0.07)', border: 'rgba(16,185,129,0.25)', icon: '🐳' },
+    { label: 'Host OS', sublabel: 'Ubuntu / macOS / Windows — your actual machine', color: '#06B6D4', bg: 'rgba(6,182,212,0.07)', border: 'rgba(6,182,212,0.2)', icon: '💻' },
+    { label: 'Hardware', sublabel: 'CPU · RAM · Disk — shared by all containers', color: '#71717A', bg: 'rgba(113,113,122,0.08)', border: 'rgba(113,113,122,0.25)', icon: '🖥️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Container Layers — From App to Hardware</p>
+      <div className="max-w-sm mx-auto space-y-1.5">
+        {layers.map((layer, i) => (
+          <div key={i} className="rounded-xl px-4 py-3 flex items-center gap-3" style={{ background: layer.bg, border: `1px solid ${layer.border}` }}>
+            <span className="text-lg">{layer.icon}</span>
+            <div className="flex-1">
+              <p className="font-bold text-sm" style={{ color: layer.color }}>{layer.label}</p>
+              <p className="text-xs text-[#71717A] mt-0.5">{layer.sublabel}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-[#71717A] text-center mt-3">Multi-stage builds keep only layers 1–3 in the final image</p>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function Chapter22Content() {
@@ -68,6 +98,8 @@ export default function Chapter22Content() {
           Docker ek shipping container ki tarah hai. Same container — developer laptop, CI server, AWS EC2, kahi bhi — same behavior. Dockerfile app ka recipe hai, image ek sealed package hai, container ek running instance hai. Is chapter mein production-ready Dockerfile likhna, Docker Compose se full stack local chalana, GitHub Actions CI/CD, Nginx reverse proxy, aur zero-downtime deployment master karenge.
         </p>
       </div>
+
+      <ContainerLayersDiagram />
 
       {/* ConceptCard 1: Docker for Node.js */}
       <div id="dockerfile">

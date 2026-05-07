@@ -3,6 +3,66 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function WsVsHttpDiagram() {
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">WebSockets — Visual Overview</p>
+      <div className="max-w-xl mx-auto flex gap-3 flex-wrap">
+        {/* HTTP side */}
+        <div className="flex-1 min-w-[160px] rounded-xl p-4" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)' }}>
+          <p className="text-xs font-bold text-[#F59E0B] text-center mb-3">HTTP (Request-Response)</p>
+          <div className="space-y-1.5">
+            {[
+              { from: 'Client', to: 'Server', label: 'GET /data', color: '#F59E0B' },
+              { from: 'Server', to: 'Client', label: '200 OK { data }', color: '#F59E0B' },
+              { from: '—', to: '—', label: 'Connection closed', color: '#52525B' },
+              { from: 'Client', to: 'Server', label: 'GET /data (again)', color: '#F59E0B' },
+              { from: 'Server', to: 'Client', label: '200 OK { data }', color: '#F59E0B' },
+              { from: '—', to: '—', label: 'Connection closed', color: '#52525B' },
+            ].map((row, i) => (
+              <div key={i} className="flex items-center gap-1.5">
+                <span className="text-[10px] text-[#52525B] w-10 text-right shrink-0">{row.from}</span>
+                <span className="text-[10px]" style={{ color: row.color }}>→</span>
+                <span className="text-[10px] font-mono" style={{ color: row.color }}>{row.label}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-[#71717A] text-center mt-3">New connection per request</p>
+        </div>
+        {/* WebSocket side */}
+        <div className="flex-1 min-w-[160px] rounded-xl p-4" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.3)' }}>
+          <p className="text-xs font-bold text-[#10B981] text-center mb-3">WebSocket (Persistent)</p>
+          <div className="space-y-1.5">
+            {[
+              { msg: 'HTTP Upgrade handshake', color: '#7C3AED', both: true },
+              { msg: '⟷  Connection open', color: '#10B981', both: true },
+              { from: 'Client', to: 'Server', label: 'message: "ping"', color: '#10B981' },
+              { from: 'Server', to: 'Client', label: 'message: "pong"', color: '#10B981' },
+              { from: 'Server', to: 'Client', label: 'push: live update', color: '#06B6D4' },
+              { from: 'Client', to: 'Server', label: 'message: "chat msg"', color: '#10B981' },
+            ].map((row, i) => (
+              <div key={i} className="flex items-center gap-1.5">
+                {row.both ? (
+                  <span className="text-[10px] font-mono" style={{ color: row.color }}>{row.msg}</span>
+                ) : (
+                  <>
+                    <span className="text-[10px] text-[#52525B] w-10 text-right shrink-0">{row.from}</span>
+                    <span className="text-[10px]" style={{ color: row.color }}>→</span>
+                    <span className="text-[10px] font-mono" style={{ color: row.color }}>{row.label}</span>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-[#71717A] text-center mt-3">Single connection, bidirectional</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Chapter16Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +80,8 @@ export default function Chapter16Content() {
           Socket.IO WebSocket ke upar ek smart abstraction hai — automatic fallbacks, rooms, namespaces, reconnection sab built-in. Real-time features add karna is chapter ke baad simple ho jaayega. Aur scaling WebSockets — multiple servers mein — Redis adapter se possible hai.
         </p>
       </div>
+
+      <WsVsHttpDiagram />
 
       <div id="http-vs-websocket">
         <ConceptCard

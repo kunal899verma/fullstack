@@ -53,6 +53,31 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function AcidDiagram() {
+  const items = [
+    { label: 'Atomicity — All or Nothing', sublabel: 'Bank transfer: both debit + credit succeed, or both rollback · No partial updates ever', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '⚛️' },
+    { label: 'Consistency — Valid State → Valid State', sublabel: 'balance >= 0 constraint always holds · Invalid data rejected at DB level', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '✅' },
+    { label: 'Isolation — Concurrent TX Don\'t Interfere', sublabel: 'Two users booking last seat: first commits, second sees 0 seats · No race conditions', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '🔐' },
+    { label: 'Durability — Committed = Permanent', sublabel: 'COMMIT → WAL flushed to disk · Power cut after commit = data still safe', color: '#FF6B35', bg: 'rgba(255,107,53,0.08)', border: 'rgba(255,107,53,0.25)', icon: '💾' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">ACID Properties</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i} className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+            <span className="text-xl">{item.icon}</span>
+            <div className="flex-1">
+              <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+              <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function IsolationLevelsTable() {
   const levels = [
     { level: 'READ UNCOMMITTED', dirty: '❌ Possible', nonRepeat: '❌ Possible', phantom: '❌ Possible', color: '#EF4444' },
@@ -97,6 +122,8 @@ export default function DBChapter10Content() {
           ACID properties — ye sirf acronym nahi, ye guarantee hai. Bina ACID ke banking app banana = paiso ko gamble mein lagana. Ye samjho toh sab kuch clear ho jaata hai: Atomicity = ya sab hoga ya kuch nahi. Consistency = data hamesha valid state mein. Isolation = concurrent transactions ek doosre ko affect nahi karenge. Durability = committed data crash ke baad bhi safe. Sawaal: Inke bina kya hoga? 10 rupee account se gaye, 10 doosre mein aaye nahi — paisa gayab. Ye real scenarios hain jo production mein aate hain.
         </p>
       </div>
+
+      <AcidDiagram />
 
       <div id="begin-commit-rollback">
         <ConceptCard

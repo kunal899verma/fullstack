@@ -3,6 +3,57 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function CpuUtilDiagram() {
+  const cores = Array.from({ length: 8 }, (_, i) => i)
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Worker Threads — Visual Overview</p>
+      <div className="max-w-xl mx-auto flex gap-4 flex-wrap justify-center">
+        {/* Without workers */}
+        <div className="flex-1 min-w-[160px] rounded-xl p-4" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)' }}>
+          <p className="text-xs font-bold text-[#EF4444] text-center mb-3">Without Worker Threads</p>
+          <div className="grid grid-cols-4 gap-1.5 mb-3">
+            {cores.map((i) => (
+              <div
+                key={i}
+                className="rounded-md h-8 flex items-center justify-center text-[10px] font-bold"
+                style={i === 0
+                  ? { background: 'rgba(239,68,68,0.4)', border: '1px solid rgba(239,68,68,0.6)', color: '#EF4444' }
+                  : { background: 'rgba(63,63,70,0.4)', border: '1px solid rgba(63,63,70,0.6)', color: '#52525B' }
+                }
+              >
+                {i === 0 ? '🔥' : '💤'}
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-[#71717A] text-center">1 core busy, 7 idle</p>
+          <p className="text-[10px] text-[#EF4444] text-center mt-1">CPU utilization: ~12%</p>
+        </div>
+        {/* With workers */}
+        <div className="flex-1 min-w-[160px] rounded-xl p-4" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.3)' }}>
+          <p className="text-xs font-bold text-[#10B981] text-center mb-3">With Worker Threads</p>
+          <div className="grid grid-cols-4 gap-1.5 mb-3">
+            {cores.map((i) => (
+              <div
+                key={i}
+                className="rounded-md h-8 flex items-center justify-center text-[10px] font-bold"
+                style={{ background: 'rgba(16,185,129,0.3)', border: '1px solid rgba(16,185,129,0.5)', color: '#10B981' }}
+              >
+                ⚡
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-[#71717A] text-center">All 8 cores working</p>
+          <p className="text-[10px] text-[#10B981] text-center mt-1">CPU utilization: ~100%</p>
+        </div>
+      </div>
+      <p className="text-[10px] text-[#52525B] text-center mt-3">Worker Threads only help CPU-bound tasks — I/O is already handled concurrently by libuv</p>
+    </div>
+  )
+}
+
 export default function Chapter17Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +71,8 @@ export default function Chapter17Content() {
           Worker Threads aur Cluster module is problem ka solution hain. Lekin samajhna zaroori hai — ye sirf CPU-bound tasks ke liye hai. I/O-bound tasks (DB queries, API calls, file reads) ke liye ye zaroorat hi nahi — libuv pehle se concurrent handle karta hai. Galat jagah apply karo to overhead add hoga, benefit nahi.
         </p>
       </div>
+
+      <CpuUtilDiagram />
 
       <div id="cpu-vs-io">
         <ConceptCard

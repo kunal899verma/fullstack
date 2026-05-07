@@ -5,6 +5,37 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function IteratorProtocolDiagram() {
+  const steps = [
+    { label: 'Iterable Object', sublabel: 'Has [Symbol.iterator]() method — arrays, strings, Maps, Sets', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', icon: '📦' },
+    { label: 'Calls @@iterator', sublabel: 'for...of / spread / destructuring calls Symbol.iterator()', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.35)', icon: '🔑' },
+    { label: 'Returns Iterator', sublabel: 'An object with a next() method', color: '#7C3AED', bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.35)', icon: '⚙️' },
+    { label: 'iterator.next()', sublabel: 'Called each iteration — returns { value, done }', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', icon: '▶️' },
+    { label: '{ value: x, done: false/true }', sublabel: 'done: true → for...of loop stops', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.35)', icon: '✅' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Iterator Protocol — How for...of Works</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {steps.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < steps.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const advancedQuiz: QuizQuestion[] = [
   {
     question: 'Symbol.iterator kya karta hai?',
@@ -76,6 +107,8 @@ export default function JSChapter18Content() {
           Is chapter mein hum in advanced features ko practical examples ke saath cover karenge — theory nahi, real use cases. Senior developer territory mein aao!
         </p>
       </div>
+
+      <IteratorProtocolDiagram />
 
       <div id="iterators">
         <ConceptCard

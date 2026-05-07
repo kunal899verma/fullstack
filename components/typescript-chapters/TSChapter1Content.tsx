@@ -44,6 +44,35 @@ const tsChapter1Quiz: QuizQuestion[] = [
   },
 ]
 
+function TsCompilePipelineDiagram() {
+  const items = [
+    { label: '.ts Source File', sublabel: 'TypeScript code with type annotations', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '📝' },
+    { label: 'tsc Compiler', sublabel: 'TypeScript compiler processes your code', color: '#0EA5E9', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)', icon: '⚙️' },
+    { label: 'Type Checking', sublabel: '← Errors caught HERE — never reach production!', color: '#6366F1', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)', icon: '🛡️' },
+    { label: '.js Output', sublabel: 'Plain JavaScript — types completely erased', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '📄' },
+    { label: 'Node.js / Browser', sublabel: 'Runs the clean JS — zero TypeScript overhead', color: '#0EA5E9', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)', icon: '🚀' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">TypeScript Compile Pipeline</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function TSChapter1Content() {
   return (
     <div className="space-y-8">
@@ -64,6 +93,8 @@ export default function TSChapter1Content() {
           Socho TypeScript ek <strong className="text-[#F5F5F7]">spell-checker hai for code</strong> — jaise Word mein red line aati hai typo pe, waise TypeScript IDE mein red line dikhata hai type error pe. Difference sirf itna hai: spell-checker galat spelling pakadta hai, TypeScript galat <em>logic</em> pakadta hai. Is chapter mein hum seedha WHY se shuru karenge — phir HOW.
         </p>
       </div>
+
+      <TsCompilePipelineDiagram />
 
       <div id="ts-fayda">
         <ConceptCard

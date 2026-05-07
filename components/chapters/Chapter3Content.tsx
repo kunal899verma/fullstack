@@ -135,6 +135,41 @@ const modulesQuiz = [
   },
 ]
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function ModuleResolutionDiagram() {
+  const steps = [
+    { label: 'require("fs")', sublabel: 'Core module? → Instantly resolve', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🔵' },
+    { label: 'require("./utils")', sublabel: 'Relative path? → Check file extensions (.js, .json, .node)', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '📁' },
+    { label: 'require("express")', sublabel: 'node_modules → Walk up directory tree', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📦' },
+    { label: 'Module Cached!', sublabel: 'Already loaded? → Return cached instance instantly', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '⚡' },
+    { label: 'Not Found?', sublabel: 'MODULE_NOT_FOUND error thrown', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '❌' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Modules CJS vs ESM — Visual Overview</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {steps.map((step, i) => (
+          <div key={i} className="relative">
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: step.bg, border: `1px solid ${step.border}` }}>
+              <span className="text-xl">{step.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm font-mono" style={{ color: step.color }}>{step.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{step.sublabel}</p>
+              </div>
+            </div>
+            {i < steps.length - 1 && (
+              <div className="flex justify-center py-1">
+                <span className="text-[#71717A] text-xs">↓</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function Chapter3Content() {
@@ -162,6 +197,8 @@ export default function Chapter3Content() {
           Bhai, ye confusion hamesha ke liye khatam karo — is chapter ke baad tum confidently decide kar paoge kab require(), kab import, aur kab dono saath.
         </p>
       </div>
+
+      <ModuleResolutionDiagram />
 
       {/* ConceptCard 1: What is a Module */}
       <div id="what-is-module">

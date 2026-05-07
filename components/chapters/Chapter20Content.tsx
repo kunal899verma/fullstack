@@ -45,6 +45,33 @@ const securityQuiz = [
   },
 ]
 
+// ── Chapter Diagram ───────────────────────────────────────────────────────────
+
+function SecurityLayersDiagram() {
+  const layers = [
+    { label: 'Input Validation', sublabel: 'Zod schemas — never trust user input', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🔍' },
+    { label: 'Auth & AuthZ', sublabel: 'JWT verify + role/permission checks per route', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🔐' },
+    { label: 'Rate Limiting', sublabel: 'express-rate-limit + Redis — block brute force', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🚦' },
+    { label: 'HTTPS / TLS', sublabel: 'Helmet.js + HSTS — encrypt in transit', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🔒' },
+    { label: 'Secrets Management', sublabel: 'Env vars + AWS Secrets Manager — no hardcoding', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🔑' },
+    { label: 'Monitoring', sublabel: 'Structured logs + alerts — detect attacks live', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📊' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Defense in Depth — Security Layers</p>
+      <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
+        {layers.map((layer, i) => (
+          <div key={i} className="rounded-xl p-4" style={{ background: layer.bg, border: `1px solid ${layer.border}` }}>
+            <span className="text-2xl mb-2 block">{layer.icon}</span>
+            <p className="font-bold text-sm" style={{ color: layer.color }}>{layer.label}</p>
+            <p className="text-xs text-[#71717A] mt-1">{layer.sublabel}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function Chapter20Content() {
@@ -68,6 +95,8 @@ export default function Chapter20Content() {
           Socho ek bank ki tarah — front door par lock toh hai, lekin ek khidki khuli rahi aur chor ghus gaya. App mein bhi aisa hota hai. Ek missing check, ek hardcoded secret, ek unvalidated input — kaafi hai poora system compromise karne ke liye. Is chapter mein OWASP Top 10, Zod validation, Helmet headers, rate limiting, aur secrets management — production-ready security ki complete shield banayenge.
         </p>
       </div>
+
+      <SecurityLayersDiagram />
 
       {/* ConceptCard 1: OWASP */}
       <div id="owasp">

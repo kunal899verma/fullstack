@@ -53,6 +53,33 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function IndexImpactDiagram() {
+  const items = [
+    { label: 'Without Index — Seq Scan', sublabel: 'Scan all 1M rows · O(n) complexity · 1,000,000 rows checked → ~500ms', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '🐌' },
+    { label: 'With Index — B-tree Lookup', sublabel: 'Jump directly to row · O(log n) complexity · ~20 steps checked → ~1ms', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '🚀' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Index Impact — 1 Million Rows</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+      <p className="text-center text-xs text-[#71717A] mt-3">500ms → 1ms · <span style={{ color: '#FF6B35' }} className="font-bold">500x speedup from one CREATE INDEX</span></p>
+    </div>
+  )
+}
+
 export default function DBChapter7Content() {
   return (
     <div className="space-y-8">
@@ -70,6 +97,8 @@ export default function DBChapter7Content() {
           Sawaal: 10ms query aur 3000ms query mein kya fark hai? Hardware nahi — indexes aur query patterns. Is chapter mein seekhenge kaise queries X-ray karein, indexes kab aur kaise lagaein, N+1 problem ka silent killer detect karein, aur covering indexes se table ko bilkul touch kiye bina maximum performance nikaalein. Ye sab skills production databases ke liye life-and-death hain.
         </p>
       </div>
+
+      <IndexImpactDiagram />
 
       <div id="explain-analyze">
         <ConceptCard

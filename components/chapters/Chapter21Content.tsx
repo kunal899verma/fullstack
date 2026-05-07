@@ -45,6 +45,49 @@ const microservicesQuiz = [
   },
 ]
 
+// ── Chapter Diagram ───────────────────────────────────────────────────────────
+
+function MonolithVsMicroDiagram() {
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Monolith vs Microservices Architecture</p>
+      <div className="max-w-lg mx-auto grid grid-cols-2 gap-4">
+        {/* Monolith */}
+        <div>
+          <p className="text-xs font-bold text-center mb-2" style={{ color: '#06B6D4' }}>Monolith</p>
+          <div className="rounded-2xl p-4 flex flex-col items-center justify-center min-h-[140px]" style={{ background: 'rgba(6,182,212,0.08)', border: '2px solid rgba(6,182,212,0.35)' }}>
+            <span className="text-3xl mb-2">🏢</span>
+            <p className="text-xs font-bold text-center" style={{ color: '#06B6D4' }}>One Big App</p>
+            <p className="text-xs text-[#71717A] text-center mt-1">Auth · Users · Orders · Payments — all in one codebase</p>
+          </div>
+          <div className="mt-2 space-y-1">
+            <p className="text-xs text-[#10B981]">✓ Simple to start</p>
+            <p className="text-xs text-[#10B981]">✓ Easy debugging</p>
+            <p className="text-xs text-[#71717A]">✗ Hard to scale parts</p>
+          </div>
+        </div>
+        {/* Microservices */}
+        <div>
+          <p className="text-xs font-bold text-center mb-2" style={{ color: '#10B981' }}>Microservices</p>
+          <div className="rounded-2xl p-3 grid grid-cols-2 gap-1.5" style={{ background: 'rgba(16,185,129,0.06)', border: '2px solid rgba(16,185,129,0.3)' }}>
+            {['API Gateway', 'Auth Svc', 'User Svc', 'Order Svc', 'Payment Svc', 'Email Svc'].map((svc, i) => (
+              <div key={i} className="rounded-lg px-2 py-1.5 text-center" style={{ background: i === 0 ? 'rgba(124,58,237,0.15)' : 'rgba(16,185,129,0.12)', border: `1px solid ${i === 0 ? 'rgba(124,58,237,0.4)' : 'rgba(16,185,129,0.3)'}` }}>
+                <p className="text-xs font-semibold leading-tight" style={{ color: i === 0 ? '#A78BFA' : '#10B981', fontSize: '10px' }}>{svc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 space-y-1">
+            <p className="text-xs text-[#10B981]">✓ Independent scale</p>
+            <p className="text-xs text-[#10B981]">✓ Team autonomy</p>
+            <p className="text-xs text-[#71717A]">✗ Distributed complexity</p>
+          </div>
+        </div>
+      </div>
+      <p className="text-xs text-[#71717A] text-center mt-3">Start monolith → extract services when team & scale demand it</p>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function Chapter21Content() {
@@ -68,6 +111,8 @@ export default function Chapter21Content() {
           Microservices ek badi app ko chhote, independent pieces mein todna hai — har piece alag deploy hota hai, alag scale hota hai, alag team own karti hai. Lekin is power ke saath aata hai distributed system complexity — network failures, distributed transactions, service discovery, operational overhead. Is chapter mein trade-offs samjhenge, communication patterns dekhenge, BullMQ se async queues banayenge, aur API Gateway architecture samjhenge.
         </p>
       </div>
+
+      <MonolithVsMicroDiagram />
 
       {/* ConceptCard 1: Microservices vs Monolith */}
       <div id="vs-monolith">

@@ -136,6 +136,37 @@ const chapterQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function ClaudeApiDiagram() {
+  const items = [
+    { label: 'Messages API', sublabel: 'Multi-turn conversation — system + user + assistant roles', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '💬' },
+    { label: 'Streaming', sublabel: 'Token-by-token delivery — better perceived latency for users', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📡' },
+    { label: 'Tool Use', sublabel: 'Function calling — Claude decides which tool to invoke', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '🔧' },
+    { label: 'Prompt Caching', sublabel: 'Cache repeated system prompts — up to 90% cost reduction', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '💾' },
+    { label: 'Vision', sublabel: 'Image input — analyze screenshots, diagrams, documents', color: '#7C3AED', bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.4)', icon: '👁️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Claude API — Key Features</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function GenAIChapter9Content() {
@@ -171,6 +202,8 @@ export default function GenAIChapter9Content() {
           </p>
         </div>
       </div>
+
+      <ClaudeApiDiagram />
 
       {/* ConceptCard 1: Setup & First Call */}
       <div id="claude-setup">

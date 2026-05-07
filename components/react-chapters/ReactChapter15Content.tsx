@@ -3,6 +3,64 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+function PatternComparisonDiagram() {
+  const patterns = [
+    {
+      label: 'HOC',
+      sublabel: 'Higher-Order Component',
+      desc: 'Wrap component, inject props — withAuth(Dashboard)',
+      useCase: 'Auth, analytics, error boundaries',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '🔮',
+    },
+    {
+      label: 'Render Props',
+      sublabel: 'Pass render function as children',
+      desc: 'Logic in component, UI controlled by caller',
+      useCase: 'Headless components, dynamic UI',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '📤',
+    },
+    {
+      label: 'Compound Components',
+      sublabel: 'Share state via Context',
+      desc: 'Parent holds state, children consume via useContext',
+      useCase: 'Tabs, Accordion, Dropdown, Modal',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.1)',
+      border: 'rgba(16,185,129,0.3)',
+      icon: '🧩',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">3 Advanced Patterns — Kab Kaunsa Use Karo</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {patterns.map((p, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-start gap-4" style={{ background: p.bg, border: `1px solid ${p.border}` }}>
+              <span className="text-xl mt-0.5">{p.icon}</span>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="font-bold text-sm" style={{ color: p.color }}>{p.label}</p>
+                  <span className="text-xs text-[#71717A]">— {p.sublabel}</span>
+                </div>
+                <p className="text-xs text-[#A1A1AA] mt-1">{p.desc}</p>
+                <p className="text-[10px] text-[#71717A] mt-0.5">Use case: {p.useCase}</p>
+              </div>
+            </div>
+            {i < patterns.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function ReactChapter15Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +78,8 @@ export default function ReactChapter15Content() {
           Socho ek baar — Radix UI, Headless UI, React Table, Formik — ye sab multi-million download libraries hain. In sab ke andar same patterns hain. Aaj hum ye patterns seedha source code level pe samjhenge. Phir tum sirf library use nahi karoge — tum khud aisi library bana sakte ho.
         </p>
       </div>
+
+      <PatternComparisonDiagram />
 
       <div id="hoc">
         <ConceptCard

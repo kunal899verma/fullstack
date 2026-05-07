@@ -4,6 +4,38 @@ import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function MlPipelineDiagram() {
+  const items = [
+    { label: 'Data Collection', sublabel: 'Gather raw data — quality matters most', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '📦' },
+    { label: 'Feature Engineering', sublabel: 'Transform raw data into useful inputs', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🔨' },
+    { label: 'Train / Val / Test Split', sublabel: '70% / 15% / 15% — never leak test data', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '✂️' },
+    { label: 'Model Training', sublabel: 'Gradient descent — minimize loss function', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🏋️' },
+    { label: 'Evaluation', sublabel: 'Accuracy, F1, AUC-ROC on val set', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📏' },
+    { label: 'Deployment → Monitor', sublabel: 'Serve + watch for drift — loop back to data', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '🚀' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">ML Pipeline — End to End</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Chapter Quiz ──────────────────────────────────────────────────────────────
 
 const mlFundamentalsQuiz = [
@@ -68,6 +100,8 @@ export default function GenAIChapter3Content() {
           Ye foundations samajhne ke baad tune har ML project mein better decisions lega — chahe simple regression ho ya GPT fine-tuning.
         </p>
       </div>
+
+      <MlPipelineDiagram />
 
       {/* ConceptCard 1: Training Data */}
       <div id="training-data">

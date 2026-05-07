@@ -135,6 +135,54 @@ const npmQuiz = [
   },
 ]
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function SemverDiagram() {
+  const parts = [
+    { label: 'MAJOR', number: '2', desc: 'Breaking changes', example: '2.0.0 → 3.0.0', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' },
+    { label: 'MINOR', number: '4', desc: 'New features (backward compatible)', example: '2.4.0 → 2.5.0', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)' },
+    { label: 'PATCH', number: '1', desc: 'Bug fixes only', example: '2.4.1 → 2.4.2', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)' },
+  ]
+  const symbols = [
+    { sym: '^', name: 'Caret', rule: '^2.4.1 → allows 2.x.x', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)' },
+    { sym: '~', name: 'Tilde', rule: '~2.4.1 → allows 2.4.x only', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)' },
+    { sym: '=', name: 'Exact', rule: '2.4.1 → only this version', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">NPM & Packages — Visual Overview</p>
+      <div className="flex items-stretch justify-center gap-2 mb-4 flex-wrap">
+        {parts.map((p, i) => (
+          <div key={i} className="flex-1 min-w-[100px] rounded-xl px-4 py-4 text-center" style={{ background: p.bg, border: `1px solid ${p.border}` }}>
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: p.color }}>{p.label}</p>
+            <p className="text-3xl font-bold font-mono mb-1" style={{ color: p.color }}>{p.number}</p>
+            <p className="text-[10px] text-[#71717A] leading-snug">{p.desc}</p>
+            <p className="text-[10px] font-mono text-[#52525B] mt-1">{p.example}</p>
+          </div>
+        ))}
+      </div>
+      <div className="text-center mb-3">
+        <span className="text-xs text-[#52525B]">MAJOR</span>
+        <span className="text-xs text-[#3F3F46] mx-1">.</span>
+        <span className="text-xs text-[#52525B]">MINOR</span>
+        <span className="text-xs text-[#3F3F46] mx-1">.</span>
+        <span className="text-xs text-[#52525B]">PATCH</span>
+      </div>
+      <div className="flex gap-2 justify-center flex-wrap">
+        {symbols.map((s, i) => (
+          <div key={i} className="rounded-xl px-4 py-2.5 flex items-center gap-3" style={{ background: s.bg, border: `1px solid ${s.border}` }}>
+            <span className="text-xl font-bold font-mono" style={{ color: s.color }}>{s.sym}</span>
+            <div>
+              <p className="text-xs font-bold" style={{ color: s.color }}>{s.name}</p>
+              <p className="text-[10px] text-[#71717A] font-mono">{s.rule}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function Chapter4Content() {
@@ -164,6 +212,8 @@ export default function Chapter4Content() {
           sab cover karenge. Sab seekhoge — beginner se production-ready tak.
         </p>
       </div>
+
+      <SemverDiagram />
 
       {/* ConceptCard 1: package.json */}
       <div id="package-json">

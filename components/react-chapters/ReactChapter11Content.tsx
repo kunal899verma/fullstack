@@ -3,6 +3,50 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+function RouterMatchingDiagram() {
+  const routes = [
+    { url: '/', component: 'Home', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🏠' },
+    { url: '/about', component: 'About', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📄' },
+    { url: '/users/:id', component: 'UserDetail', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '👤', dynamic: true },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">URL → Router → Route Matching → Component Renders</p>
+      <div className="max-w-lg mx-auto">
+        <div className="rounded-xl px-5 py-3 flex items-center gap-3 mb-2" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}>
+          <span className="text-lg">🌐</span>
+          <div className="flex-1">
+            <p className="font-bold text-sm text-[#F5F5F7]">BrowserRouter</p>
+            <p className="text-xs text-[#71717A]">History API — URL change detect karta hai</p>
+          </div>
+        </div>
+        <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓ matches URL</span></div>
+        <div className="space-y-2">
+          {routes.map((r, i) => (
+            <div key={i} className="rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: r.bg, border: `1px solid ${r.border}` }}>
+              <span className="text-xl">{r.icon}</span>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="font-mono text-xs font-bold" style={{ color: r.color }}>{r.url}</p>
+                  {r.dynamic && <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: 'rgba(16,185,129,0.2)', color: '#10B981' }}>dynamic param</span>}
+                </div>
+                <p className="text-xs text-[#71717A] mt-0.5">→ renders <span className="font-semibold text-[#A1A1AA]">{r.component}</span></p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 rounded-xl px-5 py-3 flex items-center gap-3" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}>
+          <span className="text-lg">❓</span>
+          <div className="flex-1">
+            <p className="font-bold text-sm text-[#F5F5F7]">path="*"</p>
+            <p className="text-xs text-[#71717A]">No match → 404 NotFound component</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ReactChapter11Content() {
   return (
     <div className="space-y-8">
@@ -23,6 +67,8 @@ export default function ReactChapter11Content() {
           Is chapter mein routing basics se le kar protected routes tak, nested layouts tak — sab samjhenge under the hood ke saath.
         </p>
       </div>
+
+      <RouterMatchingDiagram />
 
       <div id="client-side-routing">
         <ConceptCard

@@ -3,6 +3,43 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function HttpLifecycleDiagram() {
+  const steps = [
+    { label: 'Client', sublabel: 'Browser / Mobile App', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '💻' },
+    { label: 'DNS Lookup', sublabel: 'api.example.com → 1.2.3.4', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🔍' },
+    { label: 'TCP Connect', sublabel: '3-way handshake (SYN, SYN-ACK, ACK)', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🤝' },
+    { label: 'HTTP Request', sublabel: 'GET /api/users → Headers + Body sent', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '📤' },
+    { label: 'Server Processing', sublabel: 'Middleware → Route Handler → DB Query', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '⚙️' },
+    { label: 'HTTP Response', sublabel: '200 OK → Headers + JSON body', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '📥' },
+    { label: 'Client Renders', sublabel: 'Browser parses response, updates UI', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🖥️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">HTTP Module & REST APIs — Visual Overview</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {steps.map((step, i) => (
+          <div key={i} className="relative">
+            <div className="rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: step.bg, border: `1px solid ${step.border}` }}>
+              <span className="text-lg">{step.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: step.color }}>{step.label}</p>
+                <p className="text-[10px] text-[#71717A] mt-0.5">{step.sublabel}</p>
+              </div>
+            </div>
+            {i < steps.length - 1 && (
+              <div className="flex justify-center py-0.5">
+                <span className="text-[#71717A] text-xs">↓</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function Chapter11Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +57,8 @@ export default function Chapter11Content() {
           REST (Representational State Transfer) architectural style hai jo modern APIs define karta hai. HTTP verbs, status codes, resource-based URLs — ye sab REST ke pillars hain. Stripe API, GitHub API, sab isi pattern follow karte hain.
         </p>
       </div>
+
+      <HttpLifecycleDiagram />
 
       <div id="http-basics">
         <ConceptCard

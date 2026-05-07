@@ -135,6 +135,67 @@ const fsQuiz = [
   },
 ]
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function FsApproachDiagram() {
+  const columns = [
+    {
+      title: 'Sync',
+      icon: '🚫',
+      code: 'readFileSync()',
+      color: '#EF4444',
+      bg: 'rgba(239,68,68,0.08)',
+      border: 'rgba(239,68,68,0.25)',
+      pros: ['Simple to write', 'No callbacks'],
+      cons: ['Blocks Event Loop', 'All other requests wait', 'Never in servers'],
+    },
+    {
+      title: 'Async Callback',
+      icon: '📞',
+      code: 'readFile(cb)',
+      color: '#F59E0B',
+      bg: 'rgba(245,158,11,0.08)',
+      border: 'rgba(245,158,11,0.25)',
+      pros: ['Non-blocking', 'Legacy compatible'],
+      cons: ['Callback hell risk', 'Error handling verbose'],
+    },
+    {
+      title: 'Stream',
+      icon: '🌊',
+      code: 'createReadStream()',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.08)',
+      border: 'rgba(16,185,129,0.25)',
+      pros: ['Memory constant', 'Handles huge files', 'Best for > 100MB'],
+      cons: ['More setup code'],
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">File System — Visual Overview</p>
+      <div className="flex gap-3 flex-wrap justify-center">
+        {columns.map((col, i) => (
+          <div key={i} className="flex-1 min-w-[130px] rounded-xl p-4" style={{ background: col.bg, border: `1px solid ${col.border}` }}>
+            <div className="text-center mb-3">
+              <span className="text-2xl">{col.icon}</span>
+              <p className="font-bold text-sm mt-1" style={{ color: col.color }}>{col.title}</p>
+              <p className="text-[10px] font-mono text-[#71717A] mt-0.5">{col.code}</p>
+            </div>
+            <div className="space-y-1">
+              {col.pros.map((p, j) => (
+                <p key={j} className="text-[10px] text-[#10B981] flex gap-1"><span>✓</span><span>{p}</span></p>
+              ))}
+              {col.cons.map((c, j) => (
+                <p key={j} className="text-[10px] text-[#71717A] flex gap-1"><span>✗</span><span>{c}</span></p>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function Chapter5Content() {
@@ -161,6 +222,8 @@ export default function Chapter5Content() {
           module Node.js mein file system ka door hai — read, write, delete, directories, watching — sab kuch. Is chapter mein hum teen API styles, common patterns, production-ready techniques, aur ek critical concept — streaming — cover karenge.
         </p>
       </div>
+
+      <FsApproachDiagram />
 
       {/* ConceptCard 1: fs module overview */}
       <div id="fs-module-overview">

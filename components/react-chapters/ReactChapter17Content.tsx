@@ -3,6 +3,46 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+function AppRouterDiagram() {
+  const files = [
+    { label: 'app/', sublabel: 'Root directory — file system = routes', color: '#F59E0B', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', icon: '📁', indent: 0 },
+    { label: 'layout.tsx', sublabel: 'Persistent shell — re-renders nahi on child navigate', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🏛️', indent: 1, tag: 'Server Component' },
+    { label: 'page.tsx', sublabel: 'Route content — / maps to this file', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📄', indent: 1, tag: 'Server Component' },
+    { label: 'loading.tsx', sublabel: 'Auto Suspense boundary — shows while page loads', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '⏳', indent: 1 },
+    { label: 'error.tsx', sublabel: 'Auto Error boundary — catches component errors', color: '#EF4444', bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.25)', icon: '⚠️', indent: 1, tag: '"use client"' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">App Router — File System Routing + Server/Client Split</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {files.map((f, i) => (
+          <div key={i} style={{ marginLeft: f.indent * 20 }}>
+            <div className="rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: f.bg, border: `1px solid ${f.border}` }}>
+              <span className="text-xl">{f.icon}</span>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="font-bold text-sm font-mono" style={{ color: f.color }}>{f.label}</p>
+                  {f.tag && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: f.color === '#06B6D4' || f.color === '#7C3AED' ? 'rgba(6,182,212,0.15)' : 'rgba(239,68,68,0.15)', color: f.color === '#06B6D4' || f.color === '#7C3AED' ? '#06B6D4' : '#EF4444' }}>{f.tag}</span>
+                  )}
+                </div>
+                <p className="text-xs text-[#71717A] mt-0.5">{f.sublabel}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+        <div className="mt-3 rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)' }}>
+          <span className="text-lg">✂️</span>
+          <div className="flex-1">
+            <p className="font-bold text-xs text-[#10B981]">"use client" boundary</p>
+            <p className="text-xs text-[#71717A] mt-0.5">Server Component default — add "use client" only for useState / onClick / browser APIs</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ReactChapter17Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +60,8 @@ export default function ReactChapter17Content() {
           Plain React kya hai? Browser mein JavaScript chalti hai, HTML generate hoti hai. Next.js kya hai? Server pe bhi React chalta hai — HTML server se aata hai, JavaScript baad mein hydrate hoti hai. Ye shift sab kuch change kar deta hai — performance, SEO, data fetching, architecture sab. App Router (Next.js 13+) ek paradigm shift hai — React Server Components default hain. Is chapter mein ye mental model build karenge.
         </p>
       </div>
+
+      <AppRouterDiagram />
 
       <div id="nextjs-intro">
         <ConceptCard

@@ -3,6 +3,44 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+function QueryCacheLifecycleDiagram() {
+  const states = [
+    { label: 'fresh', sublabel: 'In cache, valid — no network call needed (within staleTime)', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '✅' },
+    { label: 'stale', sublabel: 'In cache but needs refetch — staleTime expired', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '⏰' },
+    { label: 'fetching', sublabel: 'Network request in flight — stale data shown while waiting', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🌐' },
+    { label: 'success / error', sublabel: 'Response received — cache updated or error state set', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📦' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Query Cache Lifecycle — staleTime &amp; gcTime</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {states.map((s, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: s.bg, border: `1px solid ${s.border}` }}>
+              <span className="text-xl">{s.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm font-mono" style={{ color: s.color }}>{s.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{s.sublabel}</p>
+              </div>
+            </div>
+            {i < states.length - 1 && (
+              <div className="flex justify-center py-1">
+                <span className="text-[#71717A] text-xs">
+                  {i === 0 ? '↓ staleTime expires' : i === 1 ? '↓ component mounts / window focus' : '↓ Promise resolves / rejects'}
+                </span>
+              </div>
+            )}
+          </div>
+        ))}
+        <div className="mt-2 rounded-xl px-4 py-2.5 flex items-center gap-3" style={{ background: 'rgba(113,113,122,0.08)', border: '1px solid rgba(113,113,122,0.2)' }}>
+          <span className="text-sm">🗑️</span>
+          <p className="text-xs text-[#71717A]"><span className="text-[#A1A1AA] font-semibold">gcTime</span> — unused query removed from memory after this duration</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ReactChapter13Content() {
   return (
     <div className="space-y-8">
@@ -23,6 +61,8 @@ export default function ReactChapter13Content() {
           Ek baar use karo, aur aap kabhi manually useEffect se fetch nahi karoge.
         </p>
       </div>
+
+      <QueryCacheLifecycleDiagram />
 
       <div id="server-vs-client-state">
         <ConceptCard

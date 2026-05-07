@@ -53,6 +53,34 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function GenericFlowDiagram() {
+  const items = [
+    { label: 'function identity<T>(arg: T): T', sublabel: 'T is a type parameter — a placeholder filled at call time', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '🔧' },
+    { label: 'identity("hello") → T = string', sublabel: 'TypeScript infers T = string · return type: string · type info preserved', color: '#0EA5E9', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)', icon: '🔤' },
+    { label: 'identity(42) → T = number', sublabel: 'TypeScript infers T = number · return type: number · full safety', color: '#6366F1', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)', icon: '🔢' },
+    { label: 'vs any — type info LOST', sublabel: 'identity(arg: any): any → return is any · no autocomplete · no safety', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '⚠️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Generic Type Inference Flow</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function UtilityTypesTable() {
   const types = [
     { name: 'Partial<T>', desc: 'Saari properties optional', example: 'Partial<User> → update operations' },
@@ -101,6 +129,8 @@ export default function TSChapter6Content() {
           Generics TypeScript ka most powerful feature hai — aur sabse zyada misunderstood bhi. Problem ye hai: agar any use karo toh type safety gone, agar specific type use karo toh reusability gone. Generics dono ka best of worlds dete hain — <strong className="text-[#F5F5F7]">type-safe aur reusable</strong>. Aur interesting baat — tum roz generics use karte ho: <code className="text-[#3178C6]">Array&lt;T&gt;</code>, <code className="text-[#3178C6]">Promise&lt;T&gt;</code>, React ka <code className="text-[#3178C6]">useState&lt;T&gt;</code> — sab generics pe based hain.
         </p>
       </div>
+
+      <GenericFlowDiagram />
 
       <div id="generic-functions">
         <ConceptCard

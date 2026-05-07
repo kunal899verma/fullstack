@@ -135,6 +135,38 @@ const chapterQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function LearningRoadmapDiagram() {
+  const items = [
+    { label: 'Fundamentals', sublabel: 'LLMs, tokens, prompting, embeddings, RAG', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '📚', step: '01' },
+    { label: 'APIs', sublabel: 'OpenAI SDK, Anthropic SDK, Vercel AI SDK', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🔌', step: '02' },
+    { label: 'Building', sublabel: 'RAG systems, AI agents, LangChain, LlamaIndex', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '🏗️', step: '03' },
+    { label: 'Production', sublabel: 'Monitoring, cost control, safety, reliability', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🚀', step: '04' },
+    { label: 'Advanced', sublabel: 'Fine-tuning, multimodal, local LLMs, architecture patterns', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🎯', step: '05' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Your AI Learning Path — Build in This Order</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-lg font-bold font-mono" style={{ color: item.color }}>{item.step}</span>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">→ progress</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function GenAIChapter22Content() {
@@ -167,6 +199,8 @@ export default function GenAIChapter22Content() {
           </p>
         </div>
       </div>
+
+      <LearningRoadmapDiagram />
 
       {/* Card 1: AI Trends 2025 */}
       <div id="ai-trends">

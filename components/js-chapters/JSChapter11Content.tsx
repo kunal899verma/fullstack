@@ -55,6 +55,77 @@ const domQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function DomTreeDiagram() {
+  const tree = [
+    {
+      label: 'document',
+      sublabel: 'Root of the DOM — entry point for all queries',
+      color: '#F59E0B',
+      bg: 'rgba(245,158,11,0.1)',
+      border: 'rgba(245,158,11,0.3)',
+      icon: '📄',
+    },
+    {
+      label: '<html>',
+      sublabel: 'document.documentElement — wraps entire page',
+      color: '#F97316',
+      bg: 'rgba(249,115,22,0.1)',
+      border: 'rgba(249,115,22,0.3)',
+      icon: '🌐',
+    },
+    {
+      label: '<head>  +  <body>',
+      sublabel: 'document.head / document.body — sibling children of <html>',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '🌿',
+    },
+    {
+      label: 'Elements inside <body>',
+      sublabel: 'div, p, button, h1 … — your page content',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '🧩',
+    },
+  ]
+  const selectors = [
+    { label: 'querySelector(".btn")', note: 'CSS selector → first match anywhere in tree', color: '#F59E0B', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)' },
+    { label: 'getElementById("app")', note: 'ID lookup → fastest, returns single element', color: '#7C3AED', bg: 'rgba(124,58,237,0.08)', border: 'rgba(124,58,237,0.25)' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">DOM Tree Structure</p>
+      <div className="max-w-lg mx-auto space-y-2 mb-5">
+        {tree.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < tree.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-3 text-center">Selection Methods</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {selectors.map((s, i) => (
+          <div key={i} className="rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: s.bg, border: `1px solid ${s.border}` }}>
+            <code className="text-xs font-bold shrink-0" style={{ color: s.color }}>{s.label}</code>
+            <p className="text-xs text-[#71717A] flex-1">{s.note}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function JSChapter11Content() {
@@ -78,6 +149,8 @@ export default function JSChapter11Content() {
           DOM ek tree hai — document → html → body → sab elements. Har HTML tag ek node hai. JavaScript is tree ko read aur modify kar sakti hai — real time mein, bina page reload ke. Yahi web apps ka foundation hai. React, Vue, Angular — sab internally DOM manipulate karte hain. Direct DOM samajhna zaroori hai inhe truly samajhne ke liye.
         </p>
       </div>
+
+      <DomTreeDiagram />
 
       {/* ConceptCard 1 */}
       <div id="dom-kya-hai">

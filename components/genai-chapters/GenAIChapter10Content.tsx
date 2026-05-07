@@ -4,6 +4,37 @@ import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function ChatAppArchDiagram() {
+  const items = [
+    { label: 'User Message', sublabel: 'Input from UI — appended to messages array', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '💬' },
+    { label: 'useChat Hook', sublabel: 'Vercel AI SDK — manages state, streaming, history', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🎣' },
+    { label: 'API Route (Next.js)', sublabel: '/api/chat — receives full conversation history', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '🛣️' },
+    { label: 'Claude / OpenAI API', sublabel: 'LLM processes full context — stateless, no memory', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🤖' },
+    { label: 'Streaming Response → UI', sublabel: 'Tokens stream back — real-time typing effect for user', color: '#7C3AED', bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.4)', icon: '📺' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">AI Chat App Architecture</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Chapter Quiz ──────────────────────────────────────────────────────────────
 
 const chatAppsQuiz = [
@@ -68,6 +99,8 @@ export default function GenAIChapter10Content() {
           Is chapter mein: Next.js + Vercel AI SDK se complete streaming chat UI, context window management, aur system prompt engineering — production-ready patterns ke saath.
         </p>
       </div>
+
+      <ChatAppArchDiagram />
 
       {/* ConceptCard 1: Chat App Architecture */}
       <div id="architecture">

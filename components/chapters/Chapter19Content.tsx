@@ -45,6 +45,41 @@ const performanceQuiz = [
   },
 ]
 
+// ── Chapter Diagram ───────────────────────────────────────────────────────────
+
+function PerfWorkflowDiagram() {
+  const steps = [
+    { label: 'Measure', sublabel: 'Baseline latency, RPS, memory — autocannon / k6', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '📏' },
+    { label: 'Profile', sublabel: 'Flame graph via 0x or Clinic.js — find hot paths', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🔥' },
+    { label: 'Identify', sublabel: 'Bottleneck pinpointed — wide bar = culprit', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🎯' },
+    { label: 'Fix', sublabel: 'Optimize the one thing that matters most', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '🔧' },
+    { label: 'Measure Again', sublabel: 'Confirm improvement — loop back if needed', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '✅' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Performance Workflow — Measure First, Always</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {steps.map((step, i) => (
+          <div key={i} className="relative">
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: step.bg, border: `1px solid ${step.border}` }}>
+              <span className="text-xl">{step.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: step.color }}>{step.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{step.sublabel}</p>
+              </div>
+            </div>
+            {i < steps.length - 1 && (
+              <div className="flex justify-center py-1">
+                <span className="text-[#71717A] text-xs">{i === steps.length - 2 ? '↺ loop' : '↓'}</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function Chapter19Content() {
@@ -68,6 +103,8 @@ export default function Chapter19Content() {
           Socho ek baar — tumhara Node.js process ek box hai. Us box ke andar kya ho raha hai? Kaunsa function zyada time kha raha hai? Kahan memory leak ho rahi hai? Is chapter mein hum profiling ka X-ray machine use karenge, memory leaks ke ghost pakdenge, event loop ko breathe karne dengey, aur caching se app ko rocket banana seekhenge.
         </p>
       </div>
+
+      <PerfWorkflowDiagram />
 
       {/* ConceptCard 1: Profiling */}
       <div id="profiling">

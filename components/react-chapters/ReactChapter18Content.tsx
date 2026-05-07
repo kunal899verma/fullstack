@@ -3,6 +3,50 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+function FullStackArchDiagram() {
+  const layers = [
+    { label: 'Browser — React', sublabel: 'Client Components, TanStack Query, Zustand', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🌐' },
+    { label: 'Next.js — API Layer', sublabel: 'Route Handlers, Server Actions, Server Components', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '⚡' },
+    { label: 'Auth Layer', sublabel: 'NextAuth / JWT — session verify, middleware guard', color: '#F59E0B', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', icon: '🔐', aside: true },
+    { label: 'Database — PostgreSQL', sublabel: 'Prisma ORM — queries, migrations, type-safe schema', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🗄️' },
+    { label: 'Cache — Redis', sublabel: 'Session store, rate limiting, hot data cache', color: '#10B981', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.25)', icon: '⚡' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Full Stack React Architecture — Data Flow</p>
+      <div className="max-w-lg mx-auto">
+        <div className="space-y-2">
+          {layers.filter(l => !l.aside).map((l, i, arr) => (
+            <div key={i}>
+              <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: l.bg, border: `1px solid ${l.border}` }}>
+                <span className="text-xl">{l.icon}</span>
+                <div className="flex-1">
+                  <p className="font-bold text-sm" style={{ color: l.color }}>{l.label}</p>
+                  <p className="text-xs text-[#71717A] mt-0.5">{l.sublabel}</p>
+                </div>
+              </div>
+              {i < arr.length - 1 && (
+                <div className="flex justify-center py-1">
+                  <span className="text-[#71717A] text-xs">
+                    {i === 0 ? '↓ fetch / Server Action / API call' : i === 1 ? '↓ DB query via Prisma' : '↓ cache invalidation'}
+                  </span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}>
+          <span className="text-lg">🔐</span>
+          <div className="flex-1">
+            <p className="font-bold text-xs text-[#F5F5F7]">Auth Layer (cross-cutting)</p>
+            <p className="text-xs text-[#71717A] mt-0.5">NextAuth / JWT — middleware verifies every request to protected routes</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ReactChapter18Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +64,8 @@ export default function ReactChapter18Content() {
           Is chapter mein hum production mindset banate hain. Architecture decisions kab karo, state kahan rakho, performance kab optimize karo, kaise test karo, kya production pe check karo. Ye sirf checklist nahi — ye ek senior developer ki soch hai jo tumhare andar develop honi chahiye. Real engineers har decision ke saath trade-offs justify karte hain. Aaj se tum bhi karoge.
         </p>
       </div>
+
+      <FullStackArchDiagram />
 
       <div id="project-architecture">
         <ConceptCard

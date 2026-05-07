@@ -53,6 +53,34 @@ const tsQuiz: QuizQuestion[] = [
   },
 ]
 
+function TypeTransformsDiagram() {
+  const items = [
+    { label: 'Conditional Type', sublabel: 'T extends U ? X : Y — type-level if-else · example: NonNullable<T>', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '🔀' },
+    { label: 'Mapped Type', sublabel: '{ [K in keyof T]: NewType } — transform every property · example: Partial<T>', color: '#0EA5E9', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)', icon: '🗺️' },
+    { label: 'Template Literal', sublabel: '`${string}Id` — string-level type patterns · example: "userId" | "orderId"', color: '#6366F1', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)', icon: '📝' },
+    { label: 'infer keyword', sublabel: 'Extract inner types at compile time · example: ReturnType<T> uses infer R', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '🔍' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Advanced Type Transformations</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function TSChapter7Content() {
   return (
     <div className="space-y-8">
@@ -73,6 +101,8 @@ export default function TSChapter7Content() {
           Ab sawaal ye aata hai — Partial&lt;T&gt;, Readonly&lt;T&gt;, ReturnType&lt;T&gt; ye utility types TypeScript ne kaise banaye? Koi jaadu nahi hai — ye sab conditional types aur mapped types se bane hain. Is chapter ke baad tum khud same tarah ke utility types bana sakoge. Aur tab samjhoge ki TypeScript type system kitna powerful hai.
         </p>
       </div>
+
+      <TypeTransformsDiagram />
 
       <div id="conditional-types">
         <ConceptCard

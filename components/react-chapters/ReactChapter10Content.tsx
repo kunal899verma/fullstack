@@ -3,6 +3,84 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ───────────────────────────────────────────────────
+
+function CustomHookDiagram() {
+  const hookParts = [
+    {
+      label: 'useLocalStorage (Custom Hook)',
+      sublabel: 'useState + useEffect + custom sync logic — encapsulated in one function',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '🎣',
+    },
+    {
+      label: 'useState inside',
+      sublabel: 'Manages in-memory React state — triggers re-renders',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.08)',
+      border: 'rgba(124,58,237,0.25)',
+      icon: '🧠',
+    },
+    {
+      label: 'useEffect inside',
+      sublabel: 'Syncs React state → localStorage on every change',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.08)',
+      border: 'rgba(16,185,129,0.25)',
+      icon: '💾',
+    },
+  ]
+  const consumers = [
+    { label: 'ThemeToggle uses useLocalStorage', sublabel: 'Gets its OWN independent state instance', icon: '🌙', color: '#06B6D4' },
+    { label: 'UserPrefs uses useLocalStorage', sublabel: 'Gets its OWN independent state instance', icon: '⚙️', color: '#7C3AED' },
+    { label: 'CartCount uses useLocalStorage', sublabel: 'Gets its OWN independent state instance', icon: '🛒', color: '#10B981' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Custom Hook — Logic Reuse Without State Sharing</p>
+      <div className="max-w-lg mx-auto space-y-2 mb-4">
+        {hookParts.map((item, i) => (
+          <div key={i}>
+            <div
+              className="rounded-xl px-5 py-3.5 flex items-center gap-4"
+              style={{
+                background: item.bg,
+                border: `1px solid ${item.border}`,
+                marginLeft: i > 0 ? '20px' : '0',
+              }}
+            >
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < hookParts.length - 1 && (
+              <div className="flex py-1" style={{ paddingLeft: i > 0 ? '36px' : '20px' }}>
+                <span className="text-[#71717A] text-xs">↳</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-center py-1 mb-2"><span className="text-[#71717A] text-xs">↓ each component gets its own state instance</span></div>
+      <div className="max-w-lg mx-auto grid grid-cols-3 gap-2">
+        {consumers.map((c) => (
+          <div key={c.label} className="rounded-xl px-3 py-2.5 flex flex-col gap-1" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div className="flex items-center gap-1.5">
+              <span className="text-base">{c.icon}</span>
+              <p className="font-bold text-xs" style={{ color: c.color }}>{c.label.split(' uses')[0]}</p>
+            </div>
+            <p className="text-xs text-[#71717A]">{c.sublabel}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function ReactChapter10Content() {
   return (
     <div className="space-y-8">
@@ -23,6 +101,8 @@ export default function ReactChapter10Content() {
           Socho — 10 components mein same fetch + loading + error pattern. Ek bug fix karo — 10 jagah fix karna padega. Custom hook banao — ek jagah fix, sab theek. DRY principle React mein custom hooks se implement hota hai.
         </p>
       </div>
+
+      <CustomHookDiagram />
 
       <div id="custom-hook-intro">
         <ConceptCard

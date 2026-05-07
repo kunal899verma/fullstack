@@ -45,6 +45,62 @@ const testingQuiz = [
   },
 ]
 
+// ── Chapter Diagram ───────────────────────────────────────────────────────────
+
+function TestingPyramidDiagram() {
+  const tiers = [
+    {
+      label: 'E2E Tests',
+      sublabel: 'Few · Slow · Expensive · Full user journeys',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '🌐',
+      width: '60%',
+    },
+    {
+      label: 'Integration Tests',
+      sublabel: 'Fewer · Medium speed · Real DB + Supertest',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '🔗',
+      width: '80%',
+    },
+    {
+      label: 'Unit Tests',
+      sublabel: 'Many · Fast · Cheap · Pure functions & mocks',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.1)',
+      border: 'rgba(16,185,129,0.3)',
+      icon: '⚡',
+      width: '100%',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Testing Pyramid — 70 / 20 / 10 Balance</p>
+      <div className="max-w-lg mx-auto flex flex-col items-center gap-1.5">
+        {tiers.map((tier, i) => (
+          <div key={i} style={{ width: tier.width }} className="transition-all">
+            <div
+              className="rounded-xl px-5 py-3 flex items-center gap-3"
+              style={{ background: tier.bg, border: `1px solid ${tier.border}` }}
+            >
+              <span className="text-lg">{tier.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: tier.color }}>{tier.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{tier.sublabel}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+        <p className="text-xs text-[#71717A] mt-3 text-center">Wide base = more tests · Narrow top = fewer tests</p>
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function Chapter18Content() {
@@ -68,6 +124,8 @@ export default function Chapter18Content() {
           Testing ek investment hai — pehle 2 ghante tests likhne mein. Baad mein 20 ghante debugging nahi. Aur sabse important: tests confidence dete hain — bina dar ke refactor karo, naye features add karo — agar kuch toot jaye, test fail ho jaata hai. Production mein nahi, development mein.
         </p>
       </div>
+
+      <TestingPyramidDiagram />
 
       {/* ConceptCard 1: Testing Pyramid */}
       <div id="testing-pyramid">

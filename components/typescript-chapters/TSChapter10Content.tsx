@@ -44,6 +44,34 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function TsNodeSetupDiagram() {
+  const items = [
+    { label: 'Type Foundation', sublabel: '@types/node + @types/express — typed Node.js APIs + typed Express routes', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '📦' },
+    { label: 'tsconfig.json', sublabel: 'strict: true · target: ES2022 · module: commonjs · esModuleInterop: true', color: '#0EA5E9', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)', icon: '⚙️' },
+    { label: 'Development (ts-node / tsx)', sublabel: 'JIT compilation — no manual compile step · tsx watch for hot reload', color: '#6366F1', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)', icon: '⚡' },
+    { label: 'Production (tsc → node)', sublabel: 'tsc compiles to dist/ · node dist/index.js runs clean compiled JS', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '🚀' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">TypeScript + Node.js Setup Layers</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function TSChapter10Content() {
   return (
     <div className="space-y-8">
@@ -58,6 +86,8 @@ export default function TSChapter10Content() {
           Ab sawaal ye aata hai — Node.js TypeScript ke saath theek se kaise setup karo? @types/node se Node.js APIs typed ho jaate hain, Express generics se request body typed hoti hai, Zod se runtime + compile time dono safe hote hain. Is chapter mein ye poora setup cover karenge — kal se apne project mein use karo.
         </p>
       </div>
+
+      <TsNodeSetupDiagram />
 
       <div id="types-node">
         <ConceptCard

@@ -3,6 +3,67 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+function TestingLayersDiagram() {
+  const layers = [
+    {
+      label: 'E2E Tests',
+      sublabel: 'Full user flows — Playwright / Cypress',
+      detail: 'Slowest, fewest — critical paths only (checkout, login)',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '🎭',
+      width: '55%',
+      qty: '~10%',
+    },
+    {
+      label: 'Integration Tests',
+      sublabel: 'Component interactions — RTL + MSW',
+      detail: 'Medium speed — forms, data fetching, user workflows',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '🔗',
+      width: '75%',
+      qty: '~20%',
+    },
+    {
+      label: 'Unit Tests',
+      sublabel: 'Individual components, hooks, utils',
+      detail: 'Fastest, most — logic, edge cases, pure functions',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.1)',
+      border: 'rgba(16,185,129,0.3)',
+      icon: '🧪',
+      width: '100%',
+      qty: '~70%',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Testing Pyramid — Bottom to Top</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {layers.map((l, i) => (
+          <div key={i} style={{ width: l.width, marginLeft: 'auto', marginRight: 'auto' }}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: l.bg, border: `1px solid ${l.border}` }}>
+              <span className="text-xl">{l.icon}</span>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="font-bold text-sm" style={{ color: l.color }}>{l.label}</p>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: l.bg, color: l.color, border: `1px solid ${l.border}` }}>{l.qty}</span>
+                </div>
+                <p className="text-xs text-[#71717A] mt-0.5">{l.sublabel}</p>
+                <p className="text-[10px] text-[#71717A] mt-0.5">{l.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+        <p className="text-[10px] text-[#71717A] text-center mt-2">Width represents relative quantity — unit tests most, E2E fewest</p>
+      </div>
+    </div>
+  )
+}
+
 export default function ReactChapter16Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +81,8 @@ export default function ReactChapter16Content() {
           React Testing Library ka ek revolutionary idea hai — implementation details mat test karo, user behavior test karo. Ye ek line itna kuch change kar deti hai ki testing ka poora philosophy badal jaata hai. Sahi tests refactoring survive karte hain. Galat tests ek rename se toot jaate hain. Is chapter mein ye fark seekhenge.
         </p>
       </div>
+
+      <TestingLayersDiagram />
 
       <div id="rtl-philosophy">
         <ConceptCard

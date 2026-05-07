@@ -5,6 +5,80 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ───────────────────────────────────────────────────
+
+function StateUpdateCycleDiagram() {
+  const items = [
+    {
+      label: 'Initial Render',
+      sublabel: 'Component mounts — useState(initialValue) se state set hoti hai',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '🚀',
+    },
+    {
+      label: 'User Interaction',
+      sublabel: 'Click, type, scroll — event handler trigger hota hai',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '👆',
+    },
+    {
+      label: 'setState Called',
+      sublabel: 'setCount(newValue) — React re-render queue mein daalta hai',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.1)',
+      border: 'rgba(16,185,129,0.3)',
+      icon: '📞',
+    },
+    {
+      label: 'React Schedules Re-render',
+      sublabel: 'Batching: multiple setState calls → single re-render (React 18)',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.08)',
+      border: 'rgba(6,182,212,0.25)',
+      icon: '📅',
+    },
+    {
+      label: 'Component Re-renders with New State',
+      sublabel: 'Function runs again — new state value available — new JSX returned',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.08)',
+      border: 'rgba(124,58,237,0.25)',
+      icon: '🔄',
+    },
+    {
+      label: 'DOM Updated',
+      sublabel: 'React Virtual DOM diff → minimal real DOM changes — UI updates',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.08)',
+      border: 'rgba(16,185,129,0.25)',
+      icon: '✅',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">State Update Cycle — The Reactivity Loop</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">{i === items.length - 2 ? '↺ loops back to User Interaction' : '↓'}</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const stateQuiz: QuizQuestion[] = [
   {
     question: 'useState hook ka initial value kab use hota hai?',
@@ -73,6 +147,8 @@ export default function ReactChapter4Content() {
           Is chapter mein state ke har nuance ko cover karenge — batching, functional updates, lifting state up, aur state vs props kab use karna chahiye. Mystery khatam karte hain.
         </p>
       </div>
+
+      <StateUpdateCycleDiagram />
 
       <div id="state-kya-hai">
         <ConceptCard

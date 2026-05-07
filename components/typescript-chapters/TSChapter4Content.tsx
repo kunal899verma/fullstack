@@ -53,6 +53,33 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function InterfaceVsTypeDiagram() {
+  const items = [
+    { label: 'interface — Object Shapes', sublabel: 'extends ✅ · declaration merging ✅ · class implements ✅', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '🏗️' },
+    { label: 'type — Flexible Aliases', sublabel: 'union types ✅ · tuple types ✅ · primitive aliases ✅ · mapped types ✅', color: '#0EA5E9', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)', icon: '🏷️' },
+    { label: 'Rule of Thumb', sublabel: 'Object shapes → interface · Everything else → type', color: '#6366F1', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)', icon: '✅' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">interface vs type — When To Use Each</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function InterfaceVsTypeTable() {
   const rows = [
     { feature: 'Object shapes define karna', iface: '✅ Haan', type: '✅ Haan' },
@@ -102,6 +129,8 @@ export default function TSChapter4Content() {
           Is chapter mein interfaces, type aliases, optional/readonly properties, union/intersection types, aur declaration merging cover karenge. Ek baat pehle bata dun — <em>readonly</em> ka concept bahut underused hai. Jab koi cheez change nahi honi chahiye, TypeScript ko bolo — compiler enforce karega.
         </p>
       </div>
+
+      <InterfaceVsTypeDiagram />
 
       <div id="interface-vs-type">
         <ConceptCard

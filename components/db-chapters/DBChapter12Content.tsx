@@ -53,6 +53,34 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function ScalingStrategyDiagram() {
+  const items = [
+    { label: 'Vertical Scaling', sublabel: 'Bigger server · More RAM/CPU · Single node · Easy but expensive ceiling', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '⬆️' },
+    { label: 'Read Replicas', sublabel: 'Primary writes · Replicas handle reads · 80-95% of traffic = reads', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '📡' },
+    { label: 'Sharding', sublabel: 'Horizontal split by key · Each shard = subset of data · Infinite scale', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '🔀' },
+    { label: 'Caching Layer', sublabel: 'Redis in front of DB · Cache-aside pattern · 50–500x faster reads', color: '#FF6B35', bg: 'rgba(255,107,53,0.08)', border: 'rgba(255,107,53,0.25)', icon: '⚡' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Database Scaling Strategies</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function ConnectionPoolDiagram() {
   const steps = [
     { label: 'Client Request', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)' },
@@ -89,6 +117,8 @@ export default function DBChapter12Content() {
           Is chapter mein production-grade scaling strategies seekhenge — connection pooling ka math, read replicas se 80% load shift, Redis caching se 100x speedup, aur CAP theorem se distributed systems ke trade-offs samjhenge. Ye knowledge aapko engineer se architect banata hai.
         </p>
       </div>
+
+      <ScalingStrategyDiagram />
 
       <div id="connection-pooling">
         <ConnectionPoolDiagram />

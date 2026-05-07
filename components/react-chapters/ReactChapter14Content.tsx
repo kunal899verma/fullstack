@@ -3,6 +3,52 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+function ReRenderCausesDiagram() {
+  const triggers = [
+    { label: 'State changes', sublabel: 'setState / useState updater called', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🔀', solution: 'React.memo' },
+    { label: 'Props change', sublabel: 'Parent re-renders → child re-renders by default', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📥', solution: 'React.memo + useCallback' },
+    { label: 'Context updates', sublabel: 'Context value changes → all useContext consumers', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '🌍', solution: 'Selective context / Zustand' },
+    { label: 'forceUpdate', sublabel: 'Manual trigger — rare, avoid in modern React', color: '#EF4444', bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.25)', icon: '⚡', solution: 'Restructure state' },
+  ]
+  const solutions = [
+    { label: 'React.memo', sublabel: 'Skip render if props unchanged', color: '#10B981', icon: '🧠' },
+    { label: 'useMemo', sublabel: 'Memoize expensive computations', color: '#10B981', icon: '📌' },
+    { label: 'useCallback', sublabel: 'Stable function references', color: '#10B981', icon: '🔗' },
+    { label: 'Selective context', sublabel: 'Split contexts or use Zustand', color: '#10B981', icon: '✂️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Re-render Triggers → Solutions</p>
+      <div className="max-w-lg mx-auto">
+        <p className="text-xs text-[#71717A] mb-2 text-center">4 Causes of Re-render</p>
+        <div className="space-y-2 mb-4">
+          {triggers.map((t, i) => (
+            <div key={i} className="rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: t.bg, border: `1px solid ${t.border}` }}>
+              <span className="text-lg">{t.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: t.color }}>{t.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{t.sublabel}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓ solutions</span></div>
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          {solutions.map((s, i) => (
+            <div key={i} className="rounded-xl px-4 py-3 flex items-center gap-3" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)' }}>
+              <span className="text-base">{s.icon}</span>
+              <div>
+                <p className="font-bold text-xs font-mono" style={{ color: s.color }}>{s.label}</p>
+                <p className="text-[10px] text-[#71717A] mt-0.5">{s.sublabel}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ReactChapter14Content() {
   return (
     <div className="space-y-8">
@@ -23,6 +69,8 @@ export default function ReactChapter14Content() {
           Is chapter mein: re-renders kyun hote hain under the hood. Profiler se slow components identify karo. React.memo, useMemo, useCallback se precise fix. Code splitting se initial load optimize karo.
         </p>
       </div>
+
+      <ReRenderCausesDiagram />
 
       <div id="rerenders">
         <ConceptCard

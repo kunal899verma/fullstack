@@ -4,6 +4,37 @@ import React, { useState } from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function LlmInferenceDiagram() {
+  const items = [
+    { label: 'Input Text', sublabel: 'Your prompt — system + user messages', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '💬' },
+    { label: 'Tokenizer', sublabel: 'Text → token IDs (~4 chars per token in English)', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '✂️' },
+    { label: 'Transformer Blocks (N layers)', sublabel: 'Attention + FFN — repeated N times, context processed', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '🔁' },
+    { label: 'Logits → Sampling', sublabel: 'Temperature / top-p applied — pick next token', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🎲' },
+    { label: 'Next Token → Repeat', sublabel: 'Append token, feed back in — until EOS or max_tokens', color: '#7C3AED', bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.4)', icon: '🔄' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">LLM Inference Pipeline</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Token Estimator Demo ──────────────────────────────────────────────────────
 
 function TokenEstimatorDemo() {
@@ -115,6 +146,8 @@ export default function GenAIChapter5Content() {
           Tokenization, pre-training, RLHF, context window, sampling — ye sab andar kya hota hai, practical perspective se. Ye concepts seedhe API use mein help karenge — token costs estimate karo, temperature set karo, context limits samjho.
         </p>
       </div>
+
+      <LlmInferenceDiagram />
 
       {/* ConceptCard 1: Tokenization */}
       <div id="tokenization">

@@ -44,6 +44,34 @@ const tsQuiz: QuizQuestion[] = [
   },
 ]
 
+function ModuleSystemDiagram() {
+  const items = [
+    { label: 'Regular import', sublabel: 'import { fn } from "./mod" — value + type, survives to compiled JS', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '📦' },
+    { label: 'import type', sublabel: 'import type { User } from "./mod" — TYPE ONLY, completely erased at runtime', color: '#0EA5E9', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)', icon: '🔍' },
+    { label: 'Declaration file (.d.ts)', sublabel: 'Pure type declarations — no runtime code at all, only type info', color: '#6366F1', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)', icon: '📄' },
+    { label: '@types package', sublabel: 'Community types for JS libs (DefinitelyTyped) — devDependency only, zero production bundle', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '🌐' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Module System — What Survives to JavaScript</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function TSChapter8Content() {
   return (
     <div className="space-y-8">
@@ -64,6 +92,8 @@ export default function TSChapter8Content() {
           Ab sawaal ye aata hai — JavaScript libraries jo TypeScript mein nahi likhi, unke types kahan se aate hain? .d.ts files. Ye ek alag file format hai sirf type declarations ke liye — koi executable code nahi. @types packages mein yahi hota hai. Is chapter mein hum ye poora ecosystem samjhenge — modules, declaration files, @types, aur path aliases.
         </p>
       </div>
+
+      <ModuleSystemDiagram />
 
       <div id="es-modules">
         <ConceptCard

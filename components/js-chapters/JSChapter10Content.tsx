@@ -55,6 +55,60 @@ const quizQuestions = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function EventQueueDiagram() {
+  const queues = [
+    {
+      label: '① Synchronous Code',
+      sublabel: 'console.log(), math, assignments',
+      note: 'Runs first — Call Stack, blocks everything',
+      color: '#F59E0B',
+      bg: 'rgba(245,158,11,0.1)',
+      border: 'rgba(245,158,11,0.3)',
+      icon: '🔄',
+    },
+    {
+      label: '② Microtask Queue',
+      sublabel: 'Promise.then() / queueMicrotask()',
+      note: 'Runs second — ALL microtasks drain before any macrotask',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '⚡',
+    },
+    {
+      label: '③ Macrotask Queue',
+      sublabel: 'setTimeout() / setInterval() / I/O callbacks',
+      note: 'Runs last — one task per event loop tick',
+      color: '#F97316',
+      bg: 'rgba(249,115,22,0.1)',
+      border: 'rgba(249,115,22,0.3)',
+      icon: '⏰',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Event Loop — Execution Priority Order</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {queues.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#A1A1AA] mt-0.5">{item.sublabel}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.note}</p>
+              </div>
+            </div>
+            {i < queues.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function JSChapter10Content() {
@@ -84,6 +138,8 @@ export default function JSChapter10Content() {
           </p>
         </div>
       </div>
+
+      <EventQueueDiagram />
 
       {/* Card 1: Why Async — Event Loop Basics */}
       <div id="why-async">

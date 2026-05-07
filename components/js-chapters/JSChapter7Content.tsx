@@ -54,6 +54,73 @@ const quizQuestions = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function StringImmutabilityDiagram() {
+  const steps = [
+    {
+      label: 'Original String',
+      sublabel: 'let str = "hello"   — stored in Stack, immutable',
+      color: '#F59E0B',
+      bg: 'rgba(245,158,11,0.1)',
+      border: 'rgba(245,158,11,0.3)',
+      icon: '📝',
+    },
+    {
+      label: 'Method Called',
+      sublabel: 'str.toUpperCase()   — returns a NEW string, does NOT mutate str',
+      color: '#F97316',
+      bg: 'rgba(249,115,22,0.1)',
+      border: 'rgba(249,115,22,0.3)',
+      icon: '⚙️',
+    },
+    {
+      label: 'Original Unchanged',
+      sublabel: 'str is still "hello" — must reassign: str = str.toUpperCase()',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '🔒',
+    },
+  ]
+  const templateSteps = [
+    { label: 'Backtick opens', note: '`Hello ${name}!`  — template literal', color: '#F59E0B', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)' },
+    { label: 'Expression evaluated', note: '${name} → JS evaluates any expression inside ${}', color: '#F97316', bg: 'rgba(249,115,22,0.08)', border: 'rgba(249,115,22,0.25)' },
+    { label: 'Concatenated result', note: '"Hello Rahul!"  — new string with interpolated value', color: '#7C3AED', bg: 'rgba(124,58,237,0.08)', border: 'rgba(124,58,237,0.25)' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">String Immutability &amp; Template Literals</p>
+      <div className="max-w-lg mx-auto space-y-2 mb-5">
+        {steps.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < steps.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-3 text-center">Template Literal Parsing Flow</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {templateSteps.map((t, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: t.bg, border: `1px solid ${t.border}` }}>
+              <p className="font-bold text-xs w-36 shrink-0" style={{ color: t.color }}>{t.label}</p>
+              <p className="text-xs text-[#71717A] flex-1">{t.note}</p>
+            </div>
+            {i < templateSteps.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function JSChapter7Content() {
@@ -80,6 +147,8 @@ export default function JSChapter7Content() {
           </p>
         </div>
       </div>
+
+      <StringImmutabilityDiagram />
 
       {/* Akshay-style insight box */}
       <div

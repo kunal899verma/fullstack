@@ -53,6 +53,38 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function SqlExecutionOrderDiagram() {
+  const items = [
+    { label: 'FROM', sublabel: 'Which table(s) to read from', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '📂' },
+    { label: 'JOIN', sublabel: 'Combine rows from other tables', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '🔗' },
+    { label: 'WHERE', sublabel: 'Filter individual rows before grouping', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '🔍' },
+    { label: 'GROUP BY', sublabel: 'Collapse rows into groups', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '📦' },
+    { label: 'HAVING', sublabel: 'Filter groups (after aggregation)', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '🧹' },
+    { label: 'SELECT', sublabel: 'Choose which columns to return', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '✅' },
+    { label: 'ORDER BY', sublabel: 'Sort the final result set', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '🔢' },
+    { label: 'LIMIT', sublabel: 'Return only N rows (pagination)', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '✂️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">SQL Logical Execution Order</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function DBChapter4Content() {
   return (
     <div className="space-y-8">
@@ -64,6 +96,8 @@ export default function DBChapter4Content() {
           Data summarize karna ek core database skill hai — sales totals, user counts, averages. Lekin ye andar se kaise kaam karta hai? GROUP BY ke baad database ek sorting pass karta hai — similar values ek jagah aate hain, phir aggregate functions har group pe apply hote hain. Ye samajhna zaroori hai taaki slow GROUP BY queries optimize kar sako. Subqueries aur CASE se complex business logic SQL mein seedha express ho jaata hai — application code mein loop nahi lagani padti.
         </p>
       </div>
+
+      <SqlExecutionOrderDiagram />
 
       <div id="aggregate-functions">
         <ConceptCard

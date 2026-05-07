@@ -167,6 +167,38 @@ const chapterQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function FineTuningDecisionDiagram() {
+  const items = [
+    { label: 'Need Custom Behavior?', sublabel: 'Start here — what problem are you solving?', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '❓', cost: '' },
+    { label: 'Step 1 — Better Prompting', sublabel: 'System prompt, few-shot examples, clear instructions', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '✍️', cost: 'Cost: $0' },
+    { label: 'Step 2 — Few-Shot Examples', sublabel: 'In-context examples showing desired input → output', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '📋', cost: 'Cost: Low' },
+    { label: 'Step 3 — RAG (Retrieval)', sublabel: 'Inject domain knowledge from external sources', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🔍', cost: 'Cost: Medium' },
+    { label: 'Last Resort — Fine-tuning (LoRA / QLoRA)', sublabel: 'Only if consistent specialized format is truly needed', color: '#7C3AED', bg: 'rgba(124,58,237,0.15)', border: 'rgba(124,58,237,0.5)', icon: '🎯', cost: 'Cost: High $$' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Fine-tuning Decision — Escalate Only When Needed</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+              {item.cost && <span className="text-xs font-bold shrink-0" style={{ color: item.color }}>{item.cost}</span>}
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓ still not enough?</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function GenAIChapter16Content() {
@@ -199,6 +231,8 @@ export default function GenAIChapter16Content() {
           </p>
         </div>
       </div>
+
+      <FineTuningDecisionDiagram />
 
       {/* Card 1: Decision Framework */}
       <div id="decision-framework">

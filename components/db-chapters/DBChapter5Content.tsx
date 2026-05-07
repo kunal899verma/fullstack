@@ -53,6 +53,32 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function PgFeaturesDiagram() {
+  const items = [
+    { label: 'CTEs (WITH clause)', sublabel: 'Named temp results · Readable complex queries · Recursive trees', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '📝' },
+    { label: 'Window Functions', sublabel: 'OVER PARTITION BY · Ranking, running totals, LAG/LEAD', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '🪟' },
+    { label: 'JSONB', sublabel: 'Binary JSON · GIN indexed · Flexible + relational in one DB', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '🗄️' },
+    { label: 'Full-text Search', sublabel: 'tsvector + tsquery · GIN index · No Elasticsearch needed', color: '#FF6B35', bg: 'rgba(255,107,53,0.08)', border: 'rgba(255,107,53,0.25)', icon: '🔎' },
+    { label: 'EXPLAIN ANALYZE', sublabel: 'Query plan X-ray · Seq Scan vs Index Scan · Real timing', color: '#F59E0B', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', icon: '🔬' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">PostgreSQL Power Features</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i} className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+            <span className="text-xl">{item.icon}</span>
+            <div className="flex-1">
+              <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+              <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function DBChapter5Content() {
   return (
     <div className="space-y-8">
@@ -64,6 +90,8 @@ export default function DBChapter5Content() {
           PostgreSQL sirf ek database nahi — ye ek engineering marvel hai. CTEs, window functions, JSONB, full-text search, advanced indexing, extensions, row-level security — ye sab ek open-source database mein free milta hai. Lekin in features ka real power tab aata hai jab tum samjho ye under the hood kaise kaam karte hain. Index ek phone book hai database ka — naam se number dhundna O(1), poori book padhna O(n). Ye chapter PostgreSQL ke advanced tools sikhaata hai — aur ye bhi sikhaata hai ki EXPLAIN ANALYZE se kaise verify karo ki query sach mein fast hai.
         </p>
       </div>
+
+      <PgFeaturesDiagram />
 
       <div id="ctes">
         <ConceptCard

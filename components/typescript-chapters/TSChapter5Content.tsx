@@ -44,6 +44,34 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function AccessModifiersDiagram() {
+  const items = [
+    { label: 'public', sublabel: 'Accessible everywhere — from the class, subclasses, and outside. Default modifier.', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '🌐' },
+    { label: 'protected', sublabel: 'Accessible inside the class AND its subclasses — not from outside.', color: '#0EA5E9', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)', icon: '🔐' },
+    { label: 'private', sublabel: 'Accessible only inside THIS class — compile-time enforcement. Use # for true runtime privacy.', color: '#6366F1', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)', icon: '🔒' },
+    { label: 'readonly', sublabel: 'Set once (constructor/initializer), never changed again — compile-time immutability.', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '🛡️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Access Modifiers — Scope Boundaries</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function TSChapter5Content() {
   return (
     <div className="space-y-8">
@@ -58,6 +86,8 @@ export default function TSChapter5Content() {
           Ek important baat yaad rakho: TypeScript private compile-time check hai — runtime pe technically accessible hai. Truly private ke liye JavaScript # syntax use karo. Aur abstract classes — sirf extend ho sakti hain, instantiate nahi. Kyun? Template method pattern ke liye — base mein common logic, subclass mein variation. Samjhenge sab andar.
         </p>
       </div>
+
+      <AccessModifiersDiagram />
 
       <div id="access-modifiers">
         <ConceptCard

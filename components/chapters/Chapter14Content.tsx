@@ -3,6 +3,68 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function JwtFlowDiagram() {
+  const phases = [
+    {
+      phase: '1. Login',
+      color: '#10B981', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.3)',
+      icon: '🔑',
+      steps: [
+        { from: 'Client', arrow: '→', to: 'Server', detail: 'POST /login { email, password }' },
+        { from: 'Server', arrow: '→', to: 'Client', detail: 'Verify password → sign JWT → return tokens' },
+      ],
+    },
+    {
+      phase: '2. Authenticated Request',
+      color: '#06B6D4', bg: 'rgba(6,182,212,0.08)', border: 'rgba(6,182,212,0.3)',
+      icon: '🛡️',
+      steps: [
+        { from: 'Client', arrow: '→', to: 'Server', detail: 'GET /profile  Authorization: Bearer <token>' },
+        { from: 'Server', arrow: '→', to: 'Client', detail: 'Verify signature → decode payload → 200 OK' },
+      ],
+    },
+    {
+      phase: '3. Token Refresh',
+      color: '#7C3AED', bg: 'rgba(124,58,237,0.08)', border: 'rgba(124,58,237,0.3)',
+      icon: '🔄',
+      steps: [
+        { from: 'Client', arrow: '→', to: 'Server', detail: 'POST /refresh  { refreshToken }' },
+        { from: 'Server', arrow: '→', to: 'Client', detail: 'Verify refresh token → issue new access token' },
+      ],
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Authentication & JWT — Visual Overview</p>
+      <div className="max-w-xl mx-auto space-y-3">
+        {phases.map((ph, i) => (
+          <div key={i} className="rounded-xl p-4" style={{ background: ph.bg, border: `1px solid ${ph.border}` }}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg">{ph.icon}</span>
+              <p className="font-bold text-sm" style={{ color: ph.color }}>{ph.phase}</p>
+            </div>
+            <div className="space-y-1.5 pl-2">
+              {ph.steps.map((s, j) => (
+                <div key={j} className="flex items-start gap-2">
+                  <div className="flex items-center gap-1 shrink-0">
+                    <span className="text-[10px] font-bold text-[#71717A]">{s.from}</span>
+                    <span className="text-[10px]" style={{ color: ph.color }}>{s.arrow}</span>
+                    <span className="text-[10px] font-bold text-[#71717A]">{s.to}</span>
+                  </div>
+                  <p className="text-[10px] text-[#A1A1AA] font-mono leading-snug">{s.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-[10px] text-[#52525B] text-center mt-3">JWT encodes (not encrypts) — anyone can decode payload, only server can verify signature</p>
+    </div>
+  )
+}
+
 export default function Chapter14Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +82,8 @@ export default function Chapter14Content() {
           Authentication (kaun ho tum?) aur Authorization (kya kar sakte ho?) — ye dono security ke pillars hain. Galat implement karna — plaintext passwords, weak tokens, no rate limiting — ye sabse common security vulnerabilities hain. Ek hi baar sahi karo. Is chapter mein sab kuch step-by-step cover karenge.
         </p>
       </div>
+
+      <JwtFlowDiagram />
 
       <div id="sessions-vs-jwt">
         <ConceptCard

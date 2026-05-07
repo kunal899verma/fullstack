@@ -3,6 +3,48 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function MiddlewareChainDiagram() {
+  const chain = [
+    { label: 'Incoming Request', sublabel: 'POST /api/data', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '→', isArrow: false },
+    { label: 'Logger Middleware', sublabel: '[POST /api/data] 12:34:01', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '📋', isArrow: false },
+    { label: 'Auth Middleware', sublabel: 'Verify Bearer token → req.user', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🔐', isArrow: false },
+    { label: 'Rate Limiter', sublabel: 'Check 100 req/min limit per IP', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '🚦', isArrow: false },
+    { label: 'Route Handler', sublabel: 'Business logic → DB query', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '⚡', isArrow: false },
+    { label: 'Response', sublabel: '200 OK → JSON body sent', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '✅', isArrow: false },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Express Deep Dive — Visual Overview</p>
+      <div className="max-w-lg mx-auto">
+        <div className="space-y-1">
+          {chain.map((item, i) => (
+            <div key={i} className="relative">
+              <div className="rounded-xl px-5 py-3 flex items-center gap-3" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+                <span className="text-lg">{item.icon}</span>
+                <div className="flex-1">
+                  <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                  <p className="text-[10px] text-[#71717A] mt-0.5 font-mono">{item.sublabel}</p>
+                </div>
+                {i < chain.length - 2 && (
+                  <span className="text-[10px] font-mono text-[#52525B] ml-2">next()</span>
+                )}
+              </div>
+              {i < chain.length - 1 && (
+                <div className="flex justify-center py-0.5">
+                  <span className="text-[#71717A] text-xs">↓</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-[#52525B] text-center mt-3">Each middleware calls next() to pass control — or ends the request</p>
+      </div>
+    </div>
+  )
+}
+
 export default function Chapter12Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +62,8 @@ export default function Chapter12Content() {
           Express minimal hai — lekin minimal matlab incomplete nahi. Middleware chain, router, error handling sab carefully design hua hai. Is chapter mein hum Express ke internals aur production patterns cover karenge — woh cheezein jo interview mein pooche jaate hain aur production mein matter karti hain.
         </p>
       </div>
+
+      <MiddlewareChainDiagram />
 
       <div id="middleware-chain">
         <ConceptCard

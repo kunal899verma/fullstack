@@ -3,6 +3,61 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function BufferMemoryDiagram() {
+  const bytes = [
+    { hex: '0x48', dec: 72, char: 'H' },
+    { hex: '0x65', dec: 101, char: 'e' },
+    { hex: '0x6C', dec: 108, char: 'l' },
+    { hex: '0x6C', dec: 108, char: 'l' },
+    { hex: '0x6F', dec: 111, char: 'o' },
+  ]
+  const encodings = [
+    { name: 'utf8', example: '"Hello"', desc: 'Text data — always default', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)' },
+    { name: 'hex', example: '"48656c6c6f"', desc: 'Debug, hashes, checksums', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)' },
+    { name: 'base64', example: '"SGVsbG8="', desc: 'APIs, email, JWT tokens', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Buffers & Binary — Visual Overview</p>
+      <div className="max-w-lg mx-auto">
+        <p className="text-[10px] text-[#71717A] text-center mb-2 uppercase tracking-widest">Raw memory layout</p>
+        <div className="flex justify-center gap-1.5 mb-3 flex-wrap">
+          {bytes.map((b, i) => (
+            <div key={i} className="rounded-lg px-2.5 py-2 text-center" style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)' }}>
+              <p className="text-[10px] font-mono font-bold text-[#10B981]">{b.hex}</p>
+              <p className="text-[10px] text-[#71717A]">{b.dec}</p>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center items-center gap-2 mb-4">
+          <div className="h-px flex-1" style={{ background: 'rgba(16,185,129,0.3)' }} />
+          <p className="text-[10px] text-[#71717A] px-2">decoded as</p>
+          <div className="h-px flex-1" style={{ background: 'rgba(16,185,129,0.3)' }} />
+        </div>
+        <div className="flex justify-center gap-1 mb-5">
+          {bytes.map((b, i) => (
+            <div key={i} className="rounded-lg w-9 h-9 flex items-center justify-center" style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.3)' }}>
+              <p className="text-base font-bold font-mono text-[#06B6D4]">{b.char}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-[#71717A] text-center mb-3 uppercase tracking-widest">same bytes, different encoding output</p>
+        <div className="space-y-2">
+          {encodings.map((enc, i) => (
+            <div key={i} className="rounded-xl px-4 py-2.5 flex items-center gap-3" style={{ background: enc.bg, border: `1px solid ${enc.border}` }}>
+              <p className="font-bold text-sm font-mono w-16" style={{ color: enc.color }}>{enc.name}</p>
+              <p className="text-xs font-mono text-[#A1A1AA] flex-1">{enc.example}</p>
+              <p className="text-[10px] text-[#71717A]">{enc.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Chapter10Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +75,8 @@ export default function Chapter10Content() {
           JavaScript mein strings Unicode hoti hain — binary data ke liye Buffer ya TypedArrays chahiye. Jab bhi binary protocol implement karo ya binary file process karo, Buffer tumhara sabse close tool hai.
         </p>
       </div>
+
+      <BufferMemoryDiagram />
 
       <div id="what-is-buffer">
         <ConceptCard

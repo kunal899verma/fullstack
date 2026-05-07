@@ -53,6 +53,31 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function JoinTypesDiagram() {
+  const items = [
+    { label: 'INNER JOIN', sublabel: 'Only matching rows · Both sides must match · Most common', color: '#FF6B35', bg: 'rgba(255,107,53,0.1)', border: 'rgba(255,107,53,0.3)', icon: '⚡' },
+    { label: 'LEFT JOIN', sublabel: 'All left rows + matching right · NULL if no right match', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '⬅️' },
+    { label: 'RIGHT JOIN', sublabel: 'Matching left + all right rows · NULL if no left match', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '➡️' },
+    { label: 'FULL OUTER JOIN', sublabel: 'All rows from both sides · NULLs where no match exists', color: '#FF6B35', bg: 'rgba(255,107,53,0.08)', border: 'rgba(255,107,53,0.25)', icon: '🔀' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">SQL Join Types</p>
+      <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
+        {items.map((item, i) => (
+          <div key={i} className="rounded-xl px-4 py-3.5 flex items-start gap-3" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+            <span className="text-xl mt-0.5">{item.icon}</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+              <p className="text-xs text-[#71717A] mt-0.5 leading-snug">{item.sublabel}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function JoinsDiagram() {
   const joins = [
     { name: 'INNER JOIN', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', desc: 'Sirf matching rows', sql: 'INNER JOIN' },
@@ -86,6 +111,8 @@ export default function DBChapter3Content() {
           Real databases mein data multiple tables mein hota hai — users, orders, products alag-alag. JOINs se inhe ek saath query karo. Relationships aur normalization se data duplication avoid hoti hai. Is chapter mein JOINs ka internals, relationships, aur normalization ka real-world logic samjhenge.
         </p>
       </div>
+
+      <JoinTypesDiagram />
 
       <div id="primary-foreign-keys">
         <ConceptCard

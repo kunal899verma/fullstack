@@ -135,6 +135,35 @@ const chapterQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function ProductionAiDiagram() {
+  const items = [
+    { label: 'Observability', sublabel: 'LangSmith / Helicone — trace every LLM call', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🔭', metric: 'P95 latency' },
+    { label: 'Cost Control', sublabel: 'Prompt caching, smaller models, semantic cache', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '💰', metric: '$/1K calls' },
+    { label: 'Latency', sublabel: 'Streaming (TTFB), edge deployment, batching', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '⚡', metric: 'TTFB ms' },
+    { label: 'Reliability', sublabel: 'Fallbacks, retries, circuit breakers', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🛡️', metric: '99.9% uptime' },
+    { label: 'Safety', sublabel: 'Guardrails, content filtering, rate limits', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🔒', metric: 'Harm rate' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Production AI — 5 Pillars You Must Own</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i} className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+            <span className="text-xl">{item.icon}</span>
+            <div className="flex-1">
+              <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+              <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+            </div>
+            <span className="text-xs font-mono shrink-0" style={{ color: item.color }}>{item.metric}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function GenAIChapter18Content() {
@@ -167,6 +196,8 @@ export default function GenAIChapter18Content() {
           </p>
         </div>
       </div>
+
+      <ProductionAiDiagram />
 
       {/* Card 1: LLM Observability */}
       <div id="observability">

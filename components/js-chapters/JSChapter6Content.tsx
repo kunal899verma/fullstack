@@ -55,6 +55,68 @@ const quizQuestions = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function ObjectInternalsMap() {
+  const steps = [
+    {
+      label: 'Variable (Stack)',
+      sublabel: 'const obj1 = ...   — stores a reference (address), not the object',
+      color: '#F59E0B',
+      bg: 'rgba(245,158,11,0.1)',
+      border: 'rgba(245,158,11,0.3)',
+      icon: '📌',
+    },
+    {
+      label: 'Reference (Pointer)',
+      sublabel: '→ points to Heap memory address 0x1A2B',
+      color: '#F97316',
+      bg: 'rgba(249,115,22,0.1)',
+      border: 'rgba(249,115,22,0.3)',
+      icon: '🔗',
+    },
+    {
+      label: 'Heap Object',
+      sublabel: '{ name: "Rahul", age: 25 }  — actual data lives here',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '🗄️',
+    },
+  ]
+  const comparisons = [
+    { label: 'obj1 === obj2', note: 'Same reference ✅ — both point to same Heap object', color: '#10B981', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.25)' },
+    { label: 'obj1 === {...obj1}', note: 'Different reference ❌ — spread creates a NEW object', color: '#EF4444', bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.25)' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Objects Are Reference Types</p>
+      <div className="max-w-lg mx-auto space-y-2 mb-4">
+        {steps.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < steps.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+      <div className="max-w-lg mx-auto space-y-2">
+        {comparisons.map((c, i) => (
+          <div key={i} className="rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: c.bg, border: `1px solid ${c.border}` }}>
+            <code className="text-xs font-bold" style={{ color: c.color }}>{c.label}</code>
+            <p className="text-xs text-[#71717A] flex-1">{c.note}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function JSChapter6Content() {
@@ -81,6 +143,8 @@ export default function JSChapter6Content() {
           </p>
         </div>
       </div>
+
+      <ObjectInternalsMap />
 
       {/* Akshay-style insight box */}
       <div

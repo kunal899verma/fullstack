@@ -55,6 +55,35 @@ const es6Quiz: QuizQuestion[] = [
   },
 ]
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function Es6FeaturesMap() {
+  const features = [
+    { label: 'Destructuring', sublabel: 'Objects & arrays unpack karo', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '📦' },
+    { label: 'Spread / Rest', sublabel: 'Expand ya collect — same syntax (...)', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🌊' },
+    { label: 'Arrow Functions', sublabel: 'Concise syntax + lexical this', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '➡️' },
+    { label: 'Template Literals', sublabel: '`Hello ${name}` — string interpolation', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '💬' },
+    { label: 'Optional Chaining', sublabel: 'user?.address?.city — safe access', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🛡️' },
+    { label: 'Nullish Coalescing', sublabel: 'count ?? 0 — only null/undefined fallback', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '❓' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">ES6+ Features at a Glance</p>
+      <div className="max-w-lg mx-auto grid grid-cols-2 gap-2">
+        {features.map((item, i) => (
+          <div key={i} className="rounded-xl px-4 py-3 flex items-center gap-3" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+            <span className="text-xl">{item.icon}</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+              <p className="text-xs text-[#71717A] mt-0.5 leading-tight">{item.sublabel}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function JSChapter12Content() {
@@ -78,6 +107,8 @@ export default function JSChapter12Content() {
           Sawaal: kyun ye features important hain? Jawab: kyunki ye real problems solve karte hain jo developers daily face karte the — verbose object access, null checks, arguments handling, module organization. Har feature ek pain point ka solution hai — samajhoge toh immediately appreciate karoge!
         </p>
       </div>
+
+      <Es6FeaturesMap />
 
       {/* ConceptCard 1 */}
       <div id="destructuring">

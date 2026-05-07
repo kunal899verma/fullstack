@@ -45,6 +45,44 @@ const expertQuiz = [
   },
 ]
 
+// ── Chapter Diagram ───────────────────────────────────────────────────────────
+
+function CiCdPipelineDiagram() {
+  const stages = [
+    { label: 'Code Push', sublabel: 'git push → main branch triggers workflow', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '📤', status: '✅' },
+    { label: 'GitHub Actions', sublabel: 'Workflow file picked up — ubuntu-latest runner', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '⚙️', status: '🔄' },
+    { label: 'Tests Run', sublabel: 'npm ci → lint → jest --coverage (quality gate)', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🧪', status: '✅' },
+    { label: 'Build', sublabel: 'TypeScript compile + asset bundling', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🔨', status: '✅' },
+    { label: 'Docker Build', sublabel: 'Multi-stage Dockerfile — lean production image', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🐳', status: '✅' },
+    { label: 'Push to Registry', sublabel: 'ghcr.io — tagged with git SHA + latest', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📦', status: '✅' },
+    { label: 'Deploy to Production', sublabel: 'SSH → docker pull → docker run — zero downtime', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🚀', status: '✅' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">CI/CD Pipeline — Code Push to Production</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {stages.map((stage, i) => (
+          <div key={i} className="relative">
+            <div className="rounded-xl px-4 py-3 flex items-center gap-3" style={{ background: stage.bg, border: `1px solid ${stage.border}` }}>
+              <span className="text-lg">{stage.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: stage.color }}>{stage.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{stage.sublabel}</p>
+              </div>
+              <span className="text-sm">{stage.status}</span>
+            </div>
+            {i < stages.length - 1 && (
+              <div className="flex justify-center py-0.5">
+                <span className="text-[#71717A] text-xs">↓</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function Chapter23Content() {
@@ -68,6 +106,8 @@ export default function Chapter23Content() {
           Ye NodeMaster ka final chapter hai. Lekin yaar, ye end nahi — ye shuruwaat hai. Is chapter mein senior mindset, design patterns, observability, career growth, aur architecture decisions — woh sab cheezein jo curriculum mein nahi hoti lekin career mein sabse zyada matter karti hain. Keep building, keep learning, keep sharing.
         </p>
       </div>
+
+      <CiCdPipelineDiagram />
 
       {/* ConceptCard 1: Senior Mindset */}
       <div id="senior-mindset">

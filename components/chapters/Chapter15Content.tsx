@@ -3,6 +3,75 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function CachePatternDiagram() {
+  const hitPath = [
+    { label: 'Request', icon: '→', color: '#06B6D4' },
+    { label: 'Redis Cache', icon: '⚡', color: '#10B981', sublabel: '~0.1ms HIT', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)' },
+    { label: 'Response', icon: '✅', color: '#10B981', sublabel: 'Served instantly' },
+  ]
+  const missPath = [
+    { label: 'Request', icon: '→', color: '#06B6D4' },
+    { label: 'Redis Cache', icon: '❌', color: '#EF4444', sublabel: '~0.1ms MISS', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' },
+    { label: 'Database', icon: '🗄️', color: '#F59E0B', sublabel: '~50ms query', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)' },
+    { label: 'Store in Redis', icon: '💾', color: '#7C3AED', sublabel: 'SET key value EX 300', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)' },
+    { label: 'Response', icon: '✅', color: '#06B6D4', sublabel: '~50ms total' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Caching with Redis — Visual Overview</p>
+      <div className="max-w-xl mx-auto space-y-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#10B981] mb-3">Cache HIT — fast path</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            {hitPath.map((step, i) => (
+              <div key={i} className="flex items-center gap-2">
+                {step.bg ? (
+                  <div className="rounded-lg px-3 py-1.5 text-center" style={{ background: step.bg, border: `1px solid ${step.border}` }}>
+                    <p className="text-sm">{step.icon}</p>
+                    <p className="text-[10px] font-bold" style={{ color: step.color }}>{step.label}</p>
+                    {step.sublabel && <p className="text-[9px] text-[#71717A]">{step.sublabel}</p>}
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <p className="text-[10px]" style={{ color: step.color }}>{step.label}</p>
+                    {step.sublabel && <p className="text-[9px] text-[#71717A]">{step.sublabel}</p>}
+                  </div>
+                )}
+                {i < hitPath.length - 1 && <span className="text-[#10B981] text-sm">→</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-xl p-4" style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#F59E0B] mb-3">Cache MISS — full path</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            {missPath.map((step, i) => (
+              <div key={i} className="flex items-center gap-2">
+                {step.bg ? (
+                  <div className="rounded-lg px-3 py-1.5 text-center" style={{ background: step.bg, border: `1px solid ${step.border}` }}>
+                    <p className="text-sm">{step.icon}</p>
+                    <p className="text-[10px] font-bold" style={{ color: step.color }}>{step.label}</p>
+                    {step.sublabel && <p className="text-[9px] text-[#71717A]">{step.sublabel}</p>}
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <p className="text-[10px]" style={{ color: step.color }}>{step.label}</p>
+                    {step.sublabel && <p className="text-[9px] text-[#71717A]">{step.sublabel}</p>}
+                  </div>
+                )}
+                {i < missPath.length - 1 && <span className="text-[#F59E0B] text-sm">→</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <p className="text-[10px] text-[#52525B] text-center mt-3">Cache-aside pattern: app manages cache manually — check → miss → DB → store → respond</p>
+    </div>
+  )
+}
+
 export default function Chapter15Content() {
   return (
     <div className="space-y-8">
@@ -20,6 +89,8 @@ export default function Chapter15Content() {
           Redis sirf cache nahi hai — ye Swiss army knife of modern backends hai. Queues, pub/sub messaging, leaderboards, session storage, distributed locks, rate limiting — ye sab Redis se implement hote hain. Ek tool jo 10 problems solve karta hai.
         </p>
       </div>
+
+      <CachePatternDiagram />
 
       <div id="why-cache">
         <ConceptCard

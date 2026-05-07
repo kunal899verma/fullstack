@@ -167,6 +167,52 @@ const chapterQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function FrameworksDiagram() {
+  const langchain = [
+    { label: 'LangChain', sublabel: 'General AI orchestration framework', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.4)', icon: '🦜' },
+    { label: 'Chains & Agents', sublabel: 'LCEL pipe operator — compose LLM calls', color: '#F97316', bg: 'rgba(249,115,22,0.07)', border: 'rgba(249,115,22,0.25)', icon: '🔗' },
+    { label: 'Memory & Tools', sublabel: 'Conversation history + tool wrappers', color: '#F97316', bg: 'rgba(249,115,22,0.07)', border: 'rgba(249,115,22,0.25)', icon: '🛠️' },
+    { label: 'Sweet Spot', sublabel: 'Complex multi-step agents, rapid prototyping', color: '#F97316', bg: 'rgba(249,115,22,0.07)', border: 'rgba(249,115,22,0.25)', icon: '🎯' },
+  ]
+  const llamaindex = [
+    { label: 'LlamaIndex', sublabel: 'RAG-first data framework', color: '#7C3AED', bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.4)', icon: '🦙' },
+    { label: 'Document Loading & Indexing', sublabel: 'SimpleDirectoryReader → VectorStoreIndex', color: '#7C3AED', bg: 'rgba(124,58,237,0.07)', border: 'rgba(124,58,237,0.25)', icon: '📂' },
+    { label: 'Query Engines', sublabel: 'asQueryEngine() / asChatEngine()', color: '#7C3AED', bg: 'rgba(124,58,237,0.07)', border: 'rgba(124,58,237,0.25)', icon: '🔍' },
+    { label: 'Sweet Spot', sublabel: 'Document Q&A, RAG, knowledge base search', color: '#7C3AED', bg: 'rgba(124,58,237,0.07)', border: 'rgba(124,58,237,0.25)', icon: '🎯' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">LangChain vs LlamaIndex — Sweet Spots</p>
+      <div className="max-w-2xl mx-auto grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          {langchain.map((item, i) => (
+            <div key={i} className="rounded-xl px-4 py-3 flex items-center gap-3" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-lg">{item.icon}</span>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-xs" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5 leading-tight">{item.sublabel}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="space-y-2">
+          {llamaindex.map((item, i) => (
+            <div key={i} className="rounded-xl px-4 py-3 flex items-center gap-3" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-lg">{item.icon}</span>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-xs" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5 leading-tight">{item.sublabel}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function GenAIChapter14Content() {
@@ -199,6 +245,8 @@ export default function GenAIChapter14Content() {
           </p>
         </div>
       </div>
+
+      <FrameworksDiagram />
 
       {/* Card 1: LangChain Overview */}
       <div id="langchain-overview">

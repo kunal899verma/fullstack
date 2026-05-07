@@ -55,6 +55,55 @@ const quizQuestions = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function FunctionTypesDiagram() {
+  const types = [
+    {
+      label: 'Declaration',
+      sublabel: 'function greet() {}',
+      note: 'Hoisted ✅ — call before define',
+      color: '#F59E0B',
+      bg: 'rgba(245,158,11,0.1)',
+      border: 'rgba(245,158,11,0.3)',
+      icon: '📋',
+    },
+    {
+      label: 'Expression',
+      sublabel: 'const greet = function() {}',
+      note: 'Not hoisted ❌ — TDZ with let/const',
+      color: '#F97316',
+      bg: 'rgba(249,115,22,0.1)',
+      border: 'rgba(249,115,22,0.3)',
+      icon: '📦',
+    },
+    {
+      label: 'Arrow',
+      sublabel: 'const greet = () => {}',
+      note: 'No own "this" 🎯 — lexical this from parent',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '⚡',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">3 Function Types — Key Differences</p>
+      <div className="max-w-lg mx-auto grid grid-cols-3 gap-3">
+        {types.map((item, i) => (
+          <div key={i} className="rounded-xl px-4 py-4 flex flex-col gap-2" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+            <span className="text-xl text-center">{item.icon}</span>
+            <p className="font-bold text-sm text-center" style={{ color: item.color }}>{item.label}</p>
+            <code className="text-xs text-[#A1A1AA] text-center block leading-relaxed">{item.sublabel}</code>
+            <p className="text-xs text-[#71717A] text-center mt-1">{item.note}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function JSChapter4Content() {
@@ -81,6 +130,8 @@ export default function JSChapter4Content() {
           </p>
         </div>
       </div>
+
+      <FunctionTypesDiagram />
 
       {/* Akshay-style insight box */}
       <div

@@ -4,6 +4,37 @@ import React, { useState } from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function TransformerDiagram() {
+  const items = [
+    { label: 'Input Tokens', sublabel: '"The cat sat" → split into token pieces', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🔤' },
+    { label: 'Embeddings + Positional Encoding', sublabel: 'Tokens → dense vectors + position info', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📍' },
+    { label: 'Multi-Head Attention', sublabel: 'Query × Key → scores → weighted Values — "which words relate?"', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '👁️' },
+    { label: 'Feed Forward Network', sublabel: 'Per-token transformation — adds capacity', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '⚡' },
+    { label: 'Output Probabilities', sublabel: 'Softmax over vocabulary — next token prediction', color: '#7C3AED', bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.4)', icon: '📤' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Transformer Architecture — Key Components</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Attention Visualization Demo ──────────────────────────────────────────────
 
 function AttentionDemo() {
@@ -142,6 +173,8 @@ export default function GenAIChapter4Content() {
           Attention mechanism, multi-head attention, positional encoding, BERT vs GPT — aaj ye sab demystify karte hain.
         </p>
       </div>
+
+      <TransformerDiagram />
 
       {/* ConceptCard 1: RNN Problems */}
       <div id="rnn-problems">

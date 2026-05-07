@@ -5,6 +5,38 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function ProjectArchDiagram() {
+  const steps = [
+    { label: 'Source (src/)', sublabel: 'TypeScript + React — features, shared, assets', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', icon: '📁' },
+    { label: 'Tests Run in Parallel', sublabel: 'Jest — unit & integration tests on every change', color: '#7C3AED', bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.35)', icon: '🧪' },
+    { label: 'Build Process (Vite / Webpack)', sublabel: 'TypeScript compile → bundle → tree shake → minify', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.35)', icon: '⚙️' },
+    { label: 'Output (dist/)', sublabel: 'Optimized JS/CSS chunks + source maps', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', icon: '📦' },
+    { label: 'CI/CD Pipeline', sublabel: 'GitHub Actions — lint, test, build gate before deploy', color: '#7C3AED', bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.35)', icon: '🔄' },
+    { label: 'Deploy (CDN / Server)', sublabel: 'Vercel / Railway / Docker — global edge distribution', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.35)', icon: '🌍' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Full Project Architecture — Source to Production</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {steps.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < steps.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const capstoneQuiz: QuizQuestion[] = [
   {
     question: 'Modular JS architecture ka main benefit kya hai?',
@@ -76,6 +108,8 @@ export default function JSChapter20Content() {
           Is chapter mein hum end-to-end project setup cover karenge — architecture se deployment tak. Ye template ki tarah use karo har naye project mein. Junior developer se senior developer ka journey — yehi final step hai!
         </p>
       </div>
+
+      <ProjectArchDiagram />
 
       <div id="project-architecture">
         <ConceptCard

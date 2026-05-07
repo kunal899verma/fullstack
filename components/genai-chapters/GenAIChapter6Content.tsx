@@ -6,6 +6,36 @@ import DiffBlock from '@/components/learn/DiffBlock'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function PromptComponentsDiagram() {
+  const items = [
+    { label: 'System Message', sublabel: 'Role + context — who is the AI and what are the rules', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🎭' },
+    { label: 'Few-shot Examples', sublabel: 'Show don\'t tell — 2–5 input/output pairs', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '📚' },
+    { label: 'User Message', sublabel: 'Clear task — specific, not vague', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '💬' },
+    { label: 'Output Format', sublabel: 'JSON schema / markdown template — structured output', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.4)', icon: '📋' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Anatomy of a Good Prompt</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">+</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Quiz ──────────────────────────────────────────────────────────────────────
 
 const chapterQuiz: QuizQuestion[] = [
@@ -156,6 +186,8 @@ export default function GenAIChapter6Content() {
           Shocking fact: same model ko same question alag prompt se puchho — 10x better answer mil sakta hai. Prompt engineering magic nahi hai — ye ek systematic skill hai. Aur ye skill ek developer ki most important superpower hai AI era mein. Ek junior developer achhe prompts se senior developer jitna output le sakta hai AI se. Aaj ye skill seekhte hain.
         </p>
       </div>
+
+      <PromptComponentsDiagram />
 
       {/* ConceptCard 1: What is Prompt Engineering */}
       <div id="prompt-engineering-intro">

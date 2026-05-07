@@ -55,6 +55,72 @@ const quizQuestions = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function PrototypeChainDiagram() {
+  const chain = [
+    {
+      label: 'dog (instance)',
+      sublabel: 'name: "Bruno", bark() — own properties',
+      color: '#F59E0B',
+      bg: 'rgba(245,158,11,0.1)',
+      border: 'rgba(245,158,11,0.3)',
+      icon: '🐶',
+    },
+    {
+      label: 'Dog.prototype',
+      sublabel: 'speak() — found here on first lookup up chain',
+      color: '#F97316',
+      bg: 'rgba(249,115,22,0.1)',
+      border: 'rgba(249,115,22,0.3)',
+      icon: '🔗',
+    },
+    {
+      label: 'Animal.prototype',
+      sublabel: 'breathe() — found here if not in Dog.prototype',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '🦴',
+    },
+    {
+      label: 'Object.prototype',
+      sublabel: 'toString(), hasOwnProperty() — every object inherits these',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '🌐',
+    },
+    {
+      label: 'null',
+      sublabel: '— end of chain. Property not found → undefined returned',
+      color: '#71717A',
+      bg: 'rgba(113,113,122,0.08)',
+      border: 'rgba(113,113,122,0.25)',
+      icon: '🚫',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Prototype Chain — Property Lookup Walks UP</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {chain.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < chain.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↑ [[Prototype]]</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function JSChapter9Content() {
@@ -84,6 +150,8 @@ export default function JSChapter9Content() {
           </p>
         </div>
       </div>
+
+      <PrototypeChainDiagram />
 
       {/* Card 1: Prototype Chain */}
       <div id="prototype-chain">

@@ -5,6 +5,66 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ───────────────────────────────────────────────────
+
+function HooksComparisonDiagram() {
+  const hooks = [
+    {
+      name: 'useRef',
+      icon: '📌',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      persists: true,
+      rerender: false,
+      desc: 'Mutable .current box — DOM refs, timer IDs, previous values',
+      key: 'NO re-render on change',
+    },
+    {
+      name: 'useMemo',
+      icon: '🧮',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      persists: true,
+      rerender: false,
+      desc: 'Caches computed value — re-compute only when deps change',
+      key: 'Stable VALUE reference',
+    },
+    {
+      name: 'useCallback',
+      icon: '🔒',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.1)',
+      border: 'rgba(16,185,129,0.3)',
+      persists: true,
+      rerender: false,
+      desc: 'Caches function — stable reference for memo children & effects',
+      key: 'Stable FUNCTION reference',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">React Performance Hooks — Key Differences</p>
+      <div className="max-w-2xl mx-auto grid grid-cols-3 gap-3">
+        {hooks.map((hook) => (
+          <div key={hook.name} className="rounded-xl p-4 flex flex-col gap-2" style={{ background: hook.bg, border: `1px solid ${hook.border}` }}>
+            <div className="flex items-center gap-2">
+              <span className="text-lg">{hook.icon}</span>
+              <p className="font-bold text-sm" style={{ color: hook.color }}>{hook.name}</p>
+            </div>
+            <p className="text-xs text-[#A1A1AA] leading-relaxed">{hook.desc}</p>
+            <div className="mt-auto rounded-lg px-2 py-1.5" style={{ background: 'rgba(0,0,0,0.2)' }}>
+              <p className="text-xs font-bold" style={{ color: hook.color }}>{hook.key}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-[#71717A] text-center mt-3">All three persist across renders — but only useState triggers re-render on change</p>
+    </div>
+  )
+}
+
 const memoQuiz: QuizQuestion[] = [
   {
     question: 'useRef aur useState mein kya fundamental fark hai?',
@@ -76,6 +136,8 @@ export default function ReactChapter8Content() {
           Is chapter mein hum teeno hooks ko andar se samjhenge — kab use karo, kab bilkul mat karo, aur kya hota hai hood ke neeche jab React in hooks ko execute karta hai.
         </p>
       </div>
+
+      <HooksComparisonDiagram />
 
       <div id="useref">
         <ConceptCard

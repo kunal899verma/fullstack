@@ -3,6 +3,49 @@
 import React from 'react'
 import ConceptCard from '@/components/learn/ConceptCard'
 
+function ZustandStoreDiagram() {
+  const consumers = [
+    { label: 'Component A', action: 'updates store', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '✏️', isUpdater: true },
+    { label: 'Component B', action: 'auto re-renders', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🔄', isUpdater: false },
+    { label: 'Component C', action: 'auto re-renders', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🔄', isUpdater: false },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Zustand Store — Central State, Selective Subscriptions</p>
+      <div className="max-w-lg mx-auto">
+        <div className="rounded-xl px-5 py-4 text-center mb-1" style={{ background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.35)' }}>
+          <p className="font-bold text-sm text-[#E879F9]">🐻 Zustand Store</p>
+          <p className="text-xs text-[#71717A] mt-1">create() — cart, user, theme ... selector-based subscriptions</p>
+        </div>
+        <div className="flex justify-center gap-8 py-2">
+          <span className="text-[#71717A] text-xs">↙ reads</span>
+          <span className="text-[#06B6D4] text-xs font-bold">↑ set()</span>
+          <span className="text-[#71717A] text-xs">reads ↘</span>
+        </div>
+        <div className="space-y-2">
+          {consumers.map((c, i) => (
+            <div key={i} className="rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: c.bg, border: `1px solid ${c.border}` }}>
+              <span className="text-xl">{c.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: c.color }}>{c.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{c.action}</p>
+              </div>
+              {c.isUpdater && <span className="text-[10px] px-2 py-0.5 rounded font-bold" style={{ background: 'rgba(6,182,212,0.2)', color: '#06B6D4' }}>setState()</span>}
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 rounded-xl px-5 py-3 flex items-center gap-4" style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}>
+          <span className="text-lg">⚠️</span>
+          <div className="flex-1">
+            <p className="font-bold text-xs text-[#F5F5F7]">vs useState (local only)</p>
+            <p className="text-xs text-[#71717A] mt-0.5">Sibling share nahi hota — Context se sab re-render — Zustand se selective</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ReactChapter12Content() {
   return (
     <div className="space-y-8">
@@ -23,6 +66,8 @@ export default function ReactChapter12Content() {
           Is chapter mein basics se le kar persist middleware, async actions, aur slice pattern tak — sab cover karenge.
         </p>
       </div>
+
+      <ZustandStoreDiagram />
 
       <div id="global-state-problem">
         <ConceptCard

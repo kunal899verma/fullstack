@@ -135,6 +135,38 @@ const chapterQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function SafetyLayersDiagram() {
+  const items = [
+    { label: 'Input Filtering', sublabel: 'Detect prompt injection, sanitize user input', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '⚠️', status: 'Layer 1' },
+    { label: 'System Prompt', sublabel: 'Role definition, task scope, refusal instructions', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📋', status: 'Layer 2' },
+    { label: 'Model Safety', sublabel: 'RLHF + Constitutional AI — built-in refusals', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '✅', status: 'Layer 3' },
+    { label: 'Output Filtering', sublabel: 'Content policy check — PII, harmful content', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🔍', status: 'Layer 4' },
+    { label: 'Human Review', sublabel: 'High-stakes actions — audit logs + approvals', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '👤', status: 'Layer 5' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">AI Safety — Defense in Depth (All Layers Required)</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+              <span className="text-xs font-bold shrink-0" style={{ color: item.color }}>{item.status}</span>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function GenAIChapter19Content() {
@@ -167,6 +199,8 @@ export default function GenAIChapter19Content() {
           </p>
         </div>
       </div>
+
+      <SafetyLayersDiagram />
 
       {/* Card 1: Hallucinations */}
       <div id="hallucinations">

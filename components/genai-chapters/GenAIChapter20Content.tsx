@@ -135,6 +135,37 @@ const chapterQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Diagram ───────────────────────────────────────────────────────────────────
+
+function LocalLlmSetupDiagram() {
+  const items = [
+    { label: 'Your App', sublabel: 'Node.js / Next.js — same OpenAI SDK code', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🖥️' },
+    { label: 'Ollama API  (http://localhost:11434)', sublabel: 'OpenAI-compatible REST — swap baseURL only', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🔌' },
+    { label: 'Ollama Runtime', sublabel: 'Model lifecycle, GPU offloading, context management', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '⚙️' },
+    { label: 'Quantized Model (GGUF format)', sublabel: 'LLaMA 3 / Mistral / Phi-3 — compressed for local', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '🗜️' },
+    { label: 'CPU / GPU  (your hardware)', sublabel: 'No internet · private data safe · zero API cost', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🔒' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Local LLM Stack — No Internet, Full Privacy</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function GenAIChapter20Content() {
@@ -167,6 +198,8 @@ export default function GenAIChapter20Content() {
           </p>
         </div>
       </div>
+
+      <LocalLlmSetupDiagram />
 
       {/* Card 1: Why Local LLMs */}
       <div id="why-local">

@@ -5,6 +5,64 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ───────────────────────────────────────────────────
+
+function SyntheticEventDiagram() {
+  const items = [
+    {
+      label: 'Native DOM Event',
+      sublabel: 'Browser fires raw event — click, change, keydown — different per browser',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.1)',
+      border: 'rgba(6,182,212,0.3)',
+      icon: '🖱️',
+    },
+    {
+      label: 'React Event Delegation',
+      sublabel: 'Single root listener — React captures ALL events at root, not per element',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '🎯',
+    },
+    {
+      label: 'SyntheticEvent Wrapper',
+      sublabel: 'React normalizes event — same API across ALL browsers, all edge cases handled',
+      color: '#10B981',
+      bg: 'rgba(16,185,129,0.1)',
+      border: 'rgba(16,185,129,0.3)',
+      icon: '📦',
+    },
+    {
+      label: 'Unified API → Your Handler',
+      sublabel: 'onClick={handleClick} — e.target, e.preventDefault(), e.stopPropagation() — consistent',
+      color: '#06B6D4',
+      bg: 'rgba(6,182,212,0.08)',
+      border: 'rgba(6,182,212,0.25)',
+      icon: '⚡',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Synthetic Event System — How React Handles Events</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const eventsQuiz: QuizQuestion[] = [
   {
     question: 'React mein event handlers ko directly kaise pass karte hain?',
@@ -73,6 +131,8 @@ export default function ReactChapter5Content() {
           Is chapter mein event system, controlled inputs, form handling, multi-field forms, aur validation — sab production patterns ke saath.
         </p>
       </div>
+
+      <SyntheticEventDiagram />
 
       <div id="react-events">
         <ConceptCard

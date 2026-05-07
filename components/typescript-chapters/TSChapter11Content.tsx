@@ -53,6 +53,34 @@ const quiz: QuizQuestion[] = [
   },
 ]
 
+function TsconfigMapDiagram() {
+  const items = [
+    { label: 'Output Options', sublabel: 'target (ES version) · module (CJS/ESM) · outDir (dist/) · rootDir (src/)', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '📤' },
+    { label: 'Safety Options', sublabel: 'strict · noImplicitAny · strictNullChecks · strictFunctionTypes', color: '#0EA5E9', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)', icon: '🛡️' },
+    { label: 'Paths Options', sublabel: 'baseUrl · paths (@/* aliases) · moduleResolution (bundler/node/node16)', color: '#6366F1', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)', icon: '🗂️' },
+    { label: 'Build Options', sublabel: 'incremental · composite · skipLibCheck · declaration · declarationMap', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '⚙️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">tsconfig.json Option Groups</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function TSChapter11Content() {
   return (
     <div className="space-y-8">
@@ -67,6 +95,8 @@ export default function TSChapter11Content() {
           Ab sawaal ye aata hai — tsconfig ke itne options hain, kaunsa set karein? target, module, lib, moduleResolution — ye sab alag alag hain, confusing lagta hai. Is chapter mein systematically samjhenge — har option ka WHY, phir HOW. Ek production-ready tsconfig banate hain saath mein.
         </p>
       </div>
+
+      <TsconfigMapDiagram />
 
       <div id="compiler-options">
         <ConceptCard

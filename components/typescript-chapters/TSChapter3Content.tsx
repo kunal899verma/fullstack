@@ -44,6 +44,34 @@ const tsChapter3Quiz: QuizQuestion[] = [
   },
 ]
 
+function FunctionSignatureDiagram() {
+  const items = [
+    { label: 'function name', sublabel: 'Identifier — what the function does (greet, calculate, fetchUser)', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '🏷️' },
+    { label: '(params: ParamType)', sublabel: 'Optional params: param? · Default values: param = value · Rest: ...args: T[]', color: '#0EA5E9', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)', icon: '📥' },
+    { label: ': ReturnType', sublabel: 'What the function gives back — string · number · void · Promise<T>', color: '#6366F1', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)', icon: '📤' },
+    { label: '{ function body }', sublabel: 'Implementation — TypeScript checks return matches ReturnType', color: '#3178C6', bg: 'rgba(49,120,198,0.1)', border: 'rgba(49,120,198,0.3)', icon: '⚙️' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Anatomy of a Typed Function</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function TSChapter3Content() {
   return (
     <div className="space-y-8">
@@ -64,6 +92,8 @@ export default function TSChapter3Content() {
           Is chapter mein ek interesting pattern bhi seekhenge — function overloads. Ek function, multiple signatures. TypeScript samajhta hai input ke hisaab se kya return type aayega. Ye real-world library design mein bahut kaam aata hai — aur samajhne ke baad bahut elegant lagta hai.
         </p>
       </div>
+
+      <FunctionSignatureDiagram />
 
       <div id="typed-params">
         <ConceptCard

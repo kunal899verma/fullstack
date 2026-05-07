@@ -5,6 +5,56 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function DesignPatternsDiagram() {
+  const categories = [
+    {
+      label: 'Creational',
+      sublabel: '"How to create" — Factory, Singleton',
+      desc: 'Object creation logic hide karo',
+      color: '#F59E0B',
+      bg: 'rgba(245,158,11,0.1)',
+      border: 'rgba(245,158,11,0.3)',
+      icon: '🏭',
+    },
+    {
+      label: 'Structural',
+      sublabel: '"How to combine" — Decorator, Proxy',
+      desc: 'Objects compose karke larger structures banao',
+      color: '#F97316',
+      bg: 'rgba(249,115,22,0.1)',
+      border: 'rgba(249,115,22,0.3)',
+      icon: '🧱',
+    },
+    {
+      label: 'Behavioral',
+      sublabel: '"How to communicate" — Observer, Strategy',
+      desc: 'Objects ke beech responsibilities assign karo',
+      color: '#7C3AED',
+      bg: 'rgba(124,58,237,0.1)',
+      border: 'rgba(124,58,237,0.3)',
+      icon: '🤝',
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">3 Categories of Design Patterns</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {categories.map((item, i) => (
+          <div key={i} className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+            <span className="text-2xl">{item.icon}</span>
+            <div className="flex-1">
+              <p className="font-bold text-sm" style={{ color: item.color }}>{item.label} <span className="font-normal text-xs text-[#71717A]">— {item.sublabel}</span></p>
+              <p className="text-xs text-[#71717A] mt-0.5">{item.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const patternsQuiz: QuizQuestion[] = [
   {
     question: 'Module pattern ka main faida kya hai?',
@@ -76,6 +126,8 @@ export default function JSChapter15Content() {
           Patterns seekhne se tum dusre developers ka code better samjhoge — aur apna code better likho. Senior developers ki pehchaan hoti hai — woh patterns naam se nahi, problem se pehchante hain.
         </p>
       </div>
+
+      <DesignPatternsDiagram />
 
       <div id="module-pattern">
         <ConceptCard

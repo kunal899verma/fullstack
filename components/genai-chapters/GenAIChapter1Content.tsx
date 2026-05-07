@@ -5,6 +5,36 @@ import ConceptCard from '@/components/learn/ConceptCard'
 import QuizSection from '@/components/learn/QuizSection'
 import type { QuizQuestion } from '@/components/learn/ConceptCard'
 
+// ── Chapter Overview Diagram ──────────────────────────────────────────────────
+
+function AiHierarchyDiagram() {
+  const items = [
+    { label: 'Artificial Intelligence', sublabel: 'Broadest field — machines that behave intelligently', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🧠' },
+    { label: 'Machine Learning', sublabel: 'Learn from data — patterns over rules', color: '#F97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)', icon: '📊' },
+    { label: 'Deep Learning', sublabel: 'Neural networks with many layers', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '🔗' },
+    { label: 'Generative AI', sublabel: 'Creates new content — text, images, code', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.4)', icon: '✨' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">AI Hierarchy — Broad to Specific</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {items.map((item, i) => (
+          <div key={i}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}`, marginLeft: i * 12 }}>
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+              </div>
+            </div>
+            {i < items.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── AI Hierarchy Diagram ──────────────────────────────────────────────────────
 
 function AIHierarchyDiagram() {
@@ -251,6 +281,8 @@ export default function GenAIChapter1Content() {
           </p>
         </div>
       </div>
+
+      <AiHierarchyDiagram />
 
       {/* ConceptCard 1: AI vs ML vs DL vs GenAI */}
       <div id="ai-hierarchy">
