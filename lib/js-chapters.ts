@@ -1,0 +1,288 @@
+export type Difficulty = 'beginner' | 'intermediate' | 'advanced'
+
+export interface JSChapter {
+  number: number
+  slug: string
+  title: string
+  subtitle: string
+  difficulty: Difficulty
+  estimatedMinutes: number
+  phase: 1 | 2 | 3
+  topics: string[]
+  conceptCount: number
+  visualization?: string
+}
+
+export const jsChapters: JSChapter[] = [
+  // Phase 1: Foundations (Ch 1-7)
+  {
+    number: 1,
+    slug: 'js-what-why',
+    title: 'JavaScript Kya Hai?',
+    subtitle: 'History, engine, aur browser se Node tak ka safar',
+    difficulty: 'beginner',
+    estimatedMinutes: 25,
+    phase: 1,
+    topics: ['History', 'V8 Engine', 'Browser vs Node', 'ECMA', 'How JS runs'],
+    conceptCount: 5,
+  },
+  {
+    number: 2,
+    slug: 'variables-datatypes',
+    title: 'Variables & Data Types',
+    subtitle: 'var, let, const — aur sab data types',
+    difficulty: 'beginner',
+    estimatedMinutes: 35,
+    phase: 1,
+    topics: ['var/let/const', 'Primitives', 'typeof', 'Type coercion', 'null vs undefined'],
+    conceptCount: 6,
+  },
+  {
+    number: 3,
+    slug: 'operators-control-flow',
+    title: 'Operators & Control Flow',
+    subtitle: 'if/else, loops, switch — decisions lo',
+    difficulty: 'beginner',
+    estimatedMinutes: 40,
+    phase: 1,
+    topics: ['Arithmetic', 'Comparison', 'Logical', 'if/else', 'for/while', 'switch'],
+    conceptCount: 7,
+  },
+  {
+    number: 4,
+    slug: 'functions',
+    title: 'Functions — Reusable Code',
+    subtitle: 'Function declaration, expression, arrow, IIFE',
+    difficulty: 'beginner',
+    estimatedMinutes: 45,
+    phase: 1,
+    topics: ['Declaration', 'Expression', 'Arrow', 'Parameters', 'Return', 'IIFE', 'Higher-order'],
+    conceptCount: 8,
+  },
+  {
+    number: 5,
+    slug: 'arrays',
+    title: 'Arrays — Data Collections',
+    subtitle: 'Create, manipulate, aur transform arrays',
+    difficulty: 'beginner',
+    estimatedMinutes: 50,
+    phase: 1,
+    topics: ['Array methods', 'map', 'filter', 'reduce', 'forEach', 'find', 'spread'],
+    conceptCount: 9,
+  },
+  {
+    number: 6,
+    slug: 'objects',
+    title: 'Objects — Key-Value Pairs',
+    subtitle: 'Objects create karo, manipulate karo',
+    difficulty: 'beginner',
+    estimatedMinutes: 45,
+    phase: 1,
+    topics: ['Object literals', 'Methods', 'Destructuring', 'Spread', 'Optional chaining', 'Object methods'],
+    conceptCount: 8,
+  },
+  {
+    number: 7,
+    slug: 'strings-template-literals',
+    title: 'Strings & Template Literals',
+    subtitle: 'Text manipulation master class',
+    difficulty: 'beginner',
+    estimatedMinutes: 30,
+    phase: 1,
+    topics: ['String methods', 'Template literals', 'Regular expressions intro', 'String search/replace'],
+    conceptCount: 6,
+  },
+
+  // Phase 2: Core Concepts (Ch 8-15)
+  {
+    number: 8,
+    slug: 'scope-closures',
+    title: 'Scope & Closures',
+    subtitle: 'Variable visibility aur function memory',
+    difficulty: 'intermediate',
+    estimatedMinutes: 55,
+    phase: 2,
+    topics: ['Global scope', 'Function scope', 'Block scope', 'Lexical scope', 'Closures', 'Hoisting'],
+    conceptCount: 7,
+  },
+  {
+    number: 9,
+    slug: 'prototypes-classes',
+    title: 'Prototypes & Classes',
+    subtitle: 'OOP in JavaScript — prototype chain samjho',
+    difficulty: 'intermediate',
+    estimatedMinutes: 60,
+    phase: 2,
+    topics: ['Prototype chain', 'constructor functions', 'ES6 classes', 'extends', 'super', 'static methods'],
+    conceptCount: 8,
+  },
+  {
+    number: 10,
+    slug: 'async-js',
+    title: 'Asynchronous JavaScript',
+    subtitle: 'Callbacks, Promises, async/await — complete guide',
+    difficulty: 'intermediate',
+    estimatedMinutes: 75,
+    phase: 2,
+    topics: ['Event loop', 'Callbacks', 'Promises', 'async/await', 'Promise.all', 'Error handling'],
+    conceptCount: 9,
+    visualization: 'js-async',
+  },
+  {
+    number: 11,
+    slug: 'dom-manipulation',
+    title: 'DOM Manipulation',
+    subtitle: 'Browser ka HTML tree manipulate karo JS se',
+    difficulty: 'intermediate',
+    estimatedMinutes: 55,
+    phase: 2,
+    topics: ['DOM tree', 'querySelector', 'Event listeners', 'createElement', 'classList', 'innerHTML vs textContent'],
+    conceptCount: 8,
+  },
+  {
+    number: 12,
+    slug: 'es6-modern',
+    title: 'Modern JS (ES6+)',
+    subtitle: 'Destructuring, spread, modules, aur zyada',
+    difficulty: 'intermediate',
+    estimatedMinutes: 50,
+    phase: 2,
+    topics: ['Destructuring', 'Spread/Rest', 'Optional chaining', 'Nullish coalescing', 'Modules', 'WeakMap/Set'],
+    conceptCount: 8,
+  },
+  {
+    number: 13,
+    slug: 'error-handling-js',
+    title: 'Error Handling',
+    subtitle: 'try/catch, custom errors, debugging',
+    difficulty: 'intermediate',
+    estimatedMinutes: 40,
+    phase: 2,
+    topics: ['try/catch/finally', 'Error types', 'Custom errors', 'Error propagation', 'Debugging tips'],
+    conceptCount: 6,
+  },
+  {
+    number: 14,
+    slug: 'functional-programming',
+    title: 'Functional Programming',
+    subtitle: 'Pure functions, immutability, composition',
+    difficulty: 'intermediate',
+    estimatedMinutes: 55,
+    phase: 2,
+    topics: ['Pure functions', 'Immutability', 'Higher-order functions', 'Currying', 'Function composition', 'map/filter/reduce mastery'],
+    conceptCount: 7,
+  },
+  {
+    number: 15,
+    slug: 'js-patterns',
+    title: 'Design Patterns in JS',
+    subtitle: 'Singleton, Factory, Observer aur zyada',
+    difficulty: 'intermediate',
+    estimatedMinutes: 60,
+    phase: 2,
+    topics: ['Module pattern', 'Singleton', 'Factory', 'Observer/EventEmitter', 'Strategy', 'Decorator'],
+    conceptCount: 7,
+  },
+
+  // Phase 3: Advanced (Ch 16-20)
+  {
+    number: 16,
+    slug: 'typescript-basics',
+    title: 'TypeScript Basics',
+    subtitle: 'Static typing se bugs pehle pakdo',
+    difficulty: 'advanced',
+    estimatedMinutes: 65,
+    phase: 3,
+    topics: ['Types', 'Interfaces', 'Generics', 'Type narrowing', 'Utility types', 'tsconfig'],
+    conceptCount: 8,
+  },
+  {
+    number: 17,
+    slug: 'js-performance',
+    title: 'JS Performance',
+    subtitle: 'V8 optimizations, memory leaks, profiling',
+    difficulty: 'advanced',
+    estimatedMinutes: 55,
+    phase: 3,
+    topics: ['V8 JIT', 'Memory management', 'Garbage collection', 'Profiling', 'Web Workers', 'Performance API'],
+    conceptCount: 7,
+  },
+  {
+    number: 18,
+    slug: 'advanced-patterns',
+    title: 'Advanced JS Patterns',
+    subtitle: 'Iterators, generators, proxies, meta-programming',
+    difficulty: 'advanced',
+    estimatedMinutes: 65,
+    phase: 3,
+    topics: ['Iterators', 'Generators', 'Symbol', 'Proxy', 'Reflect', 'Meta-programming'],
+    conceptCount: 7,
+  },
+  {
+    number: 19,
+    slug: 'testing-js',
+    title: 'Testing JavaScript',
+    subtitle: 'Unit tests, integration, TDD approach',
+    difficulty: 'advanced',
+    estimatedMinutes: 55,
+    phase: 3,
+    topics: ['Jest', 'Unit testing', 'Mocking', 'Coverage', 'TDD', 'Testing async code'],
+    conceptCount: 7,
+  },
+  {
+    number: 20,
+    slug: 'js-capstone',
+    title: 'JS Capstone Project',
+    subtitle: 'Sab kuch ek project mein — build karo',
+    difficulty: 'advanced',
+    estimatedMinutes: 120,
+    phase: 3,
+    topics: ['Project planning', 'Modular design', 'Testing', 'Build tools', 'Deployment'],
+    conceptCount: 5,
+  },
+]
+
+export const jsPhases = [
+  {
+    number: 1 as const,
+    name: 'Foundations',
+    color: '#10B981',
+    chapters: jsChapters.filter((c) => c.phase === 1),
+  },
+  {
+    number: 2 as const,
+    name: 'Core Concepts',
+    color: '#F59E0B',
+    chapters: jsChapters.filter((c) => c.phase === 2),
+  },
+  {
+    number: 3 as const,
+    name: 'Advanced',
+    color: '#7C3AED',
+    chapters: jsChapters.filter((c) => c.phase === 3),
+  },
+]
+
+export const jsDifficultyConfig: Record<
+  Difficulty,
+  { label: string; color: string; bg: string; border: string }
+> = {
+  beginner: {
+    label: 'Beginner',
+    color: 'text-[#10B981]',
+    bg: 'bg-[rgba(16,185,129,0.12)]',
+    border: 'border-[rgba(16,185,129,0.3)]',
+  },
+  intermediate: {
+    label: 'Intermediate',
+    color: 'text-[#F59E0B]',
+    bg: 'bg-[rgba(245,158,11,0.12)]',
+    border: 'border-[rgba(245,158,11,0.3)]',
+  },
+  advanced: {
+    label: 'Advanced',
+    color: 'text-[#7C3AED]',
+    bg: 'bg-[rgba(124,58,237,0.12)]',
+    border: 'border-[rgba(124,58,237,0.3)]',
+  },
+}
