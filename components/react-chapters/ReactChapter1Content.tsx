@@ -181,6 +181,31 @@ export default function ReactChapter1Content() {
         </div>
       </div>
 
+      {/* React Overview Diagram */}
+      <div className="my-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">React — How It Works</p>
+        <div className="max-w-lg mx-auto space-y-2">
+          {[
+            { label: 'Your Components (JSX)', sublabel: 'function App() { return <div>...</div> }', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '⚛️' },
+            { label: 'Virtual DOM (JavaScript Object)', sublabel: 'React ka in-memory representation of UI', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🧠' },
+            { label: 'Reconciliation (Diffing Algorithm)', sublabel: 'Old VDOM vs New VDOM — kya change hua?', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '🔍' },
+            { label: 'Real DOM Update (Minimal)', sublabel: 'Sirf changed parts update karo — efficient!', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '✅' },
+          ].map((item, i, arr) => (
+            <div key={i}>
+              <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+                <span className="text-xl">{item.icon}</span>
+                <div className="flex-1">
+                  <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                  <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+                </div>
+              </div>
+              {i < arr.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-[#52525B] text-center mt-3">React library hai, framework nahi — UI layer handle karta hai, baaki choices tumhare</p>
+      </div>
+
       {/* ConceptCard 1: Problem React Solves */}
       <div id="problem-react-solves">
         <ConceptCard

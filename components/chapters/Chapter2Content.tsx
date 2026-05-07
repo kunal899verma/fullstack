@@ -358,6 +358,32 @@ export default function Chapter2Content() {
         </Link>
       </div>
 
+      {/* ── Event Loop Overview Diagram ─────────────────────────────────────── */}
+      <div className="my-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Event Loop — Chapter Visual Overview</p>
+        <div className="max-w-lg mx-auto space-y-2">
+          {[
+            { label: 'Call Stack', sublabel: 'Currently executing code — LIFO, synchronous only', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📚' },
+            { label: 'Web APIs / Node APIs', sublabel: 'setTimeout, fs.readFile, fetch — async operations yahan', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🌐' },
+            { label: 'Microtask Queue', sublabel: 'Promise.then, queueMicrotask — HIGH priority', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '⚡' },
+            { label: 'Macrotask Queue', sublabel: 'setTimeout, setInterval callbacks — lower priority', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '⏱️' },
+            { label: 'Event Loop — Gatekeeper', sublabel: 'Stack empty? → Microtasks first → then Macrotask', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '🔄' },
+          ].map((item, i, arr) => (
+            <div key={i}>
+              <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+                <span className="text-xl">{item.icon}</span>
+                <div className="flex-1">
+                  <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                  <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+                </div>
+              </div>
+              {i < arr.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-[#52525B] text-center mt-3">Order: Sync → nextTick → Microtasks (Promises) → Macrotasks (setTimeout)</p>
+      </div>
+
       {/* ── ConceptCard 1: Call Stack ───────────────────────────────────────── */}
       <div id="call-stack">
         <ConceptCard

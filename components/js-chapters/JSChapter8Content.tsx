@@ -55,6 +55,36 @@ const quizQuestions = [
   },
 ]
 
+// ── Scope & Closure Diagram ────────────────────────────────────────────────────
+
+function ScopeClosureDiagram() {
+  const scopes = [
+    { label: 'Global Scope', sublabel: 'var a = 1 — everywhere accessible', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🌍', indent: 0 },
+    { label: 'Function Scope', sublabel: 'function fn() { var x } — only inside fn', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '📦', indent: 1 },
+    { label: 'Block Scope', sublabel: 'if/for {} — let/const ke saath', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🔒', indent: 2 },
+    { label: 'Closure', sublabel: 'Inner function → outer scope yaad rakhta hai', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🧠', indent: 1 },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Scope Chain & Closure — Mental Model</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {scopes.map((s, i) => (
+          <div key={i} style={{ paddingLeft: `${s.indent * 20}px` }}>
+            <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: s.bg, border: `1px solid ${s.border}` }}>
+              <span className="text-xl">{s.icon}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{ color: s.color }}>{s.label}</p>
+                <p className="text-xs text-[#71717A] mt-0.5">{s.sublabel}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-[10px] text-[#52525B] text-center mt-3">Scope Chain: Inner → Outer → Global. Closure = function + uski lexical environment</p>
+    </div>
+  )
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function JSChapter8Content() {
@@ -84,6 +114,8 @@ export default function JSChapter8Content() {
           </p>
         </div>
       </div>
+
+      <ScopeClosureDiagram />
 
       {/* Card 1: Scope Types */}
       <div id="scope-types">

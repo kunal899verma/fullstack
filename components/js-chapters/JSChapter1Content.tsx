@@ -201,6 +201,31 @@ export default function JSChapter1Content() {
         </p>
       </div>
 
+      {/* JS Overview Diagram */}
+      <div className="my-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">JavaScript — How It Works</p>
+        <div className="max-w-lg mx-auto space-y-2">
+          {[
+            { label: 'Your JS Code (.js / .ts)', sublabel: 'Tumhara source code — human readable', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '📝' },
+            { label: 'V8 Engine — Parser → AST → Bytecode → JIT', sublabel: 'Chrome + Node.js dono mein — code machine code mein convert hota hai', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '⚙️' },
+            { label: 'Execution Context (Memory + Code Phase)', sublabel: 'Har function call ke liye banta hai — variables + code run karta hai', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '📦' },
+            { label: 'Call Stack + Event Loop', sublabel: 'Single thread — lekin async I/O se concurrent feel deta hai', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🔄' },
+          ].map((item, i, arr) => (
+            <div key={i}>
+              <div className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: item.bg, border: `1px solid ${item.border}` }}>
+                <span className="text-xl">{item.icon}</span>
+                <div className="flex-1">
+                  <p className="font-bold text-sm" style={{ color: item.color }}>{item.label}</p>
+                  <p className="text-xs text-[#71717A] mt-0.5">{item.sublabel}</p>
+                </div>
+              </div>
+              {i < arr.length - 1 && <div className="flex justify-center py-1"><span className="text-[#71717A] text-xs">↓</span></div>}
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-[#52525B] text-center mt-3">Sabse pehle samjho: JS single-threaded hai — libuv aur Event Loop milke concurrency dete hain</p>
+      </div>
+
       {/* ConceptCard 1: History */}
       <div id="js-history">
         <ConceptCard

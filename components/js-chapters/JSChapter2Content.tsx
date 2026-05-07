@@ -136,6 +136,42 @@ const chapterQuiz: QuizQuestion[] = [
   },
 ]
 
+// ── Type System Diagram ───────────────────────────────────────────────────────
+
+function TypeSystemDiagram() {
+  const cols = [
+    {
+      title: 'var', subtitle: 'Avoid — legacy', color: '#EF4444', bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.3)',
+      traits: ['Function-scoped', 'Hoisted (undefined)', 'Re-declarable ❌', 'Global leak risk'],
+    },
+    {
+      title: 'let', subtitle: 'Reassignable', color: '#F59E0B', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.3)',
+      traits: ['Block-scoped', 'TDZ (not hoisted)', 'No re-declaration', 'Reassign: ✅'],
+    },
+    {
+      title: 'const', subtitle: 'Default choice', color: '#10B981', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.3)',
+      traits: ['Block-scoped', 'TDZ (not hoisted)', 'No re-declaration', 'Reassign: ❌'],
+    },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">var vs let vs const — Scope & Hoisting Comparison</p>
+      <div className="grid grid-cols-3 gap-3 max-w-lg mx-auto">
+        {cols.map((col, i) => (
+          <div key={i} className="rounded-xl p-4" style={{ background: col.bg, border: `1px solid ${col.border}` }}>
+            <p className="font-mono font-bold text-base mb-1" style={{ color: col.color }}>{col.title}</p>
+            <p className="text-[10px] text-[#71717A] mb-3">{col.subtitle}</p>
+            {col.traits.map((t, j) => (
+              <p key={j} className="text-[10px] text-[#A1A1AA] mb-1">• {t}</p>
+            ))}
+          </div>
+        ))}
+      </div>
+      <p className="text-[10px] text-[#52525B] text-center mt-3">Rule: const by default → let when reassignment needed → var kabhi nahi</p>
+    </div>
+  )
+}
+
 // ── Main Export ───────────────────────────────────────────────────────────────
 
 export default function JSChapter2Content() {
@@ -156,6 +192,8 @@ export default function JSChapter2Content() {
           Ruko ek second — JavaScript mein <strong className="text-[#F5F5F7]">var, let, const</strong> teen keywords hain ek hi kaam ke liye? Haan! Aur typeof null ka answer sunoge toh hairan ho jaoge. Memory Creation Phase mein JavaScript pehle hi sab variables ko jaanta hai — yahi hoisting ka raaz hai. Chalte hain under the hood.
         </p>
       </div>
+
+      <TypeSystemDiagram />
 
       {/* Akshay-style Insight box */}
       <div

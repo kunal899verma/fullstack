@@ -53,6 +53,33 @@ const listsQuiz: QuizQuestion[] = [
   },
 ]
 
+function ListRenderingDiagram() {
+  const patterns = [
+    { label: 'array.map(item => <JSX />)', sublabel: 'List render karna — most common pattern', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '📋' },
+    { label: 'key={item.id}', sublabel: 'Unique stable key — React reconciliation ke liye critical', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🔑' },
+    { label: '{condition && <JSX />}', sublabel: 'Short-circuit: condition true toh render', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '✅' },
+    { label: '{condition ? <A /> : <B />}', sublabel: 'Ternary: either/or render', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🔀' },
+    { label: '{condition ? <JSX /> : null}', sublabel: 'null = kuch render nahi hoga', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '🚫' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Lists & Conditional Rendering Patterns</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {patterns.map((p, i) => (
+          <div key={i} className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: p.bg, border: `1px solid ${p.border}` }}>
+            <span className="text-xl">{p.icon}</span>
+            <div className="flex-1">
+              <p className="font-bold text-sm font-mono" style={{ color: p.color }}>{p.label}</p>
+              <p className="text-xs text-[#71717A] mt-0.5">{p.sublabel}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-[10px] text-[#52525B] text-center mt-3">Key rule: index as key NEVER use karo — use stable unique IDs</p>
+    </div>
+  )
+}
+
 export default function ReactChapter6Content() {
   return (
     <div className="space-y-8">
@@ -73,6 +100,8 @@ export default function ReactChapter6Content() {
           Is chapter mein .map() patterns, key prop ke real gotchas, conditional rendering ke saare patterns, aur complex nested data structures cover karenge.
         </p>
       </div>
+
+      <ListRenderingDiagram />
 
       <div id="rendering-lists">
         <ConceptCard

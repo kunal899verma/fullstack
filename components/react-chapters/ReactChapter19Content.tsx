@@ -153,6 +153,8 @@ export default function ReactChapter19Content() {
         </p>
       </div>
 
+      <ReduxFlowDiagram />
+
       <div id="why-redux">
         <ConceptCard
           title="Kyun Redux? — Zustand vs Redux Decision"
@@ -198,8 +200,6 @@ src/
           proTip="Decision rule easy hai — ek component use karta hai? useState. Few components share? Context ya Zustand. Complex async flows, large team, time-travel debugging zaroori? Redux Toolkit. Ye rule 95% decisions cover karta hai. Baaki 5% mein? Document karo kyun normal rule fit nahi hua — future you ko thanks milega."
         />
       </div>
-
-      <ReduxFlowDiagram />
 
       <div id="store-setup">
         <ConceptCard

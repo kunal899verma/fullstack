@@ -53,6 +53,33 @@ const fpQuiz: QuizQuestion[] = [
   },
 ]
 
+function FunctionalProgrammingDiagram() {
+  const concepts = [
+    { label: 'Pure Functions', sublabel: 'Same input → same output. No side effects.', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '💎' },
+    { label: 'Immutability', sublabel: 'Data change nahi karo — naya data banao.', color: '#06B6D4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', icon: '🔒' },
+    { label: 'Higher-Order Functions', sublabel: 'map/filter/reduce — functions as arguments.', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '🔧' },
+    { label: 'Function Composition', sublabel: 'f(g(x)) — chhote functions combine karo.', color: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.3)', icon: '🔗' },
+    { label: 'Currying', sublabel: 'add(2)(3) — ek argument at a time.', color: '#EC4899', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)', icon: '🍛' },
+  ]
+  return (
+    <div className="my-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 text-center">Functional Programming — Core Concepts</p>
+      <div className="max-w-lg mx-auto space-y-2">
+        {concepts.map((c, i) => (
+          <div key={i} className="rounded-xl px-5 py-3.5 flex items-center gap-4" style={{ background: c.bg, border: `1px solid ${c.border}` }}>
+            <span className="text-xl">{c.icon}</span>
+            <div className="flex-1">
+              <p className="font-bold text-sm" style={{ color: c.color }}>{c.label}</p>
+              <p className="text-xs text-[#71717A] mt-0.5">{c.sublabel}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-[10px] text-[#52525B] text-center mt-3">FP = Predictable + Testable + Composable code — React, Redux isi philosophy pe based hain</p>
+    </div>
+  )
+}
+
 export default function JSChapter14Content() {
   return (
     <div className="space-y-8">
@@ -73,6 +100,8 @@ export default function JSChapter14Content() {
           Sawaal: React kyun FP principles follow karta hai? Jawab: kyunki pure functions predictable hain — same props → same output. Immutability se change detection easy hai — reference compare karo. Redux reducers pure functions hain — isliye time-travel debugging possible hai! FP sirf theoretical philosophy nahi — production mein rozan use hoti hai.
         </p>
       </div>
+
+      <FunctionalProgrammingDiagram />
 
       <div id="pure-functions">
         <ConceptCard
