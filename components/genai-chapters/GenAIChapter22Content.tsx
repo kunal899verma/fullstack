@@ -153,7 +153,7 @@ export default function GenAIChapter22Content() {
           Future of AI & What&apos;s Next — Aage Ka Raasta 🚀
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          22 chapters complete kiye — ab AI mein current rehna aur career build karna seekho. Trends, papers, communities, aur building in public — sab cover karte hain.
+          22 chapters complete kiye — foundations se production patterns tak. Ab aage ka raasta kya hai? AI field mein sikhna kabhi nahi rukta — aaj ka state-of-the-art kal ka baseline ho jaata hai. Trends track karo, sahi papers pado, community mein active raho, building in public karo, career strategically build karo. Ye final chapter tumhara long-term learning roadmap hai.
         </p>
         <div
           className="rounded-xl p-4"
@@ -163,7 +163,7 @@ export default function GenAIChapter22Content() {
           }}
         >
           <p className="text-[#6EE7B7] text-sm italic">
-            &quot;AI journey kabhi khatam nahi hoti — yahan sikhna never stops. Aaj ka state-of-the-art kal ka baseline hai.&quot;
+            &quot;AI mein sabse dangerous cheez ye hai ki sikhna band karo. Jo log current rehenge, unhe opportunities milti rahegi — jo ruk jaayenge, wo peeche reh jaayenge.&quot;
           </p>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default function GenAIChapter22Content() {
           title="AI Trends 2025 — Aaj Ka Landscape"
           emoji="📈"
           difficulty="intermediate"
-          whatIsIt="2025 mein AI rapidly evolve ho raha hai. Major trends: (1) Agentic AI — autonomous task completion, (2) Reasoning models — o1/o3-style extended thinking, (3) Multimodal native — text+image+audio seamlessly, (4) Smaller specialized models — frontier quality in compact size, (5) Edge AI — on-device inference. Developer impact: apps rethink karne padenge."
+          whatIsIt="2025 mein AI ka pace insane hai — ek saal pehle jo impossible lagta tha wo ab standard hai. Major trends: (1) Agentic AI — models jo sirf answer nahi dete, kaam karte hain. (2) Reasoning models — o1/o3-style extended thinking, complex problems. (3) Multimodal native — text, image, audio ek model mein. (4) Smaller specialized models — frontier quality compact size mein. (5) Edge AI — on-device inference. Developer impact: apps ki architecture fundamentally rethink karni padegi."
           whenToUse={[
             'Agents: tasks jo multiple steps aur tools chahte hain — research, coding, data processing.',
             'Reasoning models: math, logic, complex problem-solving — extended thinking enable karo.',
@@ -182,7 +182,7 @@ export default function GenAIChapter22Content() {
             'Smaller models: privacy, latency, cost — on-premise ya mobile.',
             'Edge AI: mobile apps, IoT — server-independent inference.',
           ]}
-          whyUseIt="Trend awareness: kal jo possible nahi tha aaj possible hai. Ek saal pehle: 100K context window naya tha, ab 1M standard hai. Agents pehle unreliable the, ab production-ready. Stay current raho nahi toh competitors advantage lete hain. Hamesha sochte raho: 'Ab ye possible hai, apni app mein kaise use karein?'"
+          whyUseIt="Trend awareness sirf curiosity ki baat nahi — competitive advantage hai. Ek saal pehle 100K context window naya tha, ab 1M standard hai. Agents pehle unreliable the, ab production mein hain. Jo developer pehle adopt karta hai wo 6 months ahead hota hai. Hamesha ek sawaal socho: 'Ye naya capability hai — apne product mein kaise use kar sakta hoon?' Ye mindset hi differentiator hai."
           howToUse={{
             filename: 'ai-trends-2025.ts',
             language: 'typescript',
@@ -234,9 +234,9 @@ const learningStrategy = {
 };
 
 console.log('Stay current plan:', learningStrategy);`,
-            explanation: '2025 key trends: agents, reasoning, small models, multimodal, long context. Har trend ko developer perspective se dekhо: kya new products possible hote hain? Kya existing products improve ho sakte hain? Concrete experiment: har trend ke liye ek small project try karo. Learning by doing > reading about it.',
+            explanation: 'trends2025 object mein har trend ke saath developerImpact aur howToStart hai — practical starting points. Ye information sirf jaanna kaafi nahi — experiment karo. Agents: Claude tool calling se start karo. Reasoning: Claude extended thinking enable karo aur complex problem solve karo. Small models: Ollama se local test karo. learningStrategy: daily, weekly, monthly, quarterly cadence — ye sustainable hai.',
           }}
-          realWorldScenario="2024 early: Claude tool calling launch hua. Developer jo quickly agents build kiya: 6 months ahead of competition. 2024 late: Claude computer use launch. Developer jo immediately explored: new product category. First mover advantage real hai AI mein — trends track karna investment hai, distraction nahi."
+          realWorldScenario="2024 early: Claude tool calling launch hua. Ek developer ne us hafte agent banaya — 6 months baad competitors wahi cheez build kar rahe the. 2024 late: Claude computer use launch hua. Developers jo immediately explore kiya: unhe new product category mili. First mover advantage AI mein real hai — trends track karna distraction nahi, investment hai. Ye stories har major launch ke baad repeat hoti hain."
           commonMistakes={[
             {
               mistake: 'Har naya AI tool pe jump karna bina evaluation ke',
@@ -244,7 +244,7 @@ console.log('Stay current plan:', learningStrategy);`,
               fix: 'Filter: kya ye trend apne current product ya use case pe relevant hai? Nahi? Note karo, later explore karo. Haan? Small experiment karo pehle. Prove it works for your case, then invest.',
             },
           ]}
-          proTip="Anthropic aur OpenAI ke newsletters subscribe karo — directly inbox mein important releases aate hain bina social media noise ke. Discord servers: Anthropic Developer Discord, OpenAI Developer Forum — real practitioners se direct insights milte hain."
+          proTip="Social media noise se bachna ho toh: Anthropic aur OpenAI newsletters directly subscribe karo — important releases inbox mein aate hain, scroll karne ki zarurat nahi. Discord servers join karo: Anthropic Developer Discord pe Anthropic engineers real time pe answer dete hain. Signal-to-noise ratio maintain karo — quality sources, limited quantity."
         />
       </div>
 
@@ -254,14 +254,14 @@ console.log('Stay current plan:', learningStrategy);`,
           title="Papers to Read — AI Ka Foundation"
           emoji="📄"
           difficulty="intermediate"
-          whatIsIt="AI mein key papers samajhna context deta hai — kyun cheezein aise hain, kahan se aaye. Must-read: 'Attention Is All You Need' (2017), 'Language Models are Few-Shot Learners' (GPT-3), 'Training language models to follow instructions with human feedback' (InstructGPT/RLHF), 'Constitutional AI' (Anthropic), 'RLHF from Human Feedback' — ye sab ChatGPT aur Claude ki foundation hain."
+          whatIsIt="AI mein key papers padhna context deta hai — cheezein kaise kaam karti hain, limitations kyun hain, future kyun woh direction mein ja raha hai. Must-read list: 'Attention Is All You Need' (2017) — sab modern LLMs isi architecture pe. GPT-3 paper — scale kyun matter karta hai. InstructGPT — RLHF se helpful AI kaise. Constitutional AI (Anthropic) — Claude ki safety foundation. RAG paper — retrieval augmentation ka origin. Ye papers samjho, aur sab kuch zyada clearly click karega."
           whenToUse={[
             'Concept samajhna hai depth mein — papers best source hain.',
             'Interview preparation — research papers concepts samjhao.',
             'New field explore karna hai — seminal papers fast onboarding.',
             'Building on cutting edge — latest arxiv papers.',
           ]}
-          whyUseIt="Papers padhne se: (1) Kyon kuch kaam karta hai samjho — not just what, (2) Limitations samjho — kab use nahi karna, (3) Future direction predict kar sako, (4) Technical conversations mein credibility. Full paper parhna zaroori nahi — abstract, intro, conclusion usually enough hai concepts ke liye."
+          whyUseIt="Papers padhna kyon zaruri hai? (1) 'What' se aage 'Why' samjho — limitations bhi clear hoti hain. (2) Future direction predict kar sako — papers trends se pehle aate hain. (3) Technical discussions mein credibility — paper reference kar sako. (4) Interviews mein differentiate karo — 'Transformer architecture Vaswani et al. 2017 mein introduce hua tha' — ye candidate alag dikha. Full paper zaruri nahi — abstract, intro, conclusion usually kaafi hai."
           howToUse={{
             filename: 'papers-to-read.ts',
             language: 'typescript',
@@ -340,9 +340,9 @@ const readingStrategy = {
 };
 
 // ai.googleblog.com, anthropic.com/research, openai.com/blog — stay updated`,
-            explanation: 'Paper reading strategy: abstract → intro → figures → conclusion. Ye 80% kafi hai most papers ke liye. Full math section sirf implement karna ho tab. Papers With Code: har paper ke saath implementation link. Semantic Scholar: citation network — related papers dhundho.',
+            explanation: 'readingStrategy efficient hai: abstract (kya hai?) → intro (context) → figures (results visually) → conclusion (limitations, future work). Ye 4 sections 80% value dete hain. Full method section sirf tab pado jab implement karna ho. essentialPapers list mein readTime estimate hai har paper ke liye — realistic expectation set karo. Papers With Code: har paper ke saath implementation link — code dekh ke samajhna easy hota hai.',
           }}
-          realWorldScenario="Senior engineer interview at AI startup: interviewer ne ReAct paper reference kiya. Candidate jo paper padhki thi: connected ReAct to agent implementation discussion, went deeper. Others jo sirf tool jaante the: surface level answers. Offer: candidate jo paper jaanta tha. Papers credibility build karte hain interviews mein."
+          realWorldScenario="AI startup interview: interviewer ne ReAct paper reference kiya. Candidate A paper jaanta tha — connected ReAct to practical agent implementation, explained limitations, discussed real use case. Candidate B sirf 'haan, agents jaanta hoon' level tha. Offer: Candidate A. Papers depth create karte hain jo surface knowledge nahi de sakti. 6 papers, 20 min each — ye investment career mein dikh ta hai."
           commonMistakes={[
             {
               mistake: 'Every paper fully read karne ki koshish karna',
@@ -350,7 +350,7 @@ const readingStrategy = {
               fix: 'Abstract + conclusion strategy — 20 min per paper, 10 papers = solid foundation. Math section sirf jab implement karna ho. Blog posts aur YouTube explanations papers se pehle karo.',
             },
           ]}
-          proTip="Andrej Karpathy ka 'Neural Networks: Zero to Hero' YouTube series excellent hai — ex-OpenAI director, transformers from scratch build karta hai code mein. Ye series padhne ke baad attention mechanism genuinely samajh aata hai. 'Let's build GPT from scratch' — one of the best AI education resources available."
+          proTip="Andrej Karpathy ka 'Neural Networks: Zero to Hero' YouTube series — ex-OpenAI director, transformers literally scratch se code mein build karte hain. Sikhne ke baad attention mechanism genuinely samajh aata hai, surface level nahi. 'Let's build GPT from scratch' video specifically — ek din invest karo, concepts lifetime ke liye clear ho jaate hain. Best free AI education resource available hai ye."
         />
       </div>
 
@@ -360,7 +360,7 @@ const readingStrategy = {
           title="Communities to Join — Network Build Karo"
           emoji="🌐"
           difficulty="intermediate"
-          whatIsIt="AI community mein active rehna learning accelerate karta hai — questions ka fast answer, latest news first, collaborators milte hain, opportunities aate hain. Key communities: Hugging Face Hub + Discord, AI Twitter/X, local AI meetups, Anthropic/OpenAI developer forums, Latent Space podcast community."
+          whatIsIt="Community ek multiplier hai — alone sikhne se 5-10x faster learning hoti hai sahi community mein. Questions fast answer milte hain. Latest news pehle milti hai. Collaborators milte hain. Opportunities aate hain. Key communities: Hugging Face Discord (largest ML community), Anthropic Developer Discord (direct team access), Latent Space Discord (high signal practitioners), AI Twitter/X (researchers aur builders), local AI meetups."
           whenToUse={[
             'Specific technical question: Stack Overflow, Hugging Face forums.',
             'Latest news: AI Twitter/X, newsletters.',
@@ -368,7 +368,7 @@ const readingStrategy = {
             'Career opportunities: LinkedIn AI groups, Twitter.',
             'Competitions: Kaggle, AI hackathons.',
           ]}
-          whyUseIt="Alone learning vs community learning: community mein ek week mein ye seekhoge jo alone 3 months mein seekhte. Real practitioners share real insights — not sanitized textbook knowledge. 'Maine ye try kiya aur fail hua kyunki...' — ye information courses mein nahi milti. Network effect: ek introduction se job, project, co-founder."
+          whyUseIt="Alone learning vs community learning: community mein ek hafte mein wo seekhoge jo alone 3 mahine mein seekhte. Real practitioners real insights share karte hain — textbook knowledge nahi, production mein kya kaam kiya/nahi kiya. 'Maine ye try kiya, fail hua kyunki...' — ye information kisi course mein nahi milti. Network effect: ek Discord introduction se job, project, ya co-founder mil sakta hai. Ye real hai."
           howToUse={{
             filename: 'communities-guide.ts',
             language: 'typescript',
@@ -440,9 +440,9 @@ const communities = {
 // Week 2: Introduce yourself in Discord. Share one thing you built.
 // Month 1: Attend one local meetup or online event.
 // Ongoing: Share learnings publicly — 1 post per week minimum.`,
-            explanation: 'Community engagement: lurk first → ask questions → share your learnings. Quality > quantity. 2-3 active communities better than 10 inactive memberships. Twitter: follow researchers + practitioners, not just news accounts. Discord: introduce yourself, participate in discussions — connections happen through visibility.',
+            explanation: 'Engagement strategy: pehle lurk karo (observe what people discuss), phir questions poocho (specific, thoughtful questions), phir share karo apni learnings. Quality > quantity: 2-3 active communities better than 10 passive ones. Twitter/X: researchers + practitioners follow karo — @karpathy, @simonw, @swyx. Discord: introduce yourself — connections visibility se hote hain. Action plan code mein dekho: Week 1, Week 2, Month 1 steps.',
           }}
-          realWorldScenario="Developer ne Anthropic Discord mein join kiya, Claude API ke baare mein detailed question poocha. Anthropic engineer personally answer diya, additional context share kiya. Three months later: same developer ne Anthropic mein interview apply kiya — hiring manager Discord conversation dekh chuka tha. Community presence matters."
+          realWorldScenario="Developer ne Anthropic Discord mein join kiya, Claude API ke baare mein detailed thoughtful question poocha. Anthropic engineer ne personally answer diya, extra context share kiya. 3 months baad: same developer ne Anthropic job apply kiya — hiring manager Discord history dekh chuka tha, conversation yaad tha. Community presence compounds. Ek genuine interaction ne career connection banaya. Ye accidental nahi tha — visibility ka result tha."
           commonMistakes={[
             {
               mistake: 'Community mein sirf consume karna — never contribute',
@@ -450,7 +450,7 @@ const communities = {
               fix: 'Give before you take: answer questions (even basic ones), share learnings, celebrate others\' work. Reciprocity community mein natural hai — contributors attract contributors.',
             },
           ]}
-          proTip="Swyx (swyx.io) ka 'Learn in Public' philosophy AI community ke liye perfect hai — jo seekh raho wo publicly share karo, bhale hi basic lage. Ye seekhne wale log blog posts likhte hain, tweets karte hain, questions poochte hain publicly. Result: unexpected connections, opportunities, aur better retention of knowledge."
+          proTip="Swyx ka 'Learn in Public' philosophy: jo seekh raho wo publicly share karo — bhale hi basic lage. Blog post likho, tweet karo, Discord mein question poocho — sab public. Result: unexpected connections, opportunities, aur knowledge retention better hoti hai (teaching solidifies learning). Shuru karo 'maine aaj ye seekha' se — audience baad mein aayegi."
         />
       </div>
 
@@ -460,14 +460,14 @@ const communities = {
           title="Career in AI — Paths aur Opportunities"
           emoji="💼"
           difficulty="intermediate"
-          whatIsIt="AI mein multiple career paths hain — koi bhi background se possible. ML Engineer: models train karo, research (math-heavy). AI Product Engineer: APIs se features build karo (accessible to Node.js devs). AI Prompt Engineer: prompting, evaluation (communication-heavy). AI Researcher: academia/big tech (PhD often needed). Best for Node.js devs: AI Product Engineer."
+          whatIsIt="AI mein career paths alag hain — aur koi bhi background se possible hai. ML Engineer: models train karo, architectures design karo, research karo — math heavy, PyTorch world. AI Product Engineer: LLM APIs se features build karo, user-facing products ship karo — software engineering skills focus. AI Prompt Engineer: prompting, evaluation — communication heavy. AI Researcher: academia ya big tech — PhD often needed. Node.js developers ke liye natural path: AI Product Engineer. Ye chapter wahi cover karta hai."
           whenToUse={[
             'AI Product Engineer: existing software + AI features add karna.',
             'ML Engineer: new model architectures, training at scale.',
             'Prompt Engineer: large-scale prompt optimization, evaluation.',
             'AI Entrepreneur: AI-powered startup build karna.',
           ]}
-          whyUseIt="AI jobs: highest demand + lowest supply = best salaries. AI Product Engineer at San Francisco startup: $150K-250K+ (2025). India mein bhi: Bengaluru AI startups: 30-80 LPA for experienced. Skill gap massive hai — most companies AI features banana chahte hain, log kam hain. Timing: best time to skill-up hai abhi."
+          whyUseIt="Supply-demand gap: companies AI features chahti hain, skilled developers kam hain. AI Product Engineer San Francisco startup: $150K-250K+ (2025). India mein: Bengaluru AI startups 30-80 LPA experienced ke liye. Timing: abhi market peak pe hai — pehle se zyada demand, zyada supply nahi. Node.js developers ke liye: existing skills directly transferable hain. Sirf AI layer add karo, koi naya foundation nahi seekhna."
           howToUse={{
             filename: 'ai-career-paths.ts',
             language: 'typescript',
@@ -532,9 +532,9 @@ const careerPaths = {
 };
 
 console.log('Best path for Node.js devs:', careerPaths.aiProductEngineer.bestFor);`,
-            explanation: 'AI Product Engineer: NodeMaster graduates ke liye natural path. Node.js skills directly transferable. Additional: LLM APIs, RAG, deployment. Portfolio: 3 shipped AI projects > 10 tutorial courses. Apply to AI-first startups (easier entry) → experience → big tech ya found own startup.',
+            explanation: 'careerPaths object mein do paths detail mein hain: aiProductEngineer aur mlEngineer. Key difference: math requirement (minimal vs high), timeToEntryLevel (3-6 months vs 1-2 years). aiProductEngineerPath: 4-phase 12-month roadmap — GenAI track complete (done!), 3 projects build karo, deploy karo, portfolio banao, apply karo. portfolioProjects mein 3 specific ideas hain — ye actually build karo.',
           }}
-          realWorldScenario="NodeMaster student Rohan: Node.js developer 3 years experience. GenAI track complete kiya. 3 projects build kiye — RAG document system, AI code reviewer, multi-agent research tool. GitHub publicly available. 3 months baad: startup se offer, 45 LPA (from 18 LPA). Projects portfolio > resume words. AI Product Engineer path works."
+          realWorldScenario="NodeMaster student Rohan: 3 saal Node.js developer. GenAI track complete kiya. 3 projects build kiye aur ship kiye — RAG document system, AI code reviewer, multi-agent research tool. Sab GitHub pe public. 3 months baad: AI startup se offer — 45 LPA (18 se). Kya change hua? Resume mein words nahi — shipped projects. Interviewer ne GitHub dekha, real code dekha, problems samji. AI Product Engineer path works — ye proof hai."
           commonMistakes={[
             {
               mistake: 'Jobs apply karne se pehle ek saal aur sikhne ki koshish karna',
@@ -542,7 +542,7 @@ console.log('Best path for Node.js devs:', careerPaths.aiProductEngineer.bestFor
               fix: 'Ship karo pehle. 2-3 AI projects deployed? Apply karo. Real feedback se zyada seekhoge interviews aur jobs mein courses se. Action zyada important hai preparation se.',
             },
           ]}
-          proTip="AI-specific job boards: ai-jobs.net, ml-jobs.co, Anthropic careers, OpenAI careers. Startup job boards: Hacker News Who is Hiring (monthly thread), Y Combinator jobs, Wellfound (AngelList). LinkedIn pe: AI Engineer, AI Product Engineer search karo — filter by company size (startups = easier entry)."
+          proTip="Job boards: ai-jobs.net, Anthropic careers, OpenAI careers. Startups ke liye: Hacker News 'Who is Hiring' monthly thread (goldmine hai), Y Combinator jobs, Wellfound. LinkedIn: 'AI Engineer' ya 'AI Product Engineer' search karo, company size se filter karo — startups se shuru karo, entry easier hai. Pehla AI job startups se lo, experience build karo, phir big tech ya apna startup."
         />
       </div>
 
@@ -552,7 +552,7 @@ console.log('Best path for Node.js devs:', careerPaths.aiProductEngineer.bestFor
           title="Building in Public — Share Karo, Network Banao"
           emoji="🌟"
           difficulty="intermediate"
-          whatIsIt="Building in public: apni AI project journey publicly share karna — progress, learnings, failures, insights. Twitter/X, LinkedIn, blog, YouTube — koi bhi medium. Goal: authentic community build karna, feedback pana, opportunities create karna. Not: perfect results show karna — journey share karna."
+          whatIsIt="Building in public: apni journey publicly share karna — progress, learnings, failures, insights. Perfect results show karna nahi hai goal — journey share karna hai. Medium: Twitter/X, LinkedIn, blog, YouTube — koi bhi. Goal: authentic community build karo, feedback pao, opportunities create karo. Ye strategy compound karti hai — har post audience grow karta hai, audience opportunities laati hai."
           whenToUse={[
             'Project start karo → announce karo publicly.',
             'Interesting learning aaya → tweet karo.',
@@ -560,7 +560,7 @@ console.log('Best path for Node.js devs:', careerPaths.aiProductEngineer.bestFor
             'Failure aayi → share karo honestly (most valuable content!).',
             'Milestone complete hua → celebrate publicly.',
           ]}
-          whyUseIt="Building in public compound karta hai — har post alag audience tak pahunchti hai, network grows, opportunities compound. Year 1: koi dekh nahi raha. Year 2: 1000 followers. Year 3: opportunities seedha aane lagte hain. Swyx, Pieter Levels, Sahil Lavingia — sab building in public se built empires. Process replicable hai."
+          whyUseIt="Building in public compound karta hai — slow at first, then exponential. Year 1: koi nahi dekh raha (normal hai). Year 2: 1000 followers, recognition start. Year 3: opportunities seedha aane lagte hain. Swyx, Pieter Levels, Sahil Lavingia — sab ne isi path se empires banaye. Process replicable hai — lekin patience chahiye. Consistent posting > viral moments."
           howToUse={{
             filename: 'building-in-public.ts',
             language: 'typescript',
@@ -633,9 +633,9 @@ const notableBuilders = [
 ];
 
 console.log('Start today:', buildingInPublicGuide.firstPost);`,
-            explanation: 'Building in public formula: (1) Start now — even basic learnings valuable, (2) Consistency > perfection, (3) Failures share karo — most relatable content, (4) Tag relevant people — community notice karta hai, (5) Give back — answer others\' questions. 6 months consistently: noticeable community building.',
+            explanation: 'contentIdeas dekho — varied content mix: technical learnings, project updates, failed experiments, opinion pieces. Sab valuable hai. weeklyCommitment: minimum 1 post/week — sustainable pace chose karo. firstPost template ready hai — copy karo, customize karo, post karo aaj. trackThese metrics monthly check karo — growth visibility deta hai aur motivation maintain karta hai. Consistency > virality.',
           }}
-          realWorldScenario="Priya: backend developer, NodeMaster complete kiya. Started building in public — weekly tweets about AI learnings. Month 3: 500 followers. Month 6: 2000 followers, 2 consulting inquiries. Month 9: AI newsletter 500 subscribers, CTO at startup DM: 'Maine tumhara work follow kiya hai, interested in joining?' Year 1: Own AI consulting practice. Consistency compounds."
+          realWorldScenario="Priya: backend developer, NodeMaster complete kiya. Building in public start kiya — weekly AI learnings tweets. Month 3: 500 followers. Month 6: 2000 followers, 2 consulting inquiries. Month 9: AI newsletter 500 subscribers. CTO DM: 'Maine tumhara kaam 6 months se follow kiya hai, join karna chahoge?' Year 1: own AI consulting practice. Consistency compounded. Sirf posts nahi, visibility ne career create kiya."
           commonMistakes={[
             {
               mistake: 'Wait karna jab tak "perfect" project nahi bana',
@@ -643,7 +643,7 @@ console.log('Start today:', buildingInPublicGuide.firstPost);`,
               fix: 'Ship imperfect, learn fast. "Working prototype" share karo. Community finishing touches mein help karta hai. Done > perfect.',
             },
           ]}
-          proTip="Hashnode ya Dev.to pe free AI blog shuru karo — built-in audience, SEO benefits, community. Ek detailed blog post (1000+ words) per week: 6 months mein solid online presence. Cross-post to LinkedIn, share on Twitter. Same content, multiple platforms = maximum reach per unit effort."
+          proTip="Hashnode ya Dev.to pe free blog shuru karo — built-in audience, SEO benefits, developer community. Ek detailed post (1000+ words) per week: 6 months mein solid online presence. Same content cross-post karo — LinkedIn article, Twitter thread, Dev.to post. Ek piece of content, multiple platforms = maximum reach per unit effort. Content strategy ye hai."
         />
       </div>
 

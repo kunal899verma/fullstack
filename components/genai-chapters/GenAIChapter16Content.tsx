@@ -185,7 +185,7 @@ export default function GenAIChapter16Content() {
           Fine-tuning & PEFT — Model Ko Apna Banao 🎯
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          Kab fine-tune karo, kab RAG karo, kab prompt engineering karo — decision framework samjho. LoRA, QLoRA, OpenAI fine-tuning — sab cover karte hain.
+          Fine-tuning sunke lagta hai bahut powerful tool hai. Hai — lekin bahut baar overkill bhi hai. 90% cases mein better prompting + RAG + few-shot se kaam ho jaata hai. Fine-tuning tabhi karo jab ye sab fail ho jaaye. Aaj sahi decision framework seekhte hain — aur jab zarurat ho tab LoRA, QLoRA, OpenAI fine-tuning bhi.
         </p>
         <div
           className="rounded-xl p-4"
@@ -195,7 +195,7 @@ export default function GenAIChapter16Content() {
           }}
         >
           <p className="text-[#FDE68A] text-sm italic">
-            &quot;Fine-tuning last resort hai, pehle option nahi. Pehle prompt engineering, phir RAG, phir fine-tune.&quot;
+            &quot;Fine-tuning last resort hai, prompt engineering first. Seedha fine-tuning pe jump karna — ye sabse common aur sabse expensive galti hai.&quot;
           </p>
         </div>
       </div>
@@ -206,14 +206,14 @@ export default function GenAIChapter16Content() {
           title="Kab Fine-tune Karo? — Decision Framework"
           emoji="🤔"
           difficulty="advanced"
-          whatIsIt="Fine-tuning, RAG, aur prompt engineering — teeno alag problems solve karte hain. Prompt engineering: behavior/style/format change karna. RAG: latest ya private data chahiye. Fine-tuning: consistent specialized output, domain jargon, specific format jo examples se better sikh sake. Cost + complexity order: PE < RAG < Fine-tuning."
+          whatIsIt="Yahan ek real baat karte hain. Fine-tuning, RAG, aur prompt engineering — teeno alag cheezein hain, alag problems solve karte hain. Prompt engineering: model ke behavior, tone, format ko instructions se change karna. RAG: dynamic ya private data chahiye jab. Fine-tuning: consistent specialized output jab examples se demonstrate karna ho — legal extraction, medical coding. Order of cost aur complexity: PE < RAG < Fine-tuning. Aur usi order mein try karo."
           whenToUse={[
             'Prompt engineering pehle: task sirf instructions se solve hota hai? Use karo.',
             'RAG: dynamic data, company docs, real-time info chahiye? Use karo.',
             'Fine-tuning: specialized domain (legal, medical), very consistent output format, task requires examples not just instructions.',
             'Fine-tuning avoid karo: data less than 50 examples, task dynamic data pe depend karta hai, prompt engineering already kaam karta hai.',
           ]}
-          whyUseIt="Fine-tuning expensive hai — data collection, training costs, maintenance. OpenAI fine-tuning: $0.008/1K training tokens + higher inference cost. Self-hosted LoRA: GPU rental + time. Pehle simpler solutions try karo — 80% cases mein prompt engineering ya RAG kaafi hoti hai."
+          whyUseIt="Fine-tuning ki real cost samjho — sirf training cost nahi, data collection, annotation, maintenance, aur broken workflows bhi. OpenAI fine-tuning: $0.008/1K training tokens + inference cost jo base model se zyada hoti hai. Self-hosted LoRA: GPU rental + time + expertise. Ab honestly socho — 80% cases mein better prompt engineering ya RAG se kaam ho jaata hai. Fine-tuning tab justify hota hai jab baaki sab genuinely fail ho jaaye."
           howToUse={{
             filename: 'fine-tune-decision.ts',
             language: 'typescript',
@@ -271,9 +271,9 @@ const codeHelper = decideApproach({
   promptEngineeringWorks: true,
   examplesAvailable: 0,
 }); // → 'prompt-engineering'`,
-            explanation: 'Decision tree: (1) Prompt engineering kaam karta hai? → use PE. (2) Dynamic/private data? → RAG. (3) Consistent specialized format + examples? → Fine-tuning. Escalate karo zarurat pe — start simple, add complexity only when proven necessary.',
+            explanation: 'Ye decision tree ek principle follow karta hai — simplest solution pehle. Prompt engineering kaam karta hai? Bas karo, wahi best hai. Dynamic ya private data chahiye? RAG. Consistent specialized format chahiye aur kuch aur kaam nahi kiya? Tab fine-tuning. Har step pe prove karo ki agle level ki zarurat hai — upfront complexity add mat karo.',
           }}
-          realWorldScenario="Legaltech company ne initially fine-tuning plan kiya contract analysis ke liye. After analysis: contracts dynamic data hain (different every case), fine-tuning static format seekhne ke liye. Decision: RAG for contract retrieval + simple prompt for extraction. Fine-tuning skip kiya. $50K+ cost aur 3 months saved."
+          realWorldScenario="Ek legaltech company ne contract analysis ke liye seedha fine-tuning plan bana liya tha — 3 months ka roadmap, GPU budget approved. Phir kisi ne question kiya: 'Pehle RAG try kiya?' Nahi kiya tha. RAG implement kiya — 2 hafte mein. Result: contract retrieval ke liye RAG, extraction ke liye simple structured prompt. Fine-tuning ki zarurat hi nahi padi. Saved: $50K+ training cost + 3 months engineering time. Lesson: decision framework mein seedha fine-tuning pe jump karna sबसे expensive shortcut hai."
           commonMistakes={[
             {
               mistake: 'Fine-tuning pehla option banana',
@@ -309,7 +309,7 @@ const codeHelper = decideApproach({
 }`}
             />
           }
-          proTip="OpenAI playground mein 'Fine-tuning' tab pe training data upload karo aur cost estimate dekho before committing. Dataset size, expected training tokens, per-epoch cost — sab upfront calculate karo. Surprise bills se bachao."
+          proTip="Commit karne se pehle OpenAI playground mein 'Fine-tuning' tab kholo — training data upload karo, cost estimate dekho. Dataset size, training tokens, per-epoch cost — sab upfront dikhaata hai. Surprise bill se bachne ka yahi tarika hai. Aur ek aur baat: fine-tuning ka faisla karne se pehle ek din prompt engineering experiments run karo. Agar wo 80% result deta hai — bas kaafi hai production ke liye."
         />
       </div>
 
@@ -319,7 +319,7 @@ const codeHelper = decideApproach({
           title="OpenAI Fine-tuning — Data, JSONL, Training"
           emoji="🏋️"
           difficulty="advanced"
-          whatIsIt="OpenAI managed fine-tuning service deta hai — data upload karo, training run karo, fine-tuned model use karo. Supported models: gpt-4o-mini, gpt-3.5-turbo. Data format: JSONL (JSON Lines). Minimum 10 examples, recommended 50-100+. Training: ek baar, phir fine-tuned model ID se use karo."
+          whatIsIt="OpenAI ka managed fine-tuning service: tumhara kaam sirf data banana aur upload karna hai — baaki sab unka server handle karta hai. Supported models: gpt-4o-mini, gpt-3.5-turbo. Format: JSONL (JSON Lines), ek line ek training example. Minimum 10 examples, lekin seriously — 50-100 quality examples se shuru karo. Training ke baad ek fine_tuned_model ID milti hai, wohi tumhara custom model hai. No infrastructure, no GPU, no headache."
           whenToUse={[
             'GPT-4o-mini pe fine-tuning — cost-effective, managed service.',
             'Consistent output format required — medical reports, legal extractions.',
@@ -327,7 +327,7 @@ const codeHelper = decideApproach({
             'Response style — always respond in Hinglish, always use markdown tables.',
             'Classification tasks — consistent categorization without verbose prompts.',
           ]}
-          whyUseIt="OpenAI fine-tuning no infrastructure manage karna — API se sab kuch. Fine-tuned gpt-4o-mini often GPT-4o quality pe specific tasks ke liye — much cheaper inference. Shorter prompts bhi possible — fine-tuned model knows the format, no need to re-explain every time."
+          whyUseIt="Suno ye carefully — fine-tuned gpt-4o-mini tumhare specific task pe GPT-4o jaisi quality de sakta hai, GPT-4o-mini ki price pe. Ye magic nahi, ye specialization hai. Aur ek bonus: system prompt 500 tokens se ghat ke 50 tokens ho jaata hai — fine-tuned model format already jaanta hai, baar baar explain karne ki zarurat nahi. Infrastructure zero. Sab kuch OpenAI API se. Ye convenience real hai."
           howToUse={{
             filename: 'openai-fine-tuning.ts',
             language: 'typescript',
@@ -412,9 +412,9 @@ async function useFineTunedModel(modelId: string, prompt: string) {
   });
   return response.choices[0].message.content;
 }`,
-            explanation: 'OpenAI fine-tuning 5 steps: (1) training data JSONL banao, (2) file upload karo, (3) fine-tuning job create karo, (4) training complete hone ka wait karo (30 min - few hours), (5) fine_tuned_model ID use karo. Cost: training tokens + higher inference cost vs base model.',
+            explanation: 'Ye 5-step process clean hai — JSONL banao, upload karo, job create karo, training ka wait karo (30 min se few hours), aur fine_tuned_model ID se call karo. Ek important baat: training status check karte waqt while(true) loop mein sleep(30s) use kiya hai — webhook-based notification zyada production-grade hoti hai, lekin small scripts ke liye polling theek hai. Cost: training tokens + inference cost jo base model se thoda zyada hoti hai.',
           }}
-          realWorldScenario="Customer service company ne gpt-4o-mini fine-tune kiya 300 resolution examples se. Result: fine-tuned model GPT-4o quality at GPT-4o-mini price for their specific use case. System prompt 500 tokens se 50 tokens ho gaya (no need to re-explain style). Monthly savings: 40%."
+          realWorldScenario="Customer service company — 300 resolution examples, gpt-4o-mini fine-tune kiya. Pehle sochte the GPT-4o chahiye quality ke liye. Fine-tune ke baad? Unka specific task pe fine-tuned mini ne GPT-4o ko match kiya — at one-tenth the inference cost. System prompt 500 tokens tha, ab 50 tokens hai — model format jaanta hai. Monthly API cost: 40% neeche. Ye real ROI hai fine-tuning ka, jab sahi jagah use ho."
           commonMistakes={[
             {
               mistake: 'Bad quality examples training data mein include karna',
@@ -422,7 +422,7 @@ async function useFineTunedModel(modelId: string, prompt: string) {
               fix: 'Har training example manually review karo. Quality team se validate karwao. Edge cases include karo. Consistency ensure karo — format, tone, depth sab consistent honi chahiye.',
             },
           ]}
-          proTip="Weights & Biases ya OpenAI fine-tuning dashboard se training loss monitor karo. Training loss continuously decrease hona chahiye — plateau ya increase = issue. Validation loss check karo — training loss kam, validation loss badh raha? Overfitting hai — n_epochs kam karo ya zyada data chahiye."
+          proTip="Training loss graph dhyan se dekho — continuously decrease hona chahiye. Plateau ya spike = kuch gadbad hai data ya hyperparameters mein. Ab asli red flag: training loss gir raha hai lekin validation loss badh raha hai? Overfitting ho rahi hai — model training data memorize kar raha hai, generalize nahi. Fix: n_epochs kam karo, ya zyada diverse data chahiye. Weights & Biases ya OpenAI dashboard dono ye clearly dikhate hain."
         />
       </div>
 
@@ -432,7 +432,7 @@ async function useFineTunedModel(modelId: string, prompt: string) {
           title="LoRA — Low-Rank Adaptation"
           emoji="🔧"
           difficulty="advanced"
-          whatIsIt="LoRA (Low-Rank Adaptation) parameter-efficient fine-tuning technique hai. Original model weights freeze karte hain aur small low-rank matrices (adapters) train karte hain. 7B parameter model ke liye: full fine-tuning = 7B trainable parameters. LoRA ke saath: sirf 10-50M trainable parameters — 100-700x less. Same performance, fraction of compute."
+          whatIsIt="LoRA ka idea genius hai — seedha seedha samjhao toh: full fine-tuning mein poore model ke weights change hote hain, 7B model = 7B trainable parameters, bahut GPU RAM chahiye. LoRA kehta hai: original weights freeze karo, unke saath sirf chhoti low-rank matrices (adapters) attach karo aur unhe train karo. Result: 7B model mein sirf 10-50M trainable parameters — 100-700x less. Kaam same, cost fraction. Ye parameter-efficient fine-tuning hai."
           whenToUse={[
             'Open-source models fine-tune karne hain (LLaMA, Mistral, Phi) — self-hosted.',
             'Consumer GPU pe training — RTX 3090 (24GB) pe 7B model LoRA se possible.',
@@ -440,7 +440,7 @@ async function useFineTunedModel(modelId: string, prompt: string) {
             'Rapid experimentation — adapter train fast hote hain, easily swap karo.',
             'Privacy — data apne server pe rakho, OpenAI ko nahi dena.',
           ]}
-          whyUseIt="Full fine-tuning 7B model ke liye: minimum 4x A100 GPUs (4 * $2.5/hour = $10/hour). LoRA: single A100 ya RTX 3090 enough. Training time: hours instead of days. Practical impact: self-hosting possible hai teams ke liye jo OpenAI pe data share nahi kar sakti."
+          whyUseIt="Full fine-tuning 7B model ke liye minimum 4x A100 GPUs = $10/hour. LoRA ke saath: single A100 ya RTX 3090 enough. Training time: days se hours. Practical impact — sensitive data wali companies jo OpenAI ko data share nahi kar sakti, wo apna model khud train kar sakti hain. Privacy + cost + control — teeno milte hain LoRA se."
           howToUse={{
             filename: 'lora-training.py',
             language: 'python',
@@ -500,9 +500,9 @@ trainer.train()
 # ─── 4. Save & Load adapter ───────────────────────────────────────
 model.save_pretrained("./my-lora-adapter")
 # Load: model = PeftModel.from_pretrained(base_model, "./my-lora-adapter")`,
-            explanation: 'LoRA config: r (rank) = adapter matrix size. r=16 typical, r=64 for complex tasks. target_modules: q_proj, v_proj attention layers mein LoRA lagao — usually enough. Trainable parameters: 0.1-1% of total — efficient! Same GPU pe multiple adapters load karo tasks ke liye.',
+            explanation: 'r (rank) matlab adapter matrix ka size — r=16 zyatar tasks ke liye theek hai, r=64 complex ke liye. target_modules: q_proj, v_proj pe LoRA lagana usually kaafi hota hai. Output mein dekho trainable parameters: 0.15% — matlab 99.85% model frozen hai. Ye efficiency hai. Ek base model pe multiple adapters bana sakte ho — alag tasks ke liye alag adapters, swap karo on the fly.',
           }}
-          realWorldScenario="Hinglish language model banana tha. LLaMA-3.2-3B base model + 2000 Hinglish conversation examples + LoRA (r=32). Training: RTX 4090 pe 4 ghante. Result: model naturally Hinglish mein respond karta hai bina extensive prompting ke. Cost: $8 electricity + GPU rental. OpenAI fine-tuning se $200+ lagta."
+          realWorldScenario="Ek team Hinglish AI tutor banana chahti thi. LLaMA-3.2-3B base model liya, 2000 Hinglish conversation examples banaye, LoRA r=32 se train kiya — RTX 4090 pe 4 ghante mein done. Result: model bina heavy prompting ke naturally Hinglish mein respond karta hai. Total cost: $8 electricity + GPU rental. OpenAI ke through same cheez karte? $200+ training + ongoing higher inference cost. LoRA ne khud apne servers pe ye possible banaya."
           commonMistakes={[
             {
               mistake: 'r (rank) bahut high set karna',
@@ -510,7 +510,7 @@ model.save_pretrained("./my-lora-adapter")
               fix: 'r=8 ya r=16 se start karo. Only increase agar task complex hai aur quality suboptimal hai. r=64 usually too much for small datasets.',
             },
           ]}
-          proTip="Unsloth library LoRA training 2x faster aur 60% less VRAM banati hai compared to vanilla PEFT — specifically optimized kernels. Google Colab free tier pe LLaMA-3.2-1B LoRA fine-tune possible hai Unsloth + QLoRA ke saath. GPU cost: $0 for small models."
+          proTip="Unsloth library try karo — vanilla PEFT se 2x faster training, 60% less VRAM. Specially optimized kernels hain. Matlab Google Colab free tier pe bhi LLaMA-3.2-1B LoRA fine-tune ho sakta hai. GPU cost: zero. Unsloth ke GitHub pe ready-made Colab notebooks hain — duplicate karo, apna data dalo, run karo. Pehle experiment ke liye perfect starting point hai."
         />
       </div>
 
@@ -520,7 +520,7 @@ model.save_pretrained("./my-lora-adapter")
           title="QLoRA — 4-bit Quantization + LoRA"
           emoji="🗜️"
           difficulty="advanced"
-          whatIsIt="QLoRA = Quantized LoRA. Base model ko 4-bit precision mein store karo (NF4 format) — 4x less memory. LoRA adapters float16 mein train karo. Result: 7B model fine-tune karne ke liye VRAM requirement 40GB → 10GB. Google Colab free T4 (16GB) pe 7B model possible. Tim Dettmers et al. 2023 paper."
+          whatIsIt="QLoRA = Quantized LoRA — ye LoRA ka power-up hai. Base model ko 4-bit precision (NF4 format) mein store karo, 4x less memory. LoRA adapters float16 mein train karo as usual. Combine karo toh: 7B model fine-tune karne ke liye VRAM 40GB se ghat ke 10GB ho jaati hai. Google Colab free T4 GPU (16GB VRAM) pe 7B model ka fine-tuning — ye QLoRA ne possible banaya. Tim Dettmers et al. 2023 paper — ek game-changer."
           whenToUse={[
             'Consumer GPU — RTX 3090 (24GB) pe 13B model fine-tune.',
             'Google Colab free tier — T4 GPU (16GB) pe 7B model.',
@@ -528,7 +528,7 @@ model.save_pretrained("./my-lora-adapter")
             'Memory constraints — zyada VRAM affordable nahi.',
             'Research experiments — quickly prototype different configs.',
           ]}
-          whyUseIt="QLoRA ne LLM fine-tuning democratize kiya — pehle $10K+ GPU setup chahiye tha. Ab Google Colab free tier pe experiment karo. Tradeoff: 4-bit quantization se thoda accuracy loss (1-3%), but usually acceptable. Production ke liye: accuracy benchmark karo, dekhho acceptable hai ya nahi."
+          whyUseIt="QLoRA ne LLM fine-tuning democratize kiya — literally. Pehle $10K+ GPU setup chahiye tha. Ab Google Colab free tier pe experiment karo. Haan, 4-bit quantization se thoda accuracy loss hota hai (1-3%), lekin zyatar production use cases mein ye acceptable hai. Production ke liye? Benchmark karo — apne specific task pe quality compare karo full precision se. Phir decide karo tradeoff worth hai ya nahi."
           howToUse={{
             filename: 'qlora-training.py',
             language: 'python',
@@ -577,9 +577,9 @@ model = get_peft_model(model, lora_config)
 # QLoRA 7B + gradient checkpointing: ~8GB VRAM ✓ (fits T4!)
 
 print("Model ready for QLoRA training on consumer GPU!")`,
-            explanation: 'QLoRA: load_in_4bit=True se base model 4-bit mein load hota hai. prepare_model_for_kbit_training se gradient computation setup hota hai. LoRA adapters bfloat16 mein train hote hain. Memory: 7B model 10GB mein — T4 GPU pe comfortable. bitsandbytes library ye sab handle karti hai.',
+            explanation: 'BitsAndBytesConfig: load_in_4bit=True — base model NF4 format mein load hota hai, 4x kam memory. prepare_model_for_kbit_training zaruri hai — gradient checkpointing aur quantized layer handling setup karta hai. LoRA adapters upar se bfloat16 mein train hote hain. Final memory: 7B model ~10GB — T4 GPU pe aaram se fit. Comments mein memory comparison dekho — numbers real hain.',
           }}
-          realWorldScenario="Academic researcher ne Mistral-7B pe QLoRA fine-tune kiya medical text classification ke liye — Google Colab free tier pe! 500 labeled examples, 3 epochs, 2 ghante training. Accuracy: 94% on test set vs GPT-4 baseline 91% (GPT-4 cost $0.03/query vs self-hosted $0). Research paper published."
+          realWorldScenario="Ek academic researcher ne Mistral-7B pe QLoRA fine-tune kiya — medical text classification ke liye, Google Colab free tier pe. 500 labeled examples, 3 epochs, 2 ghante training. Accuracy: 94% test set pe. GPT-4 baseline? 91% — aur $0.03/query cost tha. Self-hosted after QLoRA: effectively $0/query (GPU amortized). Research paper publish hua. Ye story repeat hoti hai — sahi tool sahi jagah."
           commonMistakes={[
             {
               mistake: 'bitsandbytes Windows pe install karna',
@@ -587,7 +587,7 @@ print("Model ready for QLoRA training on consumer GPU!")`,
               fix: 'Google Colab (Linux), RunPod, Lambda Labs — Linux GPU environments use karo. Windows pe: WSL2 ya Docker se Linux environment banao.',
             },
           ]}
-          proTip="Unsloth + QLoRA combination: 2x faster training, 60% less VRAM. from unsloth import FastLanguageModel — ek line se optimized model load. Colab free T4 pe: 7B model, 2000 examples, 3 epochs = ~2 hours. Unsloth GitHub pe ready-to-run Colab notebooks hain — duplicate karo aur apna data daal do."
+          proTip="Unsloth + QLoRA = best combo for beginners. from unsloth import FastLanguageModel — ek line mein optimized model. Colab free T4 pe: 7B model, 2000 examples, 3 epochs = ~2 ghante. Unsloth GitHub kholo, Colab notebook duplicate karo, apna data replace karo — itna hi kaam hai. Pehle QLoRA experiment ke liye koi better starting point nahi hai."
         />
       </div>
 
@@ -597,7 +597,7 @@ print("Model ready for QLoRA training on consumer GPU!")`,
           title="Training Data Preparation — Quality Over Quantity"
           emoji="📊"
           difficulty="advanced"
-          whatIsIt="Fine-tuning ki quality training data ki quality se directly determine hoti hai. 50 perfect examples 5000 mediocre se better results dete hain. Key principles: consistent formatting, diverse scenarios, accurate outputs, no hallucinations. Data cleaning, augmentation, validation set — sab zaroori steps hain."
+          whatIsIt="Ye sunlo carefully — fine-tuning mein sabse zyada important cheez model architecture ya hyperparameters nahi hai, training data quality hai. 50 perfect examples 5000 mediocre se better results dete hain. GIGO principle: Garbage In, Garbage Out. Key principles: consistent formatting, diverse real scenarios, accurate outputs, zero hallucinated content. Data cleaning, augmentation, aur validation split — ye optional nahi hain."
           whenToUse={[
             'Data collection: real user interactions, human expert annotations, existing documents.',
             'Data cleaning: remove duplicates, fix inconsistencies, filter low quality.',
@@ -605,7 +605,7 @@ print("Model ready for QLoRA training on consumer GPU!")`,
             'Validation split: 10-20% hold out — training progress measure karo.',
             'Quality review: randomly sample aur manually check — before training run karo.',
           ]}
-          whyUseIt="Training data mein ek repeated mistake = model consistently galat behavior seekhta hai. Ek inconsistent format = model confused output deta hai. Data preparation 70% time lena chahiye fine-tuning project mein — model architecture ya hyperparameters se zyada important hai. Ye real-world lesson hai."
+          whyUseIt="Ek repeated mistake training data mein = model consistently wahi galti karta hai inference mein. Ek inconsistent format = model kabhi markdown, kabhi plain text, kabhi JSON — confused output. Real-world truth: data preparation 70% time leni chahiye ek fine-tuning project mein. Model architecture ya hyperparameter tuning pe nahi. Ye teams jo fast ship karte hain unka secret hai."
           howToUse={{
             filename: 'data-preparation.ts',
             language: 'typescript',
@@ -680,9 +680,9 @@ function saveDataset(examples: TrainingExample[], filePath: string): void {
   fs.writeFileSync(filePath, jsonl, 'utf-8');
   console.log(\`Saved \${valid.length}/\${examples.length} valid examples to \${filePath}\`);
 }`,
-            explanation: 'Data validation: last message assistant hona chahiye, response reasonable length (20-4000 chars), no generic disclaimers. analyzeDataset se issues identify karo before training. Minimum 50 valid examples — 100+ recommended. Validation split: 80% training, 20% validation.',
+            explanation: 'validateExample function practical rules check karta hai — last message assistant hona chahiye, response reasonable length (20-4000 chars), generic disclaimers nahi hone chahiye. analyzeDataset se training se pehle issues identify karo. Minimum 50 valid examples — 100+ recommended. 80/20 split: 80% training, 20% validation. Ye code actual quality gate hai — is step ko skip mat karo.',
           }}
-          realWorldScenario="HR tech company ne 1000 training examples collect kiye — 60% poor quality (generic responses, inconsistent format, hallucinated facts). After cleaning: 350 high-quality examples. Fine-tuning result: clean 350 > dirty 1000. Quality review 2 din laga, saved 2 weeks debugging bad model behavior."
+          realWorldScenario="HR tech company ne 1000 training examples collect kiye. Training shuru karne se pehle kisi ne audit kiya — 60% poor quality tha: generic responses, inconsistent format, kuch mein hallucinated facts. After cleaning: 350 high-quality examples rahi. Fine-tuning result: clean 350 examples ne dirty 1000 se better model diya. Data review mein 2 din lage. Baad mein bad model behavior debug karne mein 2 hafte nahi lage. Do the math."
           commonMistakes={[
             {
               mistake: 'Poore dataset se test karna — validation set nahi rakhna',
@@ -690,7 +690,7 @@ function saveDataset(examples: TrainingExample[], filePath: string): void {
               fix: '80/20 split: 80% training, 20% validation. OpenAI fine-tuning API mein validation_file argument hai — use karo. Training loss vs validation loss monitor karo — diverge hone pe overfitting hai.',
             },
           ]}
-          proTip="Argilla (open-source) ya LabelStudio human annotation ke liye best tools hain — annotators ko same guidelines dikhate hain, consistency ensure karte hain. GPT-4 se initial drafts generate karo, humans se review + edit — hybrid approach fast aur cost-effective hai quality data collection ke liye."
+          proTip="Annotation team ke liye Argilla ya LabelStudio use karo — sab annotators ko same guidelines milti hain, consistency ensure hoti hai. Ek smart hack: GPT-4 se initial drafts generate karo, humans se review + edit karo. Ye hybrid approach pure human annotation se 3x fast hai aur pure AI se zyada accurate hai. Quality data collection ka yahi sahi tarika hai production mein."
         />
       </div>
 

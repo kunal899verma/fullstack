@@ -94,7 +94,7 @@ export default function DBChapter10Content() {
           Transactions & Concurrency — Data Integrity Ka Core
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Bank transfer ka classic example: ek account se debit karo, doosre mein credit karo — dono ek saath ya kuch bhi nahi. Transactions ACID properties guarantee karte hain. Concurrency mein multiple users same data access karte hain — isolation levels decide karte hain kya visible hoga.
+          ACID properties — ye sirf acronym nahi, ye guarantee hai. Bina ACID ke banking app banana = paiso ko gamble mein lagana. Ye samjho toh sab kuch clear ho jaata hai: Atomicity = ya sab hoga ya kuch nahi. Consistency = data hamesha valid state mein. Isolation = concurrent transactions ek doosre ko affect nahi karenge. Durability = committed data crash ke baad bhi safe. Sawaal: Inke bina kya hoga? 10 rupee account se gaye, 10 doosre mein aaye nahi — paisa gayab. Ye real scenarios hain jo production mein aate hain.
         </p>
       </div>
 
@@ -103,13 +103,13 @@ export default function DBChapter10Content() {
           title="BEGIN / COMMIT / ROLLBACK — Transaction Lifecycle"
           emoji="🔄"
           difficulty="intermediate"
-          whatIsIt="Transaction ek unit of work hai — ya saari operations succeed karein, ya saari rollback ho jaayein. BEGIN se start, COMMIT se save, ROLLBACK se undo."
+          whatIsIt="Transaction database ka 'ya sab ya kuch nahi' wala agreement hai. Under the hood: BEGIN se PostgreSQL ek transaction ID assign karta hai, undo log (WAL — Write-Ahead Log) likhna shuru karta hai. COMMIT pe WAL disk pe flush hota hai — durability guarantee. ROLLBACK pe undo log se sab revert. Server crash transaction ke beech mein ho jaaye? WAL se recovery — uncommitted changes undo. Ye durability guarantee hai — committed data kabhi lost nahi hota even on crash."
           whenToUse={[
             'Multiple related operations ek unit mein (bank transfer)',
             'Data consistency ensure karne ke liye',
             'Partial failure se protect karne ke liye',
           ]}
-          whyUseIt="Bina transactions ke agar server crash ho bank transfer ke beech mein — ek account se paisa gaya, doosre mein aaya nahi. Transactions ye impossibility guarantee karte hain."
+          whyUseIt="Classic scenario: e-commerce checkout — inventory reduce karo, order create karo, payment record karo. Teen operations. Agar doosre ke baad server crash ho — inventory ghata, order nahi bana, payment pending. Customer ka paisa kaata, order nahi mila. Ye production incident hai jo reputation destroy karta hai. Transaction ke saath: ya teeno complete honge ya teeno rollback — customer ko error dikhao, retry karo. Clean, recoverable state hamesha."
           howToUse={{
             code: `-- PostgreSQL transaction
 BEGIN;
@@ -151,14 +151,14 @@ try {
   client.release()
 }`,
             language: 'sql',
-            explanation: 'BEGIN se transaction start. COMMIT se permanent save. ROLLBACK se undo. Node.js mein try/catch se catch block mein ROLLBACK ensure karo. finally mein connection release.',
+            explanation: 'BEGIN se transaction ID milta hai, WAL likhna shuru. COMMIT pe WAL disk flush — permanent. ROLLBACK pe undo log revert. Node.js mein: try mein BEGIN + operations + COMMIT. catch mein ROLLBACK — error throw hone pe guarantee. finally mein client.release() — ye CRITICAL hai, bhool gaye toh connection pool exhaust hoga aur app hang ho jaayega. SAVEPOINT advanced technique hai — transaction ke andar partial checkpoint, ROLLBACK TO sp1 se sirf wahan tak undo.',
             filename: 'transactions.sql',
           }}
-          realWorldScenario="E-commerce checkout: inventory reduce karo, order create karo, payment record karo — teen operations. Ek fail ho toh sab rollback. Customer ka paisa nahi kaatna jab order create nahi hua."
+          realWorldScenario="Ticket booking system: concert ka last ticket. 2 users simultaneously try karte hain. Bina transaction ke: dono users ko ticket 'available' dikhti hai, dono book karte hain — double booking. Transaction + SELECT FOR UPDATE ke saath: pehle user lock karta hai, books karta hai, commit. Doosre user ka query wait karta hai, phir try karta hai — ticket already sold, clean error. Transactions concurrency bugs prevent karte hain jo testing mein practically invisible hote hain."
           commonMistakes={[
             { mistake: 'Connection finally mein release karna bhool jaana', why: 'Connection pool leak — eventually application hang ho jaati hai', fix: 'try/catch/finally pattern use karo — finally mein hamesha client.release()' },
           ]}
-          proTip="SAVEPOINT se transaction ke andar partial rollback possible hai: SAVEPOINT sp1; ... ROLLBACK TO sp1; Complex transactions mein useful hai."
+          proTip="SAVEPOINT ek underused gem hai — multi-step transaction mein checkpoint lagao. Agar step 5 fail ho aur step 1-3 valid hain toh puri transaction rollback mat karo, ROLLBACK TO sp1 se safe point pe wapas jao, retry karo baaki. Complex batch operations mein ye partial recovery allow karta hai — puri mehnat waste nahi hoti."
         />
       </div>
 
@@ -169,13 +169,13 @@ try {
           title="Isolation Levels — Phenomena Samjho"
           emoji="🔐"
           difficulty="advanced"
-          whatIsIt="Isolation levels define karte hain ki concurrent transactions ek doosre ko kitna affect kar sakte hain. Higher isolation = more consistency, less concurrency, more locking."
+          whatIsIt="Isolation levels ek dial hain — ek taraf maximum consistency, doosri taraf maximum performance. Under the hood PostgreSQL mein MVCC (Multi-Version Concurrency Control) hai — writers readers ko block nahi karte, har transaction apna snapshot dekhta hai. Dirty Read: uncommitted data padhna — Transaction A ne update kiya commit nahi kiya, Transaction B ne padh liya, phir A rollback — B ne kabhi exist na karne wala data padha. Non-Repeatable Read: ek hi transaction mein same row do baar padhne pe alag value. Phantom Read: COUNT(*) ek baar aur phir different — beech mein kisi ne new row add kiya."
           whenToUse={[
             'READ COMMITTED: Most applications (default in PostgreSQL)',
             'REPEATABLE READ: Reports jo consistent snapshot chahiye (MySQL InnoDB default)',
             'SERIALIZABLE: Financial transactions, critical operations',
           ]}
-          whyUseIt="Wrong isolation level se data inconsistency hoti hai — users stale data dekhte hain, calculations wrong hote hain."
+          whyUseIt="Sawaal: har jagah SERIALIZABLE kyun nahi use karte? Kyunki SERIALIZABLE high contention mein serialization failures deta hai — aapki application ko retry logic likhna padta hai, aur deadlocks bhi zyada hote hain. Performance cost significant hai. Most applications ke liye PostgreSQL ka default READ COMMITTED sufficient hai — MVCC ki wajah se readers writers ko block nahi karte. SERIALIZABLE sirf critical financial operations ke liye jahan absolute consistency zaroori hai."
           howToUse={{
             code: `-- Set isolation level
 BEGIN ISOLATION LEVEL SERIALIZABLE;
@@ -211,14 +211,14 @@ try {
   await client.query('ROLLBACK')
 }`,
             language: 'sql',
-            explanation: 'READ UNCOMMITTED dirty reads allow — almost never use karo. READ COMMITTED (PostgreSQL default) dirty reads prevent. SERIALIZABLE highest isolation — slowest but safest.',
+            explanation: 'READ UNCOMMITTED — kabhi use mat karo, sirf academic hai. READ COMMITTED PostgreSQL default hai — MVCC ki wajah se actually fast hai, readers block nahi hote. REPEATABLE READ consistent snapshot deta hai — MySQL InnoDB default. SERIALIZABLE strongest — transactions jaisi chal rahen jaise serial hoti hain, lekin internally PostgreSQL overlap allow karta hai jahan safe ho. Cost: serialization failures possible, retry logic zaroori.',
             filename: 'isolation-levels.sql',
           }}
-          realWorldScenario="Banking system: SERIALIZABLE isolation ensure karta hai ki concurrent transfers never result in negative balance. E-commerce: REPEATABLE READ se inventory check consistent rehta hai checkout flow mein."
+          realWorldScenario="Monthly financial report generate karna hai — consistent snapshot chahiye poori report ke liye, beech mein koi new transaction affect na kare. REPEATABLE READ mein wrap karo report generation — ek snapshot se sari queries run hongi, consistent numbers. Banking dashboard: SERIALIZABLE — balance calculations pe zero tolerance for stale data. Social feed: READ COMMITTED default fine hai — ek post zyada ya kam dikhna acceptable hai."
           commonMistakes={[
             { mistake: 'SERIALIZABLE hamesha use karna', why: 'Performance hit bahut zyada — high contention mein deadlocks bhi zyada', fix: 'Most apps ke liye READ COMMITTED sufficient hai — sirf critical paths pe SERIALIZABLE' },
           ]}
-          proTip="PostgreSQL ka MVCC (Multi-Version Concurrency Control) system readers ko writers block nahi karne deta — READ COMMITTED bahut fast hai. Oracle/MySQL mein different concurrency model hai."
+          proTip="PostgreSQL ka MVCC samajhna bahut important hai — ye reason hai ki READ COMMITTED itna fast hai. Har row ki multiple versions hoti hain — reader apne transaction start time wali version dekhta hai, writer nai version banata hai. Koi row-level locking nahi readers ke liye. MySQL InnoDB bhi MVCC use karta hai lekin gap locks aur next-key locks alag hain. Oracle ki implementation aur alag hai. Database internals samajhna sahi isolation level choose karne mein help karta hai."
         />
       </div>
 
@@ -227,12 +227,12 @@ try {
           title="Deadlocks — Circular Waiting"
           emoji="🔒"
           difficulty="advanced"
-          whatIsIt="Deadlock: Transaction A Table1 lock kar ke Table2 wait kar raha hai. Transaction B Table2 lock kar ke Table1 wait kar raha hai. Dono forever wait karte hain — database detect karta hai aur ek rollback karta hai."
+          whatIsIt="Deadlock circular lock dependency hai — do transactions ek doosre ka wait karte hain, forever. Under the hood: PostgreSQL deadlock detector background process har kuch milliseconds mein lock dependency graph check karta hai. Circular dependency detect hone pe — ek transaction ko victim choose karo (usually smaller/younger), rollback karo, doosra proceed kare. Error code 40P01 aapko milega. Prevention ka golden rule: consistent ordering — hamesha users → orders lock karo, kabhi orders → users nahi. Ek order follow karo, circular dependency impossible."
           whenToUse={[
             'Deadlock prevent karna: consistent lock ordering',
             'Detect karna: application mein deadlock error handle karo aur retry karo',
           ]}
-          whyUseIt="Deadlocks production mein randomly aate hain — application crash ya hang ho sakta hai. Detection aur retry logic essential hai."
+          whyUseIt="Deadlocks production mein kabhi-kabhi aate hain — predictable nahi, test mein rarely reproduce hote hain. Jab aate hain tab PostgreSQL victim transaction rollback karta hai, aapko error 40P01 milta hai. Agar retry logic nahi hai toh user ko unexplained error milta hai. Retry with exponential backoff standard solution hai — attempt 1 immediately, attempt 2 after 100ms, attempt 3 after 200ms. Usually 1-2 attempts mein succeed ho jaata hai."
           howToUse={{
             code: `-- Deadlock scenario:
 -- Transaction A:
@@ -272,14 +272,14 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
 // Usage
 await withRetry(() => transferMoney(from, to, amount))`,
             language: 'javascript',
-            explanation: 'Deadlock: circular lock dependency. PostgreSQL code 40P01. Retry with exponential backoff. Consistent lock ordering se prevention — always same table order mein lock karo.',
+            explanation: 'Deadlock scenario: Transaction A user 1 lock kiya, order wait. Transaction B order lock kiya, user 1 wait. Circular — PostgreSQL detect karta hai, ek rollback. Code 40P01 catch karo explicitly. withRetry wrapper generic hai — kisi bhi async function wrap karo. Exponential backoff: 100ms, 200ms, 300ms — immediate retry nahi karna, contention reduce hone do. Consistent lock ordering: hamesha users pehle, phir orders — ye rule sab code mein follow karo.',
             filename: 'deadlock-handling.ts',
           }}
-          realWorldScenario="Payment service: deadlock retry logic essential hai. Ek failed attempt ka matlab data corrupt nahi hua — just retry karo. Consistent table ordering se majority deadlocks prevent hote hain."
+          realWorldScenario="Payment service production incident: dono users simultaneously balance transfer kar rahe the — users → accounts lock order aur accounts → users lock order mixed code mein tha. Deadlocks daily hone lage. Fix: code review, consistent lock ordering enforce kiya (always users first, then accounts). Deadlocks 95% kam ho gaye. Baaki 5% ke liye retry logic — no more user-facing errors. Ek code review se production stability dramatically improve hui."
           commonMistakes={[
             { mistake: 'Deadlock error ignore karna', why: 'Transaction silently fail ho jaata hai — user ko data loss hota hai', fix: 'Deadlock errors explicitly catch karo aur retry karo — exponential backoff ke saath' },
           ]}
-          proTip="lock_timeout aur statement_timeout PostgreSQL settings se long locks automatically cancel ho jaate hain — deadlock ke baad indefinite wait prevent karta hai."
+          proTip="lock_timeout aur statement_timeout PostgreSQL mein set karo — indefinite lock wait se protect karo. SET lock_timeout = '5s' — 5 second mein lock nahi mila toh fail karo, hang mat raho. pg_stat_activity view se current locks aur waiting queries dekho: SELECT * FROM pg_stat_activity WHERE wait_event_type = 'Lock'. Production incident investigate karne ke liye ye view gold mine hai."
         />
       </div>
 
@@ -288,12 +288,12 @@ await withRetry(() => transferMoney(from, to, amount))`,
           title="Optimistic vs Pessimistic Locking"
           emoji="⚖️"
           difficulty="advanced"
-          whatIsIt="Pessimistic: read karte waqt lock lagao — doosra wait kare. Optimistic: koi lock nahi — commit pe version check karo, conflict hoga toh retry."
+          whatIsIt="Do philosophies hain concurrent updates ke liye. Pessimistic locking: 'mujhe lagta hai conflict hoga — pehle hi lock lagao'. SELECT FOR UPDATE row pe exclusive lock lagata hai — doosra transaction woh row read nahi kar sakta jab tak current commit/rollback na kare. Optimistic locking: 'shayad conflict nahi hoga — try karo, fail hone pe retry'. Version column use karo — read karte waqt version note karo, update karte waqt version same hona chahiye. Under the hood: UPDATE SET version = version+1 WHERE id = X AND version = Y — agar 0 rows affected toh someone else ne pehle update kiya."
           whenToUse={[
             'Pessimistic (SELECT FOR UPDATE): High contention, financial data, strict consistency',
             'Optimistic (version field): Low contention, UI forms, user profile updates',
           ]}
-          whyUseIt="Pessimistic locking safe lekin slow — locks hold karne se concurrency kam. Optimistic faster lekin retry logic chahiye."
+          whyUseIt="Sawaal: ticket booking mein konsa locking use karna chahiye? High contention — multiple users ek saath last seat buy karne ki koshish. Optimistic locking mein: sab read karte hain (version 5), sab update try karte hain — pehla succeed karta hai (version 6), baaki sab fail — retry karte hain, seat sold dikhta hai. Itne retries = performance issue. Pessimistic (SELECT FOR UPDATE) better hai: ek user lock karta hai, doosra wait karta hai, pehla complete karta hai, doosra ko 'no seats' milta hai. Contention predict karo — high contention = pessimistic, low contention = optimistic."
           howToUse={{
             code: `-- Pessimistic Locking (SELECT FOR UPDATE)
 BEGIN;
@@ -337,14 +337,14 @@ async function updatePrice(productId: number, newPrice: number) {
   }
 }`,
             language: 'sql',
-            explanation: 'Pessimistic: SELECT FOR UPDATE row lock. Optimistic: version field se conflict detect. Commit pe version mismatch = someone else updated — application retry kare.',
+            explanation: 'SELECT FOR UPDATE ek actual row-level lock hai — doosra transaction wait karta hai, timeout pe fail. Optimistic: version column rakhna padta hai schema mein, update pe check karo rowCount === 0 — conflict detect. rowCount 0 = someone updated between your read and write. User ko clear error do ya silently retry karo. SKIP LOCKED option SELECT FOR UPDATE ke saath: queue processing ke liye — "sirf woh rows lo jo available hain, locked skip karo". Job queue implementation ke liye use karo.',
             filename: 'locking.sql',
           }}
-          realWorldScenario="Admin panel product price update — low contention, optimistic locking fine. Ticket booking system — high contention (multiple users buying last seat), pessimistic locking zaroori."
+          realWorldScenario="E-commerce admin panel product price update — 2 admins ek saath edit karte hain kabhi-kabhi. Optimistic locking: version field dikhao form mein, submit pe version check — doosra admin ko 'someone else updated, please review' message. Low contention, no performance impact. Contrast: Flash sale — 10,000 users ek saath last item buy karne ki koshish. Pessimistic SELECT FOR UPDATE: ek user at a time lock karta hai, buys karta hai, releases. Queue effectively form ho jaati hai. Right tool for right situation."
           commonMistakes={[
             { mistake: 'Optimistic locking retry nahi karna', why: 'User ko silent failure milta hai — data saved nahi hua', fix: 'version mismatch pe clear error dena ya automatic retry — user ko inform karo' },
           ]}
-          proTip="Prisma ORM mein optimistic locking built-in hai: @@updatedAt generates version automatically. Sequelize mein version: true option. ORM se easy implement hota hai."
+          proTip="SELECT FOR UPDATE SKIP LOCKED pattern PostgreSQL mein job queues implement karne ke liye perfect hai — worker pool ke multiple instances simultaneously rows fetch kar sakte hain bina conflicts ke. UPDATE jobs SET status = 'processing' WHERE id = (SELECT id FROM jobs WHERE status = 'pending' ORDER BY created_at LIMIT 1 FOR UPDATE SKIP LOCKED) RETURNING *. Ye atomic fetch + lock hai — koi job twice process nahi hogi. Bull/BullMQ internally similar pattern use karta hai."
         />
       </div>
 

@@ -64,10 +64,10 @@ export default function DBChapter2Content() {
           SQL Basics — CRUD Queries Master Karo
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          SQL (Structured Query Language) relational databases ke saath communicate karne ki language hai. CRUD — Create, Read, Update, Delete — ye char operations ek developer ke daily kaam ka 90% hain. SELECT, INSERT, UPDATE, DELETE — ye commands seekh lo, database se daro mat.
+          SQL ek declarative language hai — tum database se kehte ho "mujhe ye chahiye," database engine khud decide karta hai "kaise laana hai." Ye 1970s mein bana, aaj 2024 mein bhi every serious backend ka backbone hai. CRUD — Create, Read, Update, Delete — ye char operations ek developer ke daily kaam ka 90% hain. SELECT, INSERT, UPDATE, DELETE — ye seekh lo, sab kuch aata hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum practice tables use karenge — users aur products. Real-world examples ke saath har command samjhenge — WHERE conditions, filtering, sorting, pagination sab cover hoga.
+          Lekin dhyan raho: SQL mein ek galat command — UPDATE bina WHERE ke, DELETE bina WHERE ke — production disaster hai. Isliye har command ke saath "dangerous cases" bhi samjhenge. Real-world examples ke saath — WHERE conditions, filtering, sorting, pagination sab cover hoga. Code likhne se pehle samjho ki database engine under the hood kya kar raha hai.
         </p>
       </div>
 
@@ -76,7 +76,7 @@ export default function DBChapter2Content() {
           title="SELECT — Data Padhna"
           emoji="📖"
           difficulty="beginner"
-          whatIsIt="SELECT statement database se data fetch karta hai. WHERE se filter karo, ORDER BY se sort karo, LIMIT se paginate karo, DISTINCT se duplicates hataao, AS se column alias do. SELECT sabse zyada use hone wali SQL command hai — har read operation SELECT se hota hai."
+          whatIsIt="Sawaal: SELECT kaise kaam karta hai under the hood? Database engine pehle FROM clause process karta hai, phir WHERE se rows filter karta hai, phir SELECT se columns choose karta hai, phir ORDER BY sort karta hai, aur last mein LIMIT apply hota hai. SELECT likhne ka order aur execute hone ka order different hai! WHERE se filter karo, ORDER BY se sort karo, LIMIT se paginate karo, DISTINCT se duplicates hataao, AS se column alias do — ye sab ek powerful pipeline hai."
           whenToUse={[
             'Data read karna — users list, product search, order history',
             'WHERE se specific records dhundho — id, email, status se filter',
@@ -84,7 +84,7 @@ export default function DBChapter2Content() {
             'LIMIT/OFFSET se pagination — page 1, page 2, page 3',
             'DISTINCT se unique values — unique cities, unique categories',
           ]}
-          whyUseIt="SELECT powerful hai — simple se complex tak sab possible hai. WHERE conditions ke combinations se exact data nikalo. LIKE se partial string match karo — search feature build karo. BETWEEN se range filter karo. IN se multiple values ek saath check karo. NULL ke liye IS NULL use karo — equality operator kaam nahi karta NULL ke saath."
+          whyUseIt="SELECT powerful isliye hai kyunki database engine optimized execution plan banata hai — tum sirf condition likhte ho, wo khud decide karta hai index use karna hai ya nahi, kaunsa join algorithm best hai. WHERE conditions ke combinations se exact data nikalo — aur ye sab indexed data pe blazing fast hota hai. LIKE se partial match karo search feature ke liye. BETWEEN se range queries. IN se multiple values ek shot mein. Lekin yaad rakho: NULL ke liye kabhi = mat use karo, hamesha IS NULL."
           howToUse={{
             filename: 'select-queries.sql',
             language: 'sql',
@@ -164,9 +164,9 @@ SELECT
   ROUND(price * 0.18, 2) AS gst_amount,
   price + (price * 0.18) AS price_with_gst
 FROM products;`,
-            explanation: "* mat use karo production queries mein — specific columns naam karo. BETWEEN inclusive hai — BETWEEN 50000 AND 100000 mein 50000 aur 100000 bhi include hain. LIKE slow hai large tables par — full-text search ya indexes use karo search features ke liye. OFFSET-based pagination large tables par slow hota hai — cursor-based pagination better hai.",
+            explanation: "SELECT * mat use karo production mein — ye network bandwidth waste karta hai aur application code fragile banata hai. BETWEEN inclusive hai — 50000 AND 100000 mein dono endpoints include hain, dhyan rakho. LIKE ke saath index sirf prefix matching pe kaam karta hai (LIKE 'prefix%') — wildcard pehle (%suffix) pe full table scan hoti hai, slow! OFFSET-based pagination large tables pe dangerous hai — cursor-based pagination use karo.",
           }}
-          realWorldScenario="E-commerce search feature: SELECT id, name, price, rating FROM products WHERE name ILIKE '%laptop%' AND price BETWEEN 30000 AND 80000 AND stock > 0 ORDER BY rating DESC LIMIT 20 OFFSET 0; — ye ek query search, filter, sort aur paginate sab kar rahi hai. Real production query bilkul aisi hoti hai."
+          realWorldScenario="Amazon jaise e-commerce search feature ka core query: SELECT id, name, price, rating FROM products WHERE name ILIKE '%laptop%' AND price BETWEEN 30000 AND 80000 AND stock > 0 ORDER BY rating DESC LIMIT 20 OFFSET 0 — ye ek query search, filter, sort, aur paginate sab ek saath kar rahi hai. Real production query bilkul aisi hoti hai — ek SQL se product listing page complete. Ye dekh ke samajh aata hai SQL kyun 50 saal baad bhi relevant hai."
           commonMistakes={[
             {
               mistake: 'SELECT * use karna production mein',
@@ -179,7 +179,7 @@ FROM products;`,
               fix: 'IS NULL aur IS NOT NULL use karo hamesha. COALESCE(city, "Unknown") se NULL ko default value se replace karo.',
             },
           ]}
-          proTip="PostgreSQL mein ILIKE case-insensitive LIKE hai — search features ke liye useful. Performance ke liye: LOWER(name) LIKE LOWER('%search%') ya pg_trgm extension use karo GIN index ke saath. Regular LIKE pe index sirf prefix matching mein kaam karta hai (LIKE 'prefix%') — wildcard pehle (%prefix) pe index use nahi hota."
+          proTip="Search feature build karna hai aur LIKE too slow hai? pg_trgm extension + GIN index — game changer combo. CREATE EXTENSION IF NOT EXISTS pg_trgm; CREATE INDEX CONCURRENTLY idx_products_name_trgm ON products USING GIN (name gin_trgm_ops); — ab ILIKE '%laptop%' bhi index use karega, full table scan nahi. Ye production search feature ka correct approach hai, Elasticsearch se pehle try karo."
         />
       </div>
 
@@ -188,7 +188,7 @@ FROM products;`,
           title="INSERT INTO — Data Daalna"
           emoji="➕"
           difficulty="beginner"
-          whatIsIt="INSERT INTO table mein naye rows add karta hai. Single row ya multiple rows ek saath insert karo. RETURNING clause se inserted row ka data wapas lo (PostgreSQL). ON CONFLICT se upsert karo — agar exists toh update, nahi toh insert. INSERT...SELECT se ek table se doosri mein data copy karo."
+          whatIsIt="INSERT INTO table mein naye rows add karta hai. Lekin sirf row add karna nahi — ye kaise karo ye zyada important hai. Single row, multiple rows ek saath (bulk insert), RETURNING se inserted ID immediately wapas lo — ye sab patterns hain jo production code mein common hain. ON CONFLICT = upsert pattern — agar row exist kare toh update, nahi toh insert. INSERT...SELECT se ek table se doosri mein data copy. Aur sabse zaroori: kabhi bhi string concatenation se query mat banao — SQL injection ka door khol doge."
           whenToUse={[
             'New user registration — ek row insert',
             'Bulk data import — multiple rows ek saath',
@@ -196,7 +196,7 @@ FROM products;`,
             'Data migration — ek table se doosre mein copy',
             'Seed data — development/testing ke liye initial data',
           ]}
-          whyUseIt="INSERT mein column names specify karo hamesha — table structure change hone par queries break nahi hoti. RETURNING clause se inserted ID immediately milta hai — second SELECT query ki zaroorat nahi. Bulk insert single INSERT se bahut fast hai — thousands of rows ek query mein. ON CONFLICT UPSERT pattern concurrent applications mein race conditions prevent karta hai."
+          whyUseIt="INSERT ke andar ek under-the-hood detail: bulk insert single INSERT se 10-100x fast hota hai kyunki database ek transaction, ek network round-trip mein hazaron rows insert karta hai. RETURNING clause engine ke andar se directly data nikalta hai — extra SELECT query ka overhead nahi. ON CONFLICT UPSERT concurrent apps mein race condition prevent karta hai database level pe — application code mein check nahi karna padta 'exist karta hai ya nahi.'"
           howToUse={{
             filename: 'insert-queries.sql',
             language: 'sql',
@@ -269,9 +269,9 @@ async function bulkInsertProducts(products: Array<{name: string, price: number}>
     params
   )
 }`,
-            explanation: "Hamesha parameterized queries use karo ($1, $2...) — SQL injection prevent karta hai. String concatenation mat karo kabhi bhi. RETURNING * se inserted row milti hai — ID ke liye second query nahi. ON CONFLICT upsert pattern concurrent apps mein safe hai. Bulk insert single transaction mein karo performance ke liye.",
+            explanation: "Hamesha parameterized queries ($1, $2) — ye security ki pehli line hai. Database parameter ko string nahi, data ki tarah treat karta hai — injection impossible. RETURNING * se inserted row engine se directly milti hai, extra SELECT nahi. ON CONFLICT upsert concurrent apps mein database-level race condition safety deta hai. Bulk insert ek transaction mein — ek commit, maximum performance.",
           }}
-          realWorldScenario="User signup flow mein: INSERT INTO users (email, name, password_hash) VALUES ($1, $2, $3) RETURNING id, email, created_at — ek query mein user create aur response data dono. Phir RETURNING se mila id use karo session create karne ke liye. No separate SELECT query needed."
+          realWorldScenario="User signup flow — real production pattern: INSERT INTO users (email, name, password_hash) VALUES ($1, $2, $3) RETURNING id, email, created_at — ek query mein user create bhi, aur response ke liye data bhi. RETURNING se mila id seedha session banane ke liye use karo. Koi extra SELECT query nahi, koi race condition nahi. Ye ek small optimization, lekin large traffic pe real difference karta hai."
           commonMistakes={[
             {
               mistake: 'String concatenation se SQL query banana',
@@ -284,7 +284,7 @@ async function bulkInsertProducts(products: Array<{name: string, price: number}>
               fix: 'Hamesha column names specify karo: INSERT INTO users (id, name, email) VALUES (1, "Rahul", "rahul@example.com").',
             },
           ]}
-          proTip="Large bulk inserts ke liye COPY command use karo PostgreSQL mein — INSERT se 10-100x faster hai. CSV file se: COPY products FROM '/path/to/file.csv' WITH CSV HEADER. Node.js mein pg-copy-streams library se streaming bulk insert possible hai. Millions of rows seedh ek file se load karo."
+          proTip="Millions of rows insert karne hain? COPY command use karo — regular INSERT se 100x faster hai kyunki ye database ka native binary format use karta hai, row-by-row overhead nahi. CSV file se: COPY products FROM '/path/to/file.csv' WITH CSV HEADER. Node.js mein pg-copy-streams library se streaming bulk insert possible hai — file stream seedha database mein flow karo, memory mein sab load nahi karna. Data migration ke liye yahi sahi tool hai."
         />
       </div>
 
@@ -293,7 +293,7 @@ async function bulkInsertProducts(products: Array<{name: string, price: number}>
           title="UPDATE & DELETE — Dhyan Se!"
           emoji="⚠️"
           difficulty="beginner"
-          whatIsIt="UPDATE existing rows modify karta hai. DELETE rows remove karta hai. Dono mein WHERE clause lagana mandatory hai warna SARI table affect hogi — production disaster. UPDATE...RETURNING updated row wapas deta hai. DELETE...RETURNING deleted row ka data milta hai. Soft delete — actual delete ki jagah is_deleted = true."
+          whatIsIt="UPDATE aur DELETE — ye do commands jinse sabse zyada production accidents hote hain. Rule number one: WHERE clause lagana mandatory hai. Bina WHERE ke UPDATE matlab SAARI table ke rows update — bina WHERE ke DELETE matlab POORI table delete. Ye SQL syntax error nahi deta — silently sab kuch badal deta hai! UPDATE...RETURNING se updated row wapas milti hai. Soft delete pattern — actual delete ki jagah deleted_at timestamp set karo — ye professional apps ka standard approach hai."
           whenToUse={[
             'UPDATE: User profile update, password change, order status change',
             'UPDATE: Bulk status update — sab pending orders ko processing mein',
@@ -301,7 +301,7 @@ async function bulkInsertProducts(products: Array<{name: string, price: number}>
             'Soft Delete: is_deleted = true — data physically rakho, logically hide karo',
             'Always use WHERE — target specific rows',
           ]}
-          whyUseIt="WHERE ke bina UPDATE/DELETE table ke sab rows affect karta hai — ye most common production accidents mein se ek hai. Soft delete prefer karo hard delete se — data recovery possible rehti hai. UPDATE SET mein sirf changed columns list karo — unnecessary updates skip karo. RETURNING se updated/deleted data application mein use karo."
+          whyUseIt="Ye sach mein hua hai bade companies mein — ek developer ne production pe UPDATE chalaya bina WHERE ke, aur hazaron users ke passwords corrupt ho gaye. Soft delete prefer karo hard delete se — data physically rahega, logically hidden hoga. Recovery possible, audit trail available, GDPR compliance easier. RETURNING se updated/deleted data directly milta hai — ek query mein confirm bhi karo ki sahi row change hui. Transaction mein wrap karo — ROLLBACK lifeline hoti hai."
           howToUse={{
             filename: 'update-delete-queries.sql',
             language: 'sql',
@@ -378,9 +378,9 @@ SELECT COUNT(*) FROM products WHERE category = 'Electronics';
 COMMIT;
 -- Ghalti lage toh:
 -- ROLLBACK;`,
-            explanation: "Production mein UPDATE/DELETE se pehle hamesha SELECT chalao same WHERE clause ke saath — check karo kitne rows affect honge. Phir UPDATE/DELETE karo. Transaction use karo — mistake pe ROLLBACK possible hoga. Soft delete preferred pattern hai audit trail ke liye aur accidental deletion se recovery.",
+            explanation: "Golden rule: production pe UPDATE/DELETE se pehle SAME WHERE se SELECT chalao — dekho kitne rows affected honge. Transaction mein wrap karo, BEGIN karo, check karo, COMMIT karo — galti lage toh ROLLBACK. Soft delete preferred pattern hai: data physically rakho, logically hide karo. Ye ek habit banao — ek baar bina WHERE ke UPDATE chalana enough hai ye lesson permanently yaad karne ke liye.",
           }}
-          realWorldScenario="E-commerce order cancellation: BEGIN; UPDATE orders SET status = 'cancelled', cancelled_at = NOW() WHERE id = $1 AND user_id = $2 AND status = 'pending'; UPDATE products SET stock = stock + oi.quantity FROM order_items oi WHERE oi.order_id = $1 AND products.id = oi.product_id; COMMIT; — ek transaction mein order cancel + stock restore atomic hai."
+          realWorldScenario="E-commerce order cancellation — ye sochte ho sirf ek UPDATE hai, lekin real mein do operations atomic hone chahiye: order status cancel karo + stock wapas restore karo. Agar order cancel hua lekin stock restore nahi hua toh inventory galat ho jaata hai — silent bug. Solution: BEGIN; UPDATE orders SET status = 'cancelled'... UPDATE products SET stock = stock + oi.quantity... COMMIT; — dono ya toh saath hote hain ya dono rollback. Ye ACID + transaction ka real-world power hai."
           commonMistakes={[
             {
               mistake: 'Production pe direct UPDATE/DELETE without testing',
@@ -393,7 +393,7 @@ COMMIT;
               fix: 'Soft delete pattern: deleted_at TIMESTAMP column add karo. DELETE ki jagah UPDATE SET deleted_at = NOW(). Queries mein WHERE deleted_at IS NULL. Periodic cron se actually delete karo agar needed.',
             },
           ]}
-          proTip="PostgreSQL mein TRUNCATE TABLE se ek baar mein poori table empty karo — DELETE se bahut fast hai (table ki sab rows ek saath remove, row by row nahi). TRUNCATE RESTART IDENTITY se auto-increment counter bhi reset hota hai. Development/testing mein useful — production mein soch samajh ke use karo."
+          proTip="Development mein test data wipe karna hai? TRUNCATE TABLE se poori table instant empty hoti hai — DELETE FROM table se 100x fast kyunki row-by-row scan nahi karta. TRUNCATE RESTART IDENTITY se auto-increment counter bhi reset — ids phir se 1 se start. Lekin production mein TRUNCATE = nuclear option, hamesha double check karo. Staging pe pehle test karo, production pe use karo tabhi jab zaroorat ho."
         />
       </div>
 
@@ -402,7 +402,7 @@ COMMIT;
           title="ORDER BY, LIMIT & OFFSET — Sorting aur Pagination"
           emoji="📄"
           difficulty="beginner"
-          whatIsIt="ORDER BY results sort karta hai — ASC (ascending, default) ya DESC (descending). Multiple columns pe sort possible hai — primary aur tiebreaker. LIMIT return hone wali rows limit karta hai. OFFSET N rows skip karta hai. Ye combination pagination implement karta hai. NULLS FIRST / NULLS LAST se NULL values ki position control karo."
+          whatIsIt="ORDER BY results sort karta hai — ASC (ascending, default) ya DESC (descending). Lekin under the hood kya hota hai? Database sort algorithm run karta hai — small data memory mein, large data disk pe (expensive!). Multiple columns pe sort possible hai — primary column first, tiebreaker second. LIMIT rows limit karta hai. OFFSET N rows skip karta hai. Pagination ke liye ye combo use karte hain — lekin OFFSET pe ek hidden performance trap hai jo page number badhne pe slow karta jaata hai."
           whenToUse={[
             'Sorted lists — latest products, highest rated, cheapest first',
             'Pagination — page 1, page 2 (blog posts, products, users)',
@@ -410,7 +410,7 @@ COMMIT;
             'Feed/timeline — latest content pehle (DESC created_at)',
             'Leaderboard — highest score first',
           ]}
-          whyUseIt="Bina ORDER BY ke database rows arbitrary order mein return karta hai — har query alag order mein. Pagination consistent ORDER BY require karta hai — warna same item multiple pages pe dikh sakta hai ya skip ho sakta hai. Cursor-based pagination OFFSET-based se zyada efficient hai large datasets mein — OFFSET pehle N rows skip karta hai internally."
+          whyUseIt="Ye jaanna zaroori hai: bina ORDER BY ke database rows kisi bhi order mein return kar sakta hai — same query do baar chalao, different order mil sakta hai. Pagination ORDER BY bina consistent nahi hoti. OFFSET ka hidden trap: SELECT ... LIMIT 10 OFFSET 100000 pe database pehle 100000 rows scan karta hai sirf throw karne ke liye — page badhne ke saath query linear slow hoti jaati hai. Cursor-based pagination us linear scan ko bypass karta hai."
           howToUse={{
             filename: 'order-limit-offset.sql',
             language: 'sql',
@@ -485,9 +485,9 @@ async function getProducts(page: number, pageSize: number = 20) {
     },
   }
 }`,
-            explanation: "ORDER BY hamesha specify karo paginated queries mein — warna results inconsistent rahenge. Cursor-based pagination large tables ke liye OFFSET se zyada efficient hai — OFFSET pe database pehle N rows scan karta hai phir discard. Last seen ID use karo next page ke liye — O(log n) instead of O(n).",
+            explanation: "ORDER BY hamesha specify karo paginated queries mein — bina iske results unpredictable hain. Cursor-based pagination large tables ke liye OFFSET se zyada efficient hai — OFFSET pe database O(n) kaam karta hai (scan + discard), cursor ke saath O(log n) index lookup. Last seen ID use karo next page ke liye — 100th page pe bhi same speed.",
           }}
-          realWorldScenario="Instagram feed — naye posts pehle, infinite scroll: First load: SELECT * FROM posts WHERE user_id IN (...following...) ORDER BY created_at DESC LIMIT 20; Next page: SELECT * FROM posts WHERE user_id IN (...) AND created_at < '2024-01-15 10:30:00' ORDER BY created_at DESC LIMIT 20; — cursor ke saath fast pagination."
+          realWorldScenario="Instagram feed — infinite scroll ka implementation: First load: SELECT * FROM posts WHERE user_id IN (...following IDs...) ORDER BY created_at DESC LIMIT 20; Last post ka created_at save karo. Next scroll: SELECT * FROM posts WHERE user_id IN (...) AND created_at < '2024-01-15 10:30:00' ORDER BY created_at DESC LIMIT 20 — cursor-based pagination. Index seedha us timestamp pe jump karta hai, koi extra scan nahi. Ye wahi reason hai Instagram infinite scroll smooth rehta hai."
           commonMistakes={[
             {
               mistake: 'ORDER BY bina LIMIT use karna pagination mein',
@@ -500,7 +500,7 @@ async function getProducts(page: number, pageSize: number = 20) {
               fix: 'Cursor-based pagination use karo large datasets ke liye: WHERE id < last_seen_id ORDER BY id DESC LIMIT 10.',
             },
           ]}
-          proTip="Total count aur data ek saath chahiye? PostgreSQL window function use karo: SELECT *, COUNT(*) OVER() AS total_count FROM products ORDER BY id LIMIT 10; — ek query mein data + total milta hai. Ya CTE: WITH total AS (SELECT COUNT(*) FROM products) SELECT p.*, t.count FROM products p, total t LIMIT 10;"
+          proTip="Pagination ke saath total count bhi chahiye ek query mein? PostgreSQL window function se: SELECT *, COUNT(*) OVER() AS total_count FROM products ORDER BY id LIMIT 10 — ek query mein data bhi, total bhi, koi extra COUNT(*) query nahi. Ya CTE se: WITH total AS (SELECT COUNT(*) FROM products) SELECT p.*, t.count FROM products p, total t LIMIT 10. Ye small trick ek API request ka latency half kar deti hai."
         />
       </div>
 

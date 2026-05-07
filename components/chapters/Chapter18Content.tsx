@@ -62,10 +62,10 @@ export default function Chapter18Content() {
           Testing ke bina ship mat karo!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Senior engineers aur juniors mein ek bada fark hota hai — <strong className="text-[#F5F5F7]">tests likhna</strong>. Bina tests ke code refactor karna andhere mein chalna hai. Is chapter mein hum Jest, Supertest, mocking, aur CI/CD mein testing integrate karna sikhenge.
+          Kya aap jaante ho ki bina tests ke code refactor karna andhere mein furniture shift karna hai? Har cheez theek lagti hai — phir raat ko pair mein table lag jaati hai. Tests woh lights hain jo cheezein clearly dikhati hain. Senior engineers aur juniors mein ek bada fark hai — <strong className="text-[#F5F5F7]">tests likhna</strong>. Ye patience nahi, ye professionalism hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Testing ek investment hai — pehle thoda time lagta hai, lekin long-term mein bugs se bachat aur confidence milta hai ki production mein kuch toot nahi jaayega.
+          Testing ek investment hai — pehle 2 ghante tests likhne mein. Baad mein 20 ghante debugging nahi. Aur sabse important: tests confidence dete hain — bina dar ke refactor karo, naye features add karo — agar kuch toot jaye, test fail ho jaata hai. Production mein nahi, development mein.
         </p>
       </div>
 
@@ -75,14 +75,14 @@ export default function Chapter18Content() {
           title="Testing Pyramid — Sahi Balance"
           emoji="🔺"
           difficulty="advanced"
-          whatIsIt="Testing pyramid ek model hai jo batata hai ki kitne types ke tests likhne chahiye. Base mein unit tests (sabse zyada), middle mein integration tests, aur top par E2E tests (sabse kam). Ye balance speed aur confidence dono deta hai."
+          whatIsIt="Testing pyramid ek brilliant insight hai. Socho building ki tarah: strong foundation (unit tests — bahut saare, fast, cheap), solid walls (integration tests — medium, important paths), chota roof (E2E tests — kam, slow, expensive). Agar foundation weak hai — building giregi. Agar sirf roof banao (sirf E2E) — koi stability nahi. Balance: 70% unit, 20% integration, 10% E2E — ye fast feedback aur confidence dono deta hai."
           whenToUse={[
             'New project setup karte waqt — test strategy decide karo',
             'Slow test suite fix karte waqt — zyada E2E se unit mein shift karo',
             'Team mein testing standards define karte waqt',
             'CI/CD pipeline design karte waqt — fast feedback chahiye',
           ]}
-          whyUseIt="Pyramid follow karne se test suite fast rehti hai. E2E tests slow hain (browser chalana padta hai), brittle hain (UI change hone par break), aur maintain karne mushkil hain. Unit tests milliseconds mein run hote hain — thousands bhi 30 seconds mein. Integration tests middle ground hain."
+          whyUseIt="Ab sawaal ye aata hai — E2E tests toh sab kuch test karte hain, toh unit tests kyun? Kyunki E2E tests slow hain (30 seconds+), brittle hain (ek UI element ka class change hone par 50 tests break), aur fail hone par clear feedback nahi milti — kahan exactly fail hua? Unit test fail ho toh exact function clear hai. 1000 unit tests = 30 seconds. 100 E2E tests = 50 minutes. CI mein waiting 50 minutes — developer frustration peak karta hai."
           howToUse={{
             filename: 'testing-pyramid.md',
             language: 'markdown',
@@ -105,9 +105,9 @@ export default function Chapter18Content() {
 - Slow, expensive, run nightly ya on release
 - Run time: 5s - 30s per test
 - Example: user signup → login → dashboard flow`,
-            explanation: 'Pyramid ke ratios approximate hain — project ke hisaab se adjust karo. API-heavy apps mein integration tests zyada hon, UI-heavy mein E2E. Key insight: unit tests ka coverage high raho, E2E minimum rakho.',
+            explanation: 'Under the hood: Pyramid ke ratios approximate hain — project ke hisaab se adjust karo. API-heavy apps mein integration tests zyada hon, UI-heavy mein E2E. Unit test milliseconds mein run hote hain kyunki koi I/O nahi — pure function calls. Integration tests real DB hit karte hain — 100ms-1s. E2E browser spawn karta hai — 5-30s. Speed difference ye ratios justify karta hai.',
           }}
-          realWorldScenario="Ek e-commerce startup ne sirf E2E tests likhne ke baad realize kiya ki CI pipeline 45 minutes le raha tha. Testing pyramid adopt karke 80% unit tests kiye — CI 8 minutes mein aa gaya. Developers ko instant feedback milne laga aur productivity double ho gayi."
+          realWorldScenario="E-commerce startup real story: sirf E2E tests likhe. CI pipeline 45 minutes. Developer PR push kare, coffee peene jaaye, wapas aaye, results dekhe, fix kare, push kare — 1 PR merge karne mein 2 ghante. Testing pyramid adopt kiya — 80% unit tests. CI 8 minutes. Developers feedback loop short hua, productivity double. Ye measurement hai, estimate nahi."
           commonMistakes={[
             {
               mistake: 'Sirf E2E tests likhna kyunki "full coverage dete hain"',
@@ -120,7 +120,7 @@ export default function Chapter18Content() {
               fix: 'Public API aur behavior test karo — "kya function sahi output deta hai" nahi "kaise karta hai".',
             },
           ]}
-          proTip="100% code coverage mat dhundo — meaningful coverage dhundo. 70% meaningful tests > 100% meaningless snapshot tests. Coverage report lines ki nahi, branches ki dekho — branch coverage zyada important hai."
+          proTip="100% code coverage ka trap: developers tests likhte hain sirf coverage ke liye — empty functions, trivial assertions. Coverage green, quality zero. Meaningful tests likho — edge cases, error paths, business logic. 70% meaningful branch coverage >>> 100% line coverage with garbage tests. jest --coverage report mein 'Branches' column dekho — ye actual decision points test karta hai, sirf execution nahi."
         />
       </div>
 
@@ -130,14 +130,14 @@ export default function Chapter18Content() {
           title="Jest Setup for Node.js"
           emoji="🧪"
           difficulty="advanced"
-          whatIsIt="Jest ek JavaScript testing framework hai jo zero config ke saath kaam karta hai. Isme test runner, assertion library, aur mocking sab built-in hai. Node.js projects mein industry standard hai."
+          whatIsIt="Pehle zamaane mein testing ke liye Mocha (runner) + Chai (assertions) + Sinon (mocking) + Istanbul (coverage) — 4 alag tools, 4 alag configs, integration issues. Jest ne sab ek jagah kiya — runner, assertions, mocking, coverage sab built-in. Zero config — install karo, test likhna shuru karo. TypeScript ke saath ts-jest add karo — compilation step automatically. Kya aap jaante ho Jest parallel test execution karta hai by default? 1000 tests simultaneously run hote hain."
           whenToUse={[
             'Naya Node.js project start karo — pehla package install karo Jest',
             'TypeScript projects ke liye — ts-jest ya babel-jest se',
             'Coverage reports chahiye — built-in coverage reporter',
             'Parallel test execution — Jest automatically parallelize karta hai',
           ]}
-          whyUseIt="Jest sab kuch ek jagah deta hai — test runner, assertions (expect), mocking (jest.fn(), jest.mock()), coverage. Mocha+Chai+Sinon jaisi multiple libraries ki zaroorat nahi. TypeScript ke saath bhi bahut smooth kaam karta hai ts-jest ke saath."
+          whyUseIt="Ab sawaal ye aata hai — ts-jest ya babel-jest? ts-jest TypeScript directly run karta hai — type checking during tests. babel-jest TypeScript transpile karta hai bina type checking ke — faster lekin type errors nahi pakadta. Production-grade project mein ts-jest use karo — type errors test mein bhi pakad mein aayein. coverageThreshold CI mein quality gate hai — 80% se niche coverage hogi toh CI fail hogi, PR merge block hogi. Team discipline automatically enforce hoti hai."
           howToUse={{
             filename: 'jest.config.ts',
             language: 'typescript',
@@ -182,9 +182,9 @@ export default config
 // "test": "jest",
 // "test:watch": "jest --watch",
 // "test:coverage": "jest --coverage"`,
-            explanation: 'ts-jest TypeScript directly run karta hai bina compile step ke. coverageThreshold se CI mein coverage gate enforce hoti hai. setupFilesAfterFramework mein test DB connection ya global mocks setup karo.',
+            explanation: 'Under the hood: ts-jest TypeScript directly run karta hai — ts-node jaisa kaam karta hai tests ke liye. coverageThreshold se CI quality gate enforce hoti hai — jest --coverage run karo, agar branches 70% se niche gayi toh exit code 1 = CI fail. setupFilesAfterEachFramework mein global test setup karo — DB connection, global mocks, environment variables. jest.config.ts mein type checking hai — wrong config values compile error.',
           }}
-          realWorldScenario="SaaS product mein 300+ tests hain jo 15 seconds mein run hote hain Jest ke parallel execution ke saath. Coverage 82% hai aur har PR mein GitHub Actions mein automatically run hote hain. Team ko confidence milta hai ki koi regression nahi aayi."
+          realWorldScenario="SaaS product: 300+ tests, 15 seconds mein run hote hain Jest parallel execution ke saath. Coverage 82%. Har PR mein GitHub Actions automatically tests run karti hai. Naya developer join kiya — ek week mein independently features ship kar raha hai kyunki tests safety net dete hain. Existing code confidently refactor karo — tests batayenge kuch toot gaya kya."
           commonMistakes={[
             {
               mistake: 'jest.config.js use karna TypeScript project mein',
@@ -197,7 +197,7 @@ export default config
               fix: '__tests__/ folder use karo ya *.spec.ts/*.test.ts naming convention — build se exclude karo.',
             },
           ]}
-          proTip="jest --maxWorkers=50% se CPU ka 50% use karo tests ke liye — baaki OS ke liye rakho. CI mein --forceExit use karo agar async resources properly cleanup nahi ho rahe. Watch mode mein jest --watch --testPathPattern=auth sirf auth tests run karta hai."
+          proTip="Jest watch mode ek powerful developer experience hai — jest --watch se sirf changed files ke tests run hote hain. TDD (Test-Driven Development) ke liye ideal — test likhо, fail dekho, implementation likhо, pass dekho. jest --testPathPattern=auth sirf auth-related tests run karta hai — specific module pe kaam karte waqt fast feedback. --maxWorkers=50% CI mein use karo — baaki CPU OS ke liye. --forceExit agar test suite hang kare — async cleanup issue hai."
         />
       </div>
 
@@ -207,14 +207,14 @@ export default config
           title="Supertest — API Testing"
           emoji="🚀"
           difficulty="advanced"
-          whatIsIt="Supertest ek library hai jo Express/Fastify routes ko in-process test karne deta hai — koi actual server start nahi karna padta. HTTP request simulate karo aur response check karo. Integration testing ke liye perfect."
+          whatIsIt="Supertest ka ek magical feature hai — Express app ko bina server start kiye test karo. Surprise: request(app).post('/auth/login').send({...}) — koi port nahi, koi network nahi, koi startup time nahi. Supertest internally ek ephemeral server create karta hai — test ke liye — phir destroy. Fast, no port conflicts, no 'EADDRINUSE' errors. Integration testing ka best friend."
           whenToUse={[
             'Express routes test karo — GET, POST, PUT, DELETE',
             'Auth middleware test karo — 401, 403 responses',
             'Request validation test karo — bad input ka behavior',
             'Error handling test karo — 500 responses, error formats',
           ]}
-          whyUseIt="Supertest Express app ko directly import karta hai — no port, no network. Fast hai (no TCP overhead), reliable hai (no port conflicts), aur testing mein DB mocks inject kar sakte ho easily. Real HTTP client ka feel deta hai bina infrastructure ki tension ke."
+          whyUseIt="Ab sawaal ye aata hai — Supertest sirf happy path test karne ke liye hai? Nahi — error handling test karna aur bhi important hai. 401 unauthorized, 400 bad input, 500 server error — sab scenarios test karo. Ek common mistake: sirf 200 responses test karna. Production mein 40% traffic error responses hoti hai — ye test hona chahiye. .set('Authorization', `Bearer ${token}`) se auth header simulate karo."
           howToUse={{
             filename: '__tests__/auth.test.ts',
             language: 'typescript',
@@ -264,9 +264,9 @@ describe('POST /auth/login', () => {
     expect(response.status).toBe(200)
   })
 })`,
-            explanation: 'app.ts mein server start mat karo (no app.listen) — sirf app export karo. Supertest apna internal server banata hai. afterAll mein DB connection close karo warna Jest hang karega.',
+            explanation: 'Under the hood: Supertest app instance le ke internally http.createServer() use karta hai — ephemeral server, random port. Test khatam → server destroy. app.ts mein app.listen() call karo toh permanent server bhi start hoga — port conflict ya duplicate. Pattern: app.ts sirf Express app export kare, server.ts mein app.listen() ho. afterAll mein DB connection close karo — warna Jest process alive rehta hai — "Jest did not exit" warning.',
           }}
-          realWorldScenario="Node.js backend mein 50+ API endpoints hain. Supertest se har endpoint ka happy path, error cases, aur auth testing 3 minutes mein run hoti hai. Koi bhi route change karo — immediate feedback milta hai ki kuch break hua ya nahi."
+          realWorldScenario="50+ API endpoints: har endpoint ke 3-5 tests (happy path, auth fail, validation fail, edge case). 200+ Supertest tests — 45 seconds mein run hote hain. Developer ne auth middleware refactor kiya — instantly 8 tests fail hue — auth header format change ho gaya tha. Bina tests ke ye production mein jaata. Tests ne prevent kiya. Ye investment hai, cost nahi."
           commonMistakes={[
             {
               mistake: 'app.js mein app.listen() call karna — Supertest ke saath conflict',
@@ -279,8 +279,19 @@ describe('POST /auth/login', () => {
               fix: 'afterAll(async () => { await db.close() }) ya jest --forceExit (last resort) use karo.',
             },
           ]}
-          proTip="Test fixtures ke liye beforeEach mein test data seed karo aur afterEach mein clean karo — ya transaction rollback use karo. Har test independent hona chahiye — order matter nahi karna chahiye."
+          proTip="Test isolation golden rule: har test independent hona chahiye — test 1 ke results test 2 ko affect nahi karein. beforeEach mein fresh test data seed karo, afterEach mein clean karo. Ya better: PostgreSQL transactions use karo — test ke andar transaction open karo, rollback at end — DB clean, koi cleanup code nahi. Jest parallel execution ke saath independent tests fast aur reliable hote hain."
         />
+      </div>
+
+      {/* Q&A Bridge */}
+      <div
+        className="rounded-xl p-5"
+        style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.2)' }}
+      >
+        <p className="text-[#A78BFA] font-semibold mb-2">🤔 Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          Supertest se integration tests likhne lagte hain — lekin har test real DB hit karta hai, slow hai. Unit tests mein DB call kaise test karein bina actual DB ke? Mocking ka jawab hai. Jest mocking system se exact scenarios simulate karo — success, failure, edge cases — sab milliseconds mein.
+        </p>
       </div>
 
       {/* ConceptCard 4: Mocking */}
@@ -289,14 +300,14 @@ describe('POST /auth/login', () => {
           title="Mocking in Node.js"
           emoji="🎭"
           difficulty="advanced"
-          whatIsIt="Mocking matlab real dependencies (database, external APIs, file system) ko fake implementations se replace karna tests mein. Ye unit tests ko fast aur reliable banata hai — real network calls ya DB queries nahi hote."
+          whatIsIt="Mocking socho rehearsal ki tarah — actress ko actual stage, real audience, real props ki zaroorat nahi practice ke liye. Fake stage, fake audience — lekin acting practice perfect hoti hai. Unit test mein actual DB ki zaroorat nahi — fake DB jo exactly woh return kare jo hum test karna chahte hain. Ye control deta hai — exactly woh scenario test karo jo chahiye, including error cases jo real environment mein reproduce karna mushkil hai."
           whenToUse={[
             'Unit tests mein database calls mock karo',
             'External API calls mock karo (payment gateway, email service)',
             'File system operations mock karo',
             'Time-dependent code test karo — Date.now() mock karo',
           ]}
-          whyUseIt="Real DB se tests run karne par: tests slow hote hain, flaky hote hain (network issues), aur test data manage karna mushkil hota hai. Mocking se tests milliseconds mein run hote hain, always consistent rehte hain, aur har scenario simulate kar sakte ho — including error cases."
+          whyUseIt="Ab sawaal ye aata hai — mock karna matlab real behavior test nahi hota? Ye misunderstanding hai. Unit test mein: service logic test karo — mock DB se. Integration test mein: real DB pe route test karo — Supertest se. Dono alag levels hain. Mocking se error scenarios test karna asaan hai — mockResolvedValueOnce(new Error('DB connection failed')) — ye real DB mein simulate karna mushkil hai. Complete code paths test karo bina infrastructure ki dependency ke."
           howToUse={{
             filename: '__tests__/user-service.test.ts',
             language: 'typescript',
@@ -351,9 +362,9 @@ describe('UserService', () => {
     ).rejects.toThrow('Email already exists')
   })
 })`,
-            explanation: 'jest.mock() module ko hoist karta hai — sab imports se pehle run hota hai. mockResolvedValueOnce se specific call ka behavior define karo. clearAllMocks se mock state reset hoti hai — tests independent rehte hain.',
+            explanation: 'Under the hood: jest.mock() Babel/ts-jest transform ke through hoist hota hai file ke top pe — isliye import se pehle execute hota hai. mockResolvedValueOnce ek linked list maintain karta hai — har call ek item consume karta hai. clearAllMocks mock call history reset karta hai. jest.config.ts mein clearMocks: true set karo — hamesha automatic clear. Module mock Factory pattern: () => ({ ... }) — har import ke liye same mock object milta hai.',
           }}
-          realWorldScenario="Payment service mein Stripe API mock karna zaroori hai — real API call test mein nahi karna chahte (cost, side effects). jest.mock('stripe') se har payment scenario test karo: success, card declined, network timeout — bina real Stripe dashboard touch kiye."
+          realWorldScenario="Payment service: Stripe API real calls karne par — actual charges, test mode credits deplete, network delays, occasional Stripe downtime. jest.mock('stripe') — full control: card.success, card.declined, card.insufficient_funds, network.timeout — sab scenarios milliseconds mein test karo. Koi real charge nahi, koi Stripe dependency nahi, consistent results. 50 payment scenarios = 2 seconds. Ye mocking ka superpower hai."
           commonMistakes={[
             {
               mistake: 'afterEach mein mocks clear nahi karna',
@@ -366,7 +377,7 @@ describe('UserService', () => {
               fix: 'Sirf external dependencies mock karo. Unit under test ki real implementation use karo.',
             },
           ]}
-          proTip="jest.spyOn(console, 'error').mockImplementation(() => {}) se noisy error logs suppress karo tests mein. jest.useFakeTimers() se setTimeout/setInterval control karo bina actual wait kiye — time-travel testing!"
+          proTip="jest.useFakeTimers() ek powerful trick hai — time manipulation. Token expiry test karo: jest.useFakeTimers() → jest.advanceTimersByTime(16 * 60 * 1000) → 16 minutes fast-forward → token should be expired. Bina actually 16 minutes wait kiye! setTimeout, setInterval, Date.now() sab fake ho jaate hain. jest.spyOn(console, 'error').mockImplementation(() => {}) se expected error logs suppress karo — noisy test output clean hoti hai."
         />
       </div>
 
@@ -376,14 +387,14 @@ describe('UserService', () => {
           title="CI/CD mein Testing"
           emoji="⚙️"
           difficulty="advanced"
-          whatIsIt="CI/CD (Continuous Integration/Deployment) mein tests automatically run hote hain har push ya PR par. GitHub Actions se test → lint → coverage → deploy pipeline banao. Agar tests fail hon toh deploy automatically rok do."
+          whatIsIt="CI/CD mein testing socho security guard ki tarah — har PR merge se pehle automatically check karta hai. GitHub Actions pipeline: code push hota hai → tests run hote hain → lint check → coverage check → agar sab pass toh merge allowed. Koi bhi bura code accidentally merge nahi ho sakta. 'Works on my machine' problem permanently solve hoti hai — same clean environment mein sab ke saath run hota hai."
           whenToUse={[
             'Har PR par tests automatically run karo',
             'Coverage threshold enforce karo — 80% se niche toh fail',
             'Multiple Node.js versions par test karo',
             'Deploy se pehle tests pass karo — quality gate',
           ]}
-          whyUseIt="CI/CD testing se 'works on my machine' problem khatam hoti hai. Har developer ka code same clean environment mein test hota hai. Coverage thresholds enforce karte hain ki team tests nahi skip kare. Automated deployment sirf tested code ko production mein jaane deta hai."
+          whyUseIt="Ab sawaal ye aata hai — CI setup karna time lagta hai, kya worth it hai? Numbers: team mein 5 developers, 20 PRs per day. Bina CI: ek bug slip kare toh production incident, 2-3 ghante debug, rollback, hotfix. CI ke saath: bug test mein pakad mein aaye — 5 minutes fix. Return on investment: CI setup 1 din = production incidents se bachaya gaya time months mein. Ek developer ne tests skip kiye — coverage drop — CI fail — merge block — team notice kare. Accountability automatic."
           howToUse={{
             filename: '.github/workflows/test.yml',
             language: 'yaml',
@@ -442,9 +453,9 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: \${{ secrets.CODECOV_TOKEN }}`,
-            explanation: 'services block mein test DB spin up hoti hai automatically. matrix strategy se multiple Node versions par test hota hai. npm ci (not npm install) use karo — deterministic install, faster CI. Env vars secrets mein store karo.',
+            explanation: 'Under the hood: GitHub Actions services block mein Docker containers spin up hote hain — PostgreSQL container ready hone ke baad workflow step shuru hota hai (health check). matrix strategy parallel jobs create karta hai — Node 18 aur Node 20 simultaneously test hote hain, time save. npm ci: package-lock.json strictly follow karta hai, faster, clean install. Secrets: Settings → Secrets → Actions → ${{ secrets.NAME }} se safe access.',
           }}
-          realWorldScenario="Team mein 5 developers hain aur har din 20+ PRs aate hain. GitHub Actions se har PR par automatically tests run hote hain — 3 minutes mein pata chal jaata hai ki code kaam karta hai ya nahi. Coverage 80% se niche gayi toh PR merge block ho jaata hai. Production bugs 70% reduce hue."
+          realWorldScenario="Real team metrics: 5 developers, GitHub Actions CI. Before CI: 2-3 production bugs per week, each taking 2+ hours. After CI setup: 3 minutes per PR feedback, coverage gate 80%, production bugs dropped to 1-2 per month. Developer satisfaction up — nobody fears deployments anymore. 'We can ship on Friday' culture — CI gives confidence. Coverage 80% se niche gayi — PR blocked, team notice kare, tests likhe — quality improving flywheel."
           commonMistakes={[
             {
               mistake: 'npm install use karna CI mein instead of npm ci',
@@ -457,7 +468,7 @@ jobs:
               fix: 'GitHub Secrets use karo — Settings → Secrets → Actions. Workflow mein ${{ secrets.MY_SECRET }} se access karo.',
             },
           ]}
-          proTip="GitHub Actions cache karo npm dependencies — actions/cache@v4 use karo. Pehli run ke baad 60-70% time save hota hai. path: ~/.npm aur key: ${{ hashFiles('package-lock.json') }} se perfect cache invalidation milti hai."
+          proTip="CI speed optimization: npm dependencies cache karo — actions/setup-node@v4 mein cache: 'npm' sirf is se. First run: 60 seconds npm install. Subsequent runs: 10 seconds cache restore. 60-70% CI time save. matrix: node-version: [18.x, 20.x] se multiple Node versions pe test karo — version compatibility issues early pakad mein aate hain. services: block mein test PostgreSQL spin up — real integration tests, no mocks needed."
         />
       </div>
 
@@ -471,7 +482,7 @@ jobs:
         }}
       >
         <h3 className="text-lg font-display font-bold text-[#F5F5F7] mb-4">
-          Complete Express Route Test Example
+          Complete Express Route Test — Step-by-Step Trace
         </h3>
         <pre
           className="text-sm text-[#A1A1AA] overflow-x-auto leading-relaxed"
@@ -499,7 +510,7 @@ jobs:
 });`}</code>
         </pre>
         <p className="text-sm text-[#71717A] mt-3">
-          Ye pattern follow karo — happy path test + error cases test. Har status code aur response body verify karo.
+          Ye pattern follow karo — happy path + error cases dono test karo. Sirf 200 response test karna kaafi nahi. Har status code aur response body structure verify karo. Ye wahi code hai jo production failures se bachata hai.
         </p>
       </div>
 

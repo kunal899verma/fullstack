@@ -150,26 +150,37 @@ export default function JSChapter2Content() {
         }}
       >
         <h1 className="text-4xl font-display font-bold text-[#F5F5F7] mb-3">
-          Variables &amp; Data Types 📦
+          Variables &amp; Data Types — JavaScript Ki Memory Ka Raaz
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          Code ka memory ye hai. var, let, const — teen tarike ek hi kaam ke liye. 7 primitive types. Type coercion ki jugalbandi. Sab samjhate hain.
+          Ruko ek second — JavaScript mein <strong className="text-[#F5F5F7]">var, let, const</strong> teen keywords hain ek hi kaam ke liye? Haan! Aur typeof null ka answer sunoge toh hairan ho jaoge. Memory Creation Phase mein JavaScript pehle hi sab variables ko jaanta hai — yahi hoisting ka raaz hai. Chalte hain under the hood.
+        </p>
+      </div>
+
+      {/* Akshay-style Insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}
+      >
+        <p className="text-sm font-bold text-[#F59E0B] mb-1">Memory Creation Phase — Execution Context Ka Pehla Kadam</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ye shocking hai</strong> — JavaScript apna code run karne se pehle ek baar poora code scan karta hai. Is Memory Creation Phase mein <code className="text-[#06B6D4]">var</code> variables ko undefined se initialize karta hai, <code className="text-[#06B6D4]">let</code> aur <code className="text-[#06B6D4]">const</code> ko TDZ (Temporal Dead Zone) mein dalta hai. Yahi wajah hai ki var se pehle access karo toh undefined milta hai, let se karo toh ReferenceError! Ye hoisting magic nahi, JavaScript ka execution model hai!
         </p>
       </div>
 
       {/* ConceptCard 1: var vs let vs const */}
       <div id="var-let-const">
         <ConceptCard
-          title="var vs let vs const — Final Answer"
+          title="var vs let vs const — Execution Context Ka Nazar"
           emoji="📦"
           difficulty="beginner"
-          whatIsIt="Teen keywords, teen alag behaviors. var = function-scoped, hoisted, re-declarable (avoid karo). let = block-scoped, not hoisted to usable state, re-assignable. const = block-scoped, must be initialized, cannot be reassigned (but object properties can change!)"
+          whatIsIt="Teen keywords, teen alag behaviors — aur sab ka reason Execution Context mein chhupa hai. var = function-scoped, Memory Creation Phase mein undefined se hoist hota hai (yahi confusion ka source!). let = block-scoped, TDZ mein hota hai jab tak initialize na ho. const = block-scoped, must be initialized, binding lock hai value nahi — isliye const object ki properties change ho sakti hain!"
           whenToUse={[
-            'const by default — hamesha. Ye intent signal karta hai: ye value change nahi hogi.',
+            'const by default — hamesha. Ye clearly bolta hai: ye binding change nahi hogi.',
             'let jab reassignment zaroor ho — loop counter, conditional assignment, accumulator.',
-            'var kabhi nahi — sirf legacy code mein milega, naya code mein avoid karo.',
+            'var kabhi nahi — sirf legacy code mein milega. Naya code mein bilkul avoid karo.',
           ]}
-          whyUseIt="const aur let se code predictable hota hai — scope clear hota hai, accidental reassignment nahi hoti. var ki function-scoping aur hoisting se unexpected bugs aate hain jo debug karna mushkil hota hai. Modern JS mein var ka koi valid use case nahi hai."
+          whyUseIt="Bhai, const aur let se code predictable hota hai — scope crystal clear hota hai, accidental reassignment nahi hoti. var ki function-scoping aur Memory Creation Phase hoisting se unexpected bugs aate hain jo debug karna ek nightmare hai. Modern JS mein var ka koi valid use case nahi hai — ye historical artifact hai."
           howToUse={{
             filename: 'var-let-const.ts',
             language: 'typescript',
@@ -259,13 +270,24 @@ user.name = 'Priya';  // ✅ allowed! reference same hai
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#10B981] mb-1">Ab Sawaal Ye Aata Hai — typeof null?</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <code className="text-[#F59E0B]">typeof null</code> kya return karta hai? Answer hai <strong className="text-[#F5F5F7]">&quot;object&quot;</strong> — yaar ye JavaScript ka ek famous bug hai jo 1995 se chala aa raha hai! Backward compatibility ke liye fix nahi kiya gaya. Aur <code className="text-[#F59E0B]">typeof NaN</code>? Answer hai <strong className="text-[#F5F5F7]">&quot;number&quot;</strong> — NaN (Not a Number) ek number hai! Ye JavaScript ke woh quirks hain jo history samajhne se hi samajh mein aate hain.
+        </p>
+      </div>
+
       {/* ConceptCard 2: 7 Primitive Types */}
       <div id="primitive-types">
         <ConceptCard
-          title="JavaScript Ke 7 Primitive Types"
+          title="JavaScript Ke 7 Primitive Types — Stack Pe Rehte Hain"
           emoji="🔢"
           difficulty="beginner"
-          whatIsIt="Primitives = immutable values. Copy by value hote hain — matlab jab tum ek primitive variable doosre ko assign karte ho, ek completely new copy banti hai. 7 types: string, number, boolean, null, undefined, symbol, bigint."
+          whatIsIt="Primitives = immutable values — Stack mein store hote hain. Copy by value hote hain — jab ek primitive variable doosre ko assign karo, ek completely nayi copy banti hai, original untouched. 7 types hain: string, number, boolean, null, undefined, symbol, bigint. Inhe Execution Context ke Memory Component mein directly store kiya jaata hai."
           whenToUse={[
             'string: Text data — names, messages, URLs, JSON strings.',
             'number: Integers aur floats dono — JavaScript mein alag number types nahi hain (unlike Java).',
@@ -332,13 +354,26 @@ console.log(9007199254740992n === 9007199254740993n); // false! bigint is exact`
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(236,72,153,0.07)', border: '1px solid rgba(236,72,153,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#EC4899] mb-1">Surprise! Ye Output Kya Hoga?</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <code className="text-[#06B6D4]">&apos;5&apos; + 3</code> kya dega? <strong className="text-[#F5F5F7]">&quot;53&quot;</strong> — string concatenation! <br/>
+          <code className="text-[#06B6D4]">&apos;5&apos; - 3</code> kya dega? <strong className="text-[#F5F5F7]">2</strong> — numeric subtraction! <br/>
+          Same + aur - operators, alag alag behavior — kyun? Ye type coercion hai. JavaScript silently types convert karta hai. Isliye <code className="text-[#F59E0B]">===</code> hamesha use karte hain — ye coercion nahi karta!
+        </p>
+      </div>
+
       {/* ConceptCard 3: Type Coercion */}
       <div id="type-coercion">
         <ConceptCard
-          title="Type Coercion — Confusing Magic"
+          title="Type Coercion — Magic Nahi, JavaScript Ka Rule Hai"
           emoji="🎩"
           difficulty="intermediate"
-          whatIsIt="JavaScript automatically ek type ko doosre mein convert karta hai — ye 'coercion' hai. Kabhi helpful hota hai, kabhi nightmare. Isliye == (loose equality) avoid karte hain aur hamesha === use karte hain."
+          whatIsIt="JavaScript automatically ek type ko doosre mein convert karta hai — ye 'coercion' hai. Ye magic nahi hai, JavaScript ka defined behavior hai. Kabhi helpful hota hai, kabhi nightmare. Isliye == (loose equality) avoid karte hain — ye coercion karta hai. Hamesha === use karo — ye strict hai, type bhi check karta hai. Yahi ek rule yaad rakho: hamesha ===."
           whenToUse={[
             'Explicit coercion: Number(), String(), Boolean(), parseInt() — jab intentionally type convert karna ho.',
             'Template literals mein automatic string conversion — \`Hello ${name}\`.',
@@ -422,13 +457,26 @@ value == null // true for both null AND undefined
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#7C3AED] mb-1">Counter-Intuitive Alert — Ye Mat Bhoolna!</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <code className="text-[#06B6D4]">if ([])</code> — ye <strong className="text-[#F5F5F7]">true</strong> hai! Empty array truthy hai! <br/>
+          <code className="text-[#06B6D4]">if ({})</code> — ye bhi <strong className="text-[#F5F5F7]">true</strong> hai! Empty object truthy hai! <br/>
+          Sirf 8 falsy values hain — baki sab truthy. <strong className="text-[#F59E0B]">?? vs ||</strong> ka fark yaad rakho: <code className="text-[#06B6D4]">0 ?? 5</code> = 0 (valid!), <code className="text-[#06B6D4]">0 || 5</code> = 5 (0 ko falsy maan ke replace kar diya). Yahi wajah hai ?? zyada safe hai!
+        </p>
+      </div>
+
       {/* ConceptCard 4: Falsy Values */}
       <div id="falsy-values">
         <ConceptCard
-          title="Falsy Values — Sab Ko Samjho"
+          title="Falsy Values — Sirf 8 Hain, Yaad Karo"
           emoji="❓"
           difficulty="beginner"
-          whatIsIt="JavaScript mein kuch values boolean context mein false ki tarah behave karti hain — ye 'falsy' values hain. Sirf 8 falsy values hain: false, 0, -0, 0n (BigInt zero), '' (empty string), null, undefined, NaN. Baki sab 'truthy' hain."
+          whatIsIt="JavaScript mein kuch values boolean context mein false ki tarah behave karti hain — ye 'falsy' values hain. Sirf 8 falsy values hain: false, 0, -0, 0n (BigInt zero), '' (empty string), null, undefined, NaN. Baki sab truthy — including empty array [] aur empty object {}! Ye counter-intuitive lagta hai, lekin yaad ho gaya toh bugs 10x kam hote hain."
           whenToUse={[
             'Optional chaining (?.) — null/undefined par safe property access ke liye.',
             'Nullish coalescing (??) — sirf null/undefined ke liye default value chahiye ho.',
@@ -490,13 +538,24 @@ console.log(label || 'Unnamed'); // 'Unnamed' — || treats '' as falsy!`,
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(6,182,212,0.07)', border: '1px solid rgba(6,182,212,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#06B6D4] mb-1">React Developers Ke Liye — Ye Critical Hai</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ab sawaal ye aata hai</strong> — React state directly mutate kyun nahi karte? Kyunki object reference same rehti hai! React check karta hai ki reference badla ki nahi — agar nahi badla, re-render nahi karta. Isliye hamesha new object return karo: <code className="text-[#06B6D4]">setState({'{'} ...prev, name: &apos;Priya&apos; {'}'}) </code>. Spread operator nayi object banata hai — nayi reference = React ko pata chala!
+        </p>
+      </div>
+
       {/* ConceptCard 5: Reference Types */}
       <div id="reference-types">
         <ConceptCard
-          title="Primitive vs Reference Types"
+          title="Primitive vs Reference Types — Stack vs Heap"
           emoji="📌"
           difficulty="intermediate"
-          whatIsIt="Primitives are copied by value — new copy milti hai, original unaffected. Objects/arrays are copied by reference — dono variables same memory location point karte hain. Ek ko change karo, doosra bhi change ho jaata hai. Ye bugs ka bahut bada source hai."
+          whatIsIt="Primitives Stack mein store hote hain, copy by value — nayi copy banti hai, original untouched. Objects aur arrays Heap mein store hote hain, copy by reference — dono variables same Heap location point karte hain. Ek change karo, doosra bhi change! Execution Context ke memory mein object ki location (address) store hoti hai, actual object nahi — yahi reference hai!"
           whenToUse={[
             'Shallow copy: jab top-level properties independent karni hon (spread operator ya Object.assign).',
             'Deep copy: jab completely independent copy chahiye — nested objects bhi alag honi chahiye.',
@@ -609,10 +668,10 @@ const cloned = structuredClone(withDate);
       <div id="chapter-quiz">
         <div className="mb-4">
           <h3 className="text-lg font-display font-bold text-[#F5F5F7] mb-1">
-            Chapter 2 Quiz — Variables &amp; Types Check
+            Chapter 2 Quiz — Variables &amp; Memory Ka Test
           </h3>
           <p className="text-sm text-[#71717A]">
-            5 questions — 80%+ chahiye pass ke liye. All the best!
+            Ab dekho — Execution Context ka mental model kitna strong hai? 5 sawaal, 80%+ chahiye!
           </p>
         </div>
         <QuizSection questions={chapterQuiz} chapterSlug="variables-datatypes" />

@@ -61,7 +61,7 @@ export default function DBChapter4Content() {
           Aggregations, GROUP BY & Subqueries
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Data summarize karna ek core database skill hai — sales totals, user counts, averages. GROUP BY aur aggregate functions se powerful analytical queries likhte hain. Subqueries aur CASE se aur bhi complex logic possible hai.
+          Data summarize karna ek core database skill hai — sales totals, user counts, averages. Lekin ye andar se kaise kaam karta hai? GROUP BY ke baad database ek sorting pass karta hai — similar values ek jagah aate hain, phir aggregate functions har group pe apply hote hain. Ye samajhna zaroori hai taaki slow GROUP BY queries optimize kar sako. Subqueries aur CASE se complex business logic SQL mein seedha express ho jaata hai — application code mein loop nahi lagani padti.
         </p>
       </div>
 
@@ -70,14 +70,14 @@ export default function DBChapter4Content() {
           title="Aggregate Functions — Data Summarize Karo"
           emoji="📊"
           difficulty="beginner"
-          whatIsIt="Aggregate functions multiple rows ki values ek result mein summarize karte hain — COUNT, SUM, AVG, MIN, MAX."
+          whatIsIt="Aggregate functions multiple rows ki values collapse karke ek single result dete hain — COUNT, SUM, AVG, MIN, MAX. Ye database engine ke andar highly optimized operations hain — indexed data pe milliseconds mein million rows process ho jaate hain. COUNT(*) har row count karta hai (NULLs bhi). COUNT(column) sirf non-NULL values. SUM/AVG NULL values ignore karte hain — ek gotcha jo unexpected results de sakti hai."
           whenToUse={[
             'Total sales calculate karne ke liye',
             'Average order value find karne ke liye',
             'Most/least expensive item find karne ke liye',
             'User count janna ho',
           ]}
-          whyUseIt="Application code mein array loop se aggregate karna inefficient hai — database mein aggregate karo, indexed data pe bahut fast hota hai."
+          whyUseIt="Application code mein 10,000 orders fetch karo phir JavaScript mein sum karo — ye 10,000 rows network pe travel karte hain, memory mein load hote hain, JavaScript loop lagti hai. Database mein aggregate karo — sirf ek number wapas aata hai. Database indexed data pe aggregate karna C mein optimized hai, JavaScript loops se 100x fast. Ye engineering decision hai — data process karo wahan jahan data hai."
           howToUse={{
             code: `-- Basic aggregates
 SELECT
@@ -114,14 +114,14 @@ HAVING COUNT(*) >= 5         -- sirf frequent buyers
 ORDER BY total_spent DESC
 LIMIT 20;`,
             language: 'sql',
-            explanation: 'Aggregate functions NULL values skip karte hain (COUNT column ke liye). GROUP BY se category-wise results. HAVING aggregate conditions apply karta hai — WHERE pe nahi.',
+            explanation: 'COUNT(*) saari rows, COUNT(col) non-NULL only — ye difference NULL data mein unexpected results deta hai. GROUP BY internally sort + group karta hai — expensive operation large data pe. HAVING aggregate conditions ke liye hai — WHERE individual rows pe, HAVING groups pe. SQL execution order: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY.',
             filename: 'aggregations.sql',
           }}
-          realWorldScenario="Sales dashboard: monthly revenue, average order value, top 10 customers by spend — sab ek efficient SQL query se. Application layer mein loops nahi lagani."
+          realWorldScenario="Startup ke founder ne pucha: 'aaj kitna revenue aaya, average order value kya hai, kaun top 10 customers hain?' Teen separate questions — ek efficient SQL query mein sab nikal aata hai. Database engine sort + group karta hai, aggregate compute karta hai, sort karta hai — sab server side. Application sirf result display karta hai. Ye real dashboard engineering hai."
           commonMistakes={[
             { mistake: 'SELECT mein non-aggregated column without GROUP BY', why: 'SQL error: ambiguous column — kaunsa row ki value leni hai?', fix: 'Har non-aggregated SELECT column GROUP BY mein hona chahiye' },
           ]}
-          proTip="COUNT(DISTINCT column) se unique values count karo — COUNT(DISTINCT user_id) se unique active users. Regular COUNT duplicate count karta hai."
+          proTip="COUNT(DISTINCT user_id) se unique active users nikalo — COUNT(*) duplicate count karta hai (ek user ke 5 orders = 5 count). Ye distinction analytics mein bahut important hai. PostgreSQL mein FILTER clause aur bhi powerful hai: COUNT(*) FILTER (WHERE status = 'delivered') AS delivered_count — conditional aggregation ek line mein, separate GROUP BY nahi chahiye."
         />
       </div>
 
@@ -130,13 +130,13 @@ LIMIT 20;`,
           title="GROUP BY & HAVING — Advanced Grouping"
           emoji="📦"
           difficulty="intermediate"
-          whatIsIt="GROUP BY same values wale rows ko ek group mein combine karta hai. HAVING us group pe filter lagata hai — WHERE GROUP BY ke baad nahi apply hota."
+          whatIsIt="GROUP BY same values wale rows collapse karke ek group banata hai — phir har group pe aggregate apply hota hai. HAVING us collapsed group pe filter karta hai. Critical distinction: WHERE individual rows pe apply hota hai GROUP BY se pehle, HAVING grouped results pe apply hota hai GROUP BY ke baad. HAVING mein aggregate functions use kar sakte ho — WHERE mein nahi. Execution order: WHERE rows filter → GROUP BY group banao → HAVING groups filter."
           whenToUse={[
             'Category-wise, month-wise reports',
             'Top N users/products find karne ke liye',
             'Thresholds check karne ke liye (orders > 5)',
           ]}
-          whyUseIt="Complex business reports ek query mein — monthly sales trend, category performance, customer segments sab GROUP BY se."
+          whyUseIt="Business intelligence ka core tool hai GROUP BY — monthly sales trend, category-wise performance, customer segments, cohort analysis sab isi se nikalta hai. Bina GROUP BY ke har metric ke liye alag query chahiye. GROUP BY ke saath ek query mein poora dashboard data nikal aata hai. ROLLUP se automatic subtotals — total across all groups bina extra query ke."
           howToUse={{
             code: `-- Monthly revenue trend
 SELECT
@@ -174,14 +174,14 @@ SELECT
   COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '30 days') AS new_users
 FROM users;`,
             language: 'sql',
-            explanation: 'DATE_TRUNC month grouping se monthly trends. ROLLUP automatic subtotals. FILTER clause se ek query mein multiple conditional counts.',
+            explanation: 'DATE_TRUNC month pe group — ye month-wise trends ka standard pattern hai. ROLLUP ek power feature hai: automatically grand total row add karta hai, alag SUM query nahi karna padta. FILTER clause modern PostgreSQL ka underused gem hai — multiple conditional aggregates ek query mein, GROUP BY se cleaner.',
             filename: 'group-by.sql',
           }}
-          realWorldScenario="Business intelligence dashboard: har metric ek query se — ek hi GROUP BY query se revenue by category, by month, by region sab nikalna possible hai."
+          realWorldScenario="Ek fintech startup ka weekly review meeting: 'Monthly revenue trend dikhao, aur saath mein category-wise breakdown bhi.' Naive approach: 2 separate queries + JavaScript merge. Smart approach: GROUP BY DATE_TRUNC('month', ...), category — ek query, sab kuch. Ye wahi difference hai junior aur senior engineer ke approach mein — database ko kaam karne do."
           commonMistakes={[
             { mistake: 'HAVING mein WHERE wali conditions likhna', why: 'Performance suffer karta hai — GROUP BY ke baad filter hota hai', fix: 'Individual row conditions WHERE mein, aggregate conditions HAVING mein' },
           ]}
-          proTip="GROUPING SETS, ROLLUP, CUBE PostgreSQL features hain jo ek query se multiple grouping levels provide karte hain — analytics queries mein bahut powerful."
+          proTip="PostgreSQL ka GROUPING SETS, ROLLUP, CUBE — ye teen advanced GROUP BY variants hain jo multiple grouping levels ek query mein dete hain. ROLLUP (year, month) se yearly totals, monthly totals, aur grand total teeno ek saath. CUBE se har possible combination. GROUPING SETS se custom combinations. Analytics reports ke liye ye tools application code ko dramatically simplify karte hain."
         />
       </div>
 
@@ -190,13 +190,13 @@ FROM users;`,
           title="Subqueries — Query ke Andar Query"
           emoji="🪆"
           difficulty="intermediate"
-          whatIsIt="Subquery ek query hai jo doosri query ke andar hoti hai — SELECT, WHERE, FROM, HAVING mein use ho sakti hai."
+          whatIsIt="Subquery ek query ke andar doosri query hai — SQL ka nesting. WHERE mein subquery: filter value dynamically compute karo. FROM mein subquery (derived table): pehle ek intermediate result banao, phir us pe query karo. EXISTS subquery early exit karta hai — pehla match milte hi stop, saari values evaluate nahi karta. Correlated subquery: outer query ki har row ke liye inner query run hoti hai — powerful lekin N+1 problem ka source bhi."
           whenToUse={[
             'Aggregate result compare karne ke liye (avg se zyada products)',
             'Correlated filtering (user ki last order)',
             'Derived tables (FROM clause mein subquery)',
           ]}
-          whyUseIt="Complex logic ek query mein express kar sakte ho bina application code ke. Often CTEs se zyada readable bhi hoti hain."
+          whyUseIt="N+1 problem ek khamoshi se app ko barbad karne wala bug hai — aur correlated subqueries iska ek common source hain. Har outer row ke liye inner query run hoti hai: 1000 users ke liye 1000 inner queries = N+1. Lekin sahi jagah subqueries bahut powerful hain — dynamic filter values, derived tables, EXISTS checks. Rule: agar subquery ek baar run hoti hai (scalar ya uncorrelated) — theek hai. Agar har outer row ke liye run hoti hai — JOIN ya CTE se replace karo."
           howToUse={{
             code: `-- WHERE mein subquery
 SELECT name, price
@@ -244,14 +244,14 @@ SELECT
   salary - (SELECT AVG(salary) FROM employees) AS diff
 FROM employees;`,
             language: 'sql',
-            explanation: 'Scalar subquery single value return karta hai. IN subquery matching IDs return karta hai. EXISTS early exit karta hai. FROM subquery derived table banata hai.',
+            explanation: 'Scalar subquery single value return karta hai — ek baar run, value substitute. IN subquery matching IDs return karta hai — whole list evaluate hoti hai. EXISTS early exit karta hai — pehla match milte hi stop, faster for large datasets. FROM subquery derived table banata hai — pehle group karo, phir rank karo, ek shot mein.',
             filename: 'subqueries.sql',
           }}
-          realWorldScenario="Recommendation engine: user ki purchase history dekho (subquery), similar category ke products filter karo — complex logic ek efficient query mein."
+          realWorldScenario="'Average se mehenge products dikhao' — ye ek subquery ka classic use case hai: WHERE price > (SELECT AVG(price) FROM products). AVG pehle calculate hota hai, phir filter apply hota hai. Recommendation engine mein: user ki purchase categories nikalo (subquery), un categories ke naye products filter karo — complex personalization logic ek SQL query mein, koi application-side loop nahi."
           commonMistakes={[
             { mistake: 'Correlated subqueries N+1 problem create kar sakte hain', why: 'Har outer row ke liye inner query execute hoti hai — slow for large datasets', fix: 'JOINs ya CTEs se correlated subqueries replace karo jahan possible ho' },
           ]}
-          proTip="Subquery vs JOIN: same result zyada cases mein. Query optimizer usually same plan generate karta hai. Code readability ke hisaab se choose karo — performance profile karo toh pata chalega."
+          proTip="Subquery vs JOIN vs CTE — kab kya? Subquery: simple, ek jagah, readability ke liye. JOIN: performance critical, index use hoga. CTE (WITH): complex multi-step logic, reusable intermediate results. Query optimizer usually same plan generate karta hai in teeno mein. Profile karo EXPLAIN ANALYZE se — gut feeling pe mat jao. Aur correlated subqueries hamesha suspect karo: N+1 problem ka check karo."
         />
       </div>
 
@@ -260,13 +260,13 @@ FROM employees;`,
           title="CASE & NULL Handling — SQL Ka if-else"
           emoji="🔀"
           difficulty="intermediate"
-          whatIsIt="CASE SQL mein conditional logic provide karta hai. COALESCE, NULLIF, IS NULL NULL values handle karte hain — NULL database mein special hai."
+          whatIsIt="CASE SQL ka if-else hai — SELECT mein, WHERE mein, ORDER BY mein, GROUP BY mein — har jagah kaam karta hai. NULL database mein ek special creature hai: NULL = NULL bhi FALSE hai SQL mein! Ye three-valued logic hai — TRUE, FALSE, NULL. Ye samajhna critical hai kyunki bahut saare bugs sirf is misunderstanding se aate hain. COALESCE pehli non-NULL value return karta hai — NULL handling ka standard tool."
           whenToUse={[
             'Data transformation — status codes ko readable labels',
             'Conditional aggregation',
             'NULL safe comparisons aur defaults',
           ]}
-          whyUseIt={'NULL = NULL false hota hai SQL mein! IS NULL use karna padta hai. COALESCE default values provide karta hai — UI pe "N/A" dikhane ke liye.'}
+          whyUseIt={'Sawaal: WHERE city = NULL kyun kaam nahi karta? Kyunki NULL ka matlab hai "unknown value" — unknown = unknown bhi unknown hi hota hai, TRUE nahi. SQL mein three-valued logic hai: TRUE, FALSE, NULL. Isliye IS NULL use karte hain. COALESCE NULL ko meaningful default mein convert karta hai — UI pe "N/A" ya 0 dikhao, NULL nahi. Ye bugs jo NULL se aate hain — silent hote hain, production mein edge cases mein surface hote hain.'}
           howToUse={{
             code: `-- Simple CASE (like switch)
 SELECT
@@ -318,14 +318,14 @@ FROM users;
 WHERE email IS NULL     -- ✅
 WHERE email IS NOT NULL -- ✅`,
             language: 'sql',
-            explanation: 'CASE multiple conditions handle karta hai. Conditional aggregation CASE + SUM se ek query mein multiple counts. COALESCE NULL ke liye default. NULL = NULL false hai SQL mein — IS NULL use karo.',
+            explanation: 'Simple CASE switch ki tarah — specific values check. Searched CASE if-else ki tarah — conditions check. Conditional aggregation CASE + SUM se ek GROUP BY mein multiple counts — ye ek powerful pattern hai. COALESCE NULL ko default se replace karta hai. NULL = NULL hamesha FALSE — IS NULL hamesha use karo NULL check ke liye.',
             filename: 'case-null.sql',
           }}
-          realWorldScenario="Report card query: ek query se pending, delivered, cancelled orders ka count aur percentage — CASE se conditional aggregation. Status codes ko human-readable labels mein convert karo."
+          realWorldScenario="Operations manager ka weekly report: 'Is week kitne orders delivered hue, kitne cancelled, delivery success rate kya hai?' Naive approach: teen separate queries. Smart approach: ek GROUP BY query with CASE conditional aggregation — SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) se delivered count, divide karke percentage. Ek query, poora report."
           commonMistakes={[
             { mistake: 'NULL = NULL comparison likhna', why: 'SQL mein NULL = NULL hamesha false — undefined = undefined ki tarah', fix: 'IS NULL ya IS NOT NULL use karo. NULL-safe equality: IS NOT DISTINCT FROM' },
           ]}
-          proTip="CASE expressions ORDER BY mein bhi kaam karte hain: ORDER BY CASE WHEN status = 'urgent' THEN 0 ELSE 1 END — urgent items pehle sort ho jaate hain."
+          proTip="CASE ORDER BY mein bhi use kar sakte ho — custom sort order define karo: ORDER BY CASE WHEN status = 'urgent' THEN 0 WHEN status = 'high' THEN 1 ELSE 2 END. Urgent items automatically pehle aate hain. Ye business priority pe sorting hai, alphabetical nahi. Aur NULLIF use karo zero-division se bachne ke liye: NULLIF(denominator, 0) — agar denominator 0 hai toh NULL return karo, divide by zero error nahi."
         />
       </div>
 

@@ -146,7 +146,7 @@ export default function ReactChapter2Content() {
           JSX — HTML in JavaScript? 🤯
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          React mein jo HTML jaisi cheez likhte ho — woh actually JavaScript hai. Browser directly JSX nahi samajhta. Babel/TypeScript compiler use karta hai ise React.createElement() calls mein convert karne ke liye.
+          Ruko — JSX HTML nahi hai. Ye bahut logo ki galti hai. JSX actually JavaScript hai jo HTML jaisi dikhti hai. Browser JSX directly nahi samajhta — Babel ya TypeScript compiler ise pure JavaScript mein convert karta hai. Jab tum {'<div className="x">'} likhte ho, compiler ise React.createElement('div', {'{ className: "x" }'}) bana deta hai. Ye samajhna zaroori hai — tab JSX ke rules automatic sense karenge.
         </p>
       </div>
 
@@ -156,13 +156,13 @@ export default function ReactChapter2Content() {
           title="JSX — Syntactic Sugar"
           emoji="🍬"
           difficulty="beginner"
-          whatIsIt="JSX = JavaScript XML. Ye React.createElement() ka shorthand hai. Browser directly JSX nahi samajhta — Babel/tsc ise compile karta hai pure JS mein. Jo tum likhte ho aur jo browser dekhta hai — dono alag hain."
+          whatIsIt="JSX ka full form hai JavaScript XML. Ye sirf ek shorthand hai React.createElement() calls ke liye — kuch nahin zyada, kuch nahin kam. Browser directly JSX nahi samajhta — Babel ya TypeScript compiler ise pure JS mein convert karta hai compile time pe. Jo tum .tsx file mein likhte ho aur jo actually browser execute karta hai — dono bilkul alag hain. Ye mystery nahi, ye sirf syntactic sugar hai."
           whenToUse={[
             'Hamesha React mein JSX use karo — ye standard hai aur zyada readable hai',
             'React.createElement() directly tab use karo jab JSX not available ho (rare case)',
             'JSX samajhna zaroori hai debugging ke liye — error stack traces mein compiled output dikhta hai',
           ]}
-          whyUseIt="JSX bina React.createElement() baar baar likhne ki zaroorat nahi. Visual representation bahut clearer hoti hai — nested UI JSX mein tree structure jaisi dikhti hai, createElement calls mein nahi. Yahi reason hai ki React ne JSX adopt kiya aur poora ecosystem follow kiya."
+          whyUseIt="Socho agar JSX nahi hota toh? Har component mein React.createElement calls — nested structure mein yeh padhna nightmare hota. JSX se UI ka structure visually tree jaisa dikhta hai — exactly jaisi screen dikhti hai, waisa code bhi dikhta hai. Ye mental model bahut powerful hai. Isliye React ne JSX adopt kiya — readability aur developer experience ke liye."
           howToUse={{
             filename: 'jsx-compiled.tsx',
             language: 'tsx',
@@ -184,9 +184,9 @@ const element = React.createElement(
 
 // Dono same output dete hain
 // JSX sirf readability ke liye hai`,
-            explanation: 'JSX compile hone ke baad React.createElement() calls ban jaate hain. Isliye JSX mein ek root element zaroori hota hai — createElement single element return karta hai. Ye samajhna important hai errors debug karte waqt.',
+            explanation: 'JSX compile hone ke baad React.createElement() calls ban jaate hain. Ab samajh aaya na — JSX mein ek root element kyun zaroori hai? Kyunki React.createElement() single element return karta hai. Do root elements matlab do alag createElement calls — function ek cheez return kar sakta hai. Fragment se ye solve hota hai.',
           }}
-          realWorldScenario="Jab tum React DevTools mein component tree dekhte ho, ya error stack trace mein compiled code hota hai — tab JSX ke compiled output ko samajhna bahut kaam aata hai. 'Cannot read properties of undefined' error mein compiled createElement call indicate karta hai kahan issue hai."
+          realWorldScenario="Error stack trace mein kabhi compiled JSX output dekha hoga? React.createElement('div', null, ...) — ye exactly wahi hai jo tumne JSX mein likha tha. React DevTools mein component tree — yeh bhi JSX se aaya hai. JSX ka compiled form samajhna debugging skill hai — experienced React developers isko instantly read kar lete hain."
           commonMistakes={[
             {
               mistake: 'Sochna ki JSX HTML hai — HTML attributes use karna jaise class, for, onclick',
@@ -194,7 +194,7 @@ const element = React.createElement(
               fix: 'JSX attributes: className (not class), htmlFor (not for), onClick (not onclick), onChange (not onchange).',
             },
           ]}
-          proTip="React 17+ se 'import React from react' component files mein zaroor nahi — new JSX transform automatically handle karta hai. Purani tutorials mein ye import dikhega — modern projects mein skip kar sakte ho (tsconfig mein jsx: 'react-jsx' hona chahiye)."
+          proTip="Purani tutorials mein har file ke top pe 'import React from react' dikhega. React 17 se ye zaroor nahi raha — new JSX transform automatically handle karta hai. Modern Vite ya Next.js projects mein ye import skip karo. Sirf jsx: 'react-jsx' tsconfig mein hona chahiye — jo by default hota hai."
           demo={
             <DiffBlock
               language="jsx"
@@ -230,13 +230,13 @@ const element = React.createElement(
           title="JSX Ke Rules — Yaad Rakhna"
           emoji="📜"
           difficulty="beginner"
-          whatIsIt="JSX ke kuch strict rules hain jo HTML se alag hain. Ye rules isliye hain kyunki JSX actually JavaScript hai — HTML attribute names Jo JS reserved words hain, unhe rename karna pada. Ye rules ek baar yaad kar lo, phir automatic ho jaata hai."
+          whatIsIt="JSX ke rules HTML se alag kyun hain? Ab tum jaante ho answer — JSX JavaScript hai. Aur JavaScript ke apne reserved words hain. 'class' JavaScript mein ES6 class declaration keyword hai — conflict avoid karne ke liye className. 'for' JavaScript mein loop keyword hai — htmlFor. Event handlers camelCase mein — JavaScript convention follow karo. Ye rules ek baar samajh gaye, phir automatic ho jaata hai — har bar sochna nahi padta."
           whenToUse={[
             'Har JSX file mein ye rules apply hote hain — koi exception nahi',
             'ESLint + react plugin in rules ko automatically catch karta hai',
             'TypeScript bhi in errors ko compile time par pakadta hai',
           ]}
-          whyUseIt="JSX rules JavaScript ke saath coexist karne ke liye hain. class JS mein ES6 class keyword hai — conflict avoid karne ke liye className. for JS mein loop keyword hai — htmlFor. camelCase isliye ki JS naming convention follow ho. Ek baar samajh gaye toh automatic ho jaata hai."
+          whyUseIt="Ye rules arbitrary nahi hain — har rule ke peeche ek reason hai. className isliye kyunki class JS keyword hai. htmlFor isliye kyunki for loop keyword hai. camelCase isliye kyunki ye JavaScript naming convention hai. Self-closing tags isliye kyunki JSX strict XML follow karta hai. Ek root element isliye kyunki React.createElement() single value return karta hai. Har rule ka reason samajh lo — toh bhuloge nahi."
           howToUse={{
             filename: 'jsx-rules.tsx',
             language: 'tsx',
@@ -285,9 +285,9 @@ function Component() {
     </>
   )
 }`,
-            explanation: 'Ye rules memorize karo: className, htmlFor, camelCase events, self-closing tags, ek root element. ESLint react/recommended in sabko catch karta hai automatically — project mein setup karo.',
+            explanation: 'Ye paanch rules yaad rakho: className, htmlFor, camelCase events, self-closing tags, ek root element. ESLint + react/recommended plugin in sabko automatically catch karta hai — manually yaad karne ki zaroorat nahi jab ESLint setup ho.',
           }}
-          realWorldScenario="Naye developer ne legacy HTML template React mein paste kiya — class, for, onclick sab wrong. Ye common onboarding issue hai. Solution: VSCode ka ES7+ React snippets extension aur ESLint automatically correct suggestions deta hai. Ek baar setup karo, phir manually yaad karna nahi padta."
+          realWorldScenario="Common scenario — koi developer ne HTML template ko React mein paste kiya. class, for, onclick sab wrong. Compile errors. Ye onboarding mein bahut common problem hai. Solution simple hai: ESLint setup karo, VSCode pe ES7+ React snippets extension install karo — ye automatically correct JSX attributes suggest karta hai. Ek baar tools setup karo, rules manually remember karne ki zaroorat nahi."
           commonMistakes={[
             {
               mistake: 'class instead of className use karna',
@@ -300,7 +300,7 @@ function Component() {
               fix: 'Hamesha self-close karo: <img />, <br />, <input />, <hr />. TypeScript + React type definitions ye automatically enforce karte hain.',
             },
           ]}
-          proTip="VSCode mein Emmet JSX ke liye already configured hai. div.container Tab dabao → <div className='container'></div> ban jaata hai automatically. Ye JSX rules automatic handle karta hai. Settings mein 'emmet.includeLanguages': { 'typescriptreact': 'html' } add karo."
+          proTip="VSCode mein Emmet JSX ke saath kaam karta hai. div.container likhke Tab dabao — <div className='container'></div> automatically ban jaata hai. Emmet JSX rules jaanta hai — className automatically correct milega. Settings mein 'emmet.includeLanguages': {'{ 'typescriptreact': 'html' }'} add karo agar kaam na kare."
         />
       </div>
 
@@ -310,7 +310,7 @@ function Component() {
           title="{} Mein Kya Dal Sakte Ho?"
           emoji="🧮"
           difficulty="beginner"
-          whatIsIt="JSX ke {} mein tum JavaScript expressions dal sakte ho — variables, function calls, ternary operators, .map(). Lekin statements (if/else, for loops, while) nahi chal sakte. Expression = kuch value return karta hai. Statement = sirf execute hota hai."
+          whatIsIt="JSX ke curly braces {} mein tum JavaScript expressions dal sakte ho — variables, calculations, function calls, ternary, .map(). Lekin statements nahi chal sakti — if/else, for loops, while. Sawaal ye hai: expression aur statement mein kya fark hai? Expression wo cheez hai jo koi value return karta hai. Statement sirf execute hota hai — koi value return nahi. JSX ke {} ko value chahiye — isliye sirf expressions."
           whenToUse={[
             'Dynamic values dikhane ke liye — user name, price, count',
             'Conditional rendering ke liye — ternary ya && operator',
@@ -318,7 +318,7 @@ function Component() {
             'Dynamic attributes ke liye — src, href, className',
             'Inline styles ke liye — style={{ color: "red" }}',
           ]}
-          whyUseIt="{} ka power ye hai ki tum JavaScript poori taaqat JSX mein le aa sakte ho — calculations, transformations, conditional logic sab. Ye React ko template literals jaise feel deta hai lekin full JavaScript power ke saath. JSX aur JS ka seamless integration hi React ko itna flexible banata hai."
+          whyUseIt="{} ka real power ye hai — pure JavaScript ki poori taaqat JSX mein le aao. Calculations, transformations, conditional logic, array operations — sab kuch. React ko separate template language ki zaroorat nahi (jaise Angular ke ngIf, ngFor) kyunki JavaScript expressions hi kafi hain. Ye seamless integration React ko itna flexible aur powerful banata hai."
           howToUse={{
             filename: 'expressions.tsx',
             language: 'tsx',
@@ -366,9 +366,9 @@ function Component() {
     </div>
   )
 }`,
-            explanation: 'Yaad rakho: {} mein expressions — jo kuch value return kare. if/for statements nahi chal sakti. Conditional ke liye ternary (?:) use karo. Loops ke liye .map() use karo. Style prop mein double {{}} — bahar wala JSX expression ke liye, andar wala JS object ke liye.',
+            explanation: 'Simple rule — {} mein kuch bhi daalo jo value return kare. if/for statements? Value return nahi karte — nahi chalenge. Conditional ke liye ternary (?:) expression hai — value return karta hai. Loops ke liye .map() expression hai — array return karta hai. Style mein double {{}} — outer {} JSX expression, inner {} JavaScript object literal.',
           }}
-          realWorldScenario="E-commerce product page mein — product name (variable), price with discount calculation (arithmetic), stock status (ternary), product images (dynamic src), related products (map) — sab kuch {} mein expressions se aata hai. Ye sab ek component mein cleanly handle ho jaata hai."
+          realWorldScenario="Flipkart product page sochte ho — product name variable se, discounted price calculation se, stock status ternary se, images dynamic src se, related products .map() se. Sab kuch {} mein JavaScript expressions — koi alag template syntax nahi, koi ngIf nahi, koi v-if nahi. Pure JavaScript power, JSX ke andar."
           commonMistakes={[
             {
               mistake: '{if (condition) { return <Component /> }} use karna',
@@ -381,7 +381,7 @@ function Component() {
               fix: "style={{ color: 'red', fontSize: 16 }} — object syntax use karo. CSS property names camelCase mein likhte hain (fontSize nahi font-size).",
             },
           ]}
-          proTip="Style prop mein object dena padta hai: style={{color: 'red'}} — double curly braces: outer {} JSX expression ke liye hai, inner {} JavaScript object literal ke liye. Aur CSS property names camelCase mein hote hain JSX mein — backgroundColor nahi background-color, borderRadius nahi border-radius."
+          proTip="Style mein double curly braces kyun? style={{color: 'red'}} — outer {} ka matlab hai 'ye JSX expression hai', inner {} ka matlab hai 'ye JavaScript object hai'. Do alag purposes. Aur CSS property names camelCase mein — backgroundColor (nahi background-color), borderRadius (nahi border-radius), fontSize (nahi font-size). Ye JavaScript property naming convention follow karta hai."
         />
       </div>
 
@@ -391,14 +391,14 @@ function Component() {
           title="Fragment — Unnecessary div Se Bachao"
           emoji="🧩"
           difficulty="beginner"
-          whatIsIt="Fragment React ka special component hai jo koi DOM element nahi banata. JSX mein single root required hai — Fragment ye requirement fulfill karta hai bina extra <div> add kiye. Ye DOM ko clean rakhta hai aur CSS layout issues prevent karta hai."
+          whatIsIt="Fragment ek interesting trick hai. JSX mein single root zaroori hai — ye React.createElement() ka requirement hai. Lekin agar tum extra div add nahi karna chahte? Fragment use karo. Fragment ek wrapper hai jo DOM mein koi real element nahi banata — sirf React tree mein grouping karta hai. Invisible wrapper. <> </> ya <React.Fragment> — dono same kaam karte hain."
           whenToUse={[
             'Jab multiple elements return karni ho bina wrapper div ke',
             'Table structure mein — <tr> ke andar extra div add nahi kar sakte',
             'Flexbox/Grid layout mein — extra div layout tod sakta hai',
             'Ek list ke multiple items return karne ke liye jab key prop chahiye',
           ]}
-          whyUseIt="Extra div wrapper kuch situations mein layout tod deta hai. Flexbox mein ek extra div flex container ke direct children ki count badha deta hai. Table mein <tr> ke andar sirf <td>/<th> chahiye — div invalid hai. Fragment in sab situations mein clean solution hai."
+          whyUseIt="Extra div kab problem hoti hai? Flexbox ya Grid layouts mein — extra div flex children ki count change kar deta hai aur layout break hoti hai. Table mein — tr ke andar sirf td/th valid HTML hain, div invalid hai. CSS selectors — parent > child relationship extra div se break hoti hai. Ye sab real problems hain. Fragment se ye sab solve hoti hain — bina koi DOM element add kiye."
           howToUse={{
             filename: 'fragments.tsx',
             language: 'tsx',
@@ -452,9 +452,9 @@ function TableRows({ data }: { data: string[][] }) {
     </>
   )
 }`,
-            explanation: 'Short syntax <></> kaafi hai zyatar cases mein. Jab list mein multiple elements return karne ho aur key prop chahiye, tab <Fragment key={id}> use karo — <> shorthand mein key prop nahi de sakte.',
+            explanation: '<></> short syntax 90% cases ke liye kaafi hai. Ek limitation — <> key prop accept nahi karta. Lists mein jab multiple elements ke pair return karni ho (jaise dt/dd in dl), tab import { Fragment } from react karke <Fragment key={item.id}> use karo. Ye important distinction yaad rakho.',
           }}
-          realWorldScenario="Definition list (<dl>) component mein — har item ke liye <dt> (term) aur <dd> (description) pair chahiye. Inhe ek div mein wrap nahi kar sakte kyunki dl ke direct children sirf dt/dd hone chahiye. Fragment perfect solution hai — pair ko saath rakhta hai bina invalid HTML banaye."
+          realWorldScenario="Glossary ya FAQ page mein dl (definition list) use hoti hai. Har entry mein dt (term) aur dd (description) hote hain. Agar React component se ye pair return karo div mein wrap karke — HTML invalid ho jaata hai. Fragment se pair saath rahta hai, DOM clean rehta hai. React DevTools mein Fragment ka koi node nahi dikhta — transparent hai."
           commonMistakes={[
             {
               mistake: '<> shorthand mein key prop dene ki koshish karna — <key={id}>',
@@ -462,7 +462,7 @@ function TableRows({ data }: { data: string[][] }) {
               fix: 'Named Fragment use karo: import { Fragment } from "react" phir <Fragment key={item.id}>...</Fragment>.',
             },
           ]}
-          proTip="React DevTools mein Fragment koi DOM element show nahi karta — Chrome/Firefox extension install karo aur Component tree mein dekho. Fragment transparent hota hai — uske children directly parent ke children dikhte hain. Isse DOM inspector mein extra nesting nahi hoti."
+          proTip="React DevTools (Chrome/Firefox extension) install karo — Fragment invisible hota hai wahan bhi. Component tree mein Fragment ka koi node nahi, sirf uske children dikhte hain. Ye confirm karta hai Fragment truly DOM-less hai — sirf React tree mein grouping, actual DOM mein kuch nahi. DevTools debugging ke liye essential tool hai."
         />
       </div>
 
@@ -472,14 +472,14 @@ function TableRows({ data }: { data: string[][] }) {
           title="Conditional Rendering — 3 Patterns"
           emoji="🔀"
           difficulty="beginner"
-          whatIsIt="React mein UI conditionally show karne ke 3 main patterns hain: ternary operator, && (logical AND), aur early return. Har pattern ka apna use case hai. Inhe samajhna zaroori hai kyunki real-world apps mein 90% UI conditions par depend karta hai."
+          whatIsIt="Real apps mein 90% UI conditions pe depend karta hai — user logged in hai ya nahi, data load hua ya nahi, error hai ya nahi. JSX mein if statements directly nahi chal sakti (statements hain, expressions nahi — ab tum samajhte ho kyun). Isliye teen patterns hain: ternary (?:), logical AND (&&), aur early return. Har ek ka apna use case hai — teeno jaanna zaroori hai."
           whenToUse={[
             'Ternary: Jab do alag UI states hoon — logged in vs logged out, loading vs content',
             '&&: Jab sirf ek cheez conditionally show karni ho — error message, badge, tooltip',
             'Early return: Jab component completely alag output deta ho ek condition mein',
             'if/else in function body: Complex conditions ke liye readable approach',
           ]}
-          whyUseIt="JSX mein if statements directly nahi chal sakte (statements hain, expressions nahi). Isliye React developers ne ternary, &&, early return patterns adopt kiye. Har ek different readability aur use case deta hai — sahi pattern choose karna code cleaner banata hai."
+          whyUseIt="Ternary use karo jab do alag UI options hain — logged in vs logged out, loading vs content. && use karo jab sirf ek optional piece show karna ho — ya kuch, ya kuch nahi. Early return use karo jab component completely alag output deta ho ek condition mein. Ye teeno alag tools hain — sahi jagah sahi tool use karna code readability dramatically improve karta hai."
           howToUse={{
             filename: 'conditional-rendering.tsx',
             language: 'tsx',
@@ -519,9 +519,9 @@ function Dashboard({ isLoading, hasError, error, count, user }: Props) {
     </div>
   )
 }`,
-            explanation: 'Early return sabse clean hai loading/error ke liye — zyada nesting nahi. Ternary ? : do options ke liye. && ek optional UI ke liye. Lekin && ke saath number 0 ka dhyan rakho — safetyके liye count > 0 use karo.',
+            explanation: 'Early return sabse clean approach hai multiple states ke liye — loading, error, not found — sab flat code mein handle hote hain, deep nesting nahi. Ternary 2 options ke liye best hai. && optional element ke liye. 0 wala bug critical hai — items.length && <List /> mein items = [] hone pe "0" screen pe dikhta hai. items.length > 0 && se fix karo.',
           }}
-          realWorldScenario="Dashboard app mein — data fetch ho raha hai (loading spinner), fetch fail hua (error page), user logged out hai (login redirect), data empty hai (empty state), data hai (main content). Ye saare states different UI chahte hain. Early return + ternary + && combination se sab cleanly handle hota hai."
+          realWorldScenario="Dashboard component sochte ho — data fetch ho raha hai (spinner dikhao), fetch fail hua (error page), data empty hai (empty state illustration), data hai (main content). Ye chaar alag states hain. Early return se pehle do check karo, phir main JSX likhte waqt ternary aur && use karo. Code clean rehta hai, logic maintainable."
           commonMistakes={[
             {
               mistake: '{count && <Component />} — count 0 hone par "0" render hota hai screen par',
@@ -534,7 +534,7 @@ function Dashboard({ isLoading, hasError, error, count, user }: Props) {
               fix: "Component extract karo ya if/else function body mein use karo aur result variable mein store karo: const content = isLoading ? <Spinner /> : <Data />.",
             },
           ]}
-          proTip="Nullish rendering trick: agar tum kabhi bhi null render karna chahte ho (kuch mat dikhao), toh sirf {null} ya {false} return karo — React kuch render nahi karega. Ye pattern useful hai jab conditionally poora section hide karna ho bina layout change kiye."
+          proTip="Ek important rule yaad rakho: React null, undefined, aur false render nahi karta — ye silently kuch nahi dikhata. Lekin 0 (number zero) aur '' (empty string) render hote hain. Ye JSX ka famous gotcha hai. items.length && <List /> mein jab items = [] hota hai — 0 screen pe dikhta hai. Isliye hamesha boolean convert karo: items.length > 0 ya !!items.length."
           demo={
             <DiffBlock
               language="tsx"

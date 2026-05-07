@@ -67,17 +67,20 @@ export default function JSChapter10Content() {
         style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.2)' }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3">
-          Asynchronous JavaScript — The Final Boss
+          Asynchronous JavaScript — Event Loop Aur Uske Secrets
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Bhai, async JavaScript JavaScript ka sabse important aur sabse confusing topic hai. Callbacks se Promises tak, Promises se async/await tak — evolution samajhna zaroori hai. Aur Promise combinators — all, race, allSettled, any — ye production code mein daily use hote hain.
+          JavaScript single-threaded hai — ek time mein ek kaam. Toh phir ye kaise karta hai ek saath API call, timers, user events? Event loop! Ye JavaScript ka sabse misunderstood concept hai. Aur is pe based hai poora async world — callbacks, Promises, async/await. Ye sab ek ladder pe hain — har step pehle se better.
+        </p>
+        <p className="text-[#A1A1AA] leading-relaxed mb-3">
+          Sawaal: setTimeout(fn, 0) immediately execute hota hai? Jawab: NAHI! Ye macrotask queue mein jaata hai. Promise.then microtask queue mein jaata hai. Microtasks macrotasks se pehle execute hote hain. Is ek concept se poore async output order questions solve ho jaate hain — interview ka game-changer!
         </p>
         <div
           className="rounded-xl p-4"
           style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)' }}
         >
           <p className="text-sm text-[#A1A1AA]">
-            <span className="text-[#F59E0B] font-semibold">Classic Quiz Pehle!</span> Output order: setTimeout + Promise + sync code — answer hai: sync pehle, phir Promise .then, phir setTimeout (microtask &gt; macrotask).
+            <span className="text-[#F59E0B] font-semibold">Interview trap alert!</span> setTimeout(()=&gt;log("A"), 0); Promise.resolve().then(()=&gt;log("B")); log("C") — kya print hoga? Answer: C B A. Sync pehle, phir microtasks (Promise), phir macrotasks (setTimeout). Ye rule yaad karo, sab solve ho jaayega!
           </p>
         </div>
       </div>
@@ -88,14 +91,14 @@ export default function JSChapter10Content() {
           title="Why Async? — Blocking vs Non-Blocking"
           emoji="⚡"
           difficulty="intermediate"
-          whatIsIt="JavaScript single-threaded hai — ek time mein ek kaam. Agar file read, network call, ya database query ke liye wait karein synchronously — sab kuch block ho jaata hai. Async model: I/O operations background mein hoti hain (libuv), main thread free rehta hai. Jab result ready ho, callback/promise/await ke through result mile. Yahi Node.js ki scalability ka secret hai."
+          whatIsIt="JavaScript single-threaded hai — call stack pe ek time mein sirf ek function execute hota hai. Toh phir async kaise kaam karta hai? Event loop! JS engine I/O operations browser/Node.js ke lower layers (libuv) ko delegate karta hai. Main thread free rehta hai. Jab I/O ready hoti hai, callback queue ya microtask queue mein daal deta hai. Event loop check karta hai — call stack khaali hai? Queue mein kuch hai? Execute karo! Yahi concurrency without parallelism hai. Microtask queue (Promises, queueMicrotask) ka priority macrotask queue (setTimeout, I/O) se zyada hai — ek bhi macrotask execute hone se pehle sab microtasks drain ho jaate hain."
           whenToUse={[
-            'Network requests: fetch, axios — hamesha async',
-            'File I/O: fs.promises.readFile — async preferred server mein',
-            'Database queries: hamesha async — Mongoose, Prisma sab async',
-            'Timers: setTimeout, setInterval, setImmediate — sab async',
+            'Network requests: fetch, axios — hamesha async, synchronous network call nahi hoti',
+            'File I/O: fs.promises.readFile — server mein async mandatory, readFileSync server block karta hai',
+            'Database queries: hamesha async — Mongoose, Prisma, Sequelize sab Promises return karte hain',
+            'Timers: setTimeout, setInterval — async, microtask ya macrotask queue mein jaate hain',
           ]}
-          whyUseIt="Blocking I/O mein server ek request complete hone tak ruka rehta hai — doosre requests wait karte hain. Non-blocking mein server I/O request bhejta hai, immediately next request handle karta hai, jab I/O complete ho callback se result leta hai. Ye model Node.js ko thousands of concurrent connections handle karne deta hai bina heavy threading ke."
+          whyUseIt="Blocking I/O mein server ek request ke liye ruka rehta hai — doosre requests starve hote hain. Non-blocking mein server I/O bhejta hai, immediately next request handle karta hai, jab I/O complete ho callback/Promise se result leta hai. Yahi Node.js ko C10K problem solve karne deta hai — thousands of concurrent connections bina threads ke. Ye model samajhna performance optimization ka foundation hai."
           howToUse={{
             filename: 'blocking-vs-nonblocking.js',
             language: 'javascript',
@@ -139,22 +142,22 @@ console.log('2: Also Synchronous')
 // Rule: Sync code → Microtask queue → Macrotask queue
 // Microtasks: Promises (.then), queueMicrotask, MutationObserver
 // Macrotasks: setTimeout, setInterval, I/O callbacks, setImmediate`,
-            explanation: 'Event loop phases: 1) Synchronous code run karo. 2) Microtask queue khaali karo (sab Promise.then, queueMicrotask). 3) Macrotask queue se ek task run karo (setTimeout). 4) Repeat. Isliye Promise.then hamesha setTimeout se pehle aata hai even agar dono "0 delay" pe hain.',
+            explanation: 'Ye order memorize karo — ye interview ka sab se classic question hai: (1) Sync code poora run hota hai — "1: Synchronous" aur "2: Also Synchronous". (2) Microtask queue drain hota hai — Promise.then aur queueMicrotask — "3: Promise", "3.2: queueMicrotask", "3.5: Second microtask". (3) Macrotask queue se ek task — "4: setTimeout". Rule: Call stack khaali ho → microtasks sab khatam karo → phir ek macrotask. Ye cycle hai event loop ka.',
           }}
-          realWorldScenario="Express server mein: har request independently handle hoti hai. Ek request slow database query kar rahi hai — dusre requests block nahi hote, wo apna kaam karte rehte hain. Ye concurrency without parallelism hai — JavaScript single-threaded hai but I/O concurrent hai via event loop aur libuv."
+          realWorldScenario="Express server mein: ek request database query pe wait kar rahi hai (async), doosri request uske beech aa jaati hai — event loop usse handle kar leta hai. Blocking nahi hota. Ye isliye Node.js 10,000+ concurrent connections handle kar sakta hai — ek thread pe, bina multi-threading ke. Ye Node.js ka power hai."
           commonMistakes={[
             {
               mistake: 'Server code mein synchronous APIs use karna',
-              why: 'fs.readFileSync, crypto.scryptSync jaise calls main thread block karte hain — sab requests wait karte hain.',
-              fix: 'Hamesha async versions: fs.promises.readFile, crypto.scrypt with callback/promisify. Server code mein Sync APIs strict no.',
+              why: 'fs.readFileSync, crypto.scryptSync main thread block karte hain — sab requests wait karte hain jab tak ye run ho. Production disaster!',
+              fix: 'Hamesha async versions: fs.promises.readFile, util.promisify(crypto.scrypt). Server code mein Sync APIs strict no — rule follow karo.',
             },
             {
-              mistake: 'setTimeout(fn, 0) ko synchronous samajhna',
-              why: 'setTimeout 0 milliseconds delay ke baad bhi macrotask queue mein jaata hai — current sync code ke baad.',
-              fix: "Immediate microtask ke liye: Promise.resolve().then(fn) ya queueMicrotask(fn). setTimeout 0 genuinely 'last mein karo' ke liye.",
+              mistake: 'setTimeout(fn, 0) ko immediately execute samajhna',
+              why: 'setTimeout(fn, 0) macrotask queue mein jaata hai — current synchronous code khatam ho, phir sab microtasks, tab jaake ye execute hoga.',
+              fix: "Truly immediate async ke liye: Promise.resolve().then(fn) ya queueMicrotask(fn) — microtask queue mein jaate hain. setTimeout 0 genuinely 'last mein karo' ke liye use karo.",
             },
           ]}
-          proTip="process.nextTick() (Node.js only) microtask queue se bhi pehle run karta hai — even before Promise.then! Use with caution — starvation cause kar sakta hai agar recursively use karo. setImmediate() I/O callbacks ke baad, setTimeout(fn, 0) se baad mein run hota hai Node.js mein."
+          proTip="Node.js specific: process.nextTick() microtask queue se bhi PEHLE run karta hai — even before Promise.then! Ye Node.js ka special queue hai. setImmediate() I/O callbacks ke baad run karta hai. Order: process.nextTick → Promise microtasks → setImmediate → setTimeout. Ye order Node.js performance tuning mein matter karta hai. Recursive process.nextTick() starvation cause kar sakta hai — production mein careful!"
         />
       </div>
 
@@ -164,14 +167,14 @@ console.log('2: Also Synchronous')
           title="Callbacks — The Beginning"
           emoji="📞"
           difficulty="intermediate"
-          whatIsIt="Callback ek function hai jo dusre function ko pass kiya jaata hai — jab async operation complete ho tab call karo. Node.js ka error-first callback convention: callback(error, data) — pehla argument hamesha error (null if success), doosra data. Ye simple lekin scale pe messy ho jaata hai — callback hell ya 'pyramid of doom'."
+          whatIsIt="Callback — ek function jo dusre function ko argument ke roop mein pass kiya jaata hai, aur jab kaam complete ho tab call hota hai. Ye JavaScript async ka purana tarika hai — aaj bhi event listeners mein hamesha use hota hai. Node.js ka error-first callback convention: callback(error, data) — pehla argument hamesha error (null agar success), doosra actual data. Ye convention isliye bana kyunki agar error argument nahi hota toh developers bhool jaate the error check karna. Callback hell ya 'pyramid of doom' — nested callbacks ek ke andar ek — ye padhne wala thak jaata hai. Isi wajah se Promises aaye."
           whenToUse={[
-            'Node.js core APIs: fs, http, crypto — callbacks use karte hain traditionally',
-            'Event listeners: addEventListener — callback pattern',
-            'setTimeout, setInterval — callback hai',
-            'Legacy code: purana Node.js code callbacks heavily use karta tha',
+            'Node.js core APIs: fs, http, crypto — in ka traditional API callback-based hai',
+            'Event listeners: addEventListener — ye permanently callback pattern use karta hai',
+            'setTimeout, setInterval — callback-based timers',
+            'Legacy code: purani Node.js codebases — inhe padhna aur samajhna zaroori hai',
           ]}
-          whyUseIt="Callbacks JavaScript ka foundation hai — Promises aur async/await internally callbacks pe built hain. Error-first pattern ensure karta hai ki errors silently swallow nahi hote. Samajhna zaroori hai legacy code ke liye aur Node.js internals ke liye. util.promisify se callbacks ko Promises mein convert karo."
+          whyUseIt="Callbacks JavaScript ka foundation hain — Promises aur async/await internally callbacks pe built hain. Error-first convention ensure karta hai errors silently swallow nahi hote — pehla argument hamesha check karo. util.promisify se purani callback-based APIs ko modern async/await ke saath use karo. Ye samajhna zaroori hai legacy code ke liye aur Node.js source code padhne ke liye."
           howToUse={{
             filename: 'callbacks.js',
             language: 'javascript',
@@ -230,22 +233,22 @@ function promisify(fn) {
     })
   }
 }`,
-            explanation: 'Error-first pattern: hamesha if(error) check karo pehle, return karo. util.promisify callbacks wale functions ko Promise-based banata hai — modern async/await ke saath use karo. Callback hell solve karo Promises ya async/await se — code flat aur readable ho jaata hai.',
+            explanation: 'Error-first pattern trace karo: pehla check — if(error) return — nahi toh data undefined hoga aur JSON.parse crash. Callback hell pyramid dekhao — har level ek indentation andar. 4 nested callbacks = 4 levels deep = unreadable. util.promisify magic: fs.readFile ek callback function hai → readFile(path, cb) → promisify se readFile Promise return karne laga → await se flat code! Yahi evolution hai callbacks se Promises tak.',
           }}
-          realWorldScenario="Node.js fs, http, crypto modules callback-based hain. Third-party SDKs (AWS SDK v2, older libraries) callbacks use karte hain. util.promisify se inhe modern async/await ke saath use karo. EventEmitter based patterns (socket events, file watcher) callbacks use karte hain permanently."
+          realWorldScenario="Node.js fs, http, crypto modules traditionally callback-based hain. AWS SDK v2, older database drivers callbacks use karte hain. util.promisify se inhe modern async/await ke saath use karo — purana code modernize karo. EventEmitter (socket.io events, file watcher) permanently callbacks use karte hain — ye pattern kabhi nahi jaayega."
           commonMistakes={[
             {
-              mistake: 'Error argument ignore karna',
-              why: 'fs.readFile(path, (err, data) => { JSON.parse(data) }) — agar err hai, data undefined hai, JSON.parse crash!',
-              fix: 'Hamesha if(err) check karo first. Node.js convention ko respect karo — error is always first.',
+              mistake: 'Error argument ignore karna — sirf data ke saath kaam karna',
+              why: 'fs.readFile(path, (err, data) => { JSON.parse(data) }) — agar file nahi mili, err set hai, data undefined. JSON.parse crash!',
+              fix: 'Hamesha pehle if(err) check karo. Error-first convention ko respect karo — yahi Node.js ka foundation hai.',
             },
             {
-              mistake: 'Callback ke baad code continue karna return ke bina',
-              why: 'if(err) { handleError(err) } // forgot return; doNextThing(data) — dono run hote hain!',
-              fix: 'if(err) { handleError(err); return; } — return ensure karta hai function wahan ruke.',
+              mistake: 'Error handle karke return karna bhoolna',
+              why: 'if(err) { handleError(err) } doNextThing(data) — return nahi kiya toh dono run hote hain! handleError ke baad bhi doNextThing chalta hai.',
+              fix: 'if(err) { handleError(err); return; } — return mandatory hai early exit ke liye. Ye classic Node.js bug hai.',
             },
           ]}
-          proTip="Modern Node.js mein fs.promises.readFile, http.request ke alternatives Promises return karte hain natively. Naye code ke liye hamesha fs.promises ya util.promisify use karo — callback hell se bachao. Node.js 10+ mein util.promisify standard approach hai."
+          proTip="Modern Node.js mein fs.promises namespace hai — fs.promises.readFile, fs.promises.writeFile — natively Promises return karte hain. Naye code mein hamesha fs.promises use karo. Legacy APIs ke liye util.promisify — ek line mein callback to Promise. Node.js 10+ mein ye standard approach hai. Callback hell kabhi mat banao — ek nazar mein padh lene wala code likho."
         />
       </div>
 
@@ -255,14 +258,14 @@ function promisify(fn) {
           title="Promises — States, Chaining & Errors"
           emoji="🤝"
           difficulty="intermediate"
-          whatIsIt="Promise ek object hai jo future value represent karta hai — pending (wait), fulfilled (success), rejected (failure). Ek baar settled, state change nahi hoti. .then() fulfilled handle karta hai, .catch() rejected handle karta hai, .finally() hamesha run karta hai. Chaining: .then() naya Promise return karta hai — flat async flow possible."
+          whatIsIt="Promise ek object hai jo future value represent karta hai — teen states: pending (kaam chal raha hai), fulfilled (success), rejected (failure). Ek baar settled hone ke baad state change nahi hoti — ye immutable hai! .then() fulfilled value handle karta hai, .catch() rejection handle karta hai, .finally() hamesha run karta hai (success ya failure). Chaining ka magic: har .then() ek naya Promise return karta hai — isliye .then().then().then() flat chain possible hai. Error propagation automatic hai — chain mein koi bhi .then() throw kare, seedha .catch() pe jump karta hai, beech ke sab .then() skip."
           whenToUse={[
-            'Async operations jo ek result produce karte hain — API calls, file reads',
-            'Promise.all: multiple async operations parallel mein run karo',
-            '.then() chaining: sequential transformations',
-            'new Promise(): callbacks ko Promise mein wrap karo',
+            'Async operations jo ek result produce karte hain — API calls, file reads, database queries',
+            'new Promise(): callback-based APIs ko Promise mein wrap karna',
+            '.then() chaining: sequential transformations — flat, readable',
+            'Promise.all, allSettled, race, any — multiple Promises coordinate karna',
           ]}
-          whyUseIt="Promises callback hell solve karte hain — flat chaining. Error propagation automatic hai — chain mein koi bhi .then() throw kare toh .catch() pe jaata hai. Cancellable nahi (AbortController alag topic), lekin composable hain — Promise.all, Promise.race, allSettled se powerful patterns. async/await Promises ke upar built hai."
+          whyUseIt="Promises callback hell solve karte hain — nested callbacks ki jagah flat .then() chain. Error propagation automatic hai — ek jagah .catch() chain ke kisi bhi point se errors pakad leta hai. async/await Promises ke upar built hai — Promises samjhe toh async/await automatically samajh aayega. Composable hain — Promise.all, race, allSettled powerful parallel patterns dete hain."
           howToUse={{
             filename: 'promises.js',
             language: 'javascript',
@@ -326,22 +329,22 @@ Promise.resolve()
   .then(() => console.log('Never runs'))
   .then(() => console.log('Also never runs'))
   .catch(err => console.log('Caught:', err.message))  // 'Step 2 failed'`,
-            explanation: 'Promise chaining flat async flow enable karta hai. .catch() chain mein kisi bhi point pe throw caught hota hai. .finally() cleanup ke liye — loading hide karo, connection close karo. Every .then() return value next .then() ko milta hai — transform pipeline banao.',
+            explanation: 'Promise chaining trace karo: fetch() Promise return karta hai. Pehla .then(response => ...) — response check karo, ok nahi toh throw. throw kiya toh chain mein baaki sab .then() skip ho jaate hain, seedha .catch() pe jaata hai. Return response.json() — ye bhi Promise hai, isliye next .then() uski resolved value milti hai — user object. User se aur ek fetch — orders. Finally(): hamesha run hota hai — setLoading(false) chahiye success mein bhi, failure mein bhi. Ye pattern perfect hai!',
           }}
-          realWorldScenario="React data fetching: useEffect(() => { fetchUser(id).then(setUser).catch(setError).finally(() => setLoading(false)) }, [id]). Node.js API: UserModel.findById(id).then(user => OrderModel.find({userId: user.id})).then(orders => res.json({user, orders})). Express middleware: Promise chaining request pipeline handle karta hai."
+          realWorldScenario="React data fetching: useEffect(() => { fetchUser(id).then(setUser).catch(setError).finally(() => setLoading(false)) }, [id]) — ek clean chain. Node.js API route: UserModel.findById(id).then(user => OrderModel.find({userId: user.id})).then(orders => res.json({user, orders})).catch(next) — Express next() error middleware ko bhejta hai."
           commonMistakes={[
             {
-              mistake: 'Promise nesting — callback hell inside .then()',
-              why: '.then(() => { fetch().then(() => { fetch().then... }) }) — pyramid of doom wapas!',
-              fix: 'Return Promises in .then() to flatten: .then(() => fetch()).then(() => anotherFetch()). Ya async/await.',
+              mistake: 'Promise nesting — .then() ke andar .then() — callback hell wapas!',
+              why: '.then(() => { return fetch().then(() => fetch().then(...)) }) — pyramid of doom waapas! Return bhool gaye bahar.',
+              fix: 'Return karo Promises from .then() — chain flat rehti hai: .then(() => fetch()).then(() => anotherFetch()). Ya seedha async/await use karo.',
             },
             {
               mistake: '.catch() lagana bhool jaana',
-              why: 'Unhandled promise rejection — Node.js mein process crash ho sakta hai (UnhandledPromiseRejection warning).',
-              fix: 'Hamesha .catch() lagao Promise chains mein. Ya async/await ke saath try/catch. Global handler: process.on("unhandledRejection", ...)',
+              why: 'Unhandled Promise rejection — Node.js 15+ mein process crash ho jaata hai! Pehle warning tha, ab crash.',
+              fix: 'Hamesha .catch() lagao chains mein. async/await ke saath try/catch use karo. Global: process.on("unhandledRejection", (reason) => { /* log karo aur gracefully shutdown karo */ }).',
             },
           ]}
-          proTip="Promise.resolve(value) ek immediately resolved promise banata hai — testing aur default values ke liye useful. Promise.reject(error) immediately rejected. Async function automatically Promise return karta hai — return 42 inside async function = resolved promise with 42."
+          proTip="Sawaal: kya async function return karke Promise return karta hai? Jawab: HAAN! async function ke andar return 42 likho — caller ko Promise<42> milta hai — automatically wrapped. Throw karo — Promise reject hoti hai. Ye samajhne se async/await ka mental model clear ho jaata hai. Promise.resolve(value) immediately resolved promise — testing mein useful. Promise.reject(new Error()) immediately rejected."
         />
       </div>
 
@@ -351,14 +354,14 @@ Promise.resolve()
           title="async/await — Promises Ka Clean Syntax"
           emoji="⏳"
           difficulty="intermediate"
-          whatIsIt="async/await Promises ka syntactic sugar hai — async function declare karo, await se Promises ko synchronous-looking code mein use karo. async function hamesha Promise return karta hai. await sirf async function ke andar kaam karta hai (ya top-level ES modules mein). Error handling try/catch se. Sequential vs parallel trap — common performance bug."
+          whatIsIt="async/await — Promises ka syntactic sugar. Lekin kitna powerful sugar hai! async keyword function ke pehle lagao — wo automatically Promise return karta hai. await keyword kisi bhi Promise ke pehle lagao — wo Promise resolve hone ka wait karta hai, aur code synchronous jaisa lagta hai. Lekin ek BADA trap hai: sequential await! Sawaal: do independent API calls ko sequentially await karo — kya problem hai? Jawab: doosri call pehli khatam hone ka wait karti hai — total time = sum of both. Promise.all se parallel chalao — total time = max of both. HUGE performance difference! Ye ek common interview aur production bug hai."
           whenToUse={[
-            'Almost hamesha Promises se prefer karo async/await — much more readable',
-            'Sequential operations: file read → parse → validate → save',
-            'Error handling: try/catch structured error handling',
-            'Parallel: await Promise.all([op1(), op2()]) — independent operations parallel karo',
+            'Hamesha Promise .then() chains pe prefer karo — zyada readable, zyada debuggable',
+            'Sequential operations: pehla result aane ke baad doosra operation karo — await chain',
+            'Error handling: try/catch familiar pattern — same syntax as synchronous code',
+            'Parallel independent operations: await Promise.all([op1(), op2()]) — kabhi sequentially await mat karo independent ops ko',
           ]}
-          whyUseIt="async/await Promise chains se dramatically more readable hai — synchronous code ki tarah likhta hai. Debugging easier hai — stack traces better hote hain. try/catch familiar error handling pattern. Parallel trap samajhna critical hai — sequential await se unnecessary slow code. Promise.all parallel operations ke liye."
+          whyUseIt="async/await code synchronous ki tarah padha jaata hai — sab line by line, upar se neeche. Debugging mein stack traces better hote hain — async aur Promise.then() chains se more meaningful. try/catch se error handling familiar aur clean hai. Lekin Promise.all seekhna mandatory hai — sequential trap production mein slow APIs ka common root cause hai!"
           howToUse={{
             filename: 'async-await.js',
             language: 'javascript',
@@ -435,22 +438,22 @@ for (const id of ids) {
 
 // ✅ Parallel with map + Promise.all
 const results2 = await Promise.all(ids.map(id => processItem(id)))`,
-            explanation: 'Sequential trap: do 3 await calls sequentially = sum of all times. Parallel: Promise.all se = max of all times. HUGE performance difference! forEach async bug: forEach awaits nahi karta, for...of ya Promise.all use karo. Finally always runs — cleanup ke liye.',
+            explanation: 'Sequential trap clearly dekhao: user fetch (200ms) → products fetch (150ms) → settings fetch (100ms) = 450ms total. Parallel: teen sath start hote hain → 200ms maximum = 200ms total. 2.25x faster! Production mein ye difference 3 second API se 1.3 second ban sakti hai — user experience dramatic improvement. forEach async bug: forEach return value ignore karta hai — async callback ka Promise catch nahi hota. for...of properly await karta hai. Promise.all parallel ke liye — best of both worlds.',
           }}
-          realWorldScenario="Express API handler: async function getProfile(req, res) { try { const [user, posts, followers] = await Promise.all([User.findById(req.params.id), Post.find({userId}), Follower.count({userId})]); res.json({ user, posts, followers }) } catch(err) { next(err) } }. Parallel se 3x faster than sequential!"
+          realWorldScenario="Express profile API: async function getProfile(req, res) { try { const [user, posts, followers] = await Promise.all([User.findById(id), Post.find({userId: id}), Follower.count({userId: id})]); res.json({ user, posts, followers }) } catch(err) { next(err) } } — teen DB queries parallel! Sequential hota toh 3x slow hota."
           commonMistakes={[
             {
-              mistake: 'Independent operations sequentially await karna',
-              why: 'const a = await op1(); const b = await op2() — op2 op1 khatam hone ke baad shuru hoti hai — unnecessary wait.',
-              fix: 'const [a, b] = await Promise.all([op1(), op2()]) — dono parallel mein chalta hai.',
+              mistake: 'Independent operations sequentially await karna — parallel trap',
+              why: 'const a = await op1(); const b = await op2() — op2 op1 khatam hone ka wait karta hai. Independent hain toh kyun wait?',
+              fix: 'const [a, b] = await Promise.all([op1(), op2()]) — dono parallel mein. Hamesha: independent operations = Promise.all.',
             },
             {
-              mistake: 'forEach ke saath async/await — async forEach bug',
-              why: "ids.forEach(async id => await process(id)) — forEach async callbacks ko await nahi karta — code continue ho jaata hai.",
-              fix: 'for...of loop use karo sequential ke liye. Promise.all(ids.map(async id => process(id))) parallel ke liye.',
+              mistake: 'forEach ke saath async/await — silent bug',
+              why: "ids.forEach(async id => await process(id)) — forEach async callback ka Promise await nahi karta! Code aage chal jaata hai before processing done.",
+              fix: 'Sequential ke liye: for (const id of ids) { await process(id) }. Parallel ke liye: await Promise.all(ids.map(id => process(id))). forEach async ke liye kabhi use mat karo.',
             },
           ]}
-          proTip="Top-level await ES2022 mein ES modules mein available hai: const data = await fetch(url).then(r => r.json()) — directly at module level, IIFE ke bina! CommonJS (Node.js default) mein IIFE ya async function wrapper use karo."
+          proTip="Top-level await ES2022 mein ES modules mein available hai — const data = await fetch(url).then(r => r.json()) seedha module level pe. CommonJS (Node.js default) mein ye kaam nahi karta — async function mein wrap karo ya IIFE: (async () => { const data = await fetchData() })(). Node.js mein .mjs ya package.json mein 'type: module' set karo top-level await ke liye."
           demo={
             <DiffBlock
               title="Callback Hell vs async/await — Night and Day"
@@ -502,14 +505,14 @@ async function processUser(userId) {
           title="Promise Combinators — all, race, allSettled, any"
           emoji="🎯"
           difficulty="intermediate"
-          whatIsIt="Promise combinators multiple promises handle karne ke liye hain. Promise.all: sab fulfill ho toh succeed, koi ek fail ho toh reject. Promise.allSettled: sab settle ho, result har ek ka — success ya failure. Promise.race: jo pehle settle ho uska result. Promise.any: jo pehle fulfill ho uska result — rejections ignore karta hai (AggregateError agar sab reject)."
+          whatIsIt="Promise combinators — 4 powerful tools jo multiple Promises ko coordinate karte hain. Promise.all: sab fulfill ho toh array of results, koi bhi reject ho toh immediately reject — all or nothing. Promise.allSettled: sab settle karne ka wait karo regardless — fulfilled ya rejected, har ek ka result deta hai — partial success pattern. Promise.race: jo pehle settle ho, uska result (fulfilled ya rejected) — timeout implementation ka perfect tool. Promise.any: jo pehle FULFILL ho, uska result — rejections ignore karta hai, sab reject hoin toh AggregateError. Sawaal: all aur allSettled mein exact fark? Jawab: all ek rejection pe immediately fail, allSettled hamesha sab complete karta hai — partial data chahiye toh allSettled."
           whenToUse={[
-            'Promise.all: multiple API calls parallel mein, sab zaruri hain',
-            'Promise.allSettled: partial failures OK hain — har result chahiye',
-            'Promise.race: timeout implementation — fetch vs timeout race',
-            'Promise.any: fastest working server find karo — multiple CDNs try karo',
+            'Promise.all: dashboard data — sab APIs zaruri hain, ek fail toh sab fail — ok hai',
+            'Promise.allSettled: partial failures acceptable — har result chahiye, fail hua toh fallback data use karo',
+            'Promise.race: timeout implementation — fetch vs timeout promise race — jo pehle settle ho',
+            'Promise.any: fastest CDN, fastest server — pehla successful response use karo',
           ]}
-          whyUseIt="Ye combinators real-world async patterns solve karte hain. Dashboard: sab widgets parallel load — Promise.all. Report generation: kuch sources fail ho sakti hain but report partially generate honi chahiye — allSettled. CDN fallback: pehla working CDN use karo — Promise.any. API timeout: race ke saath implement karo."
+          whyUseIt="Ye 4 combinators real-world async patterns solve karte hain. Bina inke har case ke liye manual logic likhna padta. Promise.all parallel execution deta hai — sequential se dramatically faster. allSettled graceful degradation enable karta hai — partial data better than nothing. race timeout pattern industry standard hai. any fallback/redundancy implement karta hai."
           howToUse={{
             filename: 'promise-combinators.js',
             language: 'javascript',
@@ -596,22 +599,22 @@ async function robustDataFetch(userIds) {
       : null,
   }))
 }`,
-            explanation: 'allSettled result.status === "fulfilled" / "rejected" check karo. race timeout pattern standard implementation hai — kisi bhi async operation ka timeout. any AggregateError throw karta hai agar sab reject ho — catch karo. Combinators chain karo complex scenarios ke liye.',
+            explanation: 'allSettled — result.status check karo: "fulfilled" ya "rejected". Successful: result.value. Failed: result.reason. race timeout pattern trace karo: fetch("/api/heavy-query") race karo timeoutPromise ke saath. Jo pehle settle ho — agar timeout pehle reject karta hai, race reject hoti hai. Agar fetch pehle fulfill karta hai — race fulfill hoti hai. any CDN example: teen CDN parallel start hote hain — jo pehle respond kare, uska data milta hai. Sab fail hoin — AggregateError mein sab errors.',
           }}
-          realWorldScenario="E-commerce checkout: Promise.all([validateInventory(items), processPayment(total), updateUserAddress(address)]) — sab zaruri. Product page: Promise.allSettled([fetchReviews(id), fetchRecommendations(id)]) — optional data. Health check: Promise.any([primaryDB.ping(), replicaDB.ping()]) — koi bhi respond kare."
+          realWorldScenario="E-commerce checkout: Promise.all([validateInventory(items), processPayment(total), updateUserAddress(address)]) — sab zaruri hain, ek fail toh rollback. Product page: Promise.allSettled([fetchReviews(id), fetchRecommendations(id), fetchSimilarProducts(id)]) — optional sections, ek fail toh section hide karo. Microservices health check: Promise.any([primaryDB.ping(), replicaDB.ping()]) — koi bhi live ho toh app run karo."
           commonMistakes={[
             {
-              mistake: 'Promise.all mein ek failure se sab kuch fail karna jab partial success OK hai',
-              why: 'Dashboard mein ek widget fail ho — sab crash ho jaata hai bina user ke useful data dikhaye.',
-              fix: 'Promise.allSettled use karo aur per-result error handle karo. Partial data show karo error indicator ke saath.',
+              mistake: 'Promise.all use karna jab partial success acceptable ho',
+              why: 'Dashboard mein analytics fail ho — Promise.all se user ka aur sara data bhi fail ho jaata hai. Bad UX!',
+              fix: 'Promise.allSettled use karo — har result individually handle karo. Jo data aaya show karo, jo nahi aaya uski jagah fallback UI.',
             },
             {
-              mistake: 'Promise.any ko all successful results ki umeed rakhna',
-              why: 'Promise.any sirf pehla successful result deta hai — baaki promises ignore hote hain (lekin run karte hain).',
-              fix: 'Sab results chahiye? allSettled use karo. Koi ek chahiye jo succeed kare? any use karo.',
+              mistake: 'Promise.any se sab results ki umeed rakhna',
+              why: 'Promise.any sirf PEHLA successful result deta hai — baaki Promises run karte rehte hain but results ignore hote hain.',
+              fix: 'Sirf ek successful response chahiye (fastest CDN, fastest server) — any use karo. Sab results chahiye — allSettled use karo.',
             },
           ]}
-          proTip="AbortController ke saath cancellable fetch: const controller = new AbortController(); fetch(url, { signal: controller.signal }); controller.abort() — Promise immediately reject hoti hai AbortError ke saath. Timeout + abort combine karo better UX ke liye."
+          proTip="AbortController se cancellable fetch banao: const controller = new AbortController(); const promise = fetch(url, { signal: controller.signal }); controller.abort() — Promise reject hoti hai AbortError ke saath. Race ke saath combine karo: Promise.race([fetch(url, {signal}), timeout(5000)]).catch(err => { if (err.name === 'AbortError') ... }). Ye production-grade timeout + cancel pattern hai!"
         />
       </div>
 

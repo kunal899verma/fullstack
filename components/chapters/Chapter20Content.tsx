@@ -59,13 +59,13 @@ export default function Chapter20Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Security — App ko Hacker-Proof Banao
+          Security — Tumhara App Abhi Vulnerable Hai!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Security afterthought nahi hai — <strong className="text-[#F5F5F7]">pehle din se sochna padta hai</strong>. Ek bhi vulnerability se data breach ho sakta hai, users ka trust toot sakta hai, aur company ki reputation destroy ho sakti hai.
+          OWASP Top 10 — ye sirf ek list nahi, <strong className="text-[#F5F5F7]">ye tumhara dushman hai jo tumhare app mein ghusa hua hai right now!</strong> Ek bhi route par authorization check nahi? SQL injection possible hai? .env git mein? Hacker ko invite diya hai ghar mein. Security afterthought nahi hai — pehle din ka kaam hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein OWASP Top 10, input validation, HTTP security headers, rate limiting, aur secrets management cover karenge — practical code ke saath.
+          Socho ek bank ki tarah — front door par lock toh hai, lekin ek khidki khuli rahi aur chor ghus gaya. App mein bhi aisa hota hai. Ek missing check, ek hardcoded secret, ek unvalidated input — kaafi hai poora system compromise karne ke liye. Is chapter mein OWASP Top 10, Zod validation, Helmet headers, rate limiting, aur secrets management — production-ready security ki complete shield banayenge.
         </p>
       </div>
 
@@ -75,14 +75,14 @@ export default function Chapter20Content() {
           title="OWASP Top 10 for Node.js"
           emoji="🛡️"
           difficulty="advanced"
-          whatIsIt="OWASP (Open Web Application Security Project) Top 10 sabse common aur dangerous web vulnerabilities ki list hai. Node.js apps mein injection, broken auth, XSS, CSRF, aur insecure dependencies sabse common hain."
+          whatIsIt="OWASP (Open Web Application Security Project) ek world-renowned organization hai jo regularly duniya ke sabse dangerous web vulnerabilities ki list publish karta hai. Ye list real breaches ke data se banti hai. Node.js apps mein Injection (SQL/NoSQL/Command), Broken Access Control, XSS, Cryptographic Failures, aur Security Misconfiguration sabse common killians hain. Ye list ratta maar lo — ye aapke app ki security checklist hai."
           whenToUse={[
-            'New project start karte waqt — security checklist ke roop mein',
-            'Security audit karte waqt — ye list use karo',
-            'Code review mein — in vulnerabilities dhundo',
-            'Team training ke liye — security awareness',
+            'Naya project start karo — pehle din OWASP checklist haath mein lo',
+            'Security audit conduct karo — har item systematically check karo',
+            'Code review mein — in specific patterns ko actively dhundo',
+            'Team ko train karo — har developer ko ye 10 vulnerabilities pata honi chahiye',
           ]}
-          whyUseIt="OWASP Top 10 industry standard reference hai — insurance companies, compliance teams, aur security auditors ye expect karte hain ki developers ye jaante hain. In vulnerabilities fix karne se majority of real-world attacks se bachaav hota hai."
+          whyUseIt="Real numbers sunno: 2023 mein data breaches ki average cost $4.45 million thi. Majority of breaches OWASP Top 10 mein listed vulnerabilities se hote hain. Matlab — agar sirf ye 10 cheezein theek kar lo toh majority attacks rokh sakte ho. Ye koi theory nahi — ye practical, battle-tested knowledge hai jo real companies ke real breaches se nikla hai."
           howToUse={{
             filename: 'owasp-overview.md',
             language: 'markdown',
@@ -117,9 +117,9 @@ export default function Chapter20Content() {
 - Problem: Attacks log nahi hote — breach detection impossible
 - Fix: Auth events log karo, failed logins, rate limit hits
 - Example: Failed login attempt: user@example.com, IP: 1.2.3.4`,
-            explanation: 'OWASP Top 10 2021 list hai — regularly update hoti hai. Har vulnerability ke liye OWASP website par detailed guidance milti hai including code examples aur testing techniques.',
+            explanation: 'OWASP Top 10 2021 list hai — regularly update hoti hai real-world threat landscape ke hisaab se. Note karo: ye sirf list hai, detail OWASP website par milti hai har vulnerability ke liye. IDOR (Insecure Direct Object Reference) A01 ka common form hai — ID manipulate karo, dusre ka data dekho. Apne API har endpoint par ye question poochho: "kya mujhe is resource ka access hona chahiye?"',
           }}
-          realWorldScenario="Ek startup ka Node.js backend OWASP A01 (Broken Access Control) se vulnerable tha — /api/orders/:id mein authorization check nahi tha. Koi bhi user kisi bhi user ke orders dekh sakta tha sirf ID guess karke. Security audit mein pakda gaya before breach. Fix: isAuthorized(req.user, order) check add kiya."
+          realWorldScenario="Ek startup ka Node.js backend A01 Broken Access Control se vulnerable tha — /api/orders/:id mein sirf JWT verify kiya tha, ye check nahi kiya ki logged-in user ka hi order hai ya nahi. Koi bhi user URL mein order ID change karke kisi ka bhi order dekh sakta tha. Security audit mein pakda gaya pehle. Fix: if (order.userId !== req.user.id) return 403. Teen line ka fix. Agar production tak jaata toh regulatory fine, user trust damage, PR nightmare."
           commonMistakes={[
             {
               mistake: 'Authentication aur authorization ko ek samajhna',
@@ -132,8 +132,19 @@ export default function Chapter20Content() {
               fix: 'Production mein generic error messages: "Something went wrong". Detailed errors sirf logs mein. NODE_ENV check karo.',
             },
           ]}
-          proTip="npm audit se dependencies ki known vulnerabilities check karo. npm audit fix se auto-fix karo. Snyk ya Dependabot se automated PR alerts milte hain jab vulnerability discover ho."
+          proTip="npm audit abhi chalaao — seriously, is tab ko chhodo, terminal kholo, npm audit karo. Koi high severity vulnerabilities mil gayi? npm audit fix karo. Snyk ya GitHub Dependabot add karo — ye automatically PR bhejte hain jab koi dependency mein vulnerability pakdi jaati hai. Security continuous kaam hai, ek baar ka nahi."
         />
+      </div>
+
+      {/* Akshay-style Q&A interlude */}
+      <div
+        className="rounded-2xl p-5"
+        style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}
+      >
+        <p className="text-[#F5F5F7] font-semibold mb-2">Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          "OWASP list padh li, ab kya karu?" Pehla kaam — user input pe trust karna band karo. Jo bhi user bhejta hai — form data, query params, JSON body — sab mein malicious data ho sakta hai. Frontend validation sirf UX ke liye hai, Postman se koi bhi bypass kar sakta hai. Backend par validate karo. Hamesha. Koi exception nahi.
+        </p>
       </div>
 
       {/* ConceptCard 2: Input Validation */}
@@ -142,14 +153,14 @@ export default function Chapter20Content() {
           title="Input Validation — Never Trust User Input"
           emoji="🔒"
           difficulty="advanced"
-          whatIsIt="Input validation matlab har user input ko validate karna — format, type, length, allowed values. Zod ya Joi se schema-based validation karo. SQL injection, XSS, aur business logic attacks input validation se roko."
+          whatIsIt="User input ek package hai jo tumhare door par aaya — tum nahi jaante ander kya hai. Bomb bhi ho sakta hai. Input validation matlab har package ko X-ray machine se guzarna — format, type, length, allowed values — before letting it inside. Zod TypeScript-first schema library hai — ek schema likho, validation aur type inference dono milte hain. Ye security aur type safety dono ek saath deta hai."
           whenToUse={[
-            'Har API endpoint par — request body, query params, headers',
-            'Database mein kuch save karne se pehle',
-            'External API ko data bhejne se pehle',
-            'File upload — type aur size validation',
+            'Har API endpoint — body, query params, path params, headers — sab validate karo',
+            'Database mein kuch store karne se pehle — garbage in, garbage out',
+            'External service ko data bhejne se pehle — unka system bhi vulnerable ho sakta hai',
+            'File upload — type check (magic bytes), size limit — JPEG hai ya disguised executable?',
           ]}
-          whyUseIt="User input kabhi trust mat karo — Postman se koi bhi request bhej sakta hai. Frontend validation sirf UX ke liye hai — backend mein hamesha re-validate karo. Zod TypeScript ke saath perfectly integrate karta hai — type inference bhi milti hai automatically."
+          whyUseIt="Ek simple attack: form mein amount field mein '1e10' type karo. JavaScript parseInt('1e10') = 10! Matlab ₹10 bhejo, ₹10 billion transfer. Ya SQL injection — name field mein 'Robert'); DROP TABLE users; -- likho aur poora database gaya. Zod in sab ko schema definition se rok deta hai. z.number().positive().max(1000000) — ek line, bahut badi protection."
           howToUse={{
             filename: 'validation-with-zod.ts',
             language: 'typescript',
@@ -201,9 +212,9 @@ app.post('/users', validateBody(CreateUserSchema), async (req, res) => {
 
   res.status(201).json({ message: 'User created' })
 })`,
-            explanation: 'Zod schema mein transform, refine, aur custom validators use karo complex validation ke liye. safeParse error throw nahi karta — result check karo. Type inference automatically milti hai — z.infer<typeof Schema>.',
+            explanation: 'Trace karo: request aata hai → validateBody(CreateUserSchema) middleware → schema.safeParse(req.body) → fail? 400 with details → pass? req.body mein clean, typed data. Business logic tak galat data pahuncha hi nahi. Zod transform bhi karta hai — z.string().email().toLowerCase() se emails hamesha lowercase aur valid. Ek schema, multiple purposes.',
           }}
-          realWorldScenario="Fintech app mein amount field mein string bheji ja sakti thi — '1e10' jaisi scientific notation se ₹10 billion transfer attempt. Zod schema ne z.number().positive().max(1000000) se block kiya. Production mein 50+ such attempts per day aate hain — sab blocked."
+          realWorldScenario="Fintech app mein amount field mein '1e10' (scientific notation for 10 billion) aata tha — JavaScript ne parse kiya, database mein chala gaya. Zod z.number().positive().max(1000000) add kiya — ab scientific notation, negative numbers, strings sab reject. Production mein 50+ such attempts daily aate hain, sab 400 error ke saath block. Ek developer ne schema mein 2 lines add ki, crores ka potential fraud roka."
           commonMistakes={[
             {
               mistake: 'Sirf frontend validation — backend mein nahi',
@@ -216,7 +227,7 @@ app.post('/users', validateBody(CreateUserSchema), async (req, res) => {
               fix: 'Generic error messages: "Invalid credentials" instead of "Password incorrect". Account existence mat reveal karo.',
             },
           ]}
-          proTip="Zod .transform() se input normalize karo — .email().toLowerCase() se emails consistent rahengi. .strip() se unknown keys remove karo automatically — extra fields silently ignore hote hain, code safe rehta hai."
+          proTip="Zod .transform() powerful hai — .email().toLowerCase().trim() se emails normalize karo. .strip() se unknown keys automatically remove hoti hain — extra fields silently ignore. Ek aur gem: z.discriminatedUnion() se runtime type guards banao — type: 'user' | 'admin' ke hisaab se alag schemas. Ek schema library se TypeScript type safety aur runtime security dono — ye combination unbeatable hai."
         />
       </div>
 
@@ -226,14 +237,14 @@ app.post('/users', validateBody(CreateUserSchema), async (req, res) => {
           title="HTTP Security Headers — Helmet.js"
           emoji="⛑️"
           difficulty="advanced"
-          whatIsIt="HTTP security headers browser ko bataate hain ki app kaise behave kare — kaun si resources load kare, kahan embed ho sake, HTTPS enforce karo. Helmet.js Express middleware hai jo sab important headers automatically set karta hai."
+          whatIsIt="HTTP response headers mein tum browser ko instructions de sakte ho — 'sirf ye scripts chalana allowed hai', 'HTTPS par hi chalana', 'kisi iframe mein mat dikhana'. Helmet.js ek Express middleware hai jo ek line mein 14+ security headers set karta hai. Content-Security-Policy (CSP) XSS ka sabse powerful defense hai — malicious script inject ho bhi jaaye toh browser run hi nahi karega."
           whenToUse={[
-            'Har Express app mein — pehla middleware add karo',
-            'XSS attacks rokne ke liye — Content-Security-Policy',
-            'Clickjacking rokne ke liye — X-Frame-Options',
-            'HTTPS enforce karne ke liye — HSTS',
+            'Har Express app mein — app.use(helmet()) pehla middleware hona chahiye, sab se pehle',
+            'XSS attacks rokne ke liye — CSP with strict directives',
+            'Clickjacking rokne ke liye — X-Frame-Options: SAMEORIGIN',
+            'HTTPS force karne ke liye — HSTS header, 1 year max-age',
           ]}
-          whyUseIt="Bina security headers ke app browser-level attacks ke liye vulnerable hai. Helmet.js ek line mein 14+ security improvements deta hai. CSP XSS ka most powerful defense hai — browser unauthorized scripts execute hi nahi karta."
+          whyUseIt="Bina headers ke browser ko koi guidance nahi milti. Attacker XSS vulnerability use karta hai, malicious script inject karta hai — browser blindly run karta hai. CSP ke saath — browser sirf allowed origins se scripts run karega. Unauthorized script? Block. Koi error? Block. Ye ek force field hai tumhare app ke around. Helmet ek line mein 14+ such force fields lagata hai."
           howToUse={{
             filename: 'security-headers.ts',
             language: 'typescript',
@@ -292,9 +303,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }))`,
-            explanation: 'Helmet() pehla middleware hona chahiye — baaki middleware se pehle. CSP sabse complex lekin sabse powerful hai. CSP Report-Only mode se pehle test karo: reportOnly: true — violations report hoti hain, block nahi hoti.',
+            explanation: 'Step by step: app.use(helmet()) sabse pehle lagao. CSP complex hai? Report-Only mode se shuru karo — reportOnly: true set karo. Sab violations console mein report honge, koi block nahi hoga. Jab sab legitimate scripts allowed hain toh enforcement mode on karo. CSP ek safety net hai — neeche set karo, phir sab check karo ki tum neeche giro nahi.',
           }}
-          realWorldScenario="Ek banking app mein CSP nahi thi. Attacker ne XSS vulnerability use karke malicious script inject ki jo session tokens steal kar rahi thi. Post-incident CSP add ki — ab browser unauthorized scripts execute hi nahi karta regardless of XSS vulnerability."
+          realWorldScenario="Banking app mein CSP nahi thi — attacker ne comment field mein XSS inject ki, script session tokens chura ke attacker server bhej rahi thi. Users ka paisa gaaya. Post-incident analysis: CSP add ki — defaultSrc: ['self'], scriptSrc: ['self']. Next attack mein injected script run hi nahi hui — browser ne block kar diya. Wahi vulnerability, wahi attacker, zero impact. CSP ek invisible shield hai."
           commonMistakes={[
             {
               mistake: "CSP mein 'unsafe-inline' aur 'unsafe-eval' use karna",
@@ -307,7 +318,7 @@ app.use(cors({
               fix: 'Helmet → CORS → other middleware order rakho. Ya app.use(cors()) pehle lagao specific routes par.',
             },
           ]}
-          proTip="securityheaders.com par apna URL daalo — free security grade milta hai. A+ grade ke liye Helmet ke saath Permissions-Policy header bhi add karo. Report-URI ya report-to directive se CSP violations monitor karo production mein."
+          proTip="Abhi securityheaders.com kholo, apna production URL daalo — free grade milega. F ya D? Helmet add karo. A ke liye Permissions-Policy header bhi add karo — camera, microphone, geolocation — sirf wahi allow karo jo zaruri hai. Production mein report-to directive add karo — CSP violations monitor honge, attacker ke probe attacks bhi dikhengi."
         />
       </div>
 
@@ -317,14 +328,14 @@ app.use(cors({
           title="Rate Limiting & DDoS Protection"
           emoji="🚦"
           difficulty="advanced"
-          whatIsIt="Rate limiting matlab ek IP ya user se ek time period mein kitni requests allow karni hain. express-rate-limit se easily implement karo. Brute force attacks, DDoS, aur API abuse se bachaao."
+          whatIsIt="Rate limiting ek bouncer hai club ke bahar. '15 minute mein 5 login attempts — iske baad nahi'. Bot unlimited requests kar raha hai? Bouncer rok leta hai. Bina rate limiting ke login endpoint ek open invitation hai brute force ke liye — attacker 10,000 password combinations per second try kar sakta hai. express-rate-limit simple hai, Redis ke saath distributed hai — multiple Node instances ek counter share karte hain."
           whenToUse={[
-            'Login endpoint — brute force password guessing rokna',
-            'OTP/verification endpoints — SMS/email abuse rokna',
-            'Public APIs — fair use enforce karna',
-            'Registration — spam account creation rokna',
+            'Login endpoint — 5 attempts per 15 minutes, phir lock. Brute force impossible',
+            'OTP/SMS endpoints — 3 per hour. Warna SMS spam se tumhara Twilio bill explode',
+            'Public APIs — 100 requests per 15 minutes per IP. Fair use enforce karo',
+            'Registration — 10 per hour per IP. Spam account creation band',
           ]}
-          whyUseIt="Bina rate limiting ke koi bhi bot unlimited requests kar sakta hai — login brute force, SMS spam, server overload. express-rate-limit simple aur effective hai. Production mein Redis store use karo distributed rate limiting ke liye."
+          whyUseIt="Ek real attack: login endpoint par bot 50,000 password attempts daily kar raha tha. Koi rate limiting nahi thi. Pehla toh server load badh gaya, doosra common passwords pe kuch accounts actually crack ho gaaye. Rate limiting add ki: 5 attempts per 15 minutes. Attack completely ruk gaya — bot blocked, legitimate users unaffected. Ek middleware, poora protection."
           howToUse={{
             filename: 'rate-limiting.ts',
             language: 'typescript',
@@ -377,9 +388,9 @@ app.use((req, res, next) => {
   }
   next()
 })`,
-            explanation: 'Redis store use karo production mein — multiple Node instances ek rate limit counter share karte hain. skipSuccessfulRequests: true se legitimate users penalize nahi hote. standardHeaders: true se Retry-After header automatically set hota hai.',
+            explanation: 'Important gotcha: default in-memory store use mat karo production mein! 4 Node instances hain? Har instance apna counter rakhega — 4x requests allowed hongi, rate limit bypass ho jaayegi. Redis store use karo — sab instances ek counter share karte hain. skipSuccessfulRequests: true set karo — successful logins count nahi hote, sirf failed attempts count hote hain. Legitimate users ko penalize mat karo.',
           }}
-          realWorldScenario="Login endpoint par daily 50K brute force attempts aa rahe the — bot network. Rate limiting add kiya: 5 attempts per 15 minutes per IP. Attack completely stopped. Bonus: Redis se distributed rate limiting — 4 Node instances ek counter share karte hain, bypass impossible."
+          realWorldScenario="Login endpoint par daily 50K brute force attempts — bot network chal raha tha. Rate limiting add ki: 5 attempts per 15 minutes per IP, Redis store. Bot ka next attack: 5 attempts, phir 429 Too Many Requests, 15 minute wait, phir phir 5. Ek IP se 50K attempts ki jagah ab 5 attempts per 15 min = max 480 attempts per day. Bot effective ban ho gaya. Surprise bonus — server load bhi 40% kam hua."
           commonMistakes={[
             {
               mistake: 'In-memory rate limit store distributed environment mein',
@@ -392,8 +403,19 @@ app.use((req, res, next) => {
               fix: 'Analytics se actual usage patterns dekho. Authenticated users ke liye zyada limit. IP se zyada user ID par rate limit karo.',
             },
           ]}
-          proTip="Cloudflare ya similar CDN use karo first line of defense ke liye — DDoS attacks ka majority absorb karo server tak pehunche bina. Application-level rate limiting second layer hai. Bot detection: honeypot fields, CAPTCHA for suspicious patterns."
+          proTip="Defense in depth — layers mein socho. Cloudflare pehli layer: DDoS absorb karo server tak pahunche bina. Nginx ya AWS WAF doosri layer: IP-level blocking. express-rate-limit teesri layer: application-level fine control. Ek layer fail ho jaaye toh doosri hai. Hackers bhi layers check karte hain — tumhare paas bhi layers honi chahiye."
         />
+      </div>
+
+      {/* Akshay-style Q&A interlude */}
+      <div
+        className="rounded-2xl p-5"
+        style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}
+      >
+        <p className="text-[#F5F5F7] font-semibold mb-2">Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          "App secure hai — Helmet hai, validation hai, rate limiting hai. Ab aur kya?" Ek cheez reh gayi — tumhari secrets. API keys, DB passwords, JWT secrets — agar ye galat jagah hain, sab mehnat bekar hai. GitHub par ek leaked .env file se 30 minute mein $5000 ka fraud ho sakta hai. Ye sirf horror story nahi — ye real incident hai. Chalo secrets ki baat karte hain.
+        </p>
       </div>
 
       {/* ConceptCard 5: Secrets Management */}
@@ -402,14 +424,14 @@ app.use((req, res, next) => {
           title="Secrets Management"
           emoji="🔑"
           difficulty="advanced"
-          whatIsIt="Secrets (API keys, database passwords, JWT secrets) ko securely manage karna zaroori hai. Environment variables use karo, .env files git mein commit mat karo, aur production mein secret manager use karo."
+          whatIsIt="Secrets — API keys, DB passwords, JWT secrets — ye tumhari digital house keys hain. Kisi ko bhi nahi milni chahiye. Teen golden rules: (1) Kabhi source code mein hardcode mat karo, (2) .env files git mein commit mat karo, (3) Production mein AWS Secrets Manager ya HashiCorp Vault use karo. Environment variables sirf local development ke liye hain — production mein secrets platform se inject hote hain."
           whenToUse={[
-            'Database credentials — never hardcode',
-            'Third-party API keys — OpenAI, Stripe, Twilio',
-            'JWT secrets — rotate regularly',
-            'Encryption keys — AES keys, private keys',
+            'Database credentials — ek bhi jagah hardcode nahi, koi exception nahi',
+            'Third-party API keys — OpenAI, Stripe, Twilio — .env mein local, Secrets Manager mein production',
+            'JWT secrets — kam se kam 32 characters, randomly generated, 90 days mein rotate',
+            'Encryption keys, private keys, certificates — kabhi version control mein nahi',
           ]}
-          whyUseIt="GitHub par publicly committed API key wala incident common hai — bots continuously scan GitHub for secrets. Ek exposed key se billing fraud, data breach, aur account takeover ho sakta hai. Secret management basic hygiene hai."
+          whyUseIt="Bots 24/7 GitHub scan karte hain 'OPENAI_API_KEY', 'AWS_SECRET', 'DATABASE_URL' jaisi strings dhundne ke liye. Ek second bhi leaked key live rahi — automated tool ne use kar liya. Ek developer ne accidentally .env push ki — 30 minute mein kisi ne $5000 ka Stripe charges kiya. Ye kalpana nahi, documented incident hai. Secret management life-saving hygiene hai."
           howToUse={{
             filename: 'secrets-management.ts',
             language: 'typescript',
@@ -461,9 +483,9 @@ async function getSecret(secretName: string): Promise<Record<string, string>> {
 // Startup par fetch karo
 const dbSecret = await getSecret('prod/myapp/database')
 const db = new Pool({ connectionString: dbSecret.connectionString })`,
-            explanation: 'App startup par environment validate karo — missing required secrets pe immediately crash karo with clear error. Production mein AWS Secrets Manager, GCP Secret Manager, ya HashiCorp Vault use karo. Secrets rotate karo regularly.',
+            explanation: 'Startup par Zod se environment validate karo — EnvSchema.parse(process.env). Missing DATABASE_URL? Immediate crash with clear error: "DATABASE_URL is required". App production mein silently run nahi karega misconfigured. Production mein: platform (Vercel, Railway, Heroku) environment variables use karo, ya AWS Secrets Manager — app startup par fetch karo, phir use karo. Secrets rotate karo regularly, especially after team member leaves.',
           }}
-          realWorldScenario="Developer ne accidentally .env file GitHub push kar di jisme live Stripe API key thi. 30 minutes mein kisi ne $5000 worth of charges kiye. Lesson: .gitignore mein .env add karo, git-secrets tool use karo pre-commit hook se, aur compromised keys immediately rotate karo."
+          realWorldScenario="Developer ne accidentally .env file GitHub push ki — live Stripe API key thi. 30 minute mein automated bot ne key use ki, $5000 fraudulent charges. Developer ko pata chala email alert se. Key immediately rotate ki — naya key, purana band. Lesson learned: .gitignore mein .env, git-secrets pre-commit hook jo commit rok de agar secret detected ho, aur every team member ko security training. Sirf ek mistake — $5000 ka lesson."
           commonMistakes={[
             {
               mistake: '.env file git mein commit karna',
@@ -476,7 +498,7 @@ const db = new Pool({ connectionString: dbSecret.connectionString })`,
               fix: 'Kabhi process.env ya request headers seedha log mat karo. Secrets wali keys explicitly filter karo logging middleware mein.',
             },
           ]}
-          proTip="doppler.com ya 1Password Secrets Automation use karo — team ke saath secrets securely share karo bina .env files bheje. Automated secret rotation setup karo — JWT secrets har 90 days mein rotate karo. Secrets ka audit log rakho — kab kise ne kya access kiya."
+          proTip="Doppler.com — ye tool try karo. Team ke saath secrets securely share hote hain, rotation built-in hai, audit log automatically banta hai. .env files email ya Slack par share karna band karo — ye insecure hai. Aur ek baat: git-secrets install karo globally — har commit pe check karega ki koi secret toh nahi ja raha. Pre-commit hook security ka last line of defense hai."
         />
       </div>
 

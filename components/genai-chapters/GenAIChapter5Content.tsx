@@ -106,13 +106,13 @@ export default function GenAIChapter5Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          LLMs — Andar Kya Hota Hai?
+          LLMs — Demystify Karte Hain!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          GPT-4, Claude, LLaMA — ye sab decoder-only Transformer models hain. Lekin andar kya hota hai — tokenization, pre-training, RLHF, context window, sampling strategies? Is chapter mein ye sab practical perspective se samjhenge.
+          Bhai, LLM koi &apos;intelligent being&apos; nahi hai. Ye ek bahut bada next-word predictor hai — seriously. Training mein 1 trillion+ words dekhe hain, toh iska pattern matching BAHUT sharp hai. Intelligence jaisa lagta hai — actually statistics hai. Ye samajhna liberating hai — AI se realistic expectations set kar sakta hai, better prompts likh sakta hai, aur aaj woh mistakes avoid kar sakta hai jo non-technical log karte hain.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Ye concepts API use karne mein direct help karte hain — token costs estimate karo, temperature set karo, context limits samjho.
+          Tokenization, pre-training, RLHF, context window, sampling — ye sab andar kya hota hai, practical perspective se. Ye concepts seedhe API use mein help karenge — token costs estimate karo, temperature set karo, context limits samjho.
         </p>
       </div>
 
@@ -122,14 +122,14 @@ export default function GenAIChapter5Content() {
           title="Tokenization — Words Nahi, Tokens Hain"
           emoji="🔤"
           difficulty="intermediate"
-          whatIsIt="LLMs text ko characters ya words mein nahi, tokens mein process karte hain. BPE (Byte Pair Encoding) se common subwords tokens ban jaate hain. 'Hello' = 1 token, 'antidisestablishmentarianism' = 7 tokens. Token ≠ word."
+          whatIsIt="Shocking fact: LLM text ko words mein nahi padhta — tokens mein. Token kya hai? Roughly 4 characters (English mein). 'Hello' = 1 token. 'antidisestablishmentarianism' = 7 tokens! '1234567890' = 4 tokens. Aur Hindi/Chinese mein per character zyada tokens lagte hain. Ye important kyun hai? Kyunki API billing tokens per hoti hai — characters nahi, words nahi — TOKENS. Galat estimate = budget surprise. BPE (Byte Pair Encoding) se common subwords tokens ban jaate hain — ye subword tokenization hai."
           whenToUse={[
             'API costs estimate karne ke liye — token count = billing unit',
             'Context window limits check karne ke liye',
             'Tokenization bugs debug karne ke liye — special characters',
             'Model capabilities samajhne ke liye — kya efficient process hota hai',
           ]}
-          whyUseIt="API billing tokens per karna hai, words per nahi. 1000 words ≠ 1000 tokens. Code zyada tokens leta hai English text se. Hindi/Chinese per token zyada characters hain — same content more tokens. Ye directly API cost aur context limit affect karta hai."
+          whyUseIt="Practical kyun zaroori hai? Budget control. 1000 words ≠ 1000 tokens — generally 1000 words ≈ 1300-1500 tokens. Code aur special characters zyada tokens lete hain. System prompts bhi count hote hain — har API call mein. Ek startup ne ek baar document summarization app banaya bina token estimate kiye — daily 1000 requests, cost 3x expected tha. tiktoken library use karo exact count ke liye before production deployment."
           howToUse={{
             filename: 'tokenization-demo.js',
             language: 'javascript',
@@ -170,7 +170,7 @@ for (const text of examples) {
 // Estimate context usage before API call!`,
             explanation: 'tiktoken exact token count deta hai — production mein use karo cost control ke liye. Estimate function quick check ke liye. System prompts bhi tokens count karte hain — long system prompts costly hain.',
           }}
-          realWorldScenario="Startup ek document summarization app banaa raha tha. Documents average 10K words — 12.5K tokens estimate. GPT-4o par daily 1000 requests = 12.5M tokens = $31.25 sirf input. tiktoken se actual count nikala — 14K tokens average (code snippets mein). Budget recalculate karna pada."
+          realWorldScenario="Real case: Startup document summarization app bana raha tha. Documents average 10K words the — 12.5K tokens estimate kiya. GPT-4o par daily 1000 requests = 12.5M tokens = $31.25/day sirf input. tiktoken se actual count nikala — 14K tokens average (code snippets zyada tokens lete hain). Monthly budget 12% zyada tha. Aur ye sirf input — output tokens alag billing. Token counting = financial planning. Tools use karo."
           commonMistakes={[
             {
               mistake: 'Characters = tokens assume karna',
@@ -183,7 +183,7 @@ for (const text of examples) {
               fix: 'Total tokens = system_prompt_tokens + conversation_tokens + response_tokens. System prompt optimize karo agar cost concern hai.',
             },
           ]}
-          proTip="Token counting tools: OpenAI Tokenizer (platform.openai.com/tokenizer), tiktoken Python/JS library. Cache karo repeated content — Anthropic prompt caching se 90% cost reduction ho sakti hai cached tokens par. Context efficient use karo — unnecessary repetition avoid karo."
+          proTip="Money-saving tip: Anthropic prompt caching se 90% cost reduction ho sakti hai repeated system prompts par! Ek baar cache karo, baar baar use karo — sirf 10% cost. Token counting tools: platform.openai.com/tokenizer (visual), tiktoken library (programmatic). Context window efficiently use karo — unnecessary repetition avoid karo, concise system prompts likho. Token economy = better products at lower cost."
           demo={<TokenEstimatorDemo />}
         />
       </div>
@@ -194,14 +194,14 @@ for (const text of examples) {
           title="Pre-training — Trillion Words Se Seekhna"
           emoji="🏋️"
           difficulty="intermediate"
-          whatIsIt="LLMs internet scale data par next-token prediction se pre-train hote hain — self-supervised learning. Koi labels nahi chahiye — text itself target hai. Is process se models language, facts, reasoning, code sab kuch implicitly seekhte hain."
+          whatIsIt="Imagine karo: tujhe 1 trillion words padhne ko kaha jaaye — Wikipedia, GitHub, Reddit, news, books, scientific papers — sab kuch. Aur ek task: 'next word predict karo'. Bas itna. LLM pre-training exactly yahi hai. Self-supervised learning — labels khud text se aate hain, koi manual annotation nahi. Lekin is simple task se model ne implicitly seekha: grammar, facts, reasoning, code syntax, translation, math — sab kuch. Scale se emergence hoti hai — capabilities jo explicitly design nahi ki gayi, khud aati hain."
           whenToUse={[
             'LLM capabilities source samajhne ke liye',
             'Fine-tuning vs prompting decision karne ke liye',
             'Model limitations samajhne ke liye — knowledge cutoff, biases',
             'Foundation model choose karne ke liye',
           ]}
-          whyUseIt="Pre-training se model world knowledge, language understanding, reasoning, code — sab emerge hota hai. Ye 'foundation' model ban jaata hai — alag alag tasks ke liye fine-tune karo. Scale badhane se emergent capabilities aate hain — GPT-3 se GPT-4 tak reasoning drastically better hua."
+          whyUseIt="Ye samajhna kyun zaroori hai? Kyunki pre-trained model aur fine-tuned model mein fundamental difference hai. Pre-trained model sirf text complete karta hai — instructions follow nahi karta. RLHF ke baad helpful assistant banta hai. Knowledge cutoff = training data ka last date — model ko baad ki koi baat nahi pata. Real-time info chahiye toh RAG use karo. Ye limitations samajhna AI ko properly use karne ke liye must hai."
           howToUse={{
             filename: 'pretraining-intuition.md',
             language: 'markdown',
@@ -244,7 +244,7 @@ Training data has a cutoff date:
 - Always check for time-sensitive queries`,
             explanation: 'Emergent abilities: certain capabilities suddenly appear at scale — not present in smaller models. GPT-3 scale par few-shot learning emerged unexpectedly. Ye scaling laws aur emergent phenomena AI research ke hot topics hain.',
           }}
-          realWorldScenario="GPT-3 175B parameters par train hua — researchers surprised the ki model few-shot learning kar sakta hai (bina fine-tuning ke). Sirf examples prompt mein deke new tasks solve karta hai. Ye emerge kiya training se — explicitly program nahi tha. Scale se capabilities unexpectedly aate hain."
+          realWorldScenario="GPT-3 (2020) — 175B parameters par train kiya. Researchers surprised the: model few-shot learning karta hai bina fine-tuning ke! Sirf 3 examples prompt mein do — naaya task solve karta hai. Explicitly programmed nahi tha — scale se emerge kiya. Ye 'emergent abilities' research mein bahut documented hain: certain capabilities small models mein nahi hoti, large models mein suddenly aati hain. Scale = unexpected superpowers."
           commonMistakes={[
             {
               mistake: 'Pre-trained model ko production-ready samajhna',
@@ -257,7 +257,7 @@ Training data has a cutoff date:
               fix: 'RAG (Retrieval Augmented Generation) use karo recent information ke liye. Explicitly note karo user ko: "My knowledge is current as of [date]".',
             },
           ]}
-          proTip="Scaling Laws (Kaplan et al., Chinchilla paper) padho — model size, data size, compute ka optimal balance samjho. Real-world implication: 7B model 140B tokens par zyada optimal hai 7B model 100B tokens par. Data quality equally important — GIGO (Garbage In, Garbage Out) at scale."
+          proTip="Chinchilla paper (2022) ne scaling laws define kiye: optimal training = ~20 tokens per parameter. Matlab 7B model ke liye ~140B tokens optimal. Bahut zyada data ya bahut kam data dono suboptimal. Data quality equally important — garbage in at trillion scale = confidently garbage out. Model size aur data size dono matter karte hain — ek neglect mat karo."
         />
       </div>
 
@@ -267,14 +267,14 @@ Training data has a cutoff date:
           title="RLHF — Human Feedback Se Seekhna"
           emoji="🤝"
           difficulty="intermediate"
-          whatIsIt="RLHF (Reinforcement Learning from Human Feedback) pre-trained model ko helpful, harmless, honest banana ka process hai. Human raters responses rank karte hain, reward model train hoti hai, phir RL se language model optimize hoti hai. ChatGPT, Claude sab RLHF use karte hain."
+          whatIsIt="Sawaal: pre-trained GPT-3 ko directly ChatGPT kyu nahi bol sakte? Kyunki pre-trained model instruction follow nahi karta — sirf text complete karta hai. Aur harmful content bhi generate kar sakta hai. RLHF ne ye fix kiya. Process: (1) Human demonstrators good responses likhte hain — SFT. (2) Human raters alag responses rank karte hain — reward model train hoti hai. (3) RL se LLM optimize hoti hai — high reward responses zyada likely banao. Result: helpful, harmless, honest assistant. Ye hi ChatGPT ko ChatGPT banata hai."
           whenToUse={[
             'LLMs instruction follow kyun karte hain samajhne ke liye',
             'Why models refuse harmful requests — alignment samajho',
             'Fine-tuning vs RLHF decision karne ke liye',
             'AI safety aur alignment concepts ke foundation',
           ]}
-          whyUseIt="Pre-trained model instruction follow nahi karta — sirf text complete karta hai. RLHF se: model helpful responses prefer karna seekhta hai, harmful content avoid karta hai, user intent samajhta hai. Ye hi ChatGPT/Claude ko 'assistant' banata hai na ki text completer."
+          whyUseIt="Ye samajhna kyun zaroori hai? Kyunki jab Claude refuse karta hai kuch karne se — ye RLHF hai. Jab ChatGPT instructions follow karta hai step by step — ye RLHF hai. Jab model helpful tone mein baat karta hai — RLHF. Ye restriction nahi hai — ye alignment hai. Aur DPO (simpler alternative) ne ye aur accessible banaya — LLaMA 3, Mistral use karte hain. Community level par bhi fine-tuning possible hai."
           howToUse={{
             filename: 'rlhf-process.md',
             language: 'markdown',
@@ -313,7 +313,7 @@ Training data has a cutoff date:
   (Constitutional AI — Anthropic's approach)`,
             explanation: 'RLHF complex aur expensive hai — human labelers + RL training. DPO simpler alternative hai. Constitutional AI (Anthropic) ek AI model se dusre ko guide karta hai — scale par more feasible. Ye all alignment techniques hain.',
           }}
-          realWorldScenario="ChatGPT December 2022 launch: GPT-3.5 (pre-trained) + SFT + RLHF = ChatGPT. GPT-3 raw se compare karo: GPT-3 ne 'How to make a bomb?' par instructions diye. ChatGPT ne refuse kiya aur alternative explain kiya. RLHF ka difference visible hai. Alignment ≠ censorship — zyada helpful hona bhi RLHF ka result hai."
+          realWorldScenario="December 2022: GPT-3.5-turbo (pre-trained) + SFT + RLHF = ChatGPT. GPT-3 raw ko 'How to make a bomb?' bol do — instructions de deta tha. ChatGPT ne refuse kiya, helpful alternative explain kiya. Ye RLHF ka direct result hai. Lekin RLHF sirf safety nahi — ChatGPT GPT-3 se zyada helpful bhi hai, coherent bhi, instructions-following bhi. Alignment = better assistant, not just safe assistant."
           commonMistakes={[
             {
               mistake: 'RLHF = censorship samajhna',
@@ -326,7 +326,7 @@ Training data has a cutoff date:
               fix: 'KL divergence penalty, diverse evaluators, held-out test sets. RLHF ongoing research area hai — perfect alignment unsolved problem.',
             },
           ]}
-          proTip="DPO (Direct Preference Optimization) simpler hai RLHF se — no reward model, no RL loop. Preferences directly fine-tuning loss mein incorporate hote hain. LLaMA 3 instruction model DPO use karta hai. Ye democratize kar raha hai alignment — small teams bhi fine-tuned models bana sakte hain."
+          proTip="DPO (Direct Preference Optimization) — RLHF ka simpler alternative. No reward model, no RL loop — preferences directly fine-tuning loss mein. LLaMA 3, Mistral instruction models DPO use karte hain. Matlab: ek developer/small team bhi aligned fine-tuned models bana sakta hai — democratization of alignment. Constitutional AI (Anthropic) aur bhi interesting: ek AI se dusre AI ko guide karo."
         />
       </div>
 
@@ -336,14 +336,14 @@ Training data has a cutoff date:
           title="Context Window — Model Ki Memory"
           emoji="🪟"
           difficulty="intermediate"
-          whatIsIt="Context window woh maximum tokens hain jo model ek saath process kar sakta hai — system prompt + conversation history + response sab milake. 128K tokens (GPT-4o) ≈ 100 pages text. Zyada context = zyada cost kyunki KV cache badi hoti hai."
+          whatIsIt="Context window = LLM ki short-term memory. Ye woh maximum tokens hain jo model ek saath dekh sakta hai — system prompt + conversation history + response sab milake. Session khatam = sab bhool jaata hai. 128K tokens (GPT-4o) ≈ 100 pages text. Claude 3.5 Sonnet = 200K tokens ≈ ek poori novel! Lekin zyada context = zyada cost kyunki KV cache badi hoti hai. Context efficient use karo — space = money."
           whenToUse={[
             'Long documents process karne se pehle — fits in context?',
             'API costs estimate karne ke liye — context size × cost per token',
             'Conversation history manage karne ke liye — sliding window',
             'RAG vs long context — tradeoffs evaluate karo',
           ]}
-          whyUseIt="Context window limit par conversation history, documents, system prompt sab compete karte hain. 128K context ka matlab sirf context hai — model memory nahi. Session khatam, context khatam. Conversation management karna padta hai app level par."
+          whyUseIt="Context window management = production AI apps mein ek real engineering challenge hai. System prompt + conversation history + user documents — sab ek limited space mein compete karte hain. Long conversation? History trim karna padega. Long document? Chunk karna padega ya RAG use karna padega. Ye sirf theory nahi — ek chatbot banate waqt tujhe ye decisions lene hi padenge."
           howToUse={{
             filename: 'context-management.ts',
             language: 'typescript',
@@ -411,7 +411,7 @@ async function summarizeOldMessages(
 }`,
             explanation: 'Sliding window simplest hai — recent messages prefer karo. Summarization context preserve karta hai lekin extra API call karna padta hai. RAG se context window efficiently use karo — sirf relevant documents inject karo.',
           }}
-          realWorldScenario="Customer service chatbot 8 hour shift conversations handle karta hai. 200+ messages per session possible — GPT-4o 128K limit hit hoti. Solution: har 50 messages par summarize karo pichle 40, recent 10 keep karo. Summary + recent = effective context without hitting limits."
+          realWorldScenario="Customer service chatbot 8 ghante ka session handle karta hai — 200+ messages possible! GPT-4o 128K limit hit hoti, error aata. Solution: har 50 messages par pichle 40 ko summarize karo (cheap Haiku model se), recent 10 keep karo. Summary + recent = effective context without hitting limits. Ye sliding window + summarization approach real production mein use hoti hai. Context = engineering problem."
           commonMistakes={[
             {
               mistake: 'Context window = model ki memory samajhna',
@@ -424,7 +424,7 @@ async function summarizeOldMessages(
               fix: 'Context efficiently use karo. RAG se only relevant chunks inject karo. Unnecessary repetition avoid karo. Summarization use karo older content ke liye.',
             },
           ]}
-          proTip="Lost in the Middle problem: models context ke beginning aur end ko better attend karte hain — middle information miss hoti hai. Long context mein important information beginning ya end par rakho. Ye research finding practical impact rakhta hai RAG chunk ordering mein."
+          proTip="Research finding: 'Lost in the Middle' — LLMs context ke beginning aur end ko better attend karte hain, middle information miss hoti hai! Practical impact: RAG mein most relevant chunk ko beginning ya end par rakho — middle mein mat daalo. Long context mein critical information = sandwich karo (beginning + end). Ye subtle lekin measurable quality improvement deta hai."
         />
       </div>
 
@@ -434,14 +434,14 @@ async function summarizeOldMessages(
           title="Temperature, Top-k, Top-p — Sampling Strategies"
           emoji="🎲"
           difficulty="intermediate"
-          whatIsIt="LLMs probability distribution output karte hain next token ke liye — temperature, top-k, top-p control karte hain kitna deterministic ya creative response hoga. Temperature 0 = most probable, Temperature 2 = random/creative. Task ke hisaab se tune karo."
+          whatIsIt="LLM next token ke liye probability distribution output karta hai — 'mat' 40%, 'floor' 25%, 'couch' 20%, 'roof' 10%... Temperature ye distribution control karta hai. Temperature 0 = robot: hamesha highest probability token chuno, deterministic, same input same output hamesha. Temperature 2 = drunk robot: distribution flatten ho jaati hai, low probability tokens bhi choose ho sakte hain — creative lekin unpredictable. Top-p (nucleus sampling): cumulative 90% probability tak tokens consider karo — adaptive cutoff. Task ke hisaab se tune karo."
           whenToUse={[
             'Code generation — temperature 0 ya 0.1 (deterministic)',
             'Creative writing — temperature 0.7-1.0 (creative)',
             'Factual Q&A — temperature 0-0.3 (accurate)',
             'Brainstorming — temperature 0.8-1.2 (diverse ideas)',
           ]}
-          whyUseIt="Same prompt, different temperatures — completely different responses. Temperature 0: always same output, reliable for production. High temperature: diverse, creative, sometimes hallucinates. Top-p (nucleus sampling) often better than top-k — adaptive vocabulary cutoff. OpenAI recommends top_p ya temperature change, dono ek saath nahi."
+          whyUseIt="Ye practical skill hai — production mein temperature wrong set karna = bad user experience. Code generation: temperature 0 (ek deterministic sahi answer chahiye). Creative writing: 0.7-0.9 (variety chahiye). Factual Q&A: 0.2-0.3 (accurate, slight flexibility). Brainstorming: 0.8-1.0 (diverse ideas). Same model + different temperature = completely different persona. Ek dial se sab control. Lekin: temperature aur top_p ek saath mat change karo — dono randomness control karte hain, unexpected interactions hoti hain."
           howToUse={{
             filename: 'sampling-strategies.ts',
             language: 'typescript',
@@ -500,7 +500,7 @@ async function answerFactualQuestion(question: string) {
 // Top-p = 0.7: 70% cumulative probability tak tokens consider karo`,
             explanation: 'Temperature logits ko scale karta hai softmax se pehle. Low temperature: confident peak, high temperature: flat distribution. Top-p (nucleus sampling) adaptive hai — agar model confident hai, vocabulary smaller hoti hai. OpenAI: either temperature OR top_p change, not both.',
           }}
-          realWorldScenario="Autocomplete feature ke liye temperature 0 (deterministic, fast, reliable). Chatbot personality ke liye temperature 0.7 (conversational, slight variation). Poetry generator ke liye temperature 1.2 (creative, unexpected rhymes). Same model, different parameters = completely different behavior."
+          realWorldScenario="Ek app mein different features ke liye different temperatures: Code autocomplete = temperature 0 (deterministic, reproducible). Customer support chatbot = temperature 0.7 (warm, slightly varied tone). Poetry generator = temperature 1.2 (creative, unexpected rhymes). Marketing tagline generator = temperature 0.9 (multiple varied options). Same Claude model, same API — sirf ek parameter change. Ye power samajh le."
           commonMistakes={[
             {
               mistake: 'Temperature aur top_p dono adjust karna ek saath',
@@ -513,7 +513,7 @@ async function answerFactualQuestion(question: string) {
               fix: '0.7-0.9 range se shuru karo creative tasks ke liye. 1.0+ sirf agar 0.9 kaafi creative nahi laga. Test karo multiple times — quality check karo.',
             },
           ]}
-          proTip="seed parameter (OpenAI mein) se reproducible outputs milte hain same temperature ke saath — testing ke liye useful. System prompts + low temperature + few-shot examples = most reliable outputs production mein. Ye combination hallucination reduce karta hai significantly."
+          proTip="Production reliability tips: OpenAI mein seed parameter se same temperature ke saath reproducible outputs — testing aur debugging ke liye gold. System prompt + low temperature + few-shot examples = most reliable outputs. Ye triple combination hallucinations significantly reduce karta hai. Yaad rakh: Temperature 0 = robot (reliable). Temperature 2 = drunk robot (creative lekin unreliable). Apna use case dekho, choose karo."
         />
       </div>
 

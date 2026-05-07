@@ -149,17 +149,19 @@ export default function Chapter4Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          NPM — Node ka Package Universe
+          package-lock.json ko .gitignore mein daalna — ye ek bahut bada mistake hai!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          2 million+ packages. Duniya ka sabse bada software registry. Sahi use karna seekho — warna dependency hell mein jaaoge.
+          Bhai, ye ek real production incident hai — team member ne{' '}
+          <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">package-lock.json</code>{' '}
+          commit nahi kiya. Deployment mein npm install ne slightly alag version install ki. Production crash. 2 ghante debugging. Simple fix tha — lock file commit karo. NPM sirf 'packages install karna' nahi hai — ye dependency management, versioning, scripting, aur production reliability ka poora system hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
           Is chapter mein hum{' '}
           <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">package.json</code>{' '}
           structure, semantic versioning, lock files, npm scripts, aur{' '}
           <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">npx</code>{' '}
-          sab cover karenge — beginner se production-ready tak.
+          sab cover karenge. Sab seekhoge — beginner se production-ready tak.
         </p>
       </div>
 
@@ -169,7 +171,7 @@ export default function Chapter4Content() {
           title="package.json — Tera Project Ka ID Card"
           emoji="🪪"
           difficulty="beginner"
-          whatIsIt="package.json tera Node.js project ka identity document hai. Isme project ki saari information hoti hai — naam, version, dependencies, scripts, aur configuration. npm is file ko read karke jaanta hai project ke baare mein. Bina package.json ke, project sirf random files ka dabba hai."
+          whatIsIt="package.json tera project ka ID card hai — aur bahut zyada! Ye ek single file hai jo batati hai: project ka naam kya hai, kaunse packages chahiye, kaise build karna hai, kaise test karna hai, minimum Node version kya chahiye. Jab koi tumhara project GitHub se clone kare aur npm install kare — ye magic package.json ki wajah se hota hai. Bhai, bina package.json ke project sirf random files ka dabba hai — npm ko pata hi nahi ki kya install karna hai, kaise run karna hai!"
           whenToUse={[
             'Har Node.js project mein — project shuru karte hi banao',
             'Dependencies track karne ke liye — installed packages record rehte hain',
@@ -177,7 +179,7 @@ export default function Chapter4Content() {
             'Project metadata — name, version, description, license',
             'Node.js version requirements specify karne ke liye (engines field)',
           ]}
-          whyUseIt="package.json ke bina: team members alag versions install kar sakte hain, scripts manually run karne padte hain, project metadata kahin nahi hoti. package.json se: npm install ek command mein sab dependencies install kar deta hai, npm run dev se development server start hoti hai, CI/CD tools automatically samjh jaate hain project structure."
+          whyUseIt="Ye production-ready package.json dekho — scripts field mein poora build pipeline hai. npm run validate ek command mein lint + type-check + test sab karta hai. prebuild automatically build se pehle clean karta hai — developer ko manually yaad nahi rakhna. engines field se Node.js version enforce hoti hai — 'works on my machine' problem khatam. private: true se accidental npm publish se bachao. Ye ek file mein poora project ka contract hai!"
           howToUse={{
             filename: 'package.json',
             language: 'json',
@@ -232,7 +234,7 @@ export default function Chapter4Content() {
 }`,
             explanation: 'Ye ek production-ready package.json hai. scripts mein saare common tasks hain. dependencies runtime mein chahiye. devDependencies sirf development mein. engines se Node.js version requirements enforce hoti hain. private: true se accidental npm publish se bachao.',
           }}
-          realWorldScenario="Jab tum GitHub se koi project clone karte ho aur npm install run karte ho — npm package.json padh ke sab dependencies install karta hai. Ek command, sab setup. Ye package.json ki power hai — project ki complete dependency map ek file mein."
+          realWorldScenario="Naya developer join kiya team mein. README mein likha: 'git clone, npm install, npm run dev'. Teen commands mein development environment ready. Koi manual setup nahi, koi version confusion nahi. package.json ke engines field se wrong Node version pe informative error milta hai. npm run dev ek command mein database seed bhi karta hai, server bhi chalata hai. Ye onboarding magic package.json ki power hai — naya developer din 1 se productive!"
           commonMistakes={[
             {
               mistake: 'devDependencies mein production libraries dalna (ya ulta)',
@@ -245,7 +247,7 @@ export default function Chapter4Content() {
               fix: 'Internal projects mein hamesha "private": true rakho. Public npm package hai toh "private" field hataao ya false karo.',
             },
           ]}
-          proTip="npm init -y se default package.json banta hai — sabse fast way. Phir manually fields update karo. Ya npm init (without -y) se interactive wizard se customize karo. Pro tip: npm pkg set scripts.dev='tsx watch src/index.ts' se scripts directly CLI se set kar sakte ho."
+          proTip="ek quick pro move: npm init -y se default package.json instantly banta hai — koi wizard nahi. Phir specific fields CLI se set karo: npm pkg set scripts.dev='tsx watch src/index.ts'. Ye bahut fast hai. Aur private: true hamesha set karo internal projects mein — ek baar accidental npm publish ho gayi toh package public ho jaati hai. Irreversible! 'private': true ek life-saving habit hai."
         />
       </div>
 
@@ -255,14 +257,14 @@ export default function Chapter4Content() {
           title="Semver — Version Numbers Ka Matlab"
           emoji="🔢"
           difficulty="beginner"
-          whatIsIt="Semantic Versioning (semver) ek standard hai — MAJOR.MINOR.PATCH format. 2.4.1 mein: 2 major version hai, 4 minor, 1 patch. MAJOR change = breaking changes (API change). MINOR change = new features (backward compatible). PATCH = bug fixes only. npm is standard ko follow karta hai — package updates kab safe hain ye decide karne ke liye."
+          whatIsIt="Package version number 2.4.1 dikhta hai — random nahi, ye ek language hai! MAJOR.MINOR.PATCH format. MAJOR (2) = breaking changes — API badli, existing code break ho sakta hai, update carefully. MINOR (4) = new features — backward compatible, generally safe to update. PATCH (1) = bug fixes only — safe to update anytime. Ye 'Semantic Versioning' hai — semver. Npm ye standard follow karta hai. Agar package authors ye properly follow karein toh ^ ya ~ se updates safe hoti hain. Agar nahi karte? Production incidents!"
           whenToUse={[
             'Har npm package publish karte waqt — semver follow karo',
             'Dependencies update karte waqt — kaunsa update safe hai samjhna',
             '^ ya ~ ya exact version decide karte waqt',
             'Changelog likhte waqt — kya changed based on version bump type',
           ]}
-          whyUseIt="Semver se ecosystem predictable rehta hai. Agar package v3.0.0 release karti hai (major bump), toh tum samjhte ho ke breaking changes hain — blindly update mat karo. v2.5.0 (minor) mein new features hain lekin existing code break nahi hoga. v2.4.2 (patch) safe update hai — sirf bug fixes."
+          whyUseIt="^ (caret) vs ~ (tilde) — ye dono hamesha confuse karte hain! ^4.18.2 matlab >=4.18.2 <5.0.0 — minor aur patch updates milenge, major nahi. ~4.18.2 matlab >=4.18.2 <4.19.0 — sirf patch updates milenge. Ab sawaal: kaunsa use karein? Rule: Most regular packages ke liye ^. Payment libraries, security-critical packages ke liye ~ ya exact version. Ek startup ki real kahani: stripe package ^ tha, ek minor update mein payment fail hone lage. Lesson: critical libraries ke liye exact version ya ~."
           howToUse={{
             filename: 'semver-examples.json',
             language: 'json',
@@ -294,7 +296,7 @@ export default function Chapter4Content() {
 }`,
             explanation: '^4.18.2 (caret) sabse common hai — minor updates allow karta hai jo backward compatible hote hain. ~4.17.21 (tilde) conservative approach — sirf bug fixes. Critical libraries ke liye exact version use karo — surprise breaking changes se bachao.',
           }}
-          realWorldScenario="Ek startup mein stripe npm package use ho raha tha. package.json mein ^ tha. Minor update mein stripe ne ek method ka parameter order change kiya (technically minor lekin behavior-breaking). Payments fail hone lage. Lesson: payment libraries ke liye exact version ya ~ use karo — safety first."
+          realWorldScenario="Ye incident real hai — ek fintech startup mein stripe package ^10.0.0 tha. Minor update 10.5.0 aaya, developer ne npm update kiya. Payments fail hone lage — ek API parameter ka behavior change hua tha (technically 'non-breaking' lekin behavior was different). 6 ghante debugging. Fix: stripe ka exact version lock kar diya. Lesson seekha sabne: payment, auth, security libraries = hamesha exact version ya ~."
           commonMistakes={[
             {
               mistake: '* (star) ya latest tag use karna dependencies mein',
@@ -307,7 +309,7 @@ export default function Chapter4Content() {
               fix: 'npm update se explicitly update karo. npm outdated se pehle check karo kya outdated hai. Major updates ke liye npm install package@latest use karo.',
             },
           ]}
-          proTip="npm install --save-exact ya -E se exact version lock karo: npm install express --save-exact → '4.18.2' instead of '^4.18.2'. Critical dependencies (payment APIs, security libraries) ke liye ye safer hai. Aur hamesha package-lock.json commit karo — ye exact versions record karta hai."
+          proTip="npm install --save-exact ya -E flag — ye bahut log nahi jaante! npm install stripe --save-exact karo toh package.json mein '14.5.0' aayega instead of '^14.5.0'. Exact version lock! Critical libraries ke liye ye gold hai. Aur ek powerful tool: npm outdated — ye table bataata hai kaunse packages outdated hain, kaunsa wanted (safe update), kaunsa latest hai. Ye daily use karo — deliberately update karo, blindly nahi."
         />
 
         <div className="mt-6">
@@ -361,14 +363,14 @@ export default function Chapter4Content() {
           title="package-lock.json — Reproducible Installs"
           emoji="🔒"
           difficulty="intermediate"
-          whatIsIt="package-lock.json ek auto-generated file hai jo exact dependency tree record karti hai — har package ka exact version, dependencies ki dependencies, aur integrity hash. Ye ensure karta hai ki tumhara code aur team member ka code aur production server — sab same exact packages use karein. Reproducibility ka secret weapon."
+          whatIsIt="Suno — ye file auto-generated hai, isliye bahut log sochte hain .gitignore mein daalo. YE GALAT HAI! package-lock.json exact dependency tree ka snapshot hai — har package ka exact version, unke dependencies, aur integrity hash. Ye guarantee karta hai ki development, CI/CD, aur production mein same exact packages install honge. Bina iske? Koi bhi ^ wali dependency alag version install kar sakti hai. 'Works on my machine' problem ka source yahi hota hai. Lock file commit karo — hamesha!"
           whenToUse={[
             'Hamesha commit karo — project mein shamil karo source control mein',
             'CI/CD pipelines mein npm ci use karo — lock file strictly follow karta hai',
             'Docker builds mein — reproducible container images ke liye',
             'Team onboarding — naya developer aaya, npm ci se exact same environment',
           ]}
-          whyUseIt="Sochlo bhai: tumhare laptop par app perfectly kaam kar rahi hai. Production deploy kiya, crash. Kyun? npm install ne slightly alag version install ki (^ ki wajah se latest compatible mili). package-lock.json is problem ko solve karta hai — exact snapshot of your working dependency tree. 'Works on my machine' problem khatam."
+          whyUseIt="npm install vs npm ci — ye difference samajhna mandatory hai! npm install: package.json se install karta hai, lock file update kar sakta hai agar mismatch ho. Development mein use karo jab packages add ya remove karo. npm ci: package-lock.json se STRICTLY install karta hai, pehle node_modules DELETE karta hai, lock file update NAHI karta — agar lock file outdated ho, ERROR deta hai. CI/CD, Docker, production ke liye HAMESHA npm ci. Ye ek word ka difference production reliability guarantee karta hai!"
           howToUse={{
             filename: 'workflow.sh',
             language: 'bash',
@@ -413,7 +415,7 @@ npm audit
 npm audit fix           # Auto-fix safe issues`,
             explanation: 'npm ci CI/CD mein use karo — reproducible, fast, aur strict. npm install development mein jab package changes karo. Dockerfile mein COPY package*.json ./ (both files!) phir RUN npm ci — production-ready pattern.',
           }}
-          realWorldScenario="ek fintech startup ki production deploy mein bank transfer API call fail ho rahi thi. Debug kiya — node-fetch ka 3.x install hua tha jiske saath CommonJS require() kaam nahi karta. package-lock.json commit nahi tha. npm ci hoti toh same version install hoti. Lock file commit karna seek gaye — dobaara nahi hua ye issue."
+          realWorldScenario="Ek fintech startup mein production deployment fail hua — bank transfer API suddenly crash kar raha tha. 4 ghante debugging ke baad pata chala: node-fetch ka v3 install hua tha (pure ESM) lekin code CJS require() use kar raha tha. Kyun v3 install hua? package-lock.json commit nahi tha, CI mein npm install ne latest compatible version install ki. Fix: lock file commit kiya, CI mein npm ci likha. Phir kabhi nahi hua. Ek file commit na karne ki cost — 4 ghante downtime!"
           commonMistakes={[
             {
               mistake: 'package-lock.json ko .gitignore mein daalna',
@@ -426,7 +428,7 @@ npm audit fix           # Auto-fix safe issues`,
               fix: 'CI/CD scripts mein hamesha npm ci use karo. Ye faster bhi hai kyunki cache-optimized hai aur existing node_modules check nahi karta.',
             },
           ]}
-          proTip="CI/CD mein hamesha npm ci use karo — npm install se faster hai aur lock file strictly follow karta hai. GitHub Actions example: 'run: npm ci' instead of 'run: npm install'. Docker mein bhi: RUN npm ci. Ye ek chhoti si change hai jo reproducibility guarantee karta hai — kabhi bhoolna mat."
+          proTip="Docker mein ek common mistake — sirf package.json COPY karte hain, lock file nahi: 'COPY package.json ./' — WRONG! Sahi pattern: 'COPY package*.json ./' (ye dono package.json aur package-lock.json copy karta hai), phir 'RUN npm ci'. Lock file Docker image mein bhi zaroori hai — otherwise har docker build mein potentially alag versions milegi! Ye ek star (*) ka difference hai jo production consistency guarantee karta hai."
         />
       </div>
 
@@ -436,7 +438,7 @@ npm audit fix           # Auto-fix safe issues`,
           title="npm Scripts — Tera Build System"
           emoji="⚙️"
           difficulty="beginner"
-          whatIsIt="npm scripts package.json ke 'scripts' field mein define hote hain — shell commands jo npm run <name> se execute hote hain. Ye Node.js project ka lightweight build system hai. Makefile ya Gulp jaise complex tools ki zaroorat nahi — npm scripts se hi lint, build, test, deploy sab ho sakta hai."
+          whatIsIt="Ye ek underappreciated feature hai — npm scripts! package.json ke scripts field mein likho, npm run <name> se chalao. Koi Makefile nahi, koi Gulp nahi, koi Grunt nahi — sirf JSON mein commands. Aur ek secret superpower: npm scripts automatically PATH mein node_modules/.bin add karta hai. Matlab locally installed tools seedha chalao — bina npx, bina global install. eslint, tsc, jest — sab kuch local version mein automatically milega. Ye developer experience ka gold standard hai!"
           whenToUse={[
             'Project start/stop commands — npm start, npm run dev',
             'Build pipeline — TypeScript compile, bundle karna',
@@ -445,7 +447,7 @@ npm audit fix           # Auto-fix safe issues`,
             'Database operations — migrations, seeding',
             'Deployment helpers — Docker build, cloud deploy',
           ]}
-          whyUseIt="npm scripts ka fayda: PATH mein node_modules/.bin automatically add hota hai — locally installed tools seedha use kar sakte ho bina npx ke. Pre/post hooks se automation possible hai. Cross-platform (mostly) — Windows aur Unix pe same commands. Team ke liye standard entry points — naya dev jo bhi joined hai wo npm run dev jaanta hai."
+          whyUseIt="pre/post hooks ka magic — prebuild likho, build se pehle automatically chalega. pretest likho, test se pehle lint automatically chalega. Ye 'convention over configuration' hai — hooks ke naam se kaam hota hai, koi setup nahi. && se scripts chain karo: npm run validate = lint + type-check + test sab ek command mein. Developer ko yaad nahi rakhna — ek command, poora pipeline. Production deploy bhi npm scripts se orchestrate kar sakte ho!"
           howToUse={{
             filename: 'package.json',
             language: 'json',
@@ -491,7 +493,7 @@ npm audit fix           # Auto-fix safe issues`,
 }`,
             explanation: 'pre/post hooks magic hain — prebuild automatically build se pehle run hota hai. && se scripts chain karo — agar pehla fail hua toh aagla nahi chalega. npm run validate ek command mein poora quality check karta hai.',
           }}
-          realWorldScenario="Production deploy pipeline mein: npm run validate (lint + type-check + test) → npm run build → docker build → deploy. Ye sab npm scripts se orchestrate hota hai. Developer ko sirf commands yaad rakhne hote hain — implementation scripts mein chhupa hota hai. Onboarding new devs ke liye README mein sirf 'npm run dev' likhna kaafi hota hai."
+          realWorldScenario="Ek real CI/CD pipeline sirf npm scripts use karta hai: GitHub Actions mein run: npm ci, phir run: npm run validate, phir run: npm run build. Ye teen commands mein poora quality gate + build pipeline complete. Koi extra CI configuration nahi, koi complex YAML nahi. Pipeline scripts package.json mein hain — developer locally bhi same commands run kar sakta hai. Local = CI = Production. Ye consistency bahut valuable hai!"
           commonMistakes={[
             {
               mistake: 'globally installed packages par depend karna scripts mein',
@@ -504,7 +506,7 @@ npm audit fix           # Auto-fix safe issues`,
               fix: '"clean": "rimraf dist" (npm install rimraf as devDependency). rimraf cross-platform hai. Ya shx package use karo Unix commands ke cross-platform versions ke liye.',
             },
           ]}
-          proTip="npm run-script -- --flag se flags pass kar sakte ho: npm test -- --verbose --coverage. Double dash (--) ke baad jo bhi hai woh underlying command ko pass hota hai. Aur npm test aur npm start special commands hain — run keyword optional hai: npm test (not npm run test, though both work)."
+          proTip="Cross-platform scripts ka ek trap hai — rm -rf Windows mein kaam nahi karta. rimraf package install karo (devDependencies mein) aur 'clean': 'rimraf dist' likho — Windows, Mac, Linux sab par chalega. Ye ek chhoti si baat hai lekin team mein koi Windows developer ho toh pain save karta hai. Aur npm test special hai — npm run test bhi kaam karta hai, lekin npm test short form bhi chalti hai directly. npm start bhi same."
         />
       </div>
 
@@ -514,7 +516,7 @@ npm audit fix           # Auto-fix safe issues`,
           title="npx — Bina Install Kiye Run Karo"
           emoji="🚀"
           difficulty="beginner"
-          whatIsIt="npx ek npm tool hai jo packages ko install kiye bina directly execute karta hai. Node.js 5.2+ ke saath bundled aata hai. Jab tum npx create-react-app my-app likhte ho, npx temporarily create-react-app download karta hai, run karta hai, phir delete kar deta hai. Ek-baar use hone wale tools ke liye perfect."
+          whatIsIt="npx ek chhota sa jaadoo hai! Before npx: scaffolding tool globally install karo, outdated ho jaaye, update karo, conflict ho, phir run karo. After npx: npx create-next-app@latest — latest version, ek command, koi global install nahi. npx pehle locally installed packages dekhta hai (node_modules/.bin), agar nahi mila toh temporarily download karta hai, chalata hai — khatam! Global namespace saaf, hamesha latest version, koi conflicts. Ek-baar use tools ke liye ye perfect hai."
           whenToUse={[
             'Project scaffolding tools — create-react-app, create-next-app, etc.',
             'One-off scripts jo globally install nahi karne hain',
@@ -522,7 +524,7 @@ npm audit fix           # Auto-fix safe issues`,
             'Locally installed binaries run karna — node_modules/.bin/',
             'Testing agar koi package tere project ke liye useful hai',
           ]}
-          whyUseIt="Bina npx ke: npm install -g create-react-app globally install karo, phir create-react-app my-app, phir yaad rakho globally installed tools update karna. Sab outdated ho jaate hain. npx ke saath: npx create-react-app my-app — hamesha latest version run hoti hai. Global namespace pollute nahi hota. Ek command, kaam ho gaya."
+          whyUseIt="npx ka ek hidden superpower: locally installed packages pehle check karta hai! Toh npm scripts mein agar eslint devDependency hai, npx eslint src/ automatically local version chalayega. Aur specific version test karna ho: npx create-next-app@13 my-old-app — exactly woh version milega. Old React project recreate karna tha? npx create-react-app@5 se wahi exact version milegi. Ye version control flexibility bahut powerful hai!"
           howToUse={{
             filename: 'npx-examples.sh',
             language: 'bash',
@@ -558,7 +560,7 @@ npx eslint src/             # Local eslint
 # npm run lint  ← ye bhi node_modules/.bin use karta hai`,
             explanation: 'npx locally installed packages pehle check karta hai (node_modules/.bin), phir agar nahi mila toh temporarily download karta hai. create-react-app ya create-next-app jaise scaffolding tools ke liye ideal — hamesha latest version milti hai.',
           }}
-          realWorldScenario="Team mein naya project start karna hai. Har developer ke machine par different global tool versions installed hain. npx create-next-app@latest use karo — sab developers same latest version run karein. No 'but I have v12 installed globally' issues. Clean, consistent, reproducible project setup."
+          realWorldScenario="Ek client ke project ka scaffold karna tha. Client ne bola 'exact same Next.js version use karo jo hamare production mein hai — v13.5'. Command: npx create-next-app@13.5 client-project. Ek command mein exact version ka project ready! Globally 'next' install nahi tha, version conflict nahi, machine polluted nahi. Team ke 5 developers ne same command run ki — sab identical environments mile. Ye npx ki real-world value hai."
           commonMistakes={[
             {
               mistake: 'npx aur npm install ka confusion — dono install karte hain ye sochna',
@@ -571,7 +573,7 @@ npx eslint src/             # Local eslint
               fix: 'Honestly, zyada tools globally install karna avoid karo. Devt tools project ke devDependencies mein daalo — team consistency ke liye better.',
             },
           ]}
-          proTip="npx always latest version run karta hai unless tum version specify karo (npx create-next-app@13). Cached hai toh local cache use karta hai — network hit nahi hoti. --yes flag se prompts skip karo: npx create-next-app@latest my-app --yes --typescript --tailwind. Automation scripts ke liye perfect."
+          proTip="npx aur npm install confusion bahut common hai — ye clear karo: npx temporarily chalata hai (project mein install nahi hota). npm install permanently install karta hai. Rule: Ek baar run karna hai (scaffolding, one-off tools)? npx. Regularly development mein use karna hai (jest, eslint, tsx)? devDependencies mein daalo, npm scripts mein use karo — locally installed automatic milega. Globally install karna? Mostly avoid karo — team consistency toot jaati hai."
         />
       </div>
 

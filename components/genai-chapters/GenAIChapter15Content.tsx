@@ -150,10 +150,10 @@ export default function GenAIChapter15Content() {
         }}
       >
         <h1 className="text-4xl font-display font-bold text-[#F5F5F7] mb-3">
-          Vercel AI SDK — Next.js Mein AI Fastest Way ⚡
+          Vercel AI SDK — Next.js Mein AI Ka Fastest Path ⚡
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          AI SDK se Next.js mein streaming chat, tool calls, aur generative UI banao — boilerplate minimum, production-ready maximum.
+          Ek honest comparison: Vercel AI SDK se streaming chat implement karo — 20 lines. Bina SDK ke same feature — 200+ lines, SSE manually handle karo, chunk assembly karo, state manage karo, error handling implement karo. SDK ye sab already karta hai, battle-tested hai, aur provider-agnostic hai. OpenAI, Anthropic, Google — same code, config change karo.
         </p>
         <div
           className="rounded-xl p-4"
@@ -163,7 +163,7 @@ export default function GenAIChapter15Content() {
           }}
         >
           <p className="text-[#67E8F9] text-sm italic">
-            &quot;Vercel AI SDK ne Next.js + LLM integration 10x faster banaya. useChat hook ek line mein full streaming chat deta hai.&quot;
+            &quot;Vercel AI SDK ne Next.js + LLM integration 10x faster banaya. useChat hook ek line mein full streaming chat deta hai — genuinely.&quot;
           </p>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default function GenAIChapter15Content() {
           title="AI SDK Overview — streamText, generateText, useChat"
           emoji="⚡"
           difficulty="intermediate"
-          whatIsIt="Vercel AI SDK (ai package) Next.js mein LLM integration ke liye designed hai. Core functions: streamText (streaming responses), generateText (complete response wait), generateObject (structured JSON output). React hooks: useChat (full chat interface), useCompletion (simple completion). Provider-agnostic — OpenAI, Anthropic, Google sab same API se."
+          whatIsIt="AI SDK ke teen core functions samjho: streamText (tokens stream karo, ChatGPT jaisa feel), generateText (poora response wait karo, simpler use cases), generateObject (Zod schema se validated JSON output — parse errors zero). React hooks: useChat (full chat — messages, streaming, loading, errors sab), useCompletion (simple single turn). Provider function: anthropic('model-id') ya openai('model-id') — dono same interface implement karte hain."
           whenToUse={[
             'Next.js project mein AI chat feature add karna — fastest way.',
             'Streaming responses chahiye — token-by-token UI update.',
@@ -182,7 +182,7 @@ export default function GenAIChapter15Content() {
             'Tool calls + UI updates — agent-like features in Next.js.',
             'Generative UI — AI decides kaunsa component render ho.',
           ]}
-          whyUseIt="Bina AI SDK ke: streaming manually implement karo, SSE parse karo, tool calls handle karo, error handling implement karo — 200+ lines boilerplate. AI SDK ke saath: streamText → toDataStreamResponse() → useChat — 20 lines, production-ready. Streaming, cancellation, error handling — sab handled."
+          whyUseIt="Ye SDK sirf Next.js ke liye nahi — Node.js, Svelte, Nuxt sab support karta hai. Lekin Next.js ke saath best experience milta hai kyunki Vercel ne specifically App Router ke liye optimize kiya hai. generateObject ka power: Zod schema do, typed structured output guaranteed. Complex data extraction, classification, entity extraction — JSON.parse nahi karna padta, types guaranteed hote hain."
           howToUse={{
             filename: 'ai-sdk-basics.ts',
             language: 'typescript',
@@ -233,9 +233,9 @@ async function structuredExample() {
   console.log(object.title);   // Validated, typed!
   console.log(object.topics);  // string[] guaranteed
 }`,
-            explanation: 'streamText: streaming ke liye, toDataStreamResponse() se Next.js route handler mein use karo. generateText: simple blocking call. generateObject: Zod schema se typed structured output — JSON parsing + validation automatic. Provider swap: anthropic() → openai() — same code, different model.',
+            explanation: 'streamText: real-time tokens ke liye, toDataStreamResponse() return karo Next.js route handler mein. generateText: blocking call, poori response ek saath. generateObject game-changer hai: Zod schema do → model guaranteed valid JSON deta hai → TypeScript types automatic. Provider swap: anthropic("model") → openai("model") — ek line change, baki code unchanged.',
           }}
-          realWorldScenario="NodeMaster mein AI tutor feature: user question poochhe, streaming response aaye (ChatGPT-style typing effect), code examples highlighted, quiz questions generate ho. AI SDK se 3 din mein built. Bina SDK: minimum 2 weeks implementation + testing."
+          realWorldScenario="NodeMaster ka AI tutor feature: streaming response (ChatGPT-style), code highlighted, quiz generation. AI SDK se 3 din mein built aur deployed. Estimate bina SDK: streaming implementation (3 days) + SSE handling (2 days) + state management (2 days) + testing (3 days) = 10 days minimum. SDK ne 7 days bachaye — wo 7 days kuch naya build karne mein gaye."
           commonMistakes={[
             {
               mistake: 'NEXT_PUBLIC_ prefix API keys pe lagana',
@@ -243,7 +243,7 @@ async function structuredExample() {
               fix: '.env.local mein: ANTHROPIC_API_KEY=sk-... (no NEXT_PUBLIC_ prefix). Sirf server-side use karo — route handlers mein, page.tsx server components mein.',
             },
           ]}
-          proTip="AI SDK ka generateObject Zod schema se Structured Outputs use karta hai (OpenAI) ya JSON mode (Anthropic) — guaranteed valid JSON, no parsing errors. Complex data extraction ke liye game-changer: parse resumes, extract entities, classify content — typed output guaranteed."
+          proTip="generateObject ka Zod schema validation production mein invaluable hai. Agar model slightly different format de toh SDK retry karta hai — tumhara code kabhi invalid JSON nahi dekhega. Resume parsing, entity extraction, classification — sab use cases mein ye pattern adopt karo. JSON.parse try-catch se permanent chutkara."
         />
       </div>
 
@@ -253,7 +253,7 @@ async function structuredExample() {
           title="Provider Setup — Anthropic, OpenAI, Google in Next.js"
           emoji="🔌"
           difficulty="intermediate"
-          whatIsIt="AI SDK multiple providers support karta hai — @ai-sdk/anthropic, @ai-sdk/openai, @ai-sdk/google. Sab same Runnable interface implement karte hain — model function call karo aur streamText/generateText mein pass karo. Environment variables se API keys configure karo, code mein hardcode mat karo."
+          whatIsIt="Provider setup one time kaam hai: npm install @ai-sdk/anthropic @ai-sdk/openai @ai-sdk/google. Keys environment variables mein (.env.local). Phir model function call karo — anthropic('claude-sonnet-4-6') ya openai('gpt-4o'). Dono same interface — streamText mein pass karo, baki code same. Ek MODELS object banao — sab provider choices ek jagah, easy switching."
           whenToUse={[
             'Primary provider: Anthropic (Claude) — best for complex reasoning, long context.',
             'Alternative: OpenAI (GPT-4o) — function calling mature, image generation.',
@@ -261,7 +261,7 @@ async function structuredExample() {
             'Fallback setup: primary fails → secondary provider automatically use karo.',
             'Cost routing: cheap model first, escalate to expensive if needed.',
           ]}
-          whyUseIt="Provider-agnostic code future-proof hai — kal agar Claude ka API down ho toh OpenAI pe fallback possible hai bina code change ke. Different providers different strengths — best model for best task. AI landscape evolving hai — lock-in avoid karo."
+          whyUseIt="AI landscape rapidly evolve ho raha hai — ek provider lock-in ek bad idea hai. Provider-agnostic code se: kal better model aaye → switch karo, ek provider down ho → fallback, A/B test providers → config change se. Ye flexibility long-term competitive advantage hai. Fallback pattern especially important hai production mein — primary fail kare toh secondary automatically use karo."
           howToUse={{
             filename: 'provider-setup.ts',
             language: 'typescript',
@@ -327,9 +327,9 @@ async function generateWithFallback(prompt: string) {
   }
   throw new Error('All providers failed');
 }`,
-            explanation: 'Provider import karo (@ai-sdk/anthropic), model function call karo (anthropic("model-id")), streamText/generateText mein pass karo. Sab same interface. MODELS object se easy switching. Fallback: try-catch mein providers loop karo. Environment variables se key automatic pick hoti hai — no config needed.',
+            explanation: 'MODELS object pattern: sab providers ek jagah defined. getModel(key) function se consistent access. Fallback loop: primary fail → next try → all fail toh throw. Environment variables automatic read hote hain (SDK internally process.env check karta hai) — no explicit config needed. Model IDs exact hone chahiye — runtime error aata hai wrong ID pe, build time nahi.',
           }}
-          realWorldScenario="Production AI app: primary = Claude Sonnet (best quality), fallback = GPT-4o (reliability), ultra-fast = Claude Haiku (high volume, simple tasks). Router: task complexity score karo, cheap model try karo, quality threshold nahi mili toh expensive model use karo. 60% cost saving with same quality."
+          realWorldScenario="Production app: primary = Claude Sonnet (best quality), fallback = GPT-4o (reliability insurance), high-volume simple tasks = Claude Haiku. Smart router: task complexity score karo, Haiku try karo, quality threshold miss ho toh Sonnet escalate karo. Result: 60% cost saving with same quality. Ye intelligent routing hai — possible sirf provider-agnostic architecture se."
           commonMistakes={[
             {
               mistake: 'Model ID wrong likhna — claude-sonnet-4 instead of claude-sonnet-4-6',
@@ -337,7 +337,7 @@ async function generateWithFallback(prompt: string) {
               fix: 'Anthropic docs se exact model IDs copy karo. Type-safe enum banao valid model IDs ke liye. Development mein model ID log karo verify karne ke liye.',
             },
           ]}
-          proTip="@ai-sdk/anthropic prompt caching support karta hai — system prompt pe cache_control: { type: 'ephemeral' } add karo. Long system prompts (>1000 tokens) pe 90% cost saving possible hai. Next.js mein bhi kaam karta hai — route handler mein system prompt ek baar cache ho jaata hai."
+          proTip="@ai-sdk/anthropic prompt caching support karta hai — system: [{ type: 'text', text: largeSystemPrompt, providerOptions: { anthropic: { cacheControl: { type: 'ephemeral' } } } }] syntax se enable karo. 1000+ token system prompts pe 90% cost saving. Next.js route handler mein ye hit hoga kyunki same process mein multiple requests handle hoti hain — cache warm rehta hai."
         />
       </div>
 
@@ -347,7 +347,7 @@ async function generateWithFallback(prompt: string) {
           title="Route Handlers — Streaming API Endpoints"
           emoji="🛤️"
           difficulty="intermediate"
-          whatIsIt="Next.js App Router mein AI streaming endpoints banao app/api/chat/route.ts mein. POST request → streamText → toDataStreamResponse() → client ko stream. Edge runtime optional — faster cold starts. Tool calls bhi route handler se handle hoti hain."
+          whatIsIt="Route handler pattern: POST request aata hai (messages + extra data), streamText call karo, toDataStreamResponse() return karo. Itna simple hai. Tools inline define karo (Zod schema + execute function) — Claude decide karta hai kab call karna hai, SDK automatically execute karta hai. onFinish callback se analytics, logging, DB saves karo asynchronously."
           whenToUse={[
             'Chat API endpoint — useChat hook ke liye backend.',
             'Streaming text generation — real-time token stream.',
@@ -355,7 +355,7 @@ async function generateWithFallback(prompt: string) {
             'Multi-turn conversations — message history maintain karna.',
             'Custom AI endpoints — different models, different system prompts.',
           ]}
-          whyUseIt="Route handler server-side mein hota hai — API key secure. Client directly Anthropic/OpenAI API nahi call karta. Rate limiting, authentication, logging — sab server-side implement karo. Edge runtime se global low latency possible hai."
+          whyUseIt="Route handler ka core benefit: API key server-side rehta hai. Client never directly LLM API call karta — ye critical security principle hai. NEXT_PUBLIC_ prefix wala env var browser mein visible hota hai — API keys KABHI NEXT_PUBLIC_ nahi hone chahiye. Rate limiting, auth, logging sab server-side implement karo — proper control milta hai."
           howToUse={{
             filename: 'app/api/chat/route.ts',
             language: 'typescript',
@@ -409,9 +409,9 @@ Explain concepts clearly, give code examples, encourage students.\`,
 // ── Edge Runtime (optional, faster cold start) ────────────────────
 // export const runtime = 'edge';
 // export const maxDuration = 30; // seconds`,
-            explanation: 'Route handler: req.json() se messages parse karo, streamText call karo, toDataStreamResponse() return karo. Tools mein execute function server pe run hota hai (DB queries, API calls safe). onFinish callback se logging, analytics, database saves karo. Edge runtime pe deploy karo global latency ke liye.',
+            explanation: 'Pattern breakdown: req.json() se messages + any extra body data parse karo. streamText ke tool execute functions server pe run hote hain — DB access, API calls safe hain. onFinish mein analytics aur logging — non-blocking, after stream complete. maxDuration export: Vercel free tier 10s default, Pro 300s — long responses ke liye explicitly set karo.',
           }}
-          realWorldScenario="Edtech platform ne AI tutor route handler banaya: messages history maintain hoti hai, tools mein chapter database query hoti hai, onFinish mein analytics track hoti hai. 50K daily active users, P95 latency 800ms (including streaming first token). Edge runtime deploy se 200ms improvement."
+          realWorldScenario="Edtech platform: AI tutor route handler. Messages history, chapter DB query tool, onFinish mein analytics. 50K daily active users, P95 latency 800ms first token. Edge runtime se 200ms improvement (global distribution). Simple optimization: export const runtime = 'edge' — ek line, 20% latency improvement globally."
           commonMistakes={[
             {
               mistake: 'Route handler mein try-catch nahi lagana',
@@ -419,7 +419,7 @@ Explain concepts clearly, give code examples, encourage students.\`,
               fix: "try-catch wrap karo: if (err instanceof Error && err.message.includes('rate limit')) return Response.json({ error: 'Too many requests' }, { status: 429 }). Client ko actionable errors do.",
             },
           ]}
-          proTip="maxDuration set karo route handler mein — Vercel free tier pe default 10 seconds, Pro pe 300 seconds. Long streaming responses ke liye: export const maxDuration = 60. Edge runtime pe sirf 30 seconds max hai. Choose based on expected response length."
+          proTip="Vercel deployment pe maxDuration hamesha explicitly set karo: export const maxDuration = 60 (Node.js runtime), export const maxDuration = 30 (Edge runtime max). Free tier default 10 seconds — long responses timeout ho jaate hain silently. User ko stream mid-way cut off milti hai — confusing experience. Explicit set karo, surprises avoid karo."
         />
       </div>
 
@@ -429,7 +429,7 @@ Explain concepts clearly, give code examples, encourage students.\`,
           title="useChat — Full Chat Interface in Minutes"
           emoji="💬"
           difficulty="intermediate"
-          whatIsIt="useChat React hook poora chat interface manage karta hai — messages state, input handling, streaming, loading states, error handling, form submit — sab automatic. Ek hook, full ChatGPT-like experience. isLoading, error, reload, stop — sab built-in controls."
+          whatIsIt="useChat ek single hook hai jo poora chat experience manage karta hai. Ek baar samjho kya andar hai: messages (full conversation state), input + handleInputChange (controlled input), handleSubmit (form submit + API call), isLoading (streaming indicator), error (error state), reload (last message retry), stop (streaming cancel). Ye sab manually implement karo = 150+ lines. useChat use karo = 5 lines."
           whenToUse={[
             'Full chat interface — user messages + AI responses streaming.',
             'Conversation history maintain karna — automatic.',
@@ -437,7 +437,7 @@ Explain concepts clearly, give code examples, encourage students.\`,
             'Tool calls in UI — onToolCall callback se handle karo.',
             'Optimistic UI updates — immediate user message display.',
           ]}
-          whyUseIt="Bina useChat ke: useState for messages, useEffect for streaming, manual form handling, loading state management, error handling — 100+ lines. useChat: same UI 10 lines mein. Streaming handling complex hai (SSE parsing, partial JSON) — useChat ye sab handle karta hai."
+          whyUseIt="Streaming handling genuinely complex hai internals mein: SSE stream parse karo, chunk assembly karo, partial JSON handle karo, cancellation implement karo, retry logic karo, error states manage karo. useChat ne ye sab battle-tested banaya hai. Tum sirf UI par focus karo — messages map karo, form render karo, done. Abstraction ka ye maximum value hai."
           howToUse={{
             filename: 'components/ChatInterface.tsx',
             language: 'typescript',
@@ -532,9 +532,9 @@ export default function ChatInterface() {
     </div>
   );
 }`,
-            explanation: 'useChat sab manage karta hai: messages array automatically update hoti hai, streaming text message.content mein aa jaata hai, isLoading streaming ke dauran true hota hai. handleSubmit form ke onSubmit mein lagao. stop() se streaming cancel hoti hai. reload() se last user message retry hota hai.',
+            explanation: 'useChat internals: streaming ke dauran message.content gradually update hoti hai — React automatically re-render karta hai (no extra code). isLoading true hota hai submit se leke stream complete hone tak. stop() AbortController se streaming cancel karta hai — mid-way rukna possible. reload() last user message re-submit karta hai — error recovery ke liye. bottomRef + useEffect auto-scroll implement karta hai.',
           }}
-          realWorldScenario="Customer support portal ne useChat se AI first-response feature banaya — user query pe AI streaming response deta hai, human agent background mein review karta hai. 65% queries AI handle karta hai bina human intervention. Integration: 3 din implementation + testing. useChat ka stop button: human agent takeover button."
+          realWorldScenario="Customer support portal: AI first-response feature. User query aata hai, AI streaming response deta hai, human agent background mein review karta hai. Agar AI se resolved — done. Agar nahi — human agent stop() click karta hai, takeover karta hai. 65% queries AI handle karta hai bina human intervention. Total implementation: 3 din. useChat ke stop() button ka ye ek elegant production use case hai."
           commonMistakes={[
             {
               mistake: 'Message content manually string se set karna',
@@ -542,7 +542,7 @@ export default function ChatInterface() {
               fix: "Messages ko manually set karne ke liye setMessages() use karo. Lekin generally useChat automatically handle karta hai — manually set karne ki zarurat rarely hoti hai.",
             },
           ]}
-          proTip="useChat mein body prop se extra data route handler ko bhej sakte ho: useChat({ body: { userId: user.id, sessionId: session.id } }). Route handler mein req.json() se ye data bhi milega messages ke saath — per-user system prompts, logging context ke liye useful."
+          proTip="useChat body prop powerful hai: useChat({ body: { userId: user.id, sessionId: session.id, preferredModel: 'claude' } }). Route handler mein ye sab req.json() mein milega — per-user system prompts, A/B testing, analytics context ke liye. Ye pattern se client side logic server mein move karo — more secure, more flexible."
         />
       </div>
 
@@ -552,14 +552,14 @@ export default function ChatInterface() {
           title="Generative UI — AI Jo UI Decide Kare"
           emoji="🎨"
           difficulty="intermediate"
-          whatIsIt="Generative UI mein AI decide karta hai kaunsa React component render ho. Regular streaming: AI text stream karta hai jo markdown mein render hota hai. Generative UI: AI tool call kare toh specific React component render ho — weather query pe WeatherCard, stock query pe StockChart, product search pe ProductGrid."
+          whatIsIt="Generative UI — next level concept. Regular chat: AI text deta hai → markdown render hota hai. Generative UI: AI tool call kare toh specific React component render ho. 'Mumbai ka weather batao' → AI showWeather tool call karta hai → WeatherCard component render hota hai. 'Products dhikao' → ProductGrid component. AI decides which component, developer defines components. Separation of concerns at its finest."
           whenToUse={[
             'Rich data display — numbers/charts better hain markdown text se.',
             'Interactive components — forms, buttons based on AI response.',
             'Domain-specific UIs — booking interfaces, product cards, maps.',
             'Context-aware rendering — AI decides data type based on query.',
           ]}
-          whyUseIt="User ne 'Mumbai ka weather batao' poochha — text response: '35°C, sunny' boring. Generative UI: animated WeatherCard component with icon, temperature gauge, forecast. Same data, 10x better UX. AI decides relevant component, developer defines components — separation of concerns."
+          whyUseIt="UX difference dramatic hai: '35°C, sunny' text vs animated WeatherCard with temperature gauge, humidity, forecast chart. Same data, 10x better experience. Users interact karte hain components se — booking cards mein directly book karo, product cards mein add to cart karo. Static text se ye possible nahi. Generative UI chat ko application-like feel deta hai."
           howToUse={{
             filename: 'app/api/ui-chat/route.ts',
             language: 'typescript',
@@ -630,9 +630,9 @@ export async function POST(req: Request) {
 //     return <div key={msg.id}>{msg.content}</div>;
 //   });
 // }`,
-            explanation: 'Generative UI pattern: tool execute karta hai data return karta hai → client mein toolInvocations check karo → matching React component render karo. AI ek conversation mein multiple tools use kar sakta hai — mixed text + components possible hai. Tool state: "partial-call" → "call" → "result" — loading states bhi handle karo.',
+            explanation: 'Generative UI client pattern: messages iterate karo, toolInvocations check karo. ti.state === "result" check karo pehle (execute function complete hona chahiye). ti.result mein data milega — directly component props mein pass karo. Mixed text + components ek conversation mein possible hai. Tool state lifecycle: "partial-call" (loading) → "call" (executing) → "result" (done) — sab states pe UI handle karo.',
           }}
-          realWorldScenario="Travel planning chatbot: User 'Paris trip plan karo 3 din ke liye' poochhe toh — AI automatically FlightCard, HotelCard, ItineraryTimeline components render karta hai instead of boring text. User ne booking directly UI se kiya. Conversion rate 3x higher vs text-only chatbot."
+          realWorldScenario="Travel chatbot: 'Paris 3 din ka trip plan karo' → AI FlightCard (book button ke saath), HotelCard (availability + price), ItineraryTimeline render karta hai. User ne FlightCard se directly book kiya — UI mein hi. Conversion rate 3x higher vs text-only chatbot. Ye generative UI ka commercial value hai — engagement → conversion."
           commonMistakes={[
             {
               mistake: 'Tool result client pe re-fetch karna',
@@ -640,7 +640,7 @@ export async function POST(req: Request) {
               fix: "ti.state === 'result' check karo aur ti.result directly use karo — server ne already data fetch kiya hai execute() mein.",
             },
           ]}
-          proTip="AI SDK ka experimental_toDataStream + createStreamableUI combination aur bhi powerful generative UI banata hai — loading skeletons, progressive rendering, partial updates. SDK docs mein 'Generative UI' section dekhо — complete examples with loading states, error boundaries."
+          proTip="Loading states implement karo Generative UI mein: ti.state === 'call' pe skeleton component show karo, ti.state === 'result' pe actual component render karo. Isse users ko instant feedback milta hai ki kuch ho raha hai. Skeleton → actual component transition smooth feel karta hai. AI SDK docs mein 'Generative UI' section mein complete examples hain — zarur padhna."
         />
       </div>
 

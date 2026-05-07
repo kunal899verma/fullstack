@@ -64,13 +64,13 @@ export default function JSChapter13Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Error Handling — Robust Code Ka Secret
+          Error Handling — Production Code Ka Farz
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Production code mein sab kuch plan ke hisaab se nahi hota — API fail hoti hai, user galat data deta hai, network drop hota hai. Proper error handling se tum gracefully degrade kar sakte ho — crash karne ki jagah meaningful messages show karo.
+          Junior developer aur senior developer mein ek bada fark hai — error handling. Junior developer happy path likhta hai — sab kuch theek chale tab. Senior developer edge cases ke baare mein sochta hai — API fail ho, user galat data de, network drop ho — tab kya hoga? Robust error handling ka matlab crash nahi — graceful degradation.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum error types, try/catch/finally, custom errors, async error handling aur propagation strategies sab cover karenge — production-grade patterns ke saath.
+          Sawaal: empty catch block likhna kyun dangerous hai? Jawab: error silently disappear ho jaata hai — user ko pata nahi kuch hua, developer ko pata nahi bug kahan hai, logs mein kuch nahi. Ye 'error swallowing' hai — production ka worst practice. Is chapter mein error types, try/catch/finally, custom errors, async error handling — sab production-grade patterns ke saath dekhenge.
         </p>
       </div>
 
@@ -79,7 +79,7 @@ export default function JSChapter13Content() {
           title="JavaScript Error Types"
           emoji="🚨"
           difficulty="intermediate"
-          whatIsIt="JavaScript mein built-in error types hain — SyntaxError (parse time), TypeError (wrong type operation), ReferenceError (undefined variable), RangeError (value out of range), URIError, EvalError. Har ek alag situation mein aata hai. Error object mein name, message, aur stack properties hoti hain."
+          whatIsIt="JavaScript ke built-in error types jaante ho? Har ek alag situation ke liye alag error — ye design bahut smart hai. SyntaxError: code parse time pe galat syntax — JavaScript run bhi nahi hoti. TypeError: galat type pe operation karo — null.name ek legendary TypeError hai jo har developer ne face kiya hai! ReferenceError: undeclared variable access — let/const TDZ bhi ReferenceError deta hai. RangeError: value acceptable range se bahar — infinite recursion ka bhi RangeError aata hai (Maximum call stack exceeded). Sawaal: ye types practically kahan kaam aate hain? Jawab: catch block mein instanceof check se specific errors differently handle karo — TypeError ke liye defensive code, RangeError ke liye algorithm fix. Debugging mein error.stack pata hai kahan exact problem hai."
           whenToUse={[
             'Error type identify karne ke liye — debugging mein',
             'instanceof check se specific errors handle karne ke liye',
@@ -158,7 +158,7 @@ try {
           title="try / catch / finally — Flow Control"
           emoji="🔄"
           difficulty="intermediate"
-          whatIsIt="try/catch/finally error handling ka core mechanism hai. try block mein risky code, catch mein error handling, finally mein cleanup — hamesha run hota hai. Error object mein name, message, stack milta hai. catch sirf thrown errors pakadta hai — syntax errors nahi."
+          whatIsIt="try/catch/finally — error handling ka core mechanism. Lekin ek important distinction: try/catch sirf runtime errors pakadta hai — SyntaxError parse time pe hota hai, ye nahi pakdega. Ek aur gotcha: finally mein return likhna — ye try ka return OVERRIDE karta hai! function f() { try { return 'try' } finally { return 'finally' } } — 'finally' return hoga. Ye surprising behavior hai — finally mein return likhna avoid karo. Finally ka kaam cleanup hai — DB connections close karo, loader hide karo — chahe error aaye ya success. Ye hamesha run hoga — ek promise hai finally ka."
           whenToUse={[
             'API calls, file reads — failures possible hain',
             'User input parse karna — JSON.parse fail ho sakta hai',
@@ -253,7 +253,7 @@ try {
           title="Custom Error Classes — Professional Error Handling"
           emoji="🏗️"
           difficulty="intermediate"
-          whatIsIt="Error class extend karke custom error types bana sakte ho — ValidationError, NetworkError, AuthError. instanceof se specific types check karo aur differently handle karo. Extra properties add karo — statusCode, field name, retry info. Production apps mein essential pattern."
+          whatIsIt="Custom Error classes — professional JavaScript ka pehchaan. Sirf Error throw karna beginner approach hai. Production mein: ValidationError, NetworkError, AuthError — har type ka alag behavior. Kyun zaroori hai? Kyunki catch block mein if (err instanceof ValidationError) likhoge toh ek hi catch mein multiple error types differently handle ho jaayenge. Extra properties add karo — statusCode Express route mein HTTP code set karne ke liye, field validation mein kaunsa field galat tha batane ke liye. Ye pattern Express API development mein standard hai. Sawaal: this.name = this.constructor.name kyun likhte hain? Jawab: warna err.name 'Error' dikhega ValidationError nahi — logs mein confusing."
           whenToUse={[
             'Different error types ko different tarike se handle karna ho',
             'Extra context store karna ho error mein — field name, status code',
@@ -371,7 +371,7 @@ async function handleUserLoad(id) {
           title="Async Error Handling — Promises aur Async/Await"
           emoji="⚡"
           difficulty="intermediate"
-          whatIsIt="Async code mein errors differently behave karte hain. Promise rejection unhandled reh sakti hai. async/await ke saath try/catch use karo — cleaner syntax. unhandledRejection global event catch karta hai missed rejections. Error boundaries React mein async errors handle karte hain."
+          whatIsIt="Async errors — ye synchronous errors se alag hain. Promise rejection unhandled reh sakti hai — Node.js 15+ mein process crash ho jaata hai! async/await ke saath try/catch cleanly kaam karta hai — rejection automatically exception ban jaati hai. Ek common misunderstanding: try/catch async function mein kaam karta hai agar await use karo. Bina await ke: const p = fetch(url); usse try/catch directly nahi pakad sakta (Promise create hoti hai, throw nahi hota). Await ke saath: try { const data = await fetch(url) } — rejection exception ban jaati hai, catch pakad leta hai. Ye difference critical hai async debugging mein."
           whenToUse={[
             'API calls mein errors handle karne ko — async/await + try/catch',
             'Multiple parallel requests — Promise.allSettled()',
@@ -500,7 +500,7 @@ processUser(user)`,
           title="Error Propagation — Kahan Handle Karo?"
           emoji="🌊"
           difficulty="intermediate"
-          whatIsIt="Error propagation decide karna — kab locally handle karo, kab upstream propagate karo. Har function mein try/catch nahi chahiye. Low-level code errors throw kare, high-level code handle kare. Re-throw pattern se original error preserve hoti hai aur context add hota hai."
+          whatIsIt="Error propagation — yahi decide karta hai production code clean hai ya messy. Rule: low-level code errors throw kare, high-level code handle kare. Har function mein try/catch mat lagao — ye error messages spread aur dilute kar deta hai. Layered architecture: database layer throw karta hai, service layer context add karke re-throw karta hai, API handler finally handle karta hai aur HTTP response deta hai. Re-throw pattern: throw new Error('Failed to fetch user', { cause: originalErr }) — cause se original stack trace preserve hoti hai. Sawaal: unexpected errors ko swallow karna kyun galat hai? Jawab: unknown bug chhup jaata hai — application broken state mein silently run karta rehta hai!"
           whenToUse={[
             'Low-level utilities — errors throw karo, handle nahi karo',
             'Mid-level — catch karo, context add karo, re-throw',

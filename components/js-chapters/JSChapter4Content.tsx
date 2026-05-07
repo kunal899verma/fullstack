@@ -67,10 +67,10 @@ export default function JSChapter4Content() {
         style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.2)' }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3">
-          Functions — Reusable Code Ka Magic
+          Functions — Har Function Call Ek Naya Execution Context Banata Hai!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Functions programming ka sabse powerful building block hain. Bhai, ek baar likho, hazaar baar use karo — yahi DRY (Don&apos;t Repeat Yourself) principle hai. JavaScript mein functions first-class citizens hain — variables mein store karo, arguments mein pass karo, return karo. Ye flexibility hi functional programming ka basis hai.
+          Ruko yaar — <strong className="text-[#F5F5F7]">functions sirf code reuse nahi hain</strong>. JavaScript mein har function call ek naya Execution Context banata hai — apna Memory Component, apna Code Execution Phase, Call Stack pe push hota hai. Jab function return karta hai, woh Context pop ho jaata hai. Yahi closures ka raaz bhi hai — function ka Execution Context hata lekin uska memory kuch cheezein yaad rakhta hai! Functions first-class citizens hain — variable mein rakho, pass karo, return karo. Ye hi functional programming ka dil hai.
         </p>
         <div
           className="rounded-xl p-4 mt-4"
@@ -82,13 +82,27 @@ export default function JSChapter4Content() {
         </div>
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}
+      >
+        <p className="text-sm font-bold text-[#F59E0B] mb-1">Execution Context Mein Functions — Shocking Insight</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ye dikhao kisi ko</strong> — ye code valid hai JavaScript mein:
+          <br/><code className="text-[#06B6D4]">greet(&apos;Rahul&apos;)  // works! Before declaration</code><br/>
+          <code className="text-[#06B6D4]">function greet(name) {'{'} return &apos;Hi &apos; + name {'}'}</code><br/>
+          <strong className="text-[#F5F5F7]">Kyun kaam karta hai?</strong> Memory Creation Phase mein JS ne pehle se function declaration ko poori body ke saath store kar liya — ye hoisting hai! Lekin const/let arrow functions ke saath yahi nahi hota — woh TDZ mein hote hain.
+        </p>
+      </div>
+
       {/* Card 1: Declaration vs Expression vs Arrow */}
       <div id="function-types">
         <ConceptCard
-          title="Declaration vs Expression vs Arrow"
+          title="Declaration vs Expression vs Arrow — Execution Context Ka Fark"
           emoji="📝"
           difficulty="beginner"
-          whatIsIt="JavaScript mein functions teen tarike se likhe jaate hain. Function Declaration: function greet() {} — hoist hoti hai, anywhere call kar sakte ho. Function Expression: const greet = function() {} — const/let ke saath, hoisting nahi. Arrow Function: const greet = () => {} — concise syntax, apna this nahi hota (lexical this). Teeno mein key differences hain jo real-world mein matter karte hain."
+          whatIsIt="JavaScript mein functions teen tarike se likhe jaate hain. Function Declaration: function greet() {} — Memory Creation Phase mein puri body hoist hoti hai, anywhere call kar sakte ho. Function Expression: const greet = function() {} — let/const ke saath TDZ mein hota hai. Arrow Function: const greet = () => {} — concise syntax, apna this nahi hota (lexical this — enclosing context ka this use karta hai). Teeno mein key differences hain jo real-world mein matter karte hain!"
           whenToUse={[
             'Declaration: utility functions, named functions jo file mein anywhere use ho sakti hain',
             'Expression: conditional function assignment, callbacks, ek hi jagah use karna hai',
@@ -204,10 +218,10 @@ const arrowFn = () => {}`,
       {/* Card 2: Parameters */}
       <div id="parameters">
         <ConceptCard
-          title="Parameters — Default, Rest & Destructured"
+          title="Parameters — Default, Rest &amp; Destructured — Modern JS Ka Power"
           emoji="🎛️"
           difficulty="beginner"
-          whatIsIt="Modern JavaScript mein parameters bahut flexible hain. Default parameters: function greet(name = 'Guest') — argument miss hone par default use hota hai. Rest parameters: function sum(...nums) — remaining args array mein collect hote hain. Destructured parameters: function process({ id, name }) — object ya array directly destructure ho jaata hai parameter mein hi."
+          whatIsIt="Modern JavaScript mein parameters bahut flexible hain. Default parameters: function greet(name = 'Guest') — argument miss hone par default use hota hai, no more value || 'default' pattern! Rest parameters: function sum(...nums) — remaining args ek real array mein collect hote hain (arguments object se better!). Destructured parameters: function process({'{'} id, name {'}'}) — object ya array seedha parameter mein destructure — named arguments ki tarah readable!"
           whenToUse={[
             'Default params: optional arguments ke liye — config functions, utility functions',
             'Rest params: variable number of arguments — Math.max jaisi functions, event emitters',
@@ -282,13 +296,24 @@ getFirstTwo([1, 2, 3, 4, 5])  // { first: 1, second: 2, remaining: 3 }`,
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#10B981] mb-1">Closures Are Functions That Remember — Ye Phrase Yaad Rakho</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ab sawaal ye aata hai</strong> — function return ho jaata hai, uska Execution Context Call Stack se hat jaata hai, phir bhi woh outer variables kaise yaad rakhta hai? Ye closures hain! Function ka inner scope outer scope ka memory access rakhta hai, chahe outer function khatam ho gaya ho. Yahi HOFs aur factory functions ka magic hai — har returned function apna closure banata hai.
+        </p>
+      </div>
+
       {/* Card 3: Higher-Order Functions */}
       <div id="higher-order">
         <ConceptCard
-          title="Higher-Order Functions — Functions Jo Functions Lete Hain"
+          title="Higher-Order Functions — Functions Jo Functions Lete Aur Dete Hain"
           emoji="🏗️"
           difficulty="beginner"
-          whatIsIt="Higher-Order Functions (HOF) woh functions hain jo ya toh dusri function ko argument mein lete hain, ya function return karte hain, ya dono. JavaScript mein functions first-class citizens hain — variables mein store ho sakte hain, arguments ban sakte hain, return ho sakte hain. map, filter, reduce, setTimeout, addEventListener — sab HOFs hain. Ye functional programming ka heart hai."
+          whatIsIt="Higher-Order Functions (HOF) woh functions hain jo ya toh dusri function ko argument mein lete hain, ya function return karte hain, ya dono. JavaScript mein functions first-class citizens hain — variables mein store ho sakte hain, arguments ban sakte hain, return ho sakte hain. map, filter, reduce, setTimeout, addEventListener — sab HOFs hain. Closures are functions that remember — returned function apne outer scope ko yaad rakhta hai. Ye functional programming ka dil hai!"
           whenToUse={[
             'Behavior ko parameterize karna — ek function alag alag logic ke saath reuse karna',
             'Callbacks: async operations ke results handle karna',
@@ -384,10 +409,10 @@ curriedAdd(1, 2)(3)  // 6`,
       {/* Card 4: IIFE */}
       <div id="iife">
         <ConceptCard
-          title="IIFE — Immediately Invoked Function Expression"
+          title="IIFE — Define Karo, Turant Chalao!"
           emoji="⚡"
           difficulty="beginner"
-          whatIsIt="IIFE (pronounced 'iffy') ek function hai jo define hote hi immediately call ho jaata hai. Syntax: (function() { /* code */ })(). Ya arrow: (() => { /* code */ })(). Ye global scope ko pollute karne se bachata hai aur private scope banata hai. Pre-ES6 mein modules ka kaam karta tha, aaj bhi specific use cases mein valuable hai."
+          whatIsIt="IIFE (pronounced 'iffy') ek function hai jo define hote hi immediately call ho jaata hai — (function() {'{'} /* code */ {'}'})() . Ye global scope ko pollute karne se bachata hai aur private scope banata hai. Pehle yaar, ES modules se pehle yahi modules ka kaam karta tha! Aaj bhi async initialization ke liye bahut useful hai — jab top-level await available na ho."
           whenToUse={[
             'Initialization code jo ek baar run hona chahiye aur global scope expose nahi karna',
             'Async initialization: (async () => { await setup(); })() — top-level await alternative',
@@ -465,13 +490,24 @@ counter.value()      // 2
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(236,72,153,0.07)', border: '1px solid rgba(236,72,153,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#EC4899] mb-1">Pure Functions — Testability Ka Gold Standard</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Purity test karo</strong> — kya function ko test karne ke liye kuch setup karna padega? Database, environment variables, mock files? Agar haan — impure hai. Pure functions directly call karo, result check karo — no setup, no teardown. Redux reducers isliye pure hain: <code className="text-[#06B6D4]">(state, action) =&gt; newState</code>. Same input, hamesha same output. Testing trivial ho jaati hai!
+        </p>
+      </div>
+
       {/* Card 5: Pure vs Impure */}
       <div id="pure-functions">
         <ConceptCard
-          title="Pure vs Impure Functions — Side Effects"
+          title="Pure vs Impure Functions — Predictability Ka Raaz"
           emoji="✨"
           difficulty="beginner"
-          whatIsIt="Pure function: same input hamesha same output deta hai, koi side effects nahi. Impure function: external state pe depend karta hai ya modify karta hai — console.log, HTTP calls, database writes, random numbers. Pure functions predictable, testable, aur cacheable hoti hain. Real apps mein dono chahiye — trick hai separation karna."
+          whatIsIt="Pure function: same input hamesha same output deta hai, koi side effects nahi — ye science hai, magic nahi. Impure function: external state pe depend karta hai ya modify karta hai — console.log, HTTP calls, database writes, Date.now(). Pure functions predictable, testable, aur cacheable hoti hain. Real apps mein dono chahiye — trick hai unhe separate karna. Pure core, impure shell — yahi clean architecture ka basis hai!"
           whenToUse={[
             'Pure: data transformations, calculations, validations — maximally testable',
             'Pure: utility functions — string formatting, number rounding, object mapping',
@@ -549,9 +585,9 @@ async function processCart(userId) {
       <div id="chapter-quiz">
         <div className="mb-4">
           <h3 className="text-lg font-display font-bold text-[#F5F5F7] mb-1">
-            Chapter 4 Quiz — Functions
+            Chapter 4 Quiz — Functions &amp; Execution Context
           </h3>
-          <p className="text-sm text-[#71717A]">5 questions — 80%+ chahiye clear karne ke liye!</p>
+          <p className="text-sm text-[#71717A]">Har function call ek naya context banata hai — kya tumhara model solid hai? 5 sawaal, 80%+ chahiye!</p>
         </div>
         <QuizSection questions={quizQuestions} chapterSlug="functions" />
       </div>

@@ -153,7 +153,7 @@ export default function GenAIChapter6Content() {
           Prompt Engineering 🎯
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          AI se sahi kaam karwana ek skill hai. Ek achha prompt aur ek bura prompt mein 10x output quality ka fark ho sakta hai. Ye chapter mein ye skill systematically seekhte hain.
+          Shocking fact: same model ko same question alag prompt se puchho — 10x better answer mil sakta hai. Prompt engineering magic nahi hai — ye ek systematic skill hai. Aur ye skill ek developer ki most important superpower hai AI era mein. Ek junior developer achhe prompts se senior developer jitna output le sakta hai AI se. Aaj ye skill seekhte hain.
         </p>
       </div>
 
@@ -163,14 +163,14 @@ export default function GenAIChapter6Content() {
           title="Prompt Engineering — Art + Science"
           emoji="🎯"
           difficulty="beginner"
-          whatIsIt="Prompt engineering AI models ko effective instructions dene ki practice hai. Good prompts = clear + specific + contextual + constrained. Vague prompts = vague outputs. Ek achha prompt framework hai: Role + Context + Task + Format + Constraints."
+          whatIsIt="Prompt engineering = AI ko sahi tarike se instruction dene ki science. Vague prompts = vague outputs — ye guaranteed hai. Ek formula jo works karta hai: Role + Context + Task + Format + Constraints. Role: model ko batao ye kaun hai (senior Node.js architect). Context: relevant background (10 years production experience). Task: exactly kya karna hai. Format: output kaisa hona chahiye (numbered list with severity). Constraints: kya nahi karna (no harsh criticism). Ye sab include karo — output quality dramatic improvement dikhata hai."
           whenToUse={[
             'Har baar jab AI model use karo — chatbot, API, automation.',
             'AI workflows automate karte waqt — consistent output chahiye toh structured prompts zaroori hain.',
             'AI-powered features build karte waqt — system prompts production mein use hote hain.',
             'Team ke liye prompt library banate waqt — reusable templates.',
           ]}
-          whyUseIt="Same model, same question — alag prompt se 10x better answer milta hai. Prompt engineering ek force multiplier hai. Junior developer bhi excellent prompts se senior developer jitna output le sakta hai AI se."
+          whyUseIt="Ye skill isliye critical hai: GitHub Copilot, Notion AI, customer support bots — sab ke peeche carefully engineered prompts hain. Ye version-controlled hain, tested hain, production assets hain. Ek developer jo prompts ko seriously leta hai, wo AI se consistently better output leta hai. Aur business mein: better prompts = better products = competitive advantage."
           howToUse={{
             filename: 'prompt-engineering.ts',
             language: 'typescript',
@@ -214,9 +214,9 @@ Code:
   const block = response.content[0];
   return block.type === 'text' ? block.text : '';
 }`,
-            explanation: 'Formula: Role (senior Node.js architect) + Context (production experience) + Task (code review) + Format (numbered list with severity) + Constraints (3 specific areas). Ye sab include karne se output dramatically better hota hai.',
+            explanation: 'Under the hood: LLM probability distribution se next token predict karta hai. Acha system prompt us distribution ko shape karta hai — model ko specific context mein seedh karta hai. Role (senior Node.js architect) + Context + Task + Format + Constraints = model ke liye clear signal. Vague input = flat distribution = generic output. Specific input = peaked distribution = useful output.',
           }}
-          realWorldScenario="GitHub Copilot internally use karta hai carefully engineered system prompts jo codebase context, user preferences, aur specific coding standards include karte hain. Ye hi Copilot ko generic LLM se better banata hai coding tasks mein — same model, better prompts."
+          realWorldScenario="Sawaal: GitHub Copilot same Claude/GPT model use karta hai jo tum use karte ho. Phir Copilot better kyun lagta hai coding ke liye? Answer: carefully engineered system prompts — codebase context, user coding style, specific standards, project structure sab inject hota hai. Same model + better prompts = 10x better experience. Ye 'prompt engineering as product engineering' ka best example hai."
           commonMistakes={[
             {
               mistake: 'Vague instructions dena — "write good code"',
@@ -224,7 +224,7 @@ Code:
               fix: 'Specific karo: "Write TypeScript function with error handling, JSDoc comments, and unit tests. Follow SOLID principles. No any types."',
             },
           ]}
-          proTip="Good prompt formula: Role + Context + Task + Format + Constraints = Excellent output. Role ke liye specific seniority aur domain specify karo — 'senior Node.js developer' vs just 'developer' — fark padta hai output quality mein."
+          proTip="Yaad karo ye formula: Role + Context + Task + Format + Constraints = Excellent output. 'Senior Node.js architect' vs 'developer' — specificity matter karta hai. 'Review security vulnerabilities' vs 'improve code' — specific task = specific answer. Aur ye bhoolna mat: prompt engineering ek iterative process hai. Pehla draft perfect nahi hoga — test karo, improve karo, version control mein commit karo."
           demo={
             <DiffBlock
               title="Vague vs Specific Prompt"
@@ -262,14 +262,14 @@ Code: [paste code here]"`,
           title="Zero/One/Few-Shot Prompting"
           emoji="🎯"
           difficulty="beginner"
-          whatIsIt="Shot prompting mein 'shot' ka matlab hai examples. Zero-shot: koi example nahi — sirf instructions. One-shot: ek example. Few-shot: 2-5 examples. Examples se model samajhta hai exact format aur style jo tum chahte ho — words se zyada examples show karte hain."
+          whatIsIt="'Shot' = example. Zero-shot: koi example nahi, sirf instruction — model khud interpret karta hai. One-shot: ek example do — model samajhta hai exact format, style, tone. Few-shot: 2-5 examples — consistency dramatically better. Examples words se zyada powerful hain. 'Casual, punchy product description likho' — ambiguous. Ek example do — model exact match karega. Ye hi shot prompting ki power hai."
           whenToUse={[
             'Zero-shot: simple, clear tasks jahan exact format matter nahi karta.',
             'One-shot: jab ek example se format clear ho jaaye — template-like output chahiye.',
             'Few-shot: complex classification, specific format, jab zero/one-shot consistent nahi de.',
             'Few-shot especially helpful hai jab task unconventional ho ya unusual format chahiye.',
           ]}
-          whyUseIt="Examples words se zyada powerful hain. 'Write a product description in a casual, punchy style' — ye instruction ambiguous hai. Ek example de do — model exact tone match karega. Few-shot prompting advanced ML knowledge ke bina powerful customization deta hai."
+          whyUseIt="Customer feedback classification system banana hai? 8-10 specific categories mein? Instructions se describe karna mushkil hai — lekin 3-5 examples deke model ek dum sahi classify karta hai. Ek trained ML model ki cost aur time ke bina. Few-shot prompting = zero ML training + specific behavior. Ye approach production mein extensively use hoti hai."
           howToUse={{
             filename: 'shot-prompting.ts',
             language: 'typescript',
@@ -353,7 +353,7 @@ Review: "\${text}"\`,
 }`,
             explanation: 'Zero-shot quick hai, few-shot consistent. Examples mein: last example sabse zyada influence karta hai (recency bias). Best/most representative example ko last mein rakhna best practice hai.',
           }}
-          realWorldScenario="Customer feedback categorization system mein: few-shot prompting se model exact categories mein classify karta hai jo business ne define ki hain. Ek trained ML model ki cost aur complexity ke bina — sirf few examples se consistent categorization milti hai."
+          realWorldScenario="E-commerce mein product review categorization: 12 different categories — packaging, delivery speed, product quality, customer service, pricing, etc. Fine-tuned model banana? Weeks + expensive. Few-shot prompting: 3 examples per category (36 examples total) — consistent categorization milti hai. Startup ne is approach se 2 din mein deploy kiya. ML model ne wahin 3 hafton mein ban kar 78% accuracy di thi. Speed wins."
           commonMistakes={[
             {
               mistake: 'Few-shot examples mein low-quality ya edge cases rakhna',
@@ -361,7 +361,7 @@ Review: "\${text}"\`,
               fix: 'Best, representative examples choose karo. Edge cases deliberately include karo agar model unhe handle karna seekhe. Quality over quantity.',
             },
           ]}
-          proTip="Few-shot examples ka ORDER matter karta hai. Last example sabse zyada influence karta hai — recency bias. Jo output style ya format most important hai, uska example last mein rakho. Claude typically 3-5 examples se strong patterns pick kar leta hai."
+          proTip="Critical insight: few-shot examples ka ORDER matter karta hai! LLMs mein recency bias hota hai — last example sabse zyada influence karta hai output style par. Isliye best/most representative example hamesha LAST mein rakho. Claude typically 3-5 good examples se strong patterns pick kar leta hai. Quality over quantity — 3 excellent examples > 10 mediocre examples."
         />
       </div>
 
@@ -371,14 +371,14 @@ Review: "\${text}"\`,
           title="System Prompts — AI Ka Character"
           emoji="🎭"
           difficulty="beginner"
-          whatIsIt="System prompt conversation ka persistent background context hai. Ye model ko batata hai: ye kaun hai (persona), kya karna chahiye (task), kya nahi karna chahiye (restrictions), aur output format kya hona chahiye. Ye har message ke saath automatically include hota hai — user ko baar baar repeat nahi karna padta."
+          whatIsIt="System prompt = AI ka character. Ye conversation ka persistent background context hai jo har message ke saath automatically include hota hai. Model ko batata hai: ye kaun hai (Aryan, NodeMaster support agent), kya karna chahiye (Hinglish mein help karo), kya nahi karna chahiye (refund promises mat karo), edge cases kaise handle karo, aur output format kya hona chahiye. Bina system prompt — generic AI. System prompt ke saath — tera specific product assistant."
           whenToUse={[
             'Customer support bot — persona, product knowledge, escalation rules define karo.',
             'Code reviewer — language, style guide, severity levels define karo.',
             'Tutor — subject, difficulty level, explanation style define karo.',
             'Content generator — tone, brand voice, content restrictions define karo.',
           ]}
-          whyUseIt="System prompts production AI features ka foundation hain. Bina system prompt ke — model generic hai. System prompt se — model tumhara specific use case ke liye tuned hai. Ye hi ChatGPT ko Claude se alag feel deta hai, same underlying model hone ke bawajood."
+          whyUseIt="Har AI product ka secret weapon = system prompt. Notion AI, GitHub Copilot, customer service bots — sab ke peeche carefully crafted system prompts hain. Same Claude model use karo — system prompt se usse apna product-specific assistant banao. Ye version controlled hote hain, tested hote hain, aur iteratively improve kiye jaate hain. Prompt engineering = real engineering discipline hai."
           howToUse={{
             filename: 'system-prompts.ts',
             language: 'typescript',
@@ -456,7 +456,7 @@ async function reviewCode(code: string): Promise<string> {
 }`,
             explanation: 'System prompt mein edge cases explicitly handle karo. Model guess nahi karega — tum batao. Real examples: support bot mein billing escalation rule, code reviewer mein severity format. Ye specificity hi system prompt ko powerful banati hai.',
           }}
-          realWorldScenario="Koi bhi production AI feature — Notion AI, GitHub Copilot, customer support bots — sab ke peeche carefully engineered system prompts hain. Ye prompts version controlled hote hain aur regularly improve kiye jaate hain. Prompt engineering ek real engineering discipline ban gayi hai."
+          realWorldScenario="Ek saas startup mein: Customer support bot bina system prompt ke generic Claude ki tarah respond karta tha — company-specific policies, product details, escalation rules — kuch nahi. 500-word specific system prompt add kiya: tone, constraints, edge cases, product knowledge. Support ticket resolution 60% se 85% ho gayi, customer satisfaction dramatically better. Ek system prompt change — measurable business impact."
           commonMistakes={[
             {
               mistake: 'System prompt mein sirf persona likhna, constraints nahi',
@@ -464,7 +464,7 @@ async function reviewCode(code: string): Promise<string> {
               fix: 'Explicit karo: kya hamesha karna hai, kya kabhi nahi karna hai, edge cases kaise handle karne hain, aur output format kya hona chahiye.',
             },
           ]}
-          proTip="System prompt mein edge cases handle karo explicitly. AI uske baare mein guess nahi karega — batao. Real production systems mein system prompts 500-2000 tokens tak ho sakte hain. Ye fine — prompt caching se cost manage ho sakti hai."
+          proTip="Edge cases explicitly handle karo system prompt mein — AI guess nahi karega, tujhe batana padega. Real production systems mein system prompts 500-2000 tokens tak ho sakte hain — ye bilkul theek hai. Anthropic prompt caching se repeated system prompts ka cost 90% kam ho jaata hai. System prompt = code hai — git mein commit karo, review karo, improve karo."
         />
       </div>
 
@@ -474,14 +474,14 @@ async function reviewCode(code: string): Promise<string> {
           title="Output Ko Control Karo"
           emoji="📋"
           difficulty="beginner"
-          whatIsIt="AI se consistent, parseable output lena ek critical skill hai. JSON output, markdown, numbered lists, specific schemas — ye sab control kiya ja sakta hai clear format instructions se. Ye production apps ke liye essential hai jahan output programmatically parse karna padta hai."
+          whatIsIt="Production mein AI output use karna hai toh structured output zaroori hai. Free text parse karna = fragile code = bugs in production. JSON output, markdown, specific schemas — ye sab control ho sakta hai clear instructions se. Magic words: 'Respond ONLY with valid JSON. No explanation before or after. Schema: {...}'. 'ONLY' aur 'No explanation' dono zaroori hain — bina iske model JSON ke baad explanation add kar deta hai aur JSON.parse() crash ho jaata hai."
           whenToUse={[
             'API responses: structured JSON chahiye programmatic parsing ke liye.',
             'Reports: markdown formatting with sections chahiye.',
             'Classifications: specific labels chahiye — fixed set of outputs.',
             'Data extraction: specific fields extract karne hain documents se.',
           ]}
-          whyUseIt="Unstructured text production mein parse karna unreliable hai. JSON output se tum directly response ko TypeScript objects mein convert kar sakte ho bina complex parsing ke. Ye reliability aur developer experience dono improve karta hai."
+          whyUseIt="Unstructured text parse karna = regex hell = maintenance nightmare. JSON output se directly TypeScript objects — type-safe, predictable, no parsing logic. Production reliability dramatically improve hoti hai. Ye ek common mistake hai: developers AI feature banate hain, unstructured text parse karne ki koshish karte hain, production mein bugs aate hain. Format control pehle se hi karo."
           howToUse={{
             filename: 'output-format-control.ts',
             language: 'typescript',
@@ -576,7 +576,7 @@ Ticket: \${ticketText}\`,
 }`,
             explanation: 'JSON output ke liye "ONLY valid JSON, no explanation" critical hai. Schema provide karo — model ye precisely follow karega. Classification ke liye Haiku use karo (fast + cheap) — Sonnet overkill hai simple tasks ke liye.',
           }}
-          realWorldScenario="E-commerce mein customer reviews automatically classify aur analyze karne ke liye: JSON output se directly database mein insert kar sakte ho. Parse karna simple — JSON.parse(). Unstructured text se same kaam karna 10x complex hota."
+          realWorldScenario="E-commerce review pipeline: structured JSON output se directly database insert — sentiment, themes, urgency, recommended action. JSON.parse() — done. No regex, no parsing logic, no bugs. Ye same pipeline text output se banana padta: NLP parsing + regex + edge case handling = weeks of work + ongoing maintenance. Structured output = engineering efficiency."
           commonMistakes={[
             {
               mistake: '"Respond in JSON" likhna bina "ONLY" ke',
@@ -584,7 +584,7 @@ Ticket: \${ticketText}\`,
               fix: '"Respond ONLY with valid JSON. No explanation before or after." — "ONLY" aur "No explanation" dono zaroori hain.',
             },
           ]}
-          proTip='JSON output ke liye: "Respond ONLY with valid JSON. No explanation. Schema: {...}". Claude is very reliable at this. Anthropic ke newer models mein structured output (tool use as JSON extractor) bhi available hai — aur bhi reliable approach.'
+          proTip='Production tip: "Respond ONLY with valid JSON. No explanation before or after. Schema: {...}". Claude is very reliable at this. Anthropic ke newer models mein tool use / function calling as JSON extractor bhi available hai — aur bhi reliable, because model explicitly JSON mode mein switch karta hai. Classification ke liye Haiku use karo — simple tasks ke liye Sonnet overkill aur expensive hai.'
         />
       </div>
 
@@ -594,7 +594,7 @@ Ticket: \${ticketText}\`,
           title="Chain-of-Thought — Sochne Do"
           emoji="🧩"
           difficulty="intermediate"
-          whatIsIt={`Jab AI ko complex reasoning task milta hai — seedha answer nahi, step-by-step sochne do. "Let's think step by step" ya explicit steps define karne se accuracy dramatically improve hoti hai. Ye Chain-of-Thought (CoT) prompting hai. Brain ko show-your-work karne do.`}
+          whatIsIt="Shocking finding: magic words 'Let's think step by step' add karne se complex reasoning problems mein accuracy 40-70% improve hoti hai. Ye Chain-of-Thought prompting hai. Bina CoT: model directly answer guess karta hai — intermediate steps skip karta hai. CoT ke saath: model pehle sochta hai, step by step, phir answer deta hai — galti intermediate step mein pakad aati hai. School mein jo teacher ne bola tha 'show your work' — AI ke liye bhi same rule apply hota hai!"
           whenToUse={[
             'Math problems — step-by-step calculation chahiye.',
             'Logic puzzles — deductive reasoning needed.',
@@ -602,7 +602,7 @@ Ticket: \${ticketText}\`,
             'Decision making — "analyze pros and cons before giving recommendation".',
             'Complex analysis — "break this down into components before concluding".',
           ]}
-          whyUseIt="Research show karta hai ki CoT prompting complex tasks mein 40-70% accuracy improve kar sakta hai. Intermediate steps generate karne se model aage ki reasoning mein mistakes kam karta hai. Ye humans ke liye bhi useful hai — reasoning transparent ho jaati hai."
+          whyUseIt="CoT sirf accuracy ke liye nahi — transparency ke liye bhi. Reasoning steps visible hone se: galti pakad sakte ho (AI galat step par wrong assumption bana sakta hai), user confidence badhta hai (reasoning dikhta hai), debugging easy hota hai. Complex code debugging, architecture decisions, math problems — ye sab CoT se dramatically better results dete hain. Lekin simple questions par mat use karo — overhead waste hai."
           howToUse={{
             filename: 'chain-of-thought.ts',
             language: 'typescript',
@@ -676,7 +676,7 @@ Please analyze by:
 }`,
             explanation: 'CoT ke liye ya explicit steps provide karo ya "Let\'s think step by step" use karo. Explicit steps zyada reliable hain complex tasks mein. Claude naturally CoT karta hai complex problems par — encourage karna consistency improve karta hai.',
           }}
-          realWorldScenario="Code review automation mein: CoT se model pehle code structure samajhta hai, phir potential issues identify karta hai, phir severity rate karta hai, phir fix suggest karta hai. Is systematic approach se much better code reviews milti hain seedhe answer se zyada."
+          realWorldScenario="Automated code review pipeline mein CoT: Step 1 — code structure samjho aur kya karta hai describe karo. Step 2 — potential security issues identify karo. Step 3 — performance bottlenecks dhundho. Step 4 — severity rate karo. Step 5 — fix suggest karo. Ye systematic approach direct answer se dramatically better reviews deta hai. Aur developer visibility milti hai — review process transparent hai, result blindly accept nahi karna padta."
           commonMistakes={[
             {
               mistake: 'Har task ke liye CoT use karna',
@@ -684,7 +684,7 @@ Please analyze by:
               fix: 'CoT sirf complex reasoning tasks ke liye use karo. Simple factual questions, classifications, short generations — direct answer better hai.',
             },
           ]}
-          proTip="Claude mein extended thinking feature available hai API mein (betas.messages.create with thinking parameter) — ye Claude ko silently reason karne deta hai answer se pehle. Complex problems ke liye best. Visible thinking tokens bhi dekh sakte ho jo debugging ke liye helpful hain."
+          proTip="Claude ka extended thinking feature API mein available hai — Claude silently reason karta hai answer se pehle, phir final answer deta hai. Complex problems ke liye best. Visible thinking tokens bhi dekh sakte ho — debugging ke liye extremely helpful. Tree of Thoughts (ToT) advanced version hai: multiple reasoning branches explore karo, dead ends se backtrack karo. Complex planning ke liye excellent."
           demo={
             <DiffBlock
               title="Without CoT vs With CoT — Complex Problem"
@@ -735,14 +735,14 @@ So ₹100 < ₹162.50 — original purchase is cheaper."`,
           title="Ready-to-Use Templates"
           emoji="📝"
           difficulty="intermediate"
-          whatIsIt="Reusable prompt templates banao aur version control karo — ye code hai. Template functions TypeScript mein string interpolation se dynamic prompts generate karte hain. Ye templates team ke liye shareable, testable, aur improvable hain."
+          whatIsIt="Shocking realization: prompts code hain. Production mein har API call ek specific prompt use karta hai — wo prompt ek asset hai. Ad-hoc prompts = inconsistent results = frustrated users. Templates: TypeScript functions jo dynamic prompts generate karte hain, type-safe, testable, version-controllable. Code review prompt, bug explanation prompt, API docs prompt — sab reusable templates. Ek baar likho, everywhere use karo, continuously improve karo."
           whenToUse={[
             'Repeated tasks ke liye — code review, bug explanation, documentation generation.',
             'Team workflows mein — consistent prompts ensure consistent output.',
             'Production AI features mein — system prompts aur user prompts template se generate karo.',
             'A/B testing ke liye — alag prompt versions compare karo.',
           ]}
-          whyUseIt="Ad-hoc prompts inconsistent results dete hain. Templates consistency ensure karte hain. Version controlling prompts se tum track kar sakte ho ki kaunse changes output improve karte hain — exactly jaise code improvements track karte ho."
+          whyUseIt="Templates kab use karni chahiye? Jab same type ka task baar baar ho — code review, bug explanation, documentation. Templates se consistency ensure hoti hai aur team ke liye shareable hain. Version controlling prompts se track kar sakte ho kaunsa version better tha — git diff prompt changes = measurable improvements. Ye approach professional AI development ka hallmark hai."
           howToUse={{
             filename: 'prompt-templates.ts',
             language: 'typescript',
@@ -844,7 +844,7 @@ async function runTemplate(prompt: string): Promise<string> {
 // const docs = await runTemplate(apiDocPrompt('POST /api/users', routeCode));`,
             explanation: 'Templates TypeScript functions hain — type-safe, testable, version-controllable. Input validation add karo templates mein. Prompt ko git mein commit karo jaise code — ye production asset hai.',
           }}
-          realWorldScenario="Sequifi jaise platforms mein: automated code review pipeline, PR description generator, test generation — sab prompt templates se powered hain. Har PR par same quality checks run hote hain, consistently. Manual review time drastically kam hota hai."
+          realWorldScenario="Engineering team workflow: automated code review pipeline + PR description generator + test generation — sab prompt templates se powered. Har PR par same quality checks automatically. Manual review time 60% kam hua. 50 PRs/week — team kuch hours instead of days mein review karta hai. Prompt templates = force multiplier for engineering productivity."
           commonMistakes={[
             {
               mistake: 'Prompts ko code mein hardcode karna bina version control ke',
@@ -852,7 +852,7 @@ async function runTemplate(prompt: string): Promise<string> {
               fix: 'Prompts separate constants mein rakho, git mein commit karo. Changes: git diff se visible. Rollback: git revert se possible.',
             },
           ]}
-          proTip="Prompt templates banao aur version control karo jaise code karte ho. Prompts code hain — inhe test karo, review karo, improve karo. Large teams mein prompt library shared repo mein rakho. Prompt versioning aur A/B testing se measurable quality improvements milte hain."
+          proTip="Level up: Prompt A/B testing karo — version 1 vs version 2, same inputs, compare outputs. Measurable quality improvement track karo. Large teams mein shared prompt library banao — separate repo ya monorepo ka prompts/ folder. Prompts ko first-class citizens treat karo: code review, testing, deployment. Ye mindset shift ek developer ko AI-native developer banata hai."
         />
       </div>
 

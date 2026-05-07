@@ -59,13 +59,13 @@ export default function Chapter23Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Expert Mindset — Senior Engineer Kaise Sochta Hai?
+          Expert Mindset — Junior aur Senior Mein Kya Fark Hota Hai?
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Code likhna sirf pehla step hai. <strong className="text-[#F5F5F7]">Expert engineer vo hota hai jo systems think karta hai, trade-offs samajhta hai, aur dusron ko grow hone mein madad karta hai.</strong> Is chapter mein wo mindset, patterns, aur practices cover karenge jo tumhe junior se senior banati hain.
+          Tumhe ek shocking sachai bataata hoon — <strong className="text-[#F5F5F7]">Senior engineer woh nahi hota jo sabse zyada code jaanta hai. Senior engineer woh hota hai jo sahi sawaal poochhta hai, trade-offs samajhta hai, aur dusron ko better banata hai.</strong> Code likhna toh junior bhi karta hai. Systems mein sochna, ambiguity mein decisions lena, failures se gracefully recover karna — ye senior hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Ye final chapter hai — lekin ye sirf shuruwaat hai tumhari engineering journey ki. Keep building, keep learning, keep sharing.
+          Ye NodeMaster ka final chapter hai. Lekin yaar, ye end nahi — ye shuruwaat hai. Is chapter mein senior mindset, design patterns, observability, career growth, aur architecture decisions — woh sab cheezein jo curriculum mein nahi hoti lekin career mein sabse zyada matter karti hain. Keep building, keep learning, keep sharing.
         </p>
       </div>
 
@@ -75,14 +75,14 @@ export default function Chapter23Content() {
           title="Senior Engineer Ka Mindset"
           emoji="🧠"
           difficulty="advanced"
-          whatIsIt="Senior engineer code mein nahi, systems mein sochta hai. Trade-offs samajhta hai. Code review mein constructive hota hai. Business impact samajhta hai. 'How' ke saath 'Why' bhi jaanta hai. Ambiguity mein comfortable hota hai."
+          whatIsIt="Junior developer sochta hai: 'Is problem ka solution kya hai?' Senior developer sochta hai: 'Is problem ka solution kya hai, iska downstream impact kya hoga, kya ye future mein scale karega, kaunsi trade-offs hain, team kya samjhegi, aur kya hum actually sahi problem solve kar rahe hain?' Ye different thinking hai — ek dimension nahi, multiple dimensions simultaneously. Ye skill hai, magical power nahi — develop ho sakti hai."
           whenToUse={[
-            'Architecture decision lene se pehle — trade-offs list karo',
+            'Architecture decision lene se pehle — options list karo, trade-offs write karo',
             'Code review dete waqt — empathetic, specific, actionable feedback',
-            'Estimation karte waqt — uncertainty acknowledge karo',
-            'Unknown problem solve karte waqt — systematically break down karo',
+            'Estimation dete waqt — range do, unknowns explicitly state karo',
+            'Unknown problem face karo — systematically break down karo, assumptions state karo',
           ]}
-          whyUseIt="Junior developers ek problem ke ek solution dhundthe hain. Senior developers multiple solutions evaluate karte hain — constraints, trade-offs, future implications samajhte hain. Ye perspective aata hai experience se, aur intentionally cultivate karna padta hai."
+          whyUseIt="Junior aur senior mein yahi fark hai — junior code likhta hai, senior systems design karta hai. Ek real example: junior 'Redis add karo, performance improve ho jaayegi' bolta hai. Senior poochhta hai: 'Kahan bottleneck hai? DB hai? Network hai? CPU hai? Pehle measure karo, phir decide karo.' Premature optimization avoid karna, root cause dhundna — ye mindset 10x impact deta hai."
           howToUse={{
             filename: 'senior-mindset.md',
             language: 'markdown',
@@ -115,9 +115,9 @@ export default function Chapter23Content() {
 - Assumptions explicitly state karo
 - Minimal viable solution dhundho
 - Iterate karo feedback se`,
-            explanation: 'Senior mindset skills hain — develop ho sakti hain. Intentional practice karo: har decision par trade-offs write karo, code review mein empathy practice karo, systems diagrams draw karo. Gradually ye automatic ho jaata hai.',
+            explanation: 'Senior mindset practice se aata hai. Intentional practice karo: aaj se har architecture decision par ek choti list banao — option A, option B, trade-offs, chosen option, why. 6 months baad ye lists padho. Growth clearly dikhai degi. Code review mein empathy practice karo — "Could we..." instead of "You must...". Systems diagrams draw karo — whiteboards ka use karo, sochna visual hone se clear hota hai.',
           }}
-          realWorldScenario="Junior developer ne Redis cache implement kiya bina cache invalidation ke. Senior engineer ne code review mein likha: 'Great caching implementation! One thing to consider — when user updates their profile, this cache might serve stale data for up to 5 minutes. Could we add invalidation in the update handler? Here's one way...' Constructive, specific, educational."
+          realWorldScenario="Junior developer ne Redis cache implement kiya bina invalidation ke. Senior engineer ne code review mein likha: 'Great caching implementation! One thing to consider — when user updates their profile, this cache might serve stale data for up to 5 minutes. Could we add cache invalidation in the update handler? Here is one approach...' Specific, constructive, educational, empathetic. Junior ne seekha, bura nahi laga, code improve hua. Ye senior ka asli kaam hai — code fix karna nahi, engineers build karna."
           commonMistakes={[
             {
               mistake: 'Har cheez over-engineer karna kyunki "future mein chahiye ho sakta hai"',
@@ -130,8 +130,19 @@ export default function Chapter23Content() {
               fix: 'Code criticize karo, person ko nahi. "This approach has a bug" not "You made a bug". Constructive questions use karo.',
             },
           ]}
-          proTip="Daily journal rakhao architecture decisions ke liye — 5 minutes, kya decide kiya aur kyun. 6 months baad read karo — growth dikhai dega. Past decisions review karo — kya sahi nikla, kya nahi? Learning loop banao."
+          proTip="Ek habit adopt karo aaj se — daily 5 minute 'engineering journal'. Kya challenge aaya, kya decide kiya, kya seekha. 6 months baad padho — growth clearly dikhai degi. Failures bhi write karo — failure se seekhna fast track hai. Jo engineers fail karte hain aur usse process karte hain, woh sabse tezi se grow karte hain."
         />
+      </div>
+
+      {/* Akshay-style Q&A interlude */}
+      <div
+        className="rounded-2xl p-5"
+        style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}
+      >
+        <p className="text-[#F5F5F7] font-semibold mb-2">Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          "Senior mindset samajh aa gaya. Lekin practically code mein kaun se patterns use karein?" Design patterns — ye wo shared vocabulary hai jo engineers ke beech communication fast karta hai. "Repository pattern use kiya hai" — ek sentence mein architecture explain ho jaata hai. Patterns ratta maarne ke liye nahi hain, problems solve karne ke liye hain. Chalo dekhte hain.
+        </p>
       </div>
 
       {/* ConceptCard 2: Design Patterns */}
@@ -140,14 +151,14 @@ export default function Chapter23Content() {
           title="Design Patterns in Node.js"
           emoji="🏛️"
           difficulty="advanced"
-          whatIsIt="Design patterns tried-and-tested solutions hain recurring problems ke liye. Repository, Factory, Strategy patterns Node.js mein commonly use hote hain — maintainable, testable, aur flexible code banate hain."
+          whatIsIt="Design patterns — 1994 mein Gang of Four (GoF) ne 23 recurring problems aur unke battle-tested solutions document kiye. Ye universal vocabulary ban gaya software engineers ke liye. Repository: data access abstract karo. Strategy: runtime par algorithm swap karo. Observer: event-driven loose coupling. Patterns problems se aate hain — pehle problem samjho, phir pattern recognize karo."
           whenToUse={[
-            'Repository pattern — data access abstract karna',
-            'Factory pattern — objects banane ki logic centralize karna',
-            'Strategy pattern — runtime par algorithm swap karna',
-            'Observer pattern — event-driven loose coupling',
+            'Repository pattern — data access business logic se alag karo, DB swap easy ho',
+            'Factory pattern — object creation centralize karo — agar creation complex hai',
+            'Strategy pattern — runtime par algorithm swap karo — payment gateway, sorting, validation',
+            'Observer pattern — event-driven loose coupling — ek event, multiple independent handlers',
           ]}
-          whyUseIt="Design patterns shared vocabulary dete hain — 'ye Repository pattern hai' ek sentence mein architecture explain kar deta hai. Patterns time-tested solutions hain — common pitfalls se bachate hain. Testing easy hoti hai — patterns naturally dependency injection support karte hain."
+          whyUseIt="Testing ka seedha fayda — Repository interface ke peeche DB swap karo. PrismaUserRepository production mein, MockUserRepository tests mein — same interface, alag implementation. Tests mein real DB nahi chahiye, mocks se kaam chalta hai. Strategy pattern se A/B testing easy — user.country === 'IN' ? RazorpayPayment() : StripePayment(). Runtime decision, zero if-else chains in business logic."
           howToUse={{
             filename: 'design-patterns.ts',
             language: 'typescript',
@@ -216,9 +227,9 @@ class PaymentService {
 const payment = new PaymentService(
   user.country === 'IN' ? new RazorpayPayment() : new StripePayment()
 )`,
-            explanation: 'Repository pattern se DB swap karo — PostgreSQL se MongoDB migrate karo sirf implementation change karke, service code untouched. Strategy pattern se payment gateway A/B test karo ya country-specific gateways use karo. Testability dramatically improves.',
+            explanation: 'Repository pattern ka power: interface define karo (IUserRepository), implementations alag karo (PrismaUserRepository, MockUserRepository). Business logic (UserService) sirf interface ke saath baat karta hai — implementation ko jaanta nahi. Test mein MockUserRepository inject karo — zero DB calls, blazing fast tests. Strategy pattern: PaymentService sirf PaymentStrategy interface jaanta hai — Stripe ya Razorpay? Caller decide karta hai.',
           }}
-          realWorldScenario="SaaS app mein MongoDB se PostgreSQL migrate karna tha. Repository pattern already tha — sirf PostgresUserRepository implement kiya aur dependency inject kiya. Business logic code zero change. Migration smooth rahi — ek weekend mein done."
+          realWorldScenario="SaaS app mein MongoDB se PostgreSQL migrate karna tha. Repository pattern already implement tha. Sirf PostgresUserRepository banaya, IUserRepository implement kiya — findById, save, delete, sab. Dependency injection se swap kiya. Business logic code — zero changes. Service code — zero changes. Test code — zero changes. Ek weekend mein migration done. Bina pattern ke? Weeks of refactoring. Pattern ne ROI 100x diya."
           commonMistakes={[
             {
               mistake: 'Har jagah design patterns force karna',
@@ -231,7 +242,7 @@ const payment = new PaymentService(
               fix: 'Responsibilities split karo — UserRepository (data), UserService (business logic), UserController (HTTP handling). Har class ek kaam kare.',
             },
           ]}
-          proTip="Gang of Four book (Design Patterns) padho — 23 classic patterns. Node.js specific patterns ke liye 'Node.js Design Patterns' (Mario Casciaro) excellent hai. Pattern recognize karo pehle, phir implement karo — premature pattern application avoid karo."
+          proTip="Gang of Four ki original 'Design Patterns' book padho — 23 patterns, timeless wisdom. Node.js specific ke liye Mario Casciaro ki 'Node.js Design Patterns' best resource hai. Yaad rakho: pattern problem se aata hai. Pehle problem clearly samjho, phir natural fit dhundo. Pattern force mat karo — over-engineered code maintenance nightmare hai."
         />
       </div>
 
@@ -241,14 +252,14 @@ const payment = new PaymentService(
           title="Observability — App Ka X-Ray"
           emoji="📊"
           difficulty="advanced"
-          whatIsIt="Observability matlab production mein kya ho raha hai ye jaanna — bina guessing ke. Teen pillars: Logs (kya hua), Metrics (kitna aur kaisa), Traces (request kaahan gayi). Structured logging (Pino), metrics (Prometheus), distributed tracing (OpenTelemetry)."
+          whatIsIt="Observability — ye word NASA se aaya hai. 'Can we infer the internal state from external outputs?' Bina observability ke tumhara production app ek black box hai — andar kya ho raha hai pata nahi. Teen pillars: Logs (kya hua — narrative), Metrics (kitna aur kaisa — numbers), Traces (request kahan gayi — journey). Teeno ek saath — 3 AM incident mein tum detective ho, guessing nahi karte."
           whenToUse={[
-            'Production bugs investigate karo — logs se timeline reconstruct karo',
-            'Performance issues dhundho — metrics se anomalies detect karo',
-            'Request slow kyun — distributed trace se bottleneck identify karo',
-            'Business metrics track karo — DAU, conversion, error rate',
+            'Production bug investigate karo — logs se timeline reconstruct karo',
+            'Performance anomaly detect karo — metrics se proactive alerts, user complaint se pehle',
+            'Request slow kyun — distributed trace se exact bottleneck identify karo, microsecond level',
+            'Business health track karo — error rate badha? Conversion gira? Metrics batayenge',
           ]}
-          whyUseIt="Bina observability ke production issues andhere mein dhundne padते hain. 3 AM incident mein logs nahi hain toh guessing game hai. Structured logs se seconds mein filter karo. Metrics se proactive alerts — issue before user complaint. Traces se microservices mein request journey track karo."
+          whyUseIt="Bina observability — 3 AM ko production down hai. Kya hua? Guessing game. Timeout? Memory? DB? Ek service? Sab services? 2 ghante troubleshoot. Observability ke saath — error.message filter karo, requestId se poori request ki trace dekho, kaunsi service slow thi exactly millisecond mein. 10 minute mein root cause. Observability engineers ki neend bachata hai."
           howToUse={{
             filename: 'observability-setup.ts',
             language: 'typescript',
@@ -314,9 +325,9 @@ app.get('/metrics', async (req, res) => {
   res.set('Content-Type', client.register.contentType)
   res.end(await client.register.metrics())
 })`,
-            explanation: 'Pino child loggers use karo — requestId se poori request ki sari logs ek saath filter karo. JSON structured logs Datadog/CloudWatch/ELK mein efficiently search hote hain. Prometheus + Grafana dashboards se real-time visibility.',
+            explanation: 'Trace karo: har request pe requestId generate karo (crypto.randomUUID()). Pino child logger banao — logger.child({requestId}). Ab ek request ki sari logs ek requestId se filter ho jaayengi. Metrics endpoint /metrics Prometheus scrape karega, Grafana dashboard banao — real-time graphs. Alert set karo: error rate > 1% → PagerDuty alert. Ye complete observability stack hai.',
           }}
-          realWorldScenario="Payment service mein timeout errors aate the 2 AM ko. Pino structured logs + Datadog: error.message: 'Connection timeout' filter kiya — 95% errors ek specific IP se aa rahe the. Trace se pata chala: payment gateway rate limit hit ho raha tha. Fix: retry logic aur circuit breaker. Bina observability ke 2 weeks lagते."
+          realWorldScenario="Payment service mein timeout errors 2 AM ko. Pino structured logs + Datadog: error.message: 'Connection timeout' filter kiya — 95% errors ek specific payment gateway IP se. OpenTelemetry trace dekha — exact millisecond par timeout ho raha tha — gateway rate limit. Fix: exponential retry + circuit breaker. Root cause 10 minute mein. Bina observability ke 2 weeks ka debugging hota — assumptions, guesses, SSH sessions. Observability is the difference between engineering and guessing."
           commonMistakes={[
             {
               mistake: 'console.log() production mein use karna',
@@ -329,7 +340,7 @@ app.get('/metrics', async (req, res) => {
               fix: 'Logger mein redact config use karo: redact: ["password", "token", "authorization"]. Automatically mask ho jaate hain.',
             },
           ]}
-          proTip="OpenTelemetry SDK use karo distributed tracing ke liye — vendor neutral. Ek instrumentation code se Jaeger, Zipkin, Datadog, sab par trace bhejo. @opentelemetry/auto-instrumentations-node se Express, DB, Redis automatically instrument hote hain — zero code change."
+          proTip="OpenTelemetry — ye future hai. Vendor-neutral SDK — ek baar instrument karo, Jaeger/Zipkin/Datadog/Honeycomb kisi pe bhi bhejo. @opentelemetry/auto-instrumentations-node ek package hai — Express, Prisma, Redis, HTTP sab automatically trace hote hain. Zero manual instrumentation. Ye foundation rakho ab — later vendor choose karo."
         />
       </div>
 
@@ -339,14 +350,14 @@ app.get('/metrics', async (req, res) => {
           title="Career Growth — Senior tak Kaise Pahuncho?"
           emoji="🚀"
           difficulty="advanced"
-          whatIsIt="Technical skills zaroori hain lekin sufficient nahi. Open source contributions, blogging, community involvement, aur continuous learning — ye sab engineering career accelerate karte hain. Build in public, share learnings, give back."
+          whatIsIt="Ek harsh truth: sirf coding karne se career slow grow karta hai. Visible kaam karna — build in public, blog likho, open source contribute karo — career exponentially accelerate karta hai. Ek GitHub repo jo 500 stars le, ek blog post jo viral ho, ek conference talk — ye resume se zyada powerful hain. 'Show don't tell' — claims mat karo, kaam dikhaao."
           whenToUse={[
-            'Career plateau feel kar raho ho — naya challenge dhundo',
-            'Job change karna hai — visible portfolio chahiye',
-            'Senior promotion target hai — leadership aur impact demonstrate karo',
-            'Network build karna hai — community mein active raho',
+            'Career plateau feel ho — visible work, naya challenge visible karein',
+            'Job change karna hai — portfolio chahiye sirf CV se zyada',
+            'Senior promotion — leadership, mentoring, aur community impact demonstrate karo',
+            'Network build karna — community mein active log best opportunities pehle paate hain',
           ]}
-          whyUseIt="GitHub contributions, blog posts, aur open source work portfolio ban jaate hain — interview mein concrete examples dene ke liye. Community mein active log industry trends pehle jaante hain. Teaching is the best way to learn — blog likhne se concepts deeper samajh aate hain."
+          whyUseIt="Bina visibility ke — aaj tum Node.js expert ho, lekin duniya ko pata nahi. Recruiter ko LinkedIn profile milti hai — koi standout cheez nahi. GitHub contributions milti hai — koi public work nahi. Interview mein 'experienced engineer' claim karte ho — proof? Visibility proof hai. Blog post, open source, talk — ye claimable proof hain. Consistent karo — din mein 30 minutes bhi kaafi hai."
           howToUse={{
             filename: 'career-growth.md',
             language: 'markdown',
@@ -383,9 +394,9 @@ app.get('/metrics', async (req, res) => {
 - One technical book per month
 - Read changelog of tools you use
 - Side projects — real problems, real solutions`,
-            explanation: 'Consistency beats intensity. 30 minutes daily > 5 hours weekend. Public learning se accountability milti hai. Failures bhi share karo — people relate karte hain aur trust badhta hai.',
+            explanation: 'Consistency beats intensity — har jagah. 30 minutes daily > 5 hours weekend. Public learning mein accountability milti hai — tweet karo "aaj ye seekha" — log engage karte hain, tum accountable rehte ho. Failures share karo bhi — "maine ye mistake ki aur ye seekha" — ye posts viral hote hain, relatability se trust banta hai. Perfect hone ka wait mat karo — aaj start karo.',
           }}
-          realWorldScenario="Developer ne ek Node.js caching utility banai jab koi library suit nahi kar rahi thi. GitHub par publish kiya — 50 stars pehle week mein. 6 months mein 2000+ stars. Ye GitHub profile ne 3 job offers diye directly — recruiter ne repository dekha. Open source genuinely career-changing ho sakta hai."
+          realWorldScenario="Developer ne ek Node.js rate limiting utility likhi jab existing libraries ek specific use case cover nahi karte thi. GitHub par publish kiya. Pehle week: 50 stars. 6 months: 2000+ stars, npm pe weekly 5000 downloads. Recruiter ne GitHub explore pe dekha — email kiya directly: 'We are looking for Node.js engineers, impressed by your work.' Teen job offers — bina job hunting ke. Open source genuinely career-changing hota hai. Ye koi fluke nahi — ye visibility ki power hai."
           commonMistakes={[
             {
               mistake: '"Mujhe pehle sab jaanna hai blog likhne se pehle"',
@@ -398,7 +409,7 @@ app.get('/metrics', async (req, res) => {
               fix: 'Junior developers mentor karo, stakeholders ke saath communicate karna seekho, cross-functional work karo.',
             },
           ]}
-          proTip="Second Brain banao — Obsidian ya Notion mein notes rakho. Learning → Notes → Blog Post → Talk pipeline banao. Ek concept 4 forms mein process karo: code karo, notes lo, blog likho, phir talk do — depth extraordinary ho jaati hai."
+          proTip="Tiago Forte ka 'Second Brain' concept try karo — Obsidian ya Notion mein sab notes karo. Pipeline banao: Learn → Note → Blog post → Conference talk. Ek concept 4 baar process karo — depth extraordinary ho jaati hai. First talk dene ke baad log tumhe 'expert' perceive karte hain us topic par. Perception reality banata hai."
         />
       </div>
 
@@ -408,14 +419,14 @@ app.get('/metrics', async (req, res) => {
           title="Architecture Decisions & ADRs"
           emoji="📐"
           difficulty="advanced"
-          whatIsIt="ADR (Architecture Decision Record) ek short document hai jo important architecture decisions document karta hai — context, options considered, decision liya, aur consequences. Future mein 'ye kyun kiya' ka answer milta hai."
+          whatIsIt="ADR (Architecture Decision Record) ek short but powerful document hai — ek architecture decision ka snapshot. Context: kyun decide karna pada. Options: kya-kya socha. Decision: kya choose kiya. Consequences: aage kya hoga. Ye document code ke saath version control mein rehta hai — future mein 'ye MongoDB kyun choose kiya tha?' ka jawab milta hai bina detective work ke."
           whenToUse={[
-            'Major technology choice — PostgreSQL vs MongoDB',
-            'Architectural pattern adopt karna — microservices vs monolith',
-            'Major trade-off accept karna — consistency vs availability',
-            'Non-obvious decisions — future team members ko explain karna zaroori',
+            'Major technology choice — PostgreSQL vs MongoDB, REST vs gRPC',
+            'Architectural pattern adopt karo — microservices vs modular monolith',
+            'Significant trade-off accept karo — consistency vs availability, speed vs correctness',
+            'Non-obvious decisions jahan future team members poochh sakein — kyun?',
           ]}
-          whyUseIt="6 months baad code dekhte waqt 'ye kyun kiya' yaad nahi rehta. PR comments archive mein khote hain. ADRs searchable, versioned, aur team ke saath shared hote hain. New team members quickly context samajhte hain bina har decision ka reason poochhe."
+          whyUseIt="6 months baad code dekhte hain, ek khaas decision samajh nahi aata. Original developer se poochho — 'kuch yaad nahi, PR comments dhundo'. PR comments archive mein kho gaye, Slack history expire ho gayi. ADR hota toh — docs/adr/005-chose-mongodb.md — context, options, reasoning sab preserved. Naya CTO join kiya, onboarding 3 weeks — ADRs hain toh 3 days. Knowledge transfer ka most undervalued tool."
           howToUse={{
             filename: 'docs/adr/001-database-choice.md',
             language: 'markdown',
@@ -460,9 +471,9 @@ Team ka SQL expertise existing hai — learning curve minimum.
 
 ## Review
 Review karo agar: 100K concurrent users ya NoSQL features specifically needed hon.`,
-            explanation: 'ADRs short rakho — 1-2 pages max. Context (kyun decide karna pada), decision (kya decide kiya), consequences (impact). docs/adr/ folder mein numbered files rakho. Code ke saath version control mein — decisions code ke saath evolve hote hain.',
+            explanation: 'ADR template follow karo: Status (Proposed/Accepted/Deprecated), Context (problem), Options (A vs B vs C with pros/cons), Decision (chosen option + reasoning), Consequences (positive + negative). docs/adr/001-database-choice.md — numbered, short, to the point. 1-2 pages max. Code ke saath git mein — decision evolve karna hai toh ADR update karo ya naya ADR likho (old deprecated karo).',
           }}
-          realWorldScenario="Fintech startup mein new CTO join hua. Codebase mein kuch unusual patterns the — microservices instead of expected monolith, event sourcing ki jagah simple CRUD. Bina ADRs ke 3 weeks context gathering. Baad mein ADRs implement kiye — nayi hires 2 days mein architectural context samajhne lage."
+          realWorldScenario="Fintech startup mein new CTO join kiya. Codebase mein microservices tha jab monolith expected tha, event sourcing tha jab simple CRUD expected tha. Koi documentation nahi — 3 weeks poochh-poochh ke context gather kiya. Baad mein ADRs implement kiye. Agla hire join kiya — 2 din mein sab architectural decisions ki reasoning samajh aayi. Unedit CTO ka onboarding 3 weeks se 3 days. Knowledge as competitive advantage."
           commonMistakes={[
             {
               mistake: 'ADR sirf final decision document karna — options considered ignore karna',
@@ -475,7 +486,7 @@ Review karo agar: 100K concurrent users ya NoSQL features specifically needed ho
               fix: 'Sirf non-obvious, significant, ya controversial decisions ADR mein. "Hum Node.js use karenge" obvious hai — document mat karo.',
             },
           ]}
-          proTip="adr-tools CLI se ADRs manage karo: adr new 'Use PostgreSQL as primary database'. Template automatically generate hoti hai. GitHub PR se ADR review process link karo — decision finalize hone par ADR merge hota hai. Architecture as code!"
+          proTip="adr-tools CLI install karo — adr new 'Use PostgreSQL as primary database' ek command se template generate hoti hai. GitHub PR workflow mein ADR link karo — major architectural PR ke saath ADR required. Merge hone pe decision finalized. Architecture as code — code aur decisions dono version controlled, dono reviewable."
         />
       </div>
 
@@ -490,13 +501,13 @@ Review karo agar: 100K concurrent users ya NoSQL features specifically needed ho
       >
         <div className="text-5xl mb-4">🎉</div>
         <h3 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3">
-          Congratulations! NodeMaster Course Complete!
+          NodeMaster Complete! Ab Asli Kaam Shuru Hota Hai!
         </h3>
         <p className="text-[#A1A1AA] leading-relaxed max-w-2xl mx-auto mb-4">
-          Tumne Node.js ka poora journey complete kiya — fundamentals se leke architecture, testing, security, performance, aur deployment tak. Lekin ye end nahi, ye beginning hai.
+          Yaar, tumne poora Node.js journey complete kiya — event loop se lekar microservices tak, security se lekar zero-downtime deployment tak. Ye cheezein bahut log jaante hain theory mein. Tum ab apply kar sakte ho — ye sabse badi difference hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed max-w-2xl mx-auto">
-          Ab kuch banao. Real projects. Real problems. Keep learning, keep shipping, keep growing. Tumhara Node.js expert ban jaana time ki baat hai — jo concepts tumne seekhe hain, unhe apply karte raho.
+          Ab sawaal ye aata hai — "Aage kya?" Ek real project banao. Ek problem dhundo jo tumhe personally affect karti hai, aur usse solve karo Node.js se. Ship karo. Break karo. Fix karo. Learn karo. Fir repeat karo. Expert ban jaana time ki baat hai — ye foundation tumhare paas hai. Baaki journey tumhara wait kar rahi hai. Keep building!
         </p>
         <div className="mt-6 flex items-center justify-center gap-3 flex-wrap">
           <span className="px-4 py-2 rounded-full text-sm font-semibold" style={{ background: 'rgba(124,58,237,0.15)', color: '#9D5FF0', border: '1px solid rgba(124,58,237,0.3)' }}>Build Projects</span>

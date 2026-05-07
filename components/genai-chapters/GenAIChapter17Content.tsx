@@ -153,7 +153,7 @@ export default function GenAIChapter17Content() {
           Multimodal AI — Text, Images, Audio & Beyond 🎨
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          AI sirf text nahi samajhta — images dekh sakta hai, audio sun sakta hai, images generate kar sakta hai. Multimodal AI ka power uthao apne apps mein.
+          Ek zamana tha jab AI sirf text samjhta tha. Ab? Claude ek invoice ki photo dekh ke data extract karta hai. Whisper Hindi mein baat sun ke transcript banata hai. DALL-E prompt se image create karta hai. Multimodal matlab AI ke haath aur aankhein bhi mil gayi — developers ke liye naye products banana possible hua hai jo pehle imaginable nahi the.
         </p>
         <div
           className="rounded-xl p-4"
@@ -163,7 +163,7 @@ export default function GenAIChapter17Content() {
           }}
         >
           <p className="text-[#C4B5FD] text-sm italic">
-            &quot;2024 mein AI multimodal ho gaya — text, image, audio, video sab ek model. Developers ke liye ye naya superpower hai.&quot;
+            &quot;Multimodal AI ne sirf capabilities nahi badhe — poori product categories create ho gayi. Jo developer ye seekhega, woh products banana shuru karega jo competitors soch bhi nahi rahe.&quot;
           </p>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default function GenAIChapter17Content() {
           title="Vision Models — Images Ko Samjhna"
           emoji="👁️"
           difficulty="advanced"
-          whatIsIt="Vision language models images aur text dono samajhte hain — kya hai image mein describe karo, charts analyze karo, documents extract karo, screenshots se code generate karo. Major models: Claude 3+ (excellent at documents), GPT-4o (fast, multimodal), Google Gemini (native multimodal). Use case: anything that needs 'look at this image and...'"
+          whatIsIt="Vision language models — ye AI ki aankhein hain. Image aur text dono ek saath samajhte hain. Practical use: invoice photo se data extract karo, chart analyze karke insights do, screenshot se code generate karo, UI design dekh ke accessibility issues batao. Major models: Claude 3+ documents mein exceptional hai, GPT-4o fast aur multimodal hai, Gemini native multimodal hai. Simple rule: agar kisi kaam ke liye 'is image mein kya hai' sawaal ho — vision model ka kaam hai."
           whenToUse={[
             'Document processing — receipts, invoices, forms se data extract karo.',
             'Screenshot to code — UI screenshot se HTML/CSS generate karo.',
@@ -183,7 +183,7 @@ export default function GenAIChapter17Content() {
             'Medical imaging assistance — X-ray, MRI analysis support.',
             'Accessibility — image descriptions for visually impaired.',
           ]}
-          whyUseIt="Manual document processing: $15/hour * 8 hours = $120/day per person. Vision AI: $0.01-0.05 per document. 1000 invoices/day → $10-50 AI cost vs $120+ human cost. Beyond cost: 24/7 availability, consistent quality, scale instantly. Vision + LLM = powerful document intelligence."
+          whyUseIt="Numbers dekho: manual document processing $15/hour, 8 hours/day = $120/day per person. Vision AI: $0.01-0.05 per document. 1000 invoices/day — $10-50 AI cost vs $120+ human cost. Aur sirf cost nahi: 24/7 availability, consistent quality, instant scale. Ek developer ek din mein vision feature add kare = ek data entry person replaced. Ye leverage hai."
           howToUse={{
             filename: 'vision-basic.ts',
             language: 'typescript',
@@ -256,9 +256,9 @@ const description = await analyzeImageURL(
   'Is image mein kya hai? Hindi mein batao.'
 );
 console.log(description);`,
-            explanation: 'Claude vision: messages array mein image block (type: "image") aur text block dono dalo. URL ke liye: source.type = "url". Base64 ke liye: source.type = "base64" + media_type + data. Multiple images ek message mein possible — comparison tasks ke liye. claude-opus-4-5 vision ke liye excellent hai.',
+            explanation: 'Pattern simple hai — messages array mein image block (type: "image") aur text block dono dalo. URL ke liye source.type = "url", local file ke liye source.type = "base64" + media_type + data. Ek important baat: multiple images ek hi message mein bhej sakte ho — comparison tasks ke liye perfect. "In dono designs mein kya fark hai?" — dono images, ek call.',
           }}
-          realWorldScenario="Expense management app ne receipt scanning feature add kiya — user photo click kare, Claude automatically: merchant name, amount, date, category extract kare, expense entry create kare. Manual entry 2 minutes → AI: 5 seconds. User adoption 3x increase. OCR + LLM combination powerful hai."
+          realWorldScenario="Expense management app ne receipt scanning feature add kiya — user phone se photo khinchta hai, Claude automatically: merchant name, amount, date, category extract karta hai, expense entry create ho jaati hai. Manual entry: 2 minute. AI: 5 seconds. Ek feature add kiya, user adoption 3x badh gaya. Ye tab hota hai jab right tool right problem pe lagao."
           commonMistakes={[
             {
               mistake: 'Low resolution images bhejne se poor results',
@@ -266,7 +266,7 @@ console.log(description);`,
               fix: 'Minimum 800x600 pixels, ideally 1200+ for documents. Documents ke liye: high DPI scan. Screenshots ke liye: device native resolution. Image quality directly output quality affect karta hai.',
             },
           ]}
-          proTip="Claude ka vision multiple images ek message mein support karta hai — comparison tasks ke liye perfect. 'In dono invoices mein kya differences hain?' — dono images ek message mein bhejo. Before/after comparison, A/B design review, chart series analysis — sab possible."
+          proTip="Ek underrated capability: Claude ke ek message mein multiple images bhej sakte ho. Before/after comparison, A/B design review, invoice comparison, chart series — sab ek call mein. 'In dono screenshots mein UI differences kya hain?' — dono bhejo, ek response. Ye feature log use hi nahi karte, lekin bahut powerful hai."
         />
       </div>
 
@@ -276,7 +276,7 @@ console.log(description);`,
           title="Claude Vision — Document Analysis Mein Expert"
           emoji="📄"
           difficulty="advanced"
-          whatIsIt="Claude vision models especially strong hain complex document analysis mein — multi-column layouts, tables, handwriting, mixed text+images. Use cases: invoice processing, contract review, medical form extraction, research paper analysis. Claude Sonnet/Opus: best for complex documents. Haiku: simple image descriptions, fast."
+          whatIsIt="Claude ka vision complex documents mein especially strong hai — multi-column PDFs, tables, handwriting, mixed text+images wale documents. Competitors se alag kya hai? Claude hallucination rate documents pe comparatively low hai. Real use cases: invoice processing, contract clause extraction, medical form reading, research paper analysis. Model select karo task ke hisaab se: Sonnet/Opus complex documents ke liye, Haiku simple image descriptions ke liye."
           whenToUse={[
             'Invoice/receipt processing — structured data extract karo.',
             'Contract review — clauses identify karo, key terms extract karo.',
@@ -284,7 +284,7 @@ console.log(description);`,
             'Chart interpretation — data insights automatically generate karo.',
             'Handwritten notes digitization — reasonably accurate for clean handwriting.',
           ]}
-          whyUseIt="Claude document analysis mein GPT-4V se often better hai — especially multi-column PDFs, tables, mixed layouts. Claude hallucination rate lower hai documents pe. 'Document intelligence' use case mein production deployments mein preferred choice hai many enterprises."
+          whyUseIt="Ek honest comparison: Claude document analysis mein GPT-4V se often better kaam karta hai — especially multi-column layouts, dense tables, mixed content. Hallucination rate lower hai documents pe — jo financial aur legal use cases mein critical hai. Enterprises document intelligence ke liye production mein Claude prefer karte hain. Benchmark karo apne documents pe — lekin Claude se shuru karo."
           howToUse={{
             filename: 'claude-document-analysis.ts',
             language: 'typescript',
@@ -369,9 +369,9 @@ async function compareImages(img1Path: string, img2Path: string, question: strin
   const block = response.content[0];
   return block.type === 'text' ? block.text : '';
 }`,
-            explanation: 'Invoice extraction: structured JSON output force karo prompt se. Claude documents pe excellent hai. Multi-image comparison: ek message mein multiple image blocks — comparison tasks ke liye perfect. JSON parsing: regex se extract karo in case model thoda text add kare JSON ke aagey.',
+            explanation: 'Invoice extraction ka key trick: prompt mein exact JSON schema do, "Return ONLY valid JSON" explicitly kaho. Claude documents pe excellent hai lekin strict output format force karo. JSON parsing: regex se extract karo — model kabhi kabhi thoda text add karta hai JSON ke aagey ya baad mein, regex gracefully handle karta hai. Multi-image comparison: ek message mein multiple blocks — 2 images, ek call.',
           }}
-          realWorldScenario="Accounting startup ne 50,000 invoices/month process karte waqt Claude vision deploy kiya. Accuracy: 96.5% on structured invoices, 89% on handwritten ones. Cost: $0.012/invoice vs $0.25 manual + software cost. ROI: 95% cost reduction. Edge cases (blurry, unusual layout): human review queue."
+          realWorldScenario="Accounting startup: 50,000 invoices/month process karna tha. Claude vision deploy kiya. Results: 96.5% accuracy structured invoices pe, 89% handwritten pe. Cost: $0.012/invoice vs $0.25 manual + software cost — 95% reduction. Edge cases (blurry images, unusual layouts) automatically human review queue mein jaate hain. Ye hybrid approach hai — AI volume handle kare, humans exceptions handle karein."
           commonMistakes={[
             {
               mistake: 'Vision results bina validation ke database mein save karna',
@@ -379,7 +379,7 @@ async function compareImages(img1Path: string, img2Path: string, question: strin
               fix: 'Confidence threshold implement karo — low confidence cases human review ke liye flag karo. Critical fields (amounts) double-check karo rule-based validation se (format, range checks).',
             },
           ]}
-          proTip="PDF pe Claude vision use karne ke liye: pdf-lib ya pdfjs-dist se pages ko PNG images mein convert karo, phir each page Claude ke saath process karo. AWS Textract ya Azure Form Recognizer better ho sakte hain pure OCR tasks ke liye — combine karo Claude ke structured extraction ke saath for best results."
+          proTip="PDF pages directly nahi bhej sakte — pehle PNG mein convert karo (pdf-lib ya pdfjs-dist se), phir each page Claude ko bhejo. Pure OCR tasks ke liye AWS Textract ya Azure Form Recognizer better ho sakte hain. Best combination: Textract se raw text extract karo, Claude se structure aur meaning samjhao. Ek tool sab nahi karta — combine karo."
         />
       </div>
 
@@ -389,7 +389,7 @@ async function compareImages(img1Path: string, img2Path: string, question: strin
           title="Speech-to-Text — Whisper API"
           emoji="🎤"
           difficulty="advanced"
-          whatIsIt="OpenAI Whisper speech recognition model hai — 99 languages support karta hai, accents handle karta hai, medical/technical terms samajhta hai. API: audio file upload karo, transcript milti hai. Streaming transcription: real-time ke liye. Open-source version: local mein bhi run karo (GPU recommended)."
+          whatIsIt="Whisper OpenAI ka speech recognition model hai — 99 languages, accents handle karta hai, medical aur technical terms samajhta hai. API bahut simple hai: audio file upload karo, transcript milti hai. Hinglish? Reasonably well kaam karta hai. Streaming: real-time ke liye. Open-source version bhi available hai — local mein run karo privacy ke liye. Ek powerful combination: Whisper transcript → Claude analysis."
           whenToUse={[
             'Voice notes to text — meetings, lectures, voice memos.',
             'Customer call transcription — support, sales call analysis.',
@@ -397,7 +397,7 @@ async function compareImages(img1Path: string, img2Path: string, question: strin
             'Voice commands — hands-free interface.',
             'Multilingual transcription — Hindi, Hinglish, regional accents.',
           ]}
-          whyUseIt="Manual transcription: $1-2/minute. Whisper API: $0.006/minute (300x cheaper). Accuracy: 95%+ for clear audio, 85%+ for noisy environments. Hindi aur Hinglish: reasonably good. Combination: Whisper transcript → Claude for summarization, action items, sentiment analysis."
+          whyUseIt="Numbers: manual transcription $1-2/minute, Whisper API $0.006/minute — 300x cheaper. Accuracy: 95%+ clear audio, 85%+ noisy environments. Hinglish aur Hindi: reasonably good, language parameter set karo. Asli value: Whisper + Claude pipeline — meeting transcript → automatic summary, action items, decisions. Ye ek combination hai jo real productivity impact deta hai."
           howToUse={{
             filename: 'whisper-transcription.ts',
             language: 'typescript',
@@ -483,9 +483,9 @@ Transcript:
   const block = response.content[0];
   return block.type === 'text' ? JSON.parse(block.text) : {};
 }`,
-            explanation: 'Whisper API: createReadStream se file stream karo, openai.audio.transcriptions.create() call karo. language specify karo better accuracy ke liye (hi for Hindi). response_format: text, json, srt, vtt. Large files: ffmpeg se chunks mein split karo (10 min each). Whisper + Claude = meeting intelligence pipeline.',
+            explanation: 'Whisper API: file stream karo, language explicitly set karo (hi for Hindi — auto-detect kabhi kabhi Hinglish ko English maanta hai). response_format options: text (simple string), srt (timestamps ke saath), verbose_json (word-level timestamps). Large files ke liye 25MB limit hai — ffmpeg se 10-minute chunks mein split karo. Whisper + Claude pipeline: transcript → structured analysis — meetingIntelligence function exactly ye karta hai.',
           }}
-          realWorldScenario="Sales team ne call recording feature add kiya — Whisper transcription + Claude analysis se: automatic summary, key objections, follow-up actions. Manager review time 30 min/call → 5 min/call. Coaching insights: common objections patterns identify kiye, training improved. Revenue +15%."
+          realWorldScenario="Sales team ne call recording feature add kiya. Whisper transcription + Claude analysis: automatic summary, key objections identified, follow-up actions listed. Manager review time: 30 min/call → 5 min/call. Ek bonus: Claude ne 3 months ke calls mein common objection patterns identify kiye — training material improve hua. Revenue 15% badha. Ek feature, multiple downstream benefits — ye AI ka real compounding effect hai."
           commonMistakes={[
             {
               mistake: 'Hindi audio ke liye language parameter nahi dena',
@@ -493,7 +493,7 @@ Transcript:
               fix: 'Hinglish ke liye: language: "hi" set karo. Mixed language audio: language auto-detect better ho sakta hai. Experiment karo apne audio ke saath dono settings pe.',
             },
           ]}
-          proTip="Local Whisper (openai/whisper Python package ya faster-whisper) free hai aur offline kaam karta hai — privacy-sensitive audio ke liye ideal. GPU: 10x faster transcription. CPU: slow lekin kaam karta hai. medium ya large-v3 model best accuracy deta hai. Node.js se: child_process se Python script call karo."
+          proTip="Sensitive audio? Local Whisper use karo — openai/whisper Python package ya faster-whisper, free aur offline. GPU pe 10x faster, CPU pe slow lekin kaam karta hai. Accuracy ke liye: large-v3 model best hai. Node.js se: child_process se Python script call karo ya local API expose karo. Privacy-critical audio ke liye cloud API use karna hi nahi chahiye."
         />
       </div>
 
@@ -503,7 +503,7 @@ Transcript:
           title="Text-to-Image — DALL-E 3 & Stable Diffusion"
           emoji="🎨"
           difficulty="advanced"
-          whatIsIt="Text-to-image models natural language description se images generate karte hain. DALL-E 3 (OpenAI): best quality, easy API, prompt enhancement automatic. Stable Diffusion: open-source, self-hosted, fine-tunable, free (GPU cost only). Midjourney: best artistic quality, Discord-based. Use case: product mockups, marketing assets, content creation."
+          whatIsIt="Text-to-image: natural language description do, model image create karta hai. DALL-E 3: best quality + easiest API, automatic prompt enhancement (GPT-4 internally improve karta hai tumhara prompt). Stable Diffusion: open-source, self-hosted, fine-tunable — GPU cost hi hai. Midjourney: artistic quality mein unmatched, lekin Discord-based. Developers ke liye DALL-E 3 se shuru karo — integration fastest hai."
           whenToUse={[
             'Marketing images — social media, blog thumbnails, ad creatives.',
             'Product visualization — concept designs, packaging mockups.',
@@ -511,7 +511,7 @@ Transcript:
             'Game assets — backgrounds, characters, icons (prototype stage).',
             'Personalized content — user-specific avatars, customized images.',
           ]}
-          whyUseIt="Stock photo: $10-50/image. Custom photo shoot: $500-5000. DALL-E 3: $0.04-0.08/image. Stable Diffusion (self-hosted): ~$0.001/image (GPU cost). Iteration speed: text prompt change karo, new image seconds mein. Creative control: exact scene, style, composition specify karo in natural language."
+          whyUseIt="Cost comparison: stock photo $10-50, custom photo shoot $500-5000, DALL-E 3 $0.04-0.08 per image. Self-hosted Stable Diffusion: ~$0.001 per image (GPU cost). Lekin asli advantage cost se zyada speed hai — prompt change karo, new image seconds mein. Exact scene, style, composition control karo natural language se. Content team ke liye: unlimited iteration, zero photographer schedule."
           howToUse={{
             filename: 'dalle-generation.ts',
             language: 'typescript',
@@ -581,9 +581,9 @@ async function downloadImage(url: string, savePath: string): Promise<void> {
   const buffer = await res.buffer();
   require('fs').writeFileSync(savePath, buffer);
 }`,
-            explanation: 'DALL-E 3: simple API, best quality, prompt enhancement auto (GPT-4 se improve karta hai prompt). size options: square (1024x1024), landscape (1792x1024), portrait (1024x1792). quality: hd for marketing assets worth extra cost. revised_prompt: DALL-E ne actually kya prompt use kiya — interesting learning.',
+            explanation: 'DALL-E 3 API straightforward hai. Size options: square (1024x1024), landscape (1792x1024), portrait (1024x1792) — use case ke hisaab se. quality: standard vs hd — hd marketing assets ke liye worth it hai extra cost. Ek interesting field: revised_prompt — ye DALL-E ne actually kya prompt use kiya dikhata hai. Isse padh ke prompt engineering seekh sakte ho. style: vivid dramatic hai, natural realistic.',
           }}
-          realWorldScenario="Content agency ne DALL-E 3 se blog thumbnail automation kiya — article title se automatic thumbnail generate karta hai. Manual design: 30 min/image. DALL-E 3: 10 seconds, $0.04. Quality: 85% publish-ready without human edit. Editor review sirf outliers ke liye. 20 articles/day = $0.80/day vs $150 designer time."
+          realWorldScenario="Content agency: 20 articles/day, har ek ke liye thumbnail chahiye. Manual design: 30 min/image, designer cost. DALL-E 3: 10 seconds, $0.04/image. 85% images publish-ready bina kisi edit ke. Editor sirf outliers review kare. Total: $0.80/day vs $150+ designer time. Ye automation sirf cost save nahi karta — publishing speed dramatically fast hoti hai."
           commonMistakes={[
             {
               mistake: 'DALL-E se realistic human faces generate karna — copyright/deepfake concerns',
@@ -591,7 +591,7 @@ async function downloadImage(url: string, savePath: string): Promise<void> {
               fix: 'Clearly fictional/stylized characters use karo. Real people ki likeness avoid karo. Terms of Service carefully padho. Generated images mein AI disclosure add karo.',
             },
           ]}
-          proTip="Stable Diffusion locally run karna chahte ho? ComfyUI ya AUTOMATIC1111 WebUI use karo — GUI se easy. Node.js se API: stable-diffusion.cpp ya local API server. Best open-source model 2025: FLUX.1 (realistic), SDXL (versatile), Stable Cascade (quality). GPU: RTX 3080+ recommended for good speed."
+          proTip="Local image generation run karna chahte ho? ComfyUI ya AUTOMATIC1111 WebUI se shuru karo — GUI se easy, no code. Node.js se: local API server expose karo. 2025 mein best open-source models: FLUX.1 realistic ke liye, SDXL versatile tasks ke liye. GPU: RTX 3080+ for decent speed. Privacy aur unlimited generation — local setup ka fayda yahi hai."
         />
       </div>
 
@@ -601,7 +601,7 @@ async function downloadImage(url: string, savePath: string): Promise<void> {
           title="Multimodal RAG — Images + Text Together"
           emoji="🔮"
           difficulty="advanced"
-          whatIsIt="Multimodal RAG text documents ke saath images bhi index karta hai — diagrams, charts, photos, screenshots. User text query kare aur relevant images retrieve hon, ya image upload kare aur similar content dhundhe. Approaches: (1) Image captioning → text embed, (2) CLIP multimodal embeddings (same space for text+image), (3) Vision LLM at query time."
+          whatIsIt="Regular RAG sirf text documents search karta hai. Technical manuals mein answer ek diagram mein ho? Text RAG fail. Multimodal RAG images bhi index karta hai — diagrams, charts, screenshots sab. Approaches: (1) Image captioning — Claude se caption banao, phir text embed karo. Simple. (2) CLIP embeddings — text aur images same vector space mein, image-to-image search bhi possible. Powerful. (3) Vision LLM at query time — query pe vision model se results interpret karo."
           whenToUse={[
             'Technical documentation — diagrams + text together search karo.',
             'E-commerce — product images + description semantic search.',
@@ -609,7 +609,7 @@ async function downloadImage(url: string, savePath: string): Promise<void> {
             'Legal discovery — documents + photos in same search.',
             'Research papers — figures + text unified retrieval.',
           ]}
-          whyUseIt="Text-only RAG technical manuals mein fail karta hai jab answer ek diagram mein hai. Multimodal RAG diagram bhi retrieve kar sakta hai. E-commerce: user 'blue casual shirt like this photo' search kare — image + text hybrid search. Future of enterprise search: everything searchable, regardless of format."
+          whyUseIt="Ek real problem: engineer ne technical manual mein 'hydraulic pressure settings' search kiya — text RAG kuch relevant paragraphs return kiya lekin actual setting ek diagram mein tha. Multimodal RAG: diagram bhi retrieve hota. E-commerce mein: user photo upload kare, similar products dhundhe — text description se match karo. Enterprise search ka future: sab kuch searchable, format regardless."
           howToUse={{
             filename: 'multimodal-rag.ts',
             language: 'typescript',
@@ -709,9 +709,9 @@ function cosineSim(a: number[], b: number[]): number {
   }
   return dot / (Math.sqrt(na) * Math.sqrt(nb));
 }`,
-            explanation: 'Approach 1 (simpler): image caption generate karo → text embed karo → regular text RAG. Approach 2 (powerful): CLIP se text + image same embedding space mein — image-to-image ya text-to-image search possible. For most production cases, captioning approach simpler aur sufficient hai.',
+            explanation: 'Approach 1 (simpler, recommended for most cases): Claude se image caption banao → text embed karo → regular text RAG pipeline. Approach 2 (powerful, complex): CLIP se text + image same embedding space — image-to-image search possible. For most production cases, captioning approach kaafi hai. CLIP tabhi use karo jab image-to-image search genuinely chahiye — unnecessary complexity avoid karo.',
           }}
-          realWorldScenario="Architecture firm ne building documentation system banaya — floor plans (images), specifications (PDFs), photos (JPEG) sab ek system mein. Architect search kare 'kitchen ventilation requirements' — text chunks + relevant diagram images retrieve hote hain. Review time 50% kam hua."
+          realWorldScenario="Architecture firm: floor plans, specifications, construction photos — sab alag jagah stored the. Ek unified multimodal RAG banaya. Ab architect search kare 'kitchen ventilation requirements' — text chunks aur relevant floor plan diagram dono retrieve hote hain. Review time 50% kam hua. Ek system, sab kuch searchable — ye multimodal RAG ka real impact hai."
           commonMistakes={[
             {
               mistake: 'Har image caption generate karna at query time',
@@ -719,7 +719,7 @@ function cosineSim(a: number[], b: number[]): number {
               fix: 'Ingestion time pe captions generate karo (offline). Store karo database mein. Query time pe sirf text similarity — fast. Caption quality index at indexing time.',
             },
           ]}
-          proTip="LlamaIndex ka MultiModalVectorStoreIndex multimodal RAG ko significantly simplify karta hai — built-in image captioning, CLIP embeddings, aur multimodal query engine. Production mein: Weaviate aur Chroma native multimodal embedding support karte hain via CLIP integration — no custom code needed."
+          proTip="Custom code mat likho — LlamaIndex ka MultiModalVectorStoreIndex use karo. Built-in image captioning, CLIP embeddings, multimodal query engine sab handle karta hai. Production vector DB ke liye: Weaviate aur Chroma dono native multimodal embedding support karte hain CLIP integration ke saath — no custom code needed. Library pe trust karo, problem pe focus karo."
         />
       </div>
 

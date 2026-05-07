@@ -67,17 +67,20 @@ export default function JSChapter9Content() {
         style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.2)' }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3">
-          Prototypes & Classes — Objects Ka Deep Dive
+          Prototypes & Classes — JavaScript Ki Sachchi Kahani
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          JavaScript mein inheritance alag tarah hoti hai Java ya C++ se. Koi real class nahi hai — sab kuch prototype chain pe based hai. ES6 classes ek cleaner syntax deti hain lekin internally wahi prototypes hain. Ye samajhna advanced JavaScript mastery ke liye essential hai.
+          Ek shocking statement se shuru karte hain: Classes JavaScript mein exist hi nahi karti — ye sirf syntactic sugar hai! Ye sunke shocking lagta hai, lekin ye sach hai. JavaScript ek prototype-based language hai. Har object ke paas ek hidden [[Prototype]] link hota hai jo doosre object ko point karta hai. Yahi inheritance ka real mechanism hai.
+        </p>
+        <p className="text-[#A1A1AA] leading-relaxed mb-3">
+          ES6 class keyword ne code likhna easy kiya — lekin engine ke andar wahi prototype chain chal rahi hai. Ye samajhna zaroori hai kyunki interviews mein poochha jaata hai, bugs prototype misunderstanding se aate hain, aur Node.js ke core modules isi pe based hain.
         </p>
         <div
           className="rounded-xl p-4 mt-4"
           style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)' }}
         >
           <p className="text-sm text-[#A1A1AA]">
-            <span className="text-[#F59E0B] font-semibold">Intermediate chapter!</span> Prototype chain, constructor functions, ES6 classes, inheritance, static methods, getters/setters, private fields (#) — sab cover hoga. Interview prep ke liye bahut important.
+            <span className="text-[#F59E0B] font-semibold">Interview ka hot topic!</span> Prototype chain, constructor functions, ES6 classes, inheritance, private fields (#) — sab cover hoga. Har concept mein ye poochha jaata hai: "internally kaise kaam karta hai?" Ab tum answer de paoge.
           </p>
         </div>
       </div>
@@ -88,14 +91,14 @@ export default function JSChapter9Content() {
           title="Prototype Chain — Property Lookup"
           emoji="🔗"
           difficulty="intermediate"
-          whatIsIt="Har JavaScript object ke paas ek hidden property hoti hai — [[Prototype]] (accessible as __proto__ ya Object.getPrototypeOf()). Jab property access karo, JS pehle object pe dhundta hai. Nahi mila? Prototype pe jaata hai. Phir prototype ka prototype. Jab tak null nahi milta. Yahi prototype chain hai — inheritance ka mechanism."
+          whatIsIt="Har JavaScript object ke paas ek hidden secret hota hai — [[Prototype]] — ek invisible link jo doosre object ko point karta hai. Jab tum dog.breathe() call karte ho aur dog pe breathe nahi hai, JS engine rukta nahi — wo chain ke upar jaata hai. dog ka [[Prototype]] animal hai, animal pe breathe hai — mil gaya! Animal ke [[Prototype]] Object.prototype hai. Object.prototype ke [[Prototype]] null hai — chain khatam. Sawaal: ye chain kab tak jaati hai? Jawab: jab tak null nahi milta — agar null tak pohunch ke bhi nahi mila toh undefined return hota hai (property access ke liye) ya ReferenceError (variable ke liye). Yahi prototype chain hai — JavaScript ka real inheritance mechanism!"
           whenToUse={[
-            'Methods shared karne ke liye — sab instances ek hi prototype pe methods share karte hain',
-            'Object.getPrototypeOf() se prototype chain inspect karne ke liye',
-            'hasOwnProperty vs in operator — own vs inherited properties',
+            'Methods memory-efficient share karne ke liye — sab instances ek hi prototype pe methods share karte hain, copies nahi',
+            'Object.getPrototypeOf() se chain inspect karo — debugging aur understanding ke liye',
+            'hasOwnProperty vs in operator — own vs inherited properties check karna',
             'instanceof se type checking — prototype chain lookup karta hai',
           ]}
-          whyUseIt="Prototype chain memory efficient hai — methods har instance pe copy nahi hote, prototype pe ek hi copy hoti hai. Ye samajhna bugs prevent karta hai — prototype pe add karo toh sab instances pe available. Classes internally yahi karte hain — constructor.prototype pe methods add karte hain."
+          whyUseIt="Prototype chain memory efficient hai — agar 1000 User objects hain, methods har ek mein copy nahi hote, sirf User.prototype pe ek copy. Sab 1000 objects same functions share karte hain! Ye samajhna bugs prevent karta hai — prototype modify karo toh sab existing instances turant affect hote hain. Classes internally yahi karte hain — isliye 'classes exist nahi karti' ka matlab samajh aata hai."
           howToUse={{
             filename: 'prototype-chain.js',
             language: 'javascript',
@@ -145,22 +148,22 @@ while (proto !== null) {
 // Modifying prototype — affects all instances!
 animal.eat = function() { return 'Eating...' }
 dog.eat()  // 'Eating...' — immediately available!`,
-            explanation: 'Prototype chain property lookup: own properties first, phir prototype chain. Object.create(proto) se specify karo prototype. hasOwnProperty/Object.hasOwn sirf own properties check karta hai, in operator chain check karta hai. Prototype modify karo toh sab instances immediately affected hote hain.',
+            explanation: 'Trace karo: dog.breathe() call hota hai → dog mein breathe nahi → animal (dog ka prototype) mein dhundhta hai → milta hai! dog.isAlive → animal mein milta hai. dog.toString() → Object.prototype mein milta hai. Chain: dog → animal → Object.prototype → null. Object.hasOwn(dog, "breathe") false — inherited hai, own nahi. "breathe" in dog true — chain search karta hai. Prototype modify karo (animal.eat add kiya) → dog.eat() turant work karta hai!',
           }}
-          realWorldScenario="Array ke methods (.map, .filter, .reduce) sab Array.prototype pe hain — har array instance unhe inherit karta hai. String methods similarly String.prototype pe hain. Ye memory efficient design hai — millions of strings same String.prototype share karte hain. Prototype mein monkey-patching (built-ins modify karna) production mein kabhi nahi karna chahiye."
+          realWorldScenario="Array ke methods (.map, .filter, .reduce) sab Array.prototype pe hain — har array instance unhe inherit karta hai. String methods String.prototype pe hain. Agar millions of strings create karo, sab same String.prototype share karte hain — ek hi copy memory mein. JavaScript engine ne ye memory optimization prototype chain se achieve kiya. Built-in prototypes monkey-patch karna production mein kabhi mat karo — future conflicts guaranteed."
           commonMistakes={[
             {
-              mistake: 'Built-in prototypes modify karna — Array.prototype.customMethod = ...',
-              why: "Monkey-patching: agar future JS ya koi library same name use kare toh conflict. Production mein strict no!",
-              fix: 'Utility functions alag file mein rakhho, prototype extend mat karo. Subclass banao agar genuinely extend karna hai.',
+              mistake: 'Array.prototype ya Object.prototype mein custom methods add karna',
+              why: "Monkey-patching: agar future JavaScript version ya koi library same naam use kare toh conflict. Native methods override ho sakti hain — silent bugs.",
+              fix: 'Utility functions alag file mein likhho. Genuinely extend karna hai toh subclass banao — class MyArray extends Array {}.',
             },
             {
               mistake: '__proto__ directly use karna',
-              why: '__proto__ deprecated accessor hai — non-standard aur slow in some engines.',
-              fix: 'Object.getPrototypeOf(obj) aur Object.setPrototypeOf(obj, proto) use karo. Ya Object.create() se create karo.',
+              why: '__proto__ deprecated accessor hai — non-standard hai, kuch engines mein slow bhi. Avoid karo.',
+              fix: 'Object.getPrototypeOf(obj) use karo read ke liye. Object.create(proto) use karo creation ke time pe. Object.setPrototypeOf() runtime mein set karna bahut slow hai — avoid karo.',
             },
           ]}
-          proTip="Object.create(null) se pure dictionary banao — koi prototype chain nahi, toString/hasOwnProperty jaise methods interfere nahi karte. Config maps, caches, event maps ke liye perfect."
+          proTip="Sawaal: Object.create(null) kab use karte hain? Jawab: jab pure dictionary chahiye — koi prototype chain nahi, toString/hasOwnProperty jaise inherited methods interfere nahi karte. Key-value stores, caches, event maps ke liye perfect. 'key' in obj bhi safe hai — inherited methods se collision nahi. Ye pattern Node.js internals mein use hota hai."
         />
       </div>
 
@@ -170,14 +173,14 @@ dog.eat()  // 'Eating...' — immediately available!`,
           title="Constructor Functions — new Keyword"
           emoji="🏗️"
           difficulty="intermediate"
-          whatIsIt="ES6 classes se pehle, constructor functions se objects banate the. Naming convention: PascalCase. new keyword se call karo — empty object create hota hai (this), function run hota hai, prototype set hota hai, object return hota hai. Constructor.prototype pe methods add karne se sab instances share karte hain. Ye hi classes internally karte hain."
+          whatIsIt="Classes aane se pehle JavaScript mein objects kaise banate the? Constructor functions se! Naming convention: PascalCase. Ab most important concept: new keyword kya karta hai exactly? 4 steps hain — (1) ek naya empty object create karta hai, (2) us object ka [[Prototype]] constructor.prototype pe set karta hai, (3) constructor function run karta hai with this = naya object, (4) woh naya object return karta hai. Ye 4 steps yaad karo — interview mein 'new keyword kya karta hai?' poocha jaata hai! Constructor function class ka poorvaj hai — class internally yahi karta hai, bas cleaner syntax se."
           whenToUse={[
-            'Legacy code samajhne ke liye — bahut purani codebases constructors use karti hain',
-            'Class ke vs constructor internals samajhne ke liye',
-            'Low-level: kab class zyada appropriate hai samajhna',
-            'Interview: "class internally kaise kaam karta hai" question ke liye',
+            'Legacy code samajhne ke liye — purani Node.js codebases constructors heavily use karti hain',
+            'Classes ke internals samajhne ke liye — class = constructor + prototype, internally yahi hai',
+            'Interview mein: "class internally kaise kaam karta hai?" — ye answer do',
+            'new keyword ka exact behavior samajhna — ye critical knowledge hai',
           ]}
-          whyUseIt="Constructor functions samajhna classes ke internals reveal karta hai. new keyword kya karta hai exactly jaanna prototype chain mastery ke liye critical hai. Legacy Node.js code mein ye pattern bahut milega. Aaj classes prefer karo lekin ye samajhna important hai."
+          whyUseIt="Constructor functions samajhna classes ke dark room ko illuminate karta hai. new keyword ka 4-step process jaanna prototype chain mastery ke liye critical hai. Ye bhi samajh aata hai ki new ke bina constructor call karna kyun dangerous hai — this global object ban jaata hai! Legacy Node.js, Express source code, aur DOM APIs isi pattern pe built hain — ye dekhoge production mein."
           howToUse={{
             filename: 'constructor-functions.js',
             language: 'javascript',
@@ -229,22 +232,22 @@ rahul instanceof Object  // true — Object.prototype in chain
 
 // Constructor function check
 rahul.constructor === Person  // true`,
-            explanation: 'new keyword 4 steps karta hai: empty object create, this bind, constructor run, object return. Methods prototype pe rakhne se memory save hoti hai — sab instances ek hi function reference share karte hain. customNew function internally new ki mechanics demonstrate karta hai.',
+            explanation: 'customNew dekhao — new ki exact mechanics expose karta hai: Object.create(Constructor.prototype) se naya object banata hai aur prototype link set karta hai, phir Constructor.apply(instance, args) se constructor run karta hai. Yahi new karta hai internally! Methods prototype pe hain — rahul.greet === priya.greet true hai — same function reference! Ek hi copy memory mein. constructor mein methods define karo — 1000 instances mein 1000 copies. prototype pe define karo — 1 copy, sab share karte hain.',
           }}
-          realWorldScenario="Node.js EventEmitter class constructor function internally use karta hai. Express request/response objects constructor functions se banate the. DOM APIs (XMLHttpRequest, etc.) constructor functions use karte hain. Legacy jQuery plugins constructors use karte hain. Ye pattern everywhere milega legacy code mein."
+          realWorldScenario="Node.js EventEmitter class constructor function pe based hai. Express ka req, res objects constructor functions se banate the. DOM APIs jaise XMLHttpRequest, WebSocket constructors use karte hain. jQuery internally constructor functions heavily use karta hai. Production Node.js code mein ye pattern milega — ab tum read kar paoge."
           commonMistakes={[
             {
-              mistake: "Constructor ko new ke bina call karna",
-              why: 'Person("Rahul", 25) bina new ke — this global object (window/global) hoga! name, age global ban jaayenge.',
-              fix: "Constructor ke andar check: if (!(this instanceof Person)) return new Person(name, age). Ya classes use karo — strict mode mein this undefined hota hai bina new ke.",
+              mistake: "Constructor ko new keyword ke bina call karna",
+              why: 'Person("Rahul", 25) bina new ke — this global object ban jaata hai (window browser mein, global Node.js mein)! name, age global variables ban jaate hain — pollution!',
+              fix: "Constructor ke andar guard rakhho: if (!(this instanceof Person)) return new Person(name, age). Ya modern classes use karo — strict mode mein this undefined hota hai bina new ke — automatically safe.",
             },
             {
-              mistake: 'Methods constructor ke andar define karna — this.method = function() {}',
-              why: 'Har instance ke saath new function create hoti hai — 1000 instances = 1000 copies of the same function.',
-              fix: 'Methods Constructor.prototype pe define karo. Ya class syntax use karo jo automatically prototype pe dalta hai.',
+              mistake: 'Methods constructor ke andar define karna — this.greet = function() {}',
+              why: 'Har new call pe naya function object create hota hai. 1000 instances = 1000 separate greet functions memory mein — waste!',
+              fix: 'Methods hamesha Constructor.prototype pe define karo. Ya class syntax use karo — methods automatically prototype pe jaate hain.',
             },
           ]}
-          proTip="new.target meta-property se check karo ki function new ke saath call hua ya nahi: function Foo() { if (!new.target) throw new Error('Use new!'); }. Classes automatically ye enforce karti hain."
+          proTip="new.target meta-property se check karo ki function new ke saath call hua ya nahi: function Person() { if (!new.target) throw new Error('Use new keyword!'); }. Classes automatically ye enforce karti hain — bina new ke call karo toh TypeError. Interview mein: 'new.target kya hai?' — ek hi line mein answer: 'constructor ya method reference jo new ya super ke saath call hua ho, warna undefined.'"
         />
       </div>
 
@@ -254,14 +257,14 @@ rahul.constructor === Person  // true`,
           title="ES6 Classes — Modern Syntax"
           emoji="🏛️"
           difficulty="intermediate"
-          whatIsIt="ES6 classes JavaScript mein object-oriented programming ka cleaner syntax provide karte hain — prototype-based system ke upar. class keyword, constructor(), methods, static methods, getters, setters. Classes hoist nahi hote (TDZ mein hote hain let ki tarah). class body automatically strict mode mein hota hai. Methods non-enumerable hote hain."
+          whatIsIt="ES6 classes — yaad rakho ye SYNTAX SUGAR hain, naya mechanism nahi! Lekin bahut useful sugar hai. class keyword se sab kuch ek jagah aa jaata hai — constructor, methods, getters, setters, static members. Classes hoist nahi hote (TDZ mein hote hain let ki tarah). class body automatically strict mode mein hota hai. Methods non-enumerable hote hain — for...in loop mein nahi dikhte. Private fields (#) ES2022 mein aaye — true encapsulation. Sawaal: class ke methods instance ka hissa hain ya prototype ka? Jawab: prototype ka! Instance pe copy nahi hote — memory efficient hai."
           whenToUse={[
-            'Multiple similar objects banana — same structure, shared methods',
-            'Object-oriented patterns: encapsulation, inheritance',
-            'Frameworks: React class components (legacy), Angular, custom Node.js modules',
-            'Clean API: clear constructor, public methods, getters/setters',
+            'Multiple similar objects banana — same structure, shared methods — class perfect blueprint hai',
+            'Object-oriented patterns: encapsulation (private #), inheritance (extends)',
+            'Custom modules aur Node.js services: class UserService, class DatabaseClient',
+            'Clean API design: constructor clearly shows required data, getters/setters validation dete hain',
           ]}
-          whyUseIt="Classes readability dramatically improve karte hain — blueprint clearly defined hai. Methods automatically prototype pe jaate hain. Inheritance extends aur super se clean aur readable. Private fields (#) true encapsulation dete hain. Modern JavaScript mein classes standard pattern hain complex object modeling ke liye."
+          whyUseIt="Classes blueprint jaisi hain — ek jagah sab clearly defined. Methods automatically prototype pe jaate hain — memory efficient. Private fields (#) true encapsulation dete hain — koi bhi class ke bahar se access nahi kar sakta, koi workaround nahi. Method chaining (return this) se fluent API ban sakti hai. Modern JavaScript mein classes standard pattern hain."
           howToUse={{
             filename: 'classes.js',
             language: 'javascript',
@@ -329,22 +332,22 @@ account.balance  // 13000 — via getter
 
 BankAccount.calculateInterest(10000, 5)  // static method
 // account.calculateInterest(...)  // TypeError! Static, not on instance`,
-            explanation: 'Private fields (#) true encapsulation provide karte hain — class ke bahar access impossible hai. Getter/setter property-like access with validation dete hain. Method chaining return this se enable hota hai. Static methods class-level utility functions hain. toString() override karo custom representation ke liye.',
+            explanation: 'Trace karo: #balance private field — class ke bahar account.#balance karo toh SyntaxError compile time pe (not runtime)! Getter balance use karo — property jaisa access, () nahi lagana. Setter mein validation — automatically run hota hai assign karne pe. Method chaining: deposit().withdraw() — ye isliye kaam karta hai kyunki har method return this karta hai. Static calculateInterest — class pe call hota hai, instance pe nahi. #formatCurrency private method — class ke andar hi use ho sakta hai.',
           }}
-          realWorldScenario="Node.js mein: class Database, class ApiClient, class Queue — sab common patterns hain. React (legacy): class components. TypeScript ke saath: interfaces + classes powerful type-safe OOP. Mongoose models internally class-like patterns use karte hain. Express Router bhi internally class hai."
+          realWorldScenario="Node.js production code mein: class DatabaseClient, class QueueService, class CacheManager — sab common patterns hain. TypeScript ke saath: interfaces + classes powerful type-safe OOP milti hai. Mongoose models internally class-like patterns use karte hain. Express Router internally class hai. React class components legacy hain lekin aaj bhi production mein milte hain."
           commonMistakes={[
             {
-              mistake: 'this context class methods mein loose karna',
-              why: 'const { method } = instance; method() — this undefined in strict mode!',
-              fix: 'Ya bind: this.method = this.method.bind(this) constructor mein. Ya arrow function field: method = () => {}.',
+              mistake: 'this context class methods mein loose karna — detached methods',
+              why: 'const { deposit } = account; deposit(100) — this undefined in strict mode! Method class se detach hua toh this lost.',
+              fix: 'Constructor mein bind karo: this.deposit = this.deposit.bind(this). Ya arrow function field: deposit = (amount) => { this.#balance += amount }. Arrow function ka this lexically bound hai.',
             },
             {
-              mistake: 'Class aur instance ki static vs instance confusion',
-              why: 'ClassName.staticMethod() — class pe. instance.staticMethod() — TypeError! Static methods instances pe nahi hote.',
-              fix: 'Static methods hamesha class name se call karo. Instances ke liye instance methods define karo.',
+              mistake: 'Static method instance pe call karna',
+              why: 'account.calculateInterest(10000, 5) — TypeError! Static methods instances pe nahi hote — sirf class pe hote hain.',
+              fix: 'BankAccount.calculateInterest(10000, 5) — class name se call karo. Rule: static = class ka kaam, instance methods = object ka kaam.',
             },
           ]}
-          proTip="Arrow function as class field (stage 3 proposal, widely supported) automatically this bind karta hai: class Counter { count = 0; increment = () => { this.count++ } }. Event listeners aur callbacks ke liye perfect — no bind() needed."
+          proTip="Arrow function as class field JavaScript mein automatic this binding deta hai: class Counter { count = 0; increment = () => { this.count++ } }. Increment ko event listener mein pass karo bina bind ke — this hamesha Counter instance rahega. React class components mein ye pattern bahut common tha. Aaj functional components preferred hain — lekin ye knowledge zaroori hai."
           demo={
             <DiffBlock
               title="Constructor Function vs ES6 Class"
@@ -402,14 +405,14 @@ class Animal {
           title="Inheritance — extends & super"
           emoji="👨‍👦"
           difficulty="intermediate"
-          whatIsIt="ES6 mein inheritance extends keyword se hoti hai. super() parent constructor call karta hai — required before this in derived class. super.method() parent class ka method call karta hai. Child class parent class ke sab methods inherit karta hai aur override kar sakta hai. Prototype chain automatically set hoti hai. Multi-level inheritance bhi possible hai."
+          whatIsIt="extends keyword se ek class doosri class ki functionality inherit karti hai. Lekin ye bhi internally prototype chain hai! Child.prototype ka [[Prototype]] Parent.prototype ko point karta hai — chain extend hoti hai. super() — ye child constructor mein mandatory hai this use karne se PEHLE. Kyunki? Kyunki parent constructor hi this object initialize karta hai derived class ke liye. Bina super() ke this access karo toh ReferenceError. super.method() se parent ka overridden method call kar sakte ho. Most useful inheritance pattern: Custom Error classes! Error extend karo aur statusCode, field jaise properties add karo."
           whenToUse={[
-            'Specialized types banana — Vehicle → Car → ElectricCar',
-            'Shared behavior parent mein, specialized behavior child mein',
-            'Framework base classes extend karna — React.Component, Error subclassing',
-            'Avoid deep inheritance hierarchies — 2-3 levels max, composition prefer karo',
+            'Specialized types banana — Vehicle → Car → ElectricCar — shared base, unique specialization',
+            'Custom Error classes — sabse practical inheritance use case production mein',
+            'Framework base classes extend karna — React.Component extend karna (legacy), EventEmitter extend karna',
+            'Deep hierarchies avoid karo — 2-3 levels max. Composition often better hai',
           ]}
-          whyUseIt="Inheritance code reuse enable karta hai — parent mein common code, child mein specialization. Custom errors subclassing Error se powerful error handling enable karta hai. But: 'Prefer composition over inheritance' — zyada complex hierarchies maintenance nightmare hain. Mixins aur composition often better hain deep inheritance se."
+          whyUseIt="Inheritance se code reuse hota hai — common behavior parent mein, specialization child mein. Custom Error classes production code mein essential hain — instanceof check se specific errors differently handle karo. Lekin warning: 'Prefer composition over inheritance' — deep hierarchies maintenance nightmare hain. Agar-warna relationship hai toh inheritance, agar has-a relationship hai toh composition prefer karo."
           howToUse={{
             filename: 'inheritance.js',
             language: 'javascript',
@@ -516,22 +519,22 @@ try {
     console.log(err.statusCode) // 400
   }
 }`,
-            explanation: 'super() derived class constructor mein this use karne se pehle call karna mandatory hai. Custom Error subclassing most valuable inheritance use case hai — type-safe error handling, specific fields, HTTP status codes. instanceof prototype chain mein check karta hai — isliye tesla instanceof Vehicle true hai.',
+            explanation: 'tesla instanceof ElectricCar true — direct. tesla instanceof Car true — prototype chain mein Car.prototype hai. tesla instanceof Vehicle true — chain mein Vehicle.prototype bhi hai. tesla instanceof Object true — sab objects. Yahi prototype chain ka power hai! Custom Error classes: ValidationError mein super(message) se Error ka message set hua, statusCode extra property hai. Express route mein: if (err instanceof ValidationError) res.status(err.statusCode) — type-safe, clean!',
           }}
-          realWorldScenario="Express.js error handling: class DatabaseError extends AppError, class AuthError extends AppError — Express mein centralized error handler type check karta hai. Node.js EventEmitter extend karna: class MyEmitter extends EventEmitter {}. React class components: class MyComponent extends React.Component — legacy but still seen."
+          realWorldScenario="Express.js production pattern: class DatabaseError extends AppError, class AuthError extends AppError — centralized error handler mein type check karo. Node.js EventEmitter extend: class MyEventBus extends EventEmitter {} — custom events add karo base ke upar. React class components (legacy): class MyComponent extends React.Component — ye aaj bhi existing codebases mein milte hain."
           commonMistakes={[
             {
-              mistake: 'super() call bhool jaana derived constructor mein',
-              why: 'ReferenceError: Must call super constructor before accessing this — this initialized nahi hota.',
-              fix: 'Derived class constructor mein hamesha super(...args) pehle line par call karo.',
+              mistake: 'Derived constructor mein super() call bhoolna',
+              why: "ReferenceError: Must call super constructor before accessing 'this' — this toh parent ne initialize karna tha!",
+              fix: 'Derived class constructor mein pehli meaningful line super(...args) honi chahiye. this access karne se pehle hamesha.',
             },
             {
-              mistake: 'Deep inheritance hierarchy — 5+ levels',
-              why: 'Understanding difficult, debugging nightmare, tightly coupled — change parent = break children.',
-              fix: 'Maximum 2-3 levels. Composition over inheritance prefer karo — mixins ya has-a relationship. "Favor composition over inheritance" — GoF principle.',
+              mistake: '5+ level deep inheritance hierarchy banana',
+              why: 'Ek level change karo — sab neeche break ho jaata hai. Testing nightmare. Debugging impossible. Technical debt ka raja.',
+              fix: '2-3 levels max. Composition prefer karo — class Car { engine = new Engine() } — has-a relationship. Mixins use karo shared behavior ke liye. GoF principle: "Favor composition over inheritance."',
             },
           ]}
-          proTip="Custom Error classes production code mein essential hain. Express mein: err.statusCode se HTTP response code, err.code se machine-readable error, err.message se user message. Type-safe error handling: if (err instanceof ValidationError) — much better than err.type === 'validation'."
+          proTip="Custom Error classes production ka most valuable inheritance pattern hain. Express middleware mein: err.statusCode se HTTP response code, err.code se machine-readable identifier, err.field se validation feedback. if (err instanceof ValidationError) return res.status(400).json(...) — ek line mein type-safe handling. Ye pattern apnao — generic Error.message string matching se bahut better hai!"
         />
       </div>
 
@@ -541,14 +544,14 @@ try {
           title="Static, Getters/Setters & Private Fields"
           emoji="🔐"
           difficulty="intermediate"
-          whatIsIt="Static members class pe hote hain, instances pe nahi — utility functions, factory methods, constants. Getters computed properties provide karte hain — obj.fullName property jaisa access. Setters controlled assignment — validation. Private fields (#) ES2022 — true encapsulation, class ke bahar syntactically impossible to access. Private methods bhi # se."
+          whatIsIt="Static, getters/setters, aur private fields (#) — teen powerful class features jo professional code mein daily use hote hain. Static: class pe hote hain, instances pe nahi. Factory methods: User.fromJSON(data) — new User(...) se descriptive. Getters: computed property jaisa access — obj.fullName bina () ke. Setters: validation before assignment. Private fields (#): ES2022 feature — true encapsulation — syntactically impossible to access outside class. Ye underscore convention (_private) nahi hai — ye LANGUAGE LEVEL enforcement hai. Koi bhi workaround nahi!"
           whenToUse={[
-            'static: factory methods (Animal.create()), utility functions, singleton pattern, class-level constants',
-            'Getter: computed property — firstName + lastName = fullName, price calculation',
-            'Setter: validation before assignment — type check, range check',
-            'Private (#): internal state, helper methods, implementation details chhupana',
+            'static: factory methods (User.fromJSON()), utility functions, singleton pattern, class-level constants',
+            'Getter: computed property — firstName + lastName = fullName, balance calculation',
+            'Setter: validation before assignment — type check, range check, format check',
+            'Private (#): internal state chhupana, helper methods, implementation details — true encapsulation',
           ]}
-          whyUseIt="Static factory methods constructors se more descriptive hote hain — User.fromJSON(data) vs new User(data.id, data.name, ...). Getters property-like API dete hain function call ke bina — this.balance instead of this.getBalance(). Private fields encapsulation enforce karte hain — koi bhi bypass nahi kar sakta unlike underscore convention."
+          whyUseIt="Static factory methods named constructors hain — User.fromJSON(data) vs new User(data.id, data.name, ...) — zyada readable, descriptive. Getters property-like API dete hain bina function call ke — this.balance pehle this.getBalance() tha. Private fields guarantee karte hain implementation detail leak nahi hogi — underscore convention sirf polite tha, # actual enforcement hai. Ye professional JavaScript hai."
           howToUse={{
             filename: 'static-getters-private.js',
             language: 'javascript',
@@ -628,22 +631,22 @@ user1.password = 'SecurePass123'  // setter with validation
 // user1.#password  // SyntaxError — private!
 
 User.count()  // 2 — static method`,
-            explanation: 'Static factory methods ("named constructors") User.fromJSON() cleaner API dete hain. Private fields (#) compile-time enforcement karte hain — underscore convention sirf polite request tha. Getters computed values ke liye cleaner hain — property access, function call nahi. Static private field (#instances) class-level private state hai.',
+            explanation: 'User.fromJSON() — named constructor hai, new User(data.id, data.name, data.email) se cleaner. User.fromFormData() — dono factory methods, alag sources se create karte hain. user1.displayName — getter hai, () nahi lagana! user1.isLocked — getter hai, computed value. user1.password = "abc" — setter run hoga, 8 char check. user1.#password — SyntaxError — private field outside class! User.#instances — private static, class ka secret counter. User.count() — static method, class pe call.',
           }}
-          realWorldScenario="Database model: User.findById(id) static method, User.create(data) factory. Config: Config.getInstance() singleton pattern. React store: Store.getState() static. Mongoose model methods: User.find() static method hai internally. Payment SDK: Payment.fromWebhook(payload) named constructor."
+          realWorldScenario="Database ORM: User.findById(id) static method, User.create(data) factory method. Config singleton: Config.getInstance() — poori app mein ek hi instance. Mongoose models: User.find() internally static method hai. Payment SDK: Payment.fromWebhook(payload) named constructor — webhook data se payment object banana. Node.js Logger: Logger.getInstance() singleton — poori app ek hi logger use kare."
           commonMistakes={[
             {
               mistake: 'Static method instance pe call karna',
-              why: 'user.fromJSON(data) — TypeError: user.fromJSON is not a function. Static instance pe nahi hota.',
-              fix: 'User.fromJSON(data) — class name se call karo static methods.',
+              why: 'user.fromJSON(data) — TypeError: user.fromJSON is not a function. Static methods instances pe exist nahi karte.',
+              fix: 'User.fromJSON(data) — class name se call karo. Mental model: static = class ka kaam, instance methods = object ka kaam.',
             },
             {
-              mistake: 'Getter ke liye () lagana',
+              mistake: 'Getter ke baad () lagana — method samajh lena',
               why: 'user.displayName() — TypeError: user.displayName is not a function. Getter property jaisa access hota hai.',
-              fix: 'user.displayName — bina parentheses ke. Getter automatically execute hota hai.',
+              fix: 'user.displayName — bina parentheses. Getter access karo toh automatically execute hota hai. TypeScript mein type checking ye galti pakadti hai.',
             },
           ]}
-          proTip="Singleton pattern with static: class Config { static #instance; static getInstance() { if (!Config.#instance) Config.#instance = new Config(); return Config.#instance; } }. Private static field ensures ek hi instance. Database connections, configuration, loggers ke liye common pattern."
+          proTip="Singleton pattern with private static: class Config { static #instance; static getInstance() { if (!Config.#instance) Config.#instance = new Config(); return Config.#instance; } }. Private static field ensures sirf ek hi instance banta hai — agar dobara getInstance() karo toh same instance milta hai. Database connections, configuration objects, loggers — ye sab singleton pattern use karte hain production mein."
         />
       </div>
 

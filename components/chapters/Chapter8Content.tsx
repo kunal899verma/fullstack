@@ -217,17 +217,17 @@ export default function Chapter8Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Promises ki duniya, synchronous ka andaz.
+          Shocking baat — async/await koi naya feature nahi hai. Ye toh Promises ka makeup hai.
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          async/await ne JavaScript async code ko synchronous-looking bana diya. .then() chains theek thi, lekin deeply nested async logic complex ho jaati thi. async/await ne ye solve kiya.
+          Har developer sochta hai — async/await ne Promises replace kar diya. Bilkul galat! async/await Promises ke upar ek sundar layer hai. Under the hood wahi same Promise machinery chal rahi hai. Babel jab async/await transpile karta hai toh woh .then()/.catch() chains mein convert karta hai — exactly wahi jo tumne chapter 7 mein seekha.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Aur sach mein — ye Promises hi hain under the hood.{' '}
+          Toh phir kyun seekhein? Kyunki ye asynchronous code ko synchronous-looking banata hai.{' '}
           <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">async</code>{' '}
           function hamesha Promise return karta hai.{' '}
           <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">await</code>{' '}
-          ek Promise ke resolve hone ka wait karta hai — event loop block kiye bina. Sikhte hain sab detail mein.
+          ek Promise ke resolve hone ka wait karta hai — event loop block kiye bina. Aur try/catch wapas aa jaata hai jaise purane dost.
         </p>
       </div>
 
@@ -242,7 +242,7 @@ export default function Chapter8Content() {
           title="async/await — Promises Ka Sugar Syntax"
           emoji="🍬"
           difficulty="intermediate"
-          whatIsIt="async function hamesha Promise return karta hai — chahe tum explicitly Promise return karo ya nahi. await operator ek Promise ke resolve hone ka wait karta hai — lekin event loop block nahi hota, doosre code chalte rehte hain. Ye Promises ka syntactic sugar hai — under the hood same thing hai, syntax sirf cleaner hai."
+          whatIsIt="Ye dekho — console.log(fetchUser(42)) run karo bina await ke. Kya milega? Promise { pending } — user data nahi! Ye hi async/await ka pehla lesson hai. async function hamesha Promise return karta hai — chahe tum explicitly Promise return karo ya nahi. await operator ek Promise ke resolve hone ka wait karta hai — lekin event loop block nahi hota. Ye Promises ka syntactic sugar hai — under the hood same thing hai, syntax sirf cleaner hai. JavaScript engine await dekhte hi function ko pause karta hai, event loop ko free karta hai doosra kaam karne ke liye, aur jab Promise resolve ho — function wapas resume hoti hai."
           whenToUse={[
             'Almost hamesha prefer karo raw .then() chains ke upar — readability better hai',
             'Sequential async operations jahan output depend kare',
@@ -250,7 +250,7 @@ export default function Chapter8Content() {
             'Complex async logic — multiple operations, conditional flows',
             'Express route handlers, middleware functions',
           ]}
-          whyUseIt=".then() chains mein deeply nested async logic complex ho jaati thi. async/await se code linear aur readable dikhta hai — jaise synchronous code. Error handling try/catch se familiar hai. Debugging mein stack traces bhi better milte hain."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki .then() chains mein deeply nested async logic complex ho jaati thi — variables scope se bahar hote the. async/await se code linear aur readable dikhta hai — jaise synchronous code. Error handling try/catch se familiar hai. Aur stack traces bhi better milte hain debugging mein."
           howToUse={{
             filename: 'async-await-basics.js',
             language: 'javascript',
@@ -285,9 +285,9 @@ const processOrder = async (orderId) => {
 const result = fetchUserData(42) // ek Promise return karta hai
 console.log(result) // Promise { <pending> } — resolved value nahi!
 const value = await fetchUserData(42) // ab resolved value milegi`,
-            explanation: 'async keyword function ko Promise-returning bana deta hai. await sirf async function ke andar hi use hota hai. Return value automatically Promise.resolve() mein wrap hoti hai. Bina await ke Promise object milega, resolved value nahi.',
+            explanation: 'Step-by-step trace: Step 1 — async keyword lagane se function automatically Promise-returning ban jaata hai. Step 2 — jab await milta hai, JavaScript engine function execution pause karta hai, Promise microtask queue mein jaata hai. Step 3 — event loop doosra kaam karta rehta hai. Step 4 — Promise resolve hone par function resume hoti hai exactly wahan se jahan ruki thi. Step 5 — return value automatically Promise.resolve() mein wrap hoti hai.',
           }}
-          realWorldScenario="Express route handler mein: async (req, res) => { const user = await User.findById(req.params.id); const orders = await Order.find({userId: user.id}); res.json({user, orders}); }. Sequential operations, clean code, familiar try/catch error handling."
+          realWorldScenario="Express route handler mein ye pattern dekho — async (req, res) => { const user = await User.findById(req.params.id); const orders = await Order.find({userId: user.id}); res.json({user, orders}); }. Sequential operations, clean code, familiar try/catch error handling. Production mein har jagah yahi pattern use hota hai."
           commonMistakes={[
             {
               mistake: 'await keyword miss kar dena — const user = getUser(id) bina await ke',
@@ -300,7 +300,7 @@ const value = await fetchUserData(42) // ab resolved value milegi`,
               fix: 'Hamesha async function ke andar await use karo. Ya IIFE: (async () => { const data = await fetch(url); })();',
             },
           ]}
-          proTip="async function ke return value ko automatically Promise.resolve() mein wrap kiya jaata hai. Agar throw karo — Promise.reject() mein. Iska matlab: async function ka caller hamesha .then()/.catch() use kar sakta hai ya await kar sakta hai."
+          proTip="Ye ekdum yaad rakho — async function ke return value ko automatically Promise.resolve() mein wrap kiya jaata hai. Agar throw karo — Promise.reject() mein. Matlab caller hamesha .then()/.catch() use kar sakta hai ya await kar sakta hai. Ye interoperability ki guarantee hai."
           demo={
             <DiffBlock
               title="Promise .then() Chain vs async/await"
@@ -344,20 +344,25 @@ async function getUserData(id) {
         />
       </div>
 
+      <div className="rounded-xl p-4 my-4" style={{background:'rgba(124,58,237,0.06)', border:'1px solid rgba(124,58,237,0.2)'}}>
+        <p className="text-sm font-bold text-[#7C3AED] mb-2">🤔 Sawaal: async/await aur Promises dono ka use kab karna chahiye?</p>
+        <p className="text-sm text-[#A1A1AA]">Achha sawaal! async/await almost hamesha prefer karo — readability aur debuggability ke liye. Lekin kabhi kabhi raw Promises zyada elegant hote hain — jaise Promise.all(), Promise.race() use karte waqt, ya event-driven code mein. Aur dhyan rakho — async function ke bahar agar Promise handle karna ho, toh .then()/.catch() hi use karna padega.</p>
+      </div>
+
       {/* ConceptCard 2: Error Handling */}
       <div id="async-error-handling">
         <ConceptCard
           title="Error Handling in async/await"
           emoji="🛡️"
           difficulty="intermediate"
-          whatIsIt="async/await ke saath error handling try/catch se hoti hai — exactly jaise synchronous code mein. await ek rejected Promise ko throw mein convert karta hai, jo try/catch pakad leta hai. Ye Promises ke .catch() se zyada readable hai aur stack traces bhi better hote hain."
+          whatIsIt="Ye dikhaata hai async/await ka asli power. Ek rejected Promise await karo bina try/catch ke — uncaught error. App crash. Lekin try/catch ke andar await karo — magic hota hai. await ek rejected Promise ko throw mein convert karta hai, jo try/catch pakad leta hai — exactly jaise synchronous code mein hota hai. Ab sawaal ye aata hai — Express mein har route mein try/catch likhna bore karta hai. Solution? asyncHandler wrapper — ek baar banao, har jagah use karo."
           whenToUse={[
             'Har async function mein — unhandled rejections se bachne ke liye',
             'Express routes mein — errors next() tak pahunchane ke liye',
             'Specific errors differently handle karna ho — multiple catch blocks ya instanceof check',
             'Cleanup code finalize karna ho chahe success ho ya failure',
           ]}
-          whyUseIt="Bina error handling ke async function crashes silently ya unhandled rejection throw karta hai. try/catch se errors control mein rehte hain. Express ke liye asyncHandler wrapper use karo — route handler mein try/catch har baar likhne ki zarurat nahi."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki bina error handling ke async function crashes silently ya unhandled rejection throw karta hai. try/catch se errors control mein rehte hain. Express ke liye asyncHandler wrapper use karo — route handler mein try/catch har baar likhne ki zarurat nahi — DRY principle follow karo."
           howToUse={{
             filename: 'async-error-handling.js',
             language: 'javascript',
@@ -395,9 +400,9 @@ app.use((err, req, res, next) => {
     error: err.message || 'Internal server error'
   })
 })`,
-            explanation: 'asyncHandler wrapper Express mein har route ke liye try/catch likhne se bachata hai. Errors automatically next() tak pahunchte hain jahan global error handler handle karta hai. Production-ready pattern hai ye.',
+            explanation: 'asyncHandler wrapper ka under the hood trace: fn(req, res, next) call hota hai — ye async function hai. .catch(next) lagaya hai — agar koi bhi await reject kare, next(err) automatically call hoga. Express mein next(err) call hone par Express ka error middleware activate hota hai. Ye ek closure hai jo error propagation automatic karta hai.',
           }}
-          realWorldScenario="ResumeATS jaise app mein har route handler mein asyncHandler wrap karo. DB timeout, validation error, external API failure — sab errors automatically global error handler tak pahunch jaate hain. Clean, DRY code."
+          realWorldScenario="Production app mein har route handler mein asyncHandler wrap karo. DB timeout, validation error, external API failure — sab errors automatically global error handler tak pahunch jaate hain bina extra code likhe. Clean, DRY code. Ek jagah log karo, ek jagah format karo — consistent error responses milti hain."
           commonMistakes={[
             {
               mistake: 'try/catch mein error pakadna aur re-throw na karna jab handle nahi kiya',
@@ -410,7 +415,7 @@ app.use((err, req, res, next) => {
               fix: 'asyncHandler wrapper use karo ya har async route mein try/catch lagao. express-async-errors package bhi option hai.',
             },
           ]}
-          proTip="Express ke liye asyncHandler wrapper: const wrap = fn => (req, res, next) => fn(req, res, next).catch(next). Ek baar define karo, har async route mein use karo. Ya npm install express-async-errors — ek line se poori Express mein async error handling fix ho jaati hai."
+          proTip="Ye one-liner yaad rakho — Express ke liye asyncHandler wrapper: const wrap = fn => (req, res, next) => fn(req, res, next).catch(next). Ek baar define karo, har async route mein use karo. Ya npm install express-async-errors — ek import se poori Express mein async error handling fix ho jaati hai. Ye production ka gatekeeper hai."
           demo={
             <DiffBlock
               title="Nested try/catch vs Centralized Error Handling"
@@ -469,14 +474,14 @@ app.use((err, req, res, next) => {
           title="await Trap — Sequential vs Parallel"
           emoji="⚡"
           difficulty="intermediate"
-          whatIsIt="Sabse common aur expensive mistake async/await ke saath — sequential awaits use karna jab operations independent hain. Agar do operations ek doosre par depend nahi karti, unhe parallel mein chalao. Promise.all se dono ek saath start hote hain — total time sirf slowest ki time hoti hai."
+          whatIsIt="Ye sabse expensive mistake hai jo developers karte hain — aur kisi ko pata nahi chalta! Sequential awaits likhte hain independent operations ke liye. Dashboard page ka request 650ms leta hai jab 200ms mein ho sakta tha. Ye 'await trap' hai. Rule yaad rakho — agar operation B ko operation A ka result nahi chahiye, toh dono ko Promise.all mein daalo. Ye ek line ka change hai lekin performance impact massive hota hai."
           whenToUse={[
             'Promise.all: jab operations independent hain — ek ka output doosre ka input nahi',
             'Sequential await: jab operation B ko operation A ka result chahiye',
             'Mixed: kuch operations parallel, kuch sequential — ye bhi possible hai',
             'Dashboard pages — multiple data fetch parallel mein',
           ]}
-          whyUseIt="Production apps mein ye ek huge performance win hai. Agar tumhara dashboard 3 API calls karta hai sequentially jo independent hain — 3x slow hai! Promise.all se total time sirf slowest call ka time hoga. Users ko fark pata chalta hai."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki production apps mein ye ek huge performance win hai. Agar tumhara dashboard 3 API calls karta hai sequentially jo independent hain — 3x slow hai! Promise.all se total time sirf slowest call ka time hoga. Users ko fark pata chalta hai — especially mobile pe slow network par."
           howToUse={{
             filename: 'parallel-vs-sequential.js',
             language: 'javascript',
@@ -514,9 +519,9 @@ async function getCompleteProfile(userId) {
   // Total: 200ms + 300ms = 500ms
   // vs sequential: 200 + 300 + 250 + 180 = 930ms!
 }`,
-            explanation: 'Rule of thumb: agar operation B ko operation A ka result nahi chahiye, dono Promise.all mein dalo. Mixed approach: pehle dependent operations, phir baaki sab Promise.all mein.',
+            explanation: 'Trace karo step by step: Sequential await — user fetch start, 200ms wait, complete. Phir orders fetch start, 400ms wait, complete. Total: 600ms. Promise.all — user aur orders dono simultaneously start, event loop dono promises track karta hai, jab bhi koi complete ho woh resolve hota hai, dono complete hone par result milta hai. Total: 400ms (slowest).',
           }}
-          realWorldScenario="ResumeATS mein agar tumhe user + resume + job data chahiye, teen sequential awaits = 650ms. Promise.all = 300ms (slowest ki time). Dashboard loading speed pe seedha impact. Users notice karte hain 350ms difference — especially mobile pe."
+          realWorldScenario="Dashboard page imagine karo — user + resume + job data chahiye. Teen sequential awaits = 650ms, users notice karte hain. Promise.all = 300ms. Ye 350ms difference mobile pe slow network par bahut bada hota hai — bounce rate directly impact hota hai. Code review mein ye pehla cheez dhundo."
           commonMistakes={[
             {
               mistake: 'Hamesha sequential await use karna bina sochhe',
@@ -529,7 +534,7 @@ async function getCompleteProfile(userId) {
               fix: 'Partial failures acceptable hain? Promise.allSettled use karo. Critical operations ke liye Promise.all hi theek hai — ek failure means data incomplete.',
             },
           ]}
-          proTip="Simple rule: agar doosri await pehli await ke result par depend nahi karta — use Promise.all. Ye ek line ka change hai aur performance kaafi improve ho sakti hai. Code review mein ye pattern dhundho — common optimization opportunity hai."
+          proTip="Simple rule yaad rakho — agar doosri await pehli await ke result par depend nahi karta, use Promise.all. Ye ek line ka change hai aur performance kaafi improve ho sakti hai. Code review mein ye pattern dhundho — har jagah optimization opportunity milegi."
           demo={
             <DiffBlock
               title="Sequential await (Slow) vs Promise.all (Fast)"
@@ -563,20 +568,25 @@ async function getCompleteProfile(userId) {
         />
       </div>
 
+      <div className="rounded-xl p-4 my-4" style={{background:'rgba(124,58,237,0.06)', border:'1px solid rgba(124,58,237,0.2)'}}>
+        <p className="text-sm font-bold text-[#7C3AED] mb-2">🤔 Sawaal: Agar main for loop mein await use karun toh kya problem hai?</p>
+        <p className="text-sm text-[#A1A1AA]">Bahut common aur expensive mistake! for loop mein await sequential hoti hai — har item ke liye wait karo, phir next item. 100 items hain toh 100 sequential awaits. Isko fix karo: const results = await Promise.all(items.map(item =&gt; processItem(item))). Ab sab parallel chalenge. Ye N times speedup de sakta hai!</p>
+      </div>
+
       {/* ConceptCard 4: Top-Level await */}
       <div id="top-level-await">
         <ConceptCard
           title="Top-Level await"
           emoji="🆕"
           difficulty="intermediate"
-          whatIsIt="Top-level await ES2022 mein aaya — ES Modules (ESM) mein ab tum async function ke bahar bhi await use kar sakte ho. Module-level await directly likh sakte ho. Ye startup sequences ke liye perfect hai — DB connect karo, config load karo, phir rest of app."
+          whatIsIt="Pehle ek baat shocking hai — top-level await sirf ES Modules mein kaam karta hai. CommonJS (.js files without 'type: module') mein SyntaxError aayega. Ab sawaal ye aata hai — pehle hum kya karte the? IIFE mein wrap karte the: (async () => { await connect(); startApp(); })(). Ab ES2022 se seedha module level par await likh sakte ho. Ye startup sequences ke liye perfect hai — DB connect karo, config load karo, phir rest of app."
           whenToUse={[
             'Module startup mein DB connection — await mongoose.connect()',
             'Config file load karna app start hone se pehle',
             'Feature flags fetch karna remote service se',
             'ES Modules (.mjs files ya type: "module" package.json) mein',
           ]}
-          whyUseIt="Pehle sab kuch IIFE mein wrap karna padta tha: (async () => { await connect(); startApp(); })(). Ab seedha likh sakte ho. Cleaner module initialization code. Dependencies ka wait karna natural ho gaya."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki pehle sab kuch IIFE mein wrap karna padta tha — boilerplate code. Ab seedha likh sakte ho. Lekin dhyan rakho — ye module ke importers ko bhi block karta hai. App startup critical path mein sirf zaruri awaits rakho."
           howToUse={{
             filename: 'top-level-await.mjs',
             language: 'javascript',
@@ -609,9 +619,9 @@ export const db = mongoose.connection
   const data = await fetch(url)
   // ...
 })()`,
-            explanation: 'Top-level await sirf ES Modules mein kaam karta hai. Agar .js file hai aur package.json mein "type": "module" nahi hai — SyntaxError aayega. CommonJS mein IIFE workaround use karo.',
+            explanation: 'Under the hood kya hota hai — jab koi module top-level await wala module import karta hai, JavaScript engine us module ko asynchronously evaluate karta hai. Importing module wait karta hai jab tak awaited operations complete na ho jaayein. Ye module graph evaluation lazy hoti hai — modules ek sequence mein resolve hote hain.',
           }}
-          realWorldScenario="Database initialization script: await mongoose.connect(MONGO_URI); — seedha top level par. Ya config-dependent startup: await loadConfig(); await initRedis(config.redis); await startServer(config.port); — clean linear startup sequence."
+          realWorldScenario="Database initialization script: await mongoose.connect(MONGO_URI); — seedha top level par. Ya config-dependent startup: await loadConfig(); await initRedis(config.redis); await startServer(config.port); — clean linear startup sequence. Production mein ye app startup ko readable aur predictable banata hai."
           commonMistakes={[
             {
               mistake: 'CommonJS files mein top-level await use karna',
@@ -624,7 +634,7 @@ export const db = mongoose.connection
               fix: 'Top-level await mein sirf truly necessary initialization karo. Optional operations async mein baad mein karo.',
             },
           ]}
-          proTip="Top-level await use karte waqt dhyaan rakho — ye module ke importers ko bhi block karta hai. App startup critical path mein sirf zaruri awaits rakho. Non-critical initialization lazy load karo — app fast start ho aur baad mein features ready hon."
+          proTip="Ye yaad rakho — top-level await use karte waqt dhyaan rakho ki ye module ke importers ko bhi block karta hai. App startup critical path mein sirf zaruri awaits rakho. Non-critical initialization lazy load karo — app fast start ho aur baad mein features ready hon. Performance ka gatekeeper tum ho."
         />
       </div>
 
@@ -634,7 +644,7 @@ export const db = mongoose.connection
           title="for await...of — Async Iterables"
           emoji="🔁"
           difficulty="advanced"
-          whatIsIt="for await...of loop async iterables ke saath kaam karta hai — jaise Streams, paginated APIs, database cursors. Har iteration ek Promise ke resolve hone ka wait karta hai. Async generators ke saath ye powerful streaming data patterns enable karta hai."
+          whatIsIt="Ek reporting system mein 500K records process karne the. Developer ne Promise.all se sab load kiya — 2GB memory, server crash. Tab for await...of ka kaam aaya. Ye loop async iterables ke saath kaam karta hai — jaise Streams, paginated APIs, database cursors. Har iteration ek Promise ke resolve hone ka wait karta hai. Ab sawaal ye aata hai — ye regular for...of se kaise alag hai? Regular for...of synchronous iterables ke liye hai. for await...of promises yield karne wale sources ke liye — ek chunk at a time process karo, memory control mein rehti hai."
           whenToUse={[
             'Paginated API results process karna — ek page ek time',
             'Database cursors — large result sets ko memory-efficient process karna',
@@ -642,7 +652,7 @@ export const db = mongoose.connection
             'Async generators se data consume karna',
             'Real-time events consume karna — Server-Sent Events, WebSocket messages',
           ]}
-          whyUseIt="Agar 10,000 records database se laane ho aur process karne ho — sab ek saath memory mein load karna risky hai. Async iteration se ek chunk at a time process karo — memory usage control mein rehta hai, processing streaming hoti hai."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki 10,000 records database se laane ho aur process karne ho — sab ek saath memory mein load karna risky hai. Async iteration se ek chunk at a time process karo — memory usage control mein rehta hai, processing streaming hoti hai. Production servers par yahi approach scalable hai."
           howToUse={{
             filename: 'async-iteration.js',
             language: 'javascript',
@@ -692,9 +702,9 @@ async function readLargeFileLine() {
   }
   console.log(\`Total lines: \${lineCount}\`)
 }`,
-            explanation: 'Async generators yield karte hain — consumer jab ready ho tab next value milti hai. for await...of har yield ke liye wait karta hai. Node.js streams async iterable hain Node 10+ se — seedha iterate kar sakte ho.',
+            explanation: 'Under the hood trace: async generator function yield karta hai — consumer jab ready ho tab next value milti hai (back-pressure natural). for await...of internally .next() call karta hai generator par — ye Promise return karta hai. await wo Promise resolve karne ka wait karta hai. Ye pull-based model hai — consumer pace control karta hai.',
           }}
-          realWorldScenario="Ek reporting system mein 500K records process karne the. Promise.all se sab load karo — 2GB memory crash. for await...of se paginated cursor — 100 records at a time process karo, total memory 50MB. Same result, stable aur scalable."
+          realWorldScenario="Reporting system mein 500K records process karne the. Promise.all se sab load karo — 2GB memory crash. for await...of se paginated cursor — 100 records at a time process karo, total memory 50MB. Same result, stable aur scalable. Production mein ye pattern streaming data ke liye gold standard hai."
           commonMistakes={[
             {
               mistake: 'for await...of regular arrays ke saath use karna unnecessarily',
@@ -707,7 +717,7 @@ async function readLargeFileLine() {
               fix: 'Generator ke andar try/catch use karo. Caller mein bhi try/catch lagao for await...of ke around.',
             },
           ]}
-          proTip="Node.js Readable Streams Node.js 10+ mein async iterable hain — seedha for await...of se iterate karo. readline.createInterface() bhi async iterable return karta hai — large files line by line process karne ke liye perfect."
+          proTip="Node.js Readable Streams Node.js 10+ mein async iterable hain — seedha for await...of se iterate karo. readline.createInterface() bhi async iterable return karta hai — large files line by line process karne ke liye perfect. Ye built-in gatekeeper hai Node.js mein streaming data ke liye."
         />
       </div>
 

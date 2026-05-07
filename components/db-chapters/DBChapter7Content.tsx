@@ -64,10 +64,10 @@ export default function DBChapter7Content() {
           Query Optimization & Indexes — Database Ko Rocket Banao
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Slow database queries production mein sabse zyada user frustration ka cause hain. 10ms query aur 3000ms query ka difference mostly indexes aur query patterns mein hai — hardware mein nahi. EXPLAIN ANALYZE aapka best friend hai — ye exactly batata hai database kya kar raha hai.
+          Slow query hai production mein. Pehle kya karte ho? 90% developers GUESS karte hain — "index add karte hain". GALAT approach! Pehle EXPLAIN ANALYZE chalao — phir dekho problem kahan hai. Measure first, optimize second — ye Akshay Saini style hai!
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein seekhenge kaise queries analyze karein, indexes kab aur kaise lagaein, N+1 problem detect aur fix karein, aur covering indexes se maximum performance nikaalein. Ye skills production databases ke liye essential hain.
+          Sawaal: 10ms query aur 3000ms query mein kya fark hai? Hardware nahi — indexes aur query patterns. Is chapter mein seekhenge kaise queries X-ray karein, indexes kab aur kaise lagaein, N+1 problem ka silent killer detect karein, aur covering indexes se table ko bilkul touch kiye bina maximum performance nikaalein. Ye sab skills production databases ke liye life-and-death hain.
         </p>
       </div>
 
@@ -76,14 +76,14 @@ export default function DBChapter7Content() {
           title="Query Execution Plan — EXPLAIN ANALYZE"
           emoji="🔬"
           difficulty="intermediate"
-          whatIsIt="EXPLAIN ANALYZE SQL command hai jo query execution plan dikhata hai — database kaise query execute karega, kaunse indexes use karega, estimated vs actual rows, aur har operation ka time cost. Seq Scan = full table scan (slow for large tables). Index Scan = index use kar raha hai. Index Only Scan = table bhi nahi chhua (fastest). Ye tool bina guess kiye queries optimize karne deta hai."
+          whatIsIt="EXPLAIN ANALYZE ek X-ray machine hai aapki query ke liye — database ke andar exactly kya ho raha hai woh dikhata hai. Seq Scan matlab poori table row-by-row padh li jaati hai — jaise library mein book dhundne ke liye har shelf check karo. Index Scan matlab seedha sahi row tak pahuncho — jaise index page se page number nikaalo. Index Only Scan = table ko chhua hi nahi — sirf index pages se kaam ho gaya, fastest possible path. Under the hood: query planner statistics dekh ke decide karta hai kaunsa path sabse sasta hai — cost units mein. Aur EXPLAIN ke bina optimize karna? Andheron mein teer chalana hai."
           whenToUse={[
             'Query slow lag rahi ho — pehle EXPLAIN ANALYZE chalaao',
             'Index add karne se pehle — confirm karo ki needed hai',
             'Index add karne ke baad — verify karo ki use ho raha hai',
             'ORM-generated queries debug karne ke liye — actual SQL dekho',
           ]}
-          whyUseIt="Without EXPLAIN ANALYZE, index optimization guesswork hai. Database query planner smart hai — sirf index banana kaafi nahi, planner ko use karna padega. Statistics stale hone par planner wrong decisions karta hai — ANALYZE tablename se stats update karo. Actual vs estimated rows mein bada gap = statistics problem."
+          whyUseIt="Query optimize karna guess work nahi — EXPLAIN karo pehle! Bina EXPLAIN ke agar index lagao aur planner us index ko use hi na kare — toh woh index bakwaas hai. Planner ke paas statistics hain — table mein kitne rows, distribution kya hai, disk I/O cost kya hai. Agar statistics stale hain (ANALYZE nahi kiya kaafi time se) toh planner galat path choose karta hai. Actual rows vs estimated rows mein bada gap dikhna matlab: bhai, statistics update karo. EXPLAIN ANALYZE woh mirror hai jo jhooth nahi bolta."
           howToUse={{
             filename: 'explain-analyze.sql',
             language: 'sql',
@@ -135,9 +135,9 @@ LIMIT 10;
 -- BUFFERS option: cache hit/miss dikhata hai
 -- Hit Blocks: N → data already in memory (fast)
 -- Read Blocks: N → disk se read hua (slow)`,
-            explanation: "cost=0.00..2840.00 matlab estimated cost (relative unit). actual time=14.532..28.941 = first row..last row in ms. rows=1 estimated, actual rows check karo — bada gap = stale statistics. ANALYZE users; command se statistics update karo. EXPLAIN ANALYZE query actually run karta hai — DELETE/UPDATE ke saath BEGIN + ROLLBACK use karo.",
+            explanation: "cost=0.00..2840.00 — ye relative unit hai, actual milliseconds nahi. actual time=14.532..28.941 matlab first row ka time..last row ka time milliseconds mein. Estimated rows vs actual rows compare karo — agar 1 estimate tha aur 50,000 actual — bhai ANALYZE karo! EXPLAIN ANALYZE query actually execute karta hai andar se — DELETE/UPDATE pe BEGIN + ROLLBACK wrap karo, warna production data delete ho jaayega. Aur haan: explain.depesz.com pe paste karo output — visual tree milegi jo seedha bottleneck highlight karegi.",
           }}
-          realWorldScenario="E-commerce app mein orders table pe slow query: SELECT * FROM orders WHERE user_id = $1 AND status = 'pending'. EXPLAIN dikhata hai Seq Scan 500K rows pe — 800ms. Composite index (user_id, status) add karne se Index Scan — 0.5ms. 1600x improvement. EXPLAIN ne exact bottleneck bataya."
+          realWorldScenario="Sochiye: production mein ek angry Slack message — 'checkout page 3 second le raha hai!' Team PANIC. Sabne socha 'server upgrade karo'. Ek developer ne EXPLAIN ANALYZE chalaya — orders table pe Seq Scan, 500K rows, 800ms. Composite index (user_id, status) banaya — ek migration, 0.5ms. 1600x improvement. Server upgrade cancel. EXPLAIN ne exact bottleneck bataya — bina guess work ke."
           commonMistakes={[
             {
               mistake: 'Index banana aur assume karna ki use ho raha hai',
@@ -150,7 +150,7 @@ LIMIT 10;
               fix: 'Development DB ya replica pe chalaao. Production mein pg_stat_statements extension se slow queries track karo automatically.',
             },
           ]}
-          proTip="explain.depesz.com ya explain.dalibo.com pe EXPLAIN output paste karo — visual tree view milti hai color-coded nodes ke saath. Slowest nodes red highlight hote hain. Complex multi-table JOIN queries debug karna bahut easier ho jaata hai visually."
+          proTip="Pro tip jo bahut log miss karte hain: explain.depesz.com ya explain.dalibo.com pe apna EXPLAIN output paste karo — visual flamegraph jaisi tree milti hai, slowest nodes red mein highlight hoti hain. Multi-table JOIN queries ka analysis jo terminal mein 30 minute lagta woh visually 2 minute mein ho jaata hai. Bookmark karo — ye free tool hai jo senior engineers daily use karte hain."
         />
       </div>
 
@@ -159,14 +159,14 @@ LIMIT 10;
           title="Composite Index Column Order — Most Selective First"
           emoji="📊"
           difficulty="intermediate"
-          whatIsIt="Composite index multiple columns par banta hai. Column order critical hai — index tabhi use hoga jab query mein leading columns present hon. Rule: Most selective column (highest unique values) pehle rakho. B-tree index range queries ke liye best hai (=, &lt;, &gt;, BETWEEN, LIKE prefix). Hash index sirf equality (=) ke liye — range queries support nahi karta."
+          whatIsIt="Composite index ek telephone directory ki tarah hai jisme pehle last name, phir first name sorted hota hai — agar sirf first name se dhundho toh directory ka koi fayda nahi. Exactly aise hi composite index (a, b, c) hai — leading column 'a' query mein hona hi chahiye, tabhi index use hoga. B-tree index under the hood: sorted data structure — range queries, sorting, LIKE prefix sab handle karta hai. Hash index sirf equality ke liye: token lookup pe blazing fast, lekin ORDER BY ya range? Nahi kar sakta. High selectivity matlab: email column ke 1 lakh unique values hain — 1 row identify ho jaati hai. Gender column ke sirf 2 values — database socha 'index se kya fayda, seedha scan karta hun'."
           whenToUse={[
             'Multiple WHERE columns filter karein — composite index consider karo',
             'ORDER BY + WHERE combination — sort column include karo',
             'High-frequency queries — index optimization worth karta hai',
             'Foreign key columns — JOIN performance ke liye index zaroori',
           ]}
-          whyUseIt="Wrong column order = index unused. Composite index (a, b) query WHERE b = 1 ke liye kaam nahi karega — leading column 'a' missing. Index selectivity: email (near-unique, high selectivity) vs gender (2 values, low selectivity). Low selectivity column index se fayda nahi — planner seq scan prefer karta hai."
+          whyUseIt="Sawaal: orders table pe (status, user_id) index banaya — kyun galat hai? Status ki 3 values hain ('active', 'pending', 'done') — matlab index pehle 33% data filter karega, phir user_id. Ulta karo: (user_id, status) — user_id se directly us user ke orders niklo (shayad 10-20 rows), phir status filter. Order matters — high selectivity pehle always. Unused indexes detect karo: pg_stat_user_indexes mein idx_scan = 0 — ye indexes sirf write operations slow kar rahe hain aur disk space kha rahe hain. Audit karo, drop karo."
           howToUse={{
             filename: 'composite-indexes.sql',
             language: 'sql',
@@ -215,9 +215,9 @@ SELECT indexname, idx_scan
 FROM pg_stat_user_indexes
 WHERE idx_scan = 0 AND schemaname = 'public';
 -- Ye indexes sirf space waste kar rahe hain — drop karo!`,
-            explanation: "B-tree default index type hai — 99% cases ke liye sahi. Hash sirf equality — token lookups, session IDs ke liye consider karo. Partial index powerful hai — WHERE condition se small focused index banao. Unused indexes WRITE performance slow karte hain aur space waste karte hain — regularly audit karo.",
+            explanation: "B-tree default hai — 99% cases ke liye yahi use karo. Hash index sirf equality ke liye blazing fast hai lekin range queries nahi kar sakta — session tokens, API keys ke liye sahi choice. Partial index ek mast trick hai: WHERE status = 'active' se sirf active orders index mein hain — completed orders (jo 90% hain) index mein hi nahi. Chhota index, faster scans. Unused indexes list regularly check karo — zero idx_scan means wo index waste of resources hai, drop it!",
           }}
-          realWorldScenario="Multi-tenant SaaS mein: WHERE org_id = $1 AND created_at > $2 ORDER BY created_at DESC. Index (org_id, created_at) — org_id high selectivity (unique per tenant), created_at range query + sort. Ye order both filter aur sort dono handle karta hai — perfect covering index for this query pattern."
+          realWorldScenario="Multi-tenant SaaS mein classic query: WHERE org_id = $1 AND created_at > $2 ORDER BY created_at DESC. Agar sirf (org_id) index hota toh filter ke baad sort ka kaam baaki rehta. (org_id, created_at) index banao — org_id se filter, created_at already sorted in index, ORDER BY free mein milti hai. Ek index se teen kaam: filter + range + sort. Ye hai smart indexing — brute force nahi."
           commonMistakes={[
             {
               mistake: 'Har column par alag index banana',
@@ -230,7 +230,7 @@ WHERE idx_scan = 0 AND schemaname = 'public';
               fix: 'Full-text search ke liye: GIN index + tsvector. Ya Elasticsearch/Meilisearch. LIKE prefix (keyword%) B-tree se kaam karta hai.',
             },
           ]}
-          proTip="INCLUDE clause se covering index banao without affecting column order: CREATE INDEX idx_covering ON orders(user_id, status) INCLUDE (total_amount, created_at). user_id, status index structure mein hain (searchable), total_amount, created_at Index Only Scan ke liye available hain bina table touch kiye."
+          proTip="INCLUDE clause ek superpower hai jise 90% developers nahi jaante: CREATE INDEX idx_covering ON orders(user_id, status) INCLUDE (total_amount, created_at). user_id aur status index structure mein hain — WHERE ke liye. total_amount aur created_at INCLUDE mein hain — index search affect nahi karte, lekin Index Only Scan ke waqt table ko chhua bina available hain. Table access zero. Isko covering index kehte hain — query poori index se serve hoti hai."
         />
       </div>
 
@@ -239,14 +239,14 @@ WHERE idx_scan = 0 AND schemaname = 'public';
           title="N+1 Problem — Database Ka Silent Killer"
           emoji="🐌"
           difficulty="intermediate"
-          whatIsIt="N+1 problem: N records fetch karo, phir har record ke liye 1 extra query — N+1 total queries instead of 2. 100 posts fetch karo (1 query), phir 100 authors fetch karo (100 queries) = 101 queries. Database connection overhead, network latency, per-query overhead — sab multiply ho jaate hain. 10 records fast lagta hai, 10,000 records production crash karta hai."
+          whatIsIt="N+1 problem development mein ek chhupa hua bomb hai — development mein 10 records pe sab theek lagta hai, production mein 10,000 records pe application timeout. Kya hota hai under the hood: 50 posts fetch karo (1 query), phir har post ke liye author fetch karo (50 queries) = 51 queries. Har query ka overhead: TCP connection reuse, query parse, execution plan, result serialize — 50 baar. ORM ne silently ye kar diya — aapko pata hi nahi chala. Database ke liye 51 round trips = shooting yourself in the foot. JOIN se same kaam 1 query mein hota hai — 51x less database work."
           whenToUse={[
             'Koi bhi related data load karna ho (posts + authors, orders + items)',
             'GraphQL resolvers — DataLoader almost always zaroori hai',
             'API endpoints jo lists return karte hain with nested data',
             'Performance investigation — query count check karo hamesha',
           ]}
-          whyUseIt="N+1 development mein invisible hota hai — 10 records fast hain. Production pe 10,000 records ke saath 10,001 queries = timeout. ORM ne silently N+1 create kar diya. Logging enable karo: Prisma mein log: ['query'], Mongoose mein mongoose.set('debug', true). Phir fix karo — include/populate/JOIN."
+          whyUseIt="Sabse pehla kaam: logging enable karo. Prisma mein log: ['query'] lagao, console mein dekho kitni queries fire ho rahi hain. Agar koi simple list endpoint 50 queries fire kar raha hai — bhai N+1 hai. Ye fix karna mandatory hai production se pehle. include se Prisma ek JOIN query generate karta hai — N queries ki jagah 1. DataLoader pattern GraphQL mein gold standard hai — multiple resolver calls ko ek batch mein combine karta hai. Ye 'batching' concept samjhna bahut important hai distributed systems mein bhi."
           howToUse={{
             filename: 'n-plus-one-fix.ts',
             language: 'typescript',
@@ -313,9 +313,9 @@ const result = await prisma.$queryRaw\`
   ORDER BY p.created_at DESC
   LIMIT 50
 \``,
-            explanation: "include sabse simple fix hai — Prisma automatically JOIN query generate karta hai. Batching (Fix 2) include se zyada control deta hai — useful jab relations complex hon. DataLoader GraphQL ke liye designed hai — request mein sab loads batch karta hai, caches karta hai. Raw SQL ultimate control ke liye.",
+            explanation: "include fix #1 — Prisma automatically JOIN query generate karta hai, N+1 khatam. Fix #2 batching: pehle sab IDs nikalo, phir ek IN query mein sab fetch karo, phir Map se join karo — ye manual JOIN hai application level pe, 2 queries. DataLoader fix #3 GraphQL ke liye — request ke andar sab load() calls batch hoti hain, ek round-trip. Raw SQL fix #4 ultimate control — complex aggregations ke liye. Konsa use karo? include simple hai, batching zyada flexible, DataLoader GraphQL ke liye mandatory jaise hain.",
           }}
-          realWorldScenario="Social media feed: 50 posts, har post ka author, har post ka like count, har author ka follower count. Naive implementation: 1 + 50 + 50 + 50 = 151 queries. include + _count: 2-3 queries. 50x improvement, 2000ms se 40ms. Users ka bounce rate dramatically kam hota hai."
+          realWorldScenario="Social media feed banate ho — 50 posts, har post ka author, har post ka like count. Naive code likhte ho: 1 + 50 + 50 = 101 queries. Tum socho '101 queries? Zyada kya? Sab async hain.' Aur phir production mein user complain karta hai feed load hone mein 4 second lag rahe hain. include + _count use karo: 2-3 queries, 40ms. 100x improvement. Bounce rate kam hota hai — directly revenue impact hai. N+1 fix karna feature nahi hai — ye aapki duty hai."
           commonMistakes={[
             {
               mistake: 'Development mein query logging disable rakhna',
@@ -328,7 +328,7 @@ const result = await prisma.$queryRaw\`
               fix: 'Har endpoint ke liye specific select/include pattern define karo. Sirf wahi fetch karo jo is request ke liye actually chahiye.',
             },
           ]}
-          proTip="Prisma mein $transaction ke andar multiple queries aur phir programmatic batching combine karo complex dashboards ke liye. prisma.$transaction([query1, query2, query3]) — teeno queries ek database round-trip mein execute hoti hain. Network latency dramatically reduce hoti hai."
+          proTip="Ek aur powerful trick: prisma.$transaction([query1, query2, query3]) — teeno queries ek single database round-trip mein execute hoti hain. Dashboard mein 5 alag counts chahiye? $transaction mein daal do — 5 queries ki network latency ki jagah 1 round-trip. Ye parallel execution hai transaction wrapper ke andar. Complex dashboards ke liye ye pattern game-changer hai."
         />
       </div>
 
@@ -337,14 +337,14 @@ const result = await prisma.$queryRaw\`
           title="Covering Indexes — Table Access Skip Karo"
           emoji="🎯"
           difficulty="advanced"
-          whatIsIt="Covering index wo index hai jisme query ke saare required columns stored hain — database ko table (heap) access karne ki zaroorat nahi. Ye 'Index Only Scan' enable karta hai — sirf index pages read hote hain. Table data pages skip hoti hain — I/O dramatically kam hota hai. Large tables par covering index 10-100x performance improvement de sakta hai."
+          whatIsIt="Covering index ka concept samajhna hai toh ye sochiye: regular index ek library catalog hai — book ka location batata hai, phir jaake shelf se book uthao. Covering index mein catalog ke saath book ka poora content bhi hai — shelf pe jaane ki zaroorat hi nahi. Under the hood: PostgreSQL mein table data 'heap' mein store hota hai. Normal index scan: index pages read karo (fast), phir heap pages read karo (slow, random I/O). Index Only Scan: sirf index pages — heap bilkul nahi. Heap Fetches: 0 dikhna matlab 'table ko chhua hi nahi'. Large tables pe 10-100x improvement possible hai."
           whenToUse={[
             'High-frequency read queries jo specific columns select karein',
             'Reports aur analytics — aggregations pe covering index',
             'API list endpoints — predictable column access pattern',
             'Hot tables jahan table pages cache mein fit na hon',
           ]}
-          whyUseIt="Regular index se bhi table rows fetch karne padte hain (heap access) — extra I/O. Covering index se sirf index pages read hoti hain — table bilkul nahi. PostgreSQL mein INCLUDE clause se non-key columns add karo bina index structure affect kiye. MySQL mein composite index ke columns automatically covering ban jaate hain agar query mein saare hon."
+          whyUseIt="Sawaal: index hai toh bhi slow kyun? Kyunki index ne row locate kar liya — ab heap pe random I/O hogi actual data lene ke liye. Har row ke liye alag disk page fetch ho sakta hai — 45,000 random reads = slow. Covering index isse eliminate karta hai. INCLUDE clause smart hai — ye columns B-tree structure mein participate nahi karte (WHERE mein use nahi hote) lekin Index Only Scan ke liye stored hain. Index size unnecessarily nahi badhta. Result: same storage size, dramatically better read performance."
           howToUse={{
             filename: 'covering-index.sql',
             language: 'sql',
@@ -402,9 +402,9 @@ SELECT
 FROM pg_stat_user_indexes
 WHERE schemaname = 'public'
 ORDER BY idx_scan DESC;`,
-            explanation: "INCLUDE columns index search mein participate nahi karte (WHERE mein use nahi hote) lekin Index Only Scan ke liye available hain. Isse index size unnecessarily bada nahi hota. status, name key columns hain (search + sort), id, email INCLUDE mein hain (sirf fetch ke liye). Heap Fetches: 0 = perfect covering index.",
+            explanation: "status aur name key columns hain — WHERE aur ORDER BY ke liye B-tree structure mein hain. id aur email INCLUDE mein hain — sirf 'paas mein rakh do' for fetch, structure affect nahi karta. Heap Fetches: 0 dekhna matlab covering index perfect kaam kar raha hai — table ko chhua hi nahi. Ye woh moment hai jab aap EXPLAIN ANALYZE chalate ho aur 120ms se 8ms dikhti hai — wo feeling ekdum alag hai!",
           }}
-          realWorldScenario="Analytics dashboard jo har minute reload hota hai — 90 day revenue report. Covering index ke bina: 2M orders table scan, 800ms. Covering index ke saath: sirf index pages, 45ms. Dashboard fast dikhta hai — users zyada engaged rehte hain. Index size: 15MB extra space — completely worth it."
+          realWorldScenario="Analytics dashboard jo har minute reload hota hai — 90 day revenue report, 2 million orders table. Covering index ke bina: har reload pe 2M rows scan, 800ms, users frustrated. Covering index banaya: sirf index pages, Heap Fetches: 0, 45ms. Dashboard smooth, users happy. Index ne 15MB extra disk liya — 15MB ke liye 18x speedup. Ye trade-off clearly worth it hai — aur ye woh decision hai jo senior engineers karte hain: measure karo, trade-offs samjho, phir implement karo."
           commonMistakes={[
             {
               mistake: 'INCLUDE mein too many columns dalna',
@@ -417,7 +417,7 @@ ORDER BY idx_scan DESC;`,
               fix: 'Regular VACUUM ensure karta hai visibility map up-to-date hai. autovacuum normally ye handle karta hai — check karo aggressive write tables mein enabled hai.',
             },
           ]}
-          proTip="pg_stat_user_indexes mein idx_tup_fetch column dekho — ye 0 ya very low hone chahiye covering index ke saath (Index Only Scans). Agar high hai toh covering index incomplete hai — INCLUDE mein aur columns add karo ya query pattern check karo."
+          proTip="Covering index check karne ka quick way: pg_stat_user_indexes mein idx_tup_fetch column zero ya near-zero hona chahiye — wo number batata hai kitni baar table heap access hua index ke through. High number = covering index incomplete. Phir INCLUDE mein aur columns add karo. Aur ye bhi: regular VACUUM chalate raho — visibility map stale hone se Index Only Scan bhi heap check karta hai. autovacuum enabled raho write-heavy tables pe."
         />
       </div>
 

@@ -67,10 +67,10 @@ export default function ReactChapter7Content() {
           useEffect — Side Effects Ka Sahi Tarika
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          useEffect React ka sabse misunderstood hook hai. Side effects — API calls, event listeners, timers, DOM updates — ye sab useEffect se handle hote hain. Dependency array, cleanup functions, infinite loops — sab samajhna zaroori hai production-grade code ke liye.
+          useEffect React ka sabse misunderstood hook hai — aur sabse zyada abuse bhi hota hai. Bahut log useEffect ko componentDidMount ka replacement samjhte hain. Ye sahi nahi hai. useEffect ka real purpose hai: React rendering ke bahar ki duniya ke saath synchronize karna. API calls, event listeners, timers, localStorage — ye sab React ke "outside" hain. useEffect bridge hai React world aur outside world ke beech.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum useEffect ko depth mein cover karenge — har dependency array pattern, cleanup, aur famous bugs including infinite loop.
+          Is chapter mein dependency array ke sab patterns, cleanup functions, infinite loop bugs, aur production-ready patterns — deep dive karte hain.
         </p>
       </div>
 
@@ -79,14 +79,14 @@ export default function ReactChapter7Content() {
           title="Side Effects Kya Hain?"
           emoji="🌊"
           difficulty="intermediate"
-          whatIsIt="Side effects wo operations hain jo React rendering se bahar jaate hain — network requests, DOM manipulation (direct), browser APIs (localStorage, geolocation), timers (setTimeout/setInterval), subscriptions (WebSocket, EventSource), logging. Pure rendering mein ye nahi hone chahiye — useEffect ke andar rakhte hain."
+          whatIsIt="Side effects kya hain? Wo koi bhi operation jo React ke rendering world ke bahar jaata hai. Network request — React world ke bahar. localStorage access — React world ke bahar. Document title change — React world ke bahar. Timer set karna — React world ke bahar. React rendering pure honi chahiye — same inputs, same output, no external effects. Side effects useEffect mein rakhte hain — rendering ke baad run hote hain."
           whenToUse={[
             'Data fetch karna — API calls on mount ya dependency change',
             'Subscriptions — WebSocket, EventEmitter, pubsub',
             'Event listeners — global document/window listeners',
             'Document title update — browser tab mein',
           ]}
-          whyUseIt="Side effects rendering ke bahar hote hain kyunki render pure honi chahiye — same props/state → same output. useEffect rendering ke baad run hota hai — browser paint ho chuka hai. Ye ensure karta hai UI fast render ho pehle, then side effects. Cleanup se memory leaks prevent hoti hain."
+          whyUseIt="Render mein side effect karne se kya problem hoti hai? Har render pe re-run hota hai — fetch render pe, fetch har state change pe — infinite loop. React Strict Mode development mein renders twice — side effects twice. useEffect render ke baad run karta hai — browser ne UI paint kar liya, phir side effects. UI always responsive rehti hai. Cleanup se resources properly release hote hain."
           howToUse={{
             filename: 'SideEffects.tsx',
             language: 'tsx',
@@ -160,9 +160,9 @@ function ProductPage({ productId }: { productId: string }) {
 
   return <div>Product content...</div>
 }`,
-            explanation: 'Side effects render mein mat karo — useEffect mein karo. useEffect render ke baad run hota hai — UI fast. Cleanup function se resources release karo. Document title, localStorage, analytics — sab useEffect patterns.',
+            explanation: 'Render mein fetch — infinite loop guarantee. useEffect mein fetch — sahi approach. useEffect render ke baad run karta hai, UI block nahi hoti. Cleanup function return karo jab resources release karne ho. Document title, localStorage sync, analytics — ye sab useEffect patterns hain. Har ek ke apne cleanup hain.',
           }}
-          realWorldScenario="Chat app: WebSocket connection useEffect mein open karo (on mount), messages receive karo (setState), component unmount pe (user navigates away) close karo — cleanup function. Bina cleanup: WebSocket open rehta hai, memory leak, stale messages."
+          realWorldScenario="Chat application — user chat room mein join karta hai. WebSocket connection useEffect mein open karo (on mount). Messages aate hain — setState se update karo. User chat room se nikal jaata hai (component unmount) — cleanup mein WebSocket close karo. Bina cleanup: WebSocket open, server pe unnecessary connection, memory leak, stale updates. Cleanup = professional code."
           commonMistakes={[
             {
               mistake: 'Side effects directly in render function',
@@ -175,7 +175,7 @@ function ProductPage({ productId }: { productId: string }) {
               fix: 'IIFE: useEffect(() => { (async () => { await fn() })() }, []). Ya named async function inside.',
             },
           ]}
-          proTip="React Query / TanStack Query useEffect-based data fetching replace karta hai — caching, refetching, loading/error states automatic. SWR bhi same. Production apps mein these libraries prefer karo manual useEffect fetch se — bahut less bugs."
+          proTip="async function directly useEffect mein — React accept nahi karta. useEffect(() => async () => {}) — cleanup function expected hai, Promise return nahi. Ye common error hai. Solution: IIFE ya named async function inside useEffect. (async () => { await fn() })() — immediately invoked async function. Ye pattern production mein standard hai."
         />
       </div>
 
@@ -184,14 +184,14 @@ function ProductPage({ productId }: { productId: string }) {
           title="useEffect Basics — Syntax aur When It Runs"
           emoji="⚙️"
           difficulty="intermediate"
-          whatIsIt="useEffect(callback, deps) — callback side effect function, deps dependency array. Dependency array behavior: no array = every render, [] = only mount, [dep1, dep2] = when deps change. Cleanup function return karo — runs before next effect aur on unmount. React 18 Strict Mode mein development pe double-fire hota hai."
+          whatIsIt="useEffect ka signature: useEffect(callback, dependencyArray). Dependency array ka behavior: array nahi diya — har render pe run. [] diya — sirf mount pe ek baar. [dep1, dep2] — jab dep1 ya dep2 change ho. Cleanup function return karo — next effect run se pehle aur unmount pe call hoti hai. React 18 Strict Mode mein development pe effects twice run karte hain — cleanup test ke liye design."
           whenToUse={[
             'Mount pe ek baar — [] dependency',
             'Specific value change pe — [value] dependency',
             'Har render pe — no dependency (rare)',
             'Cleanup zaroori ho — subscription, listener',
           ]}
-          whyUseIt="useEffect lifecycle methods replace karta hai (componentDidMount, componentDidUpdate, componentWillUnmount) — ek hook teeno handle karta hai. Dependency array se fine-grained control — exactly kab run ho. Cleanup se resource management clean."
+          whyUseIt="Class components mein teen lifecycle methods the — componentDidMount, componentDidUpdate, componentWillUnmount. Functional components mein ek useEffect teeno handle karta hai. Lekin mindset shift karo — ye lifecycle methods nahi hain. useEffect = synchronize with external system. Kab synchronize karna hai? Dependency array batata hai. Kab cleanup karna hai? Return function se."
           howToUse={{
             filename: 'UseEffectBasics.tsx',
             language: 'tsx',
@@ -276,9 +276,9 @@ function AsyncEffect({ id }: { id: string }) {
 
   return loading ? <Spinner /> : <DataView data={data} />
 }`,
-            explanation: 'No array: every render. []: mount only. [dep]: when dep changes. Cleanup: before next effect run + on unmount. Async in useEffect: IIFE approach ya cancelled flag. React 18 Strict Mode development mein effects double-run karta hai — idempotent banao.',
+            explanation: 'Dependency array — teen patterns: no array (every render, rare), [] (mount once), [dep] (when dep changes). Cleanup function: next effect se pehle + unmount pe. Async in useEffect: IIFE pattern ya cancelled flag. Strict Mode double-run: idempotent effects banao — cleanup properly likho aur double-run se koi issue nahi hoga.',
           }}
-          realWorldScenario="User profile page: useEffect([userId]) — userId change pe naya user fetch. Cleanup mein cancelled = true — agar user quickly navigates away, old userId fetch nahi set karta naye user pe. Clean race condition handling."
+          realWorldScenario="User profile page — useEffect([userId]). userId change pe naya user fetch. Race condition: quickly navigate karo User 1 se User 2 pe. User 1 ka fetch slow hai, User 2 ka pehle complete hota hai. Phir User 1 ka aata hai — User 1 data User 2 ke profile pe show hota hai. Fix: cancelled flag ya AbortController — old request ka response setState call nahi karta."
           commonMistakes={[
             {
               mistake: 'useEffect se async function directly return karna',
@@ -291,7 +291,7 @@ function AsyncEffect({ id }: { id: string }) {
               fix: 'useEffect prefer karo 99% cases mein. useLayoutEffect sirf DOM measurement + sync paint update ke liye.',
             },
           ]}
-          proTip="eslint-plugin-react-hooks ka exhaustive-deps rule enable karo — missing dependencies highlight hoti hain. tsconfig strict ke saath powerful combination. VSCode react-hooks extension se missing deps auto-suggest bhi hote hain."
+          proTip="useLayoutEffect overuse avoid karo. useLayoutEffect synchronous hai — render ke baad lekin browser paint se pehle run hota hai. Paint block karta hai — performance issue. 99% cases mein useEffect kaafi hai. useLayoutEffect sirf DOM measurement ke liye use karo — element ka size/position jaanna ho state change ke immediately baad, paint se pehle."
         />
       </div>
 
@@ -300,14 +300,14 @@ function AsyncEffect({ id }: { id: string }) {
           title="Dependency Array Rules — Sab Honest Rakho"
           emoji="📝"
           difficulty="intermediate"
-          whatIsIt="Dependency array mein sab values daalo jo effect ke andar use hoti hain — props, state, derived values, functions. Eslint rule yahi enforce karta hai. Dishonest deps — stale closures, bugs. Object/array deps — infinite loop risk (reference equality). Functions deps — useCallback se stabilize karo."
+          whatIsIt="Dependency array mein ek rule — honest raho. Effect ke andar jo bhi use karo — props, state, functions, objects — sab dependency array mein daalo. Eslint exhaustive-deps rule yahi check karta hai. Dishonest deps se stale closures — old values pe kaam, wrong behavior. Object aur array deps — reference equality check hoti hai — har render naya reference = infinite loop. Functions — useCallback se stabilize karo."
           whenToUse={[
             'Effect mein koi bhi reactive value use ho — dep array mein daalo',
             'Function dep — useCallback se memoize karo',
             'Object dep — specific properties use karo ya useMemo karo',
             'Primitive values — directly use karo as dep',
           ]}
-          whyUseIt="Honest dependencies ensure karte hain effect latest values pe run kare. Stale closures se bugs hote hain — old value pe kaam, wrong behavior. Object/array reference change har render pe — infinite loop. Eslint rule automatic catch karta hai issues."
+          whyUseIt="Object dependency ka infinite loop mechanism samjho: useEffect([config]) mein config object. React reference equality check karta hai — {} === {} → false. Har render pe naya object literal → reference change → effect re-run → setState → re-render → naya object literal → loop. Solution: specific primitives use karo config.timeout, ya useMemo se stable object banana. Reference equality React ka core concept hai."
           howToUse={{
             filename: 'DependencyArray.tsx',
             language: 'tsx',
@@ -407,9 +407,9 @@ function DepsDemo() {
 
   return null
 }`,
-            explanation: 'Primitives safe deps — reference stable across renders. Objects har render pe new reference — infinite loop. Specific property use karo ya useMemo. Functions har render pe recreate — useCallback se stabilize. Stale closures — functional updates se avoid. eslint exhaustive-deps rule enable karo!',
+            explanation: 'Key patterns: primitive deps safe (number, string, boolean — same value = same reference). Object dep — infinite loop risk (new reference every render). Fix: config.timeout use karo ya useMemo. Function dep — useCallback se stabilize. Stale closure — functional update (prev =>) se avoid. eslint exhaustive-deps enable karo — automatic catch.',
           }}
-          realWorldScenario="Data table mein filter object: const filters = { status, page, search }. Har render naya object — useEffect infinite loop. Fix: useEffect([status, page, search]) — individual primitives. Ya useMemo se stable object banana."
+          realWorldScenario="Data table mein filters: { status, page, search } object. useEffect([filters]) — har render naya object literal, infinite loop. Ye production bug hai jo dhundna bahut mushkil hota hai. Fix: useEffect([status, page, search]) — individual primitives. Ya: const stableFilters = useMemo(() => ({status, page, search}), [status, page, search]) phir useEffect([stableFilters])."
           commonMistakes={[
             {
               mistake: 'eslint exhaustive-deps warning ignore karna',
@@ -422,7 +422,7 @@ function DepsDemo() {
               fix: 'Ek option: function ko effect ke andar move karo (no dep needed). Ya useCallback wrap karo.',
             },
           ]}
-          proTip="useEffectEvent (experimental, React 19) solves stale closure problem elegantly — event handler inside effect use karo without adding to deps. Jab stable ho jaaye tab mainstream solution. Abhi: functional updates aur useCallback se manage karo."
+          proTip="eslint-plugin-react-hooks ka exhaustive-deps rule enable karo — ye rule missing dependencies highlight karta hai automatically. Warning ko ignore mat karo — har warning ek potential bug hai. Agar dependency add karne se infinite loop hota hai — toh problem dependency nahi, toh object/function stability ka issue hai. useCallback ya useMemo se stabilize karo."
         />
       </div>
 
@@ -431,14 +431,14 @@ function DepsDemo() {
           title="Cleanup Function — Memory Leaks Prevent Karo"
           emoji="🧹"
           difficulty="intermediate"
-          whatIsIt="useEffect callback se function return karo — ye cleanup function hai. Cleanup tab call hoti hai: component unmount pe, ya next effect run se pehle (jab deps change hote hain). Event listeners, timers, WebSocket connections, Observables — sab cleanup karo. Bina cleanup: memory leaks, stale callbacks, ghost updates."
+          whatIsIt="Cleanup function — useEffect ka woh part jo zyada log bhool jaate hain. Return karo ek function — ye cleanup hai. Kab call hoti hai? Component unmount pe — user navigate away gaya. Next effect run se pehle — dependency change hui, naya effect run hone se pehle purana cleanup. Event listeners register karoge bina remove kiye — memory leak. Timer set kiya bina clear kiye — ghost intervals. WebSocket open bina close kiye — server pe open connections piling up."
           whenToUse={[
             'Event listeners — document.addEventListener',
             'Timers — setInterval, setTimeout',
             'Subscriptions — WebSocket, EventEmitter',
             'Async requests — cancel on unmount',
           ]}
-          whyUseIt="Cleanup se resources properly release hote hain. Unmounted component pe setState — React warning (memory leak). Event listener remain karta hai — callback stale reference hold karta hai — garbage collection nahi. Proper cleanup se app memory-efficient aur stable rehta hai."
+          whyUseIt="Cleanup ki zaroorat kyun hai? Browser memory finite hai. Event listeners agar remove nahi kiye — accumulate hote hain. Timer agar clear nahi kiya — background mein run karta rehta hai, unmounted component pe setState call karta hai — React warning. WebSocket bina close kiye — server pe resources waste. Professional React code mein har useEffect mein ya toh cleanup hai ya clearly documented reason hai kyun zaroorat nahi."
           howToUse={{
             filename: 'Cleanup.tsx',
             language: 'tsx',
@@ -567,9 +567,9 @@ function LazyImage({ src, alt }: { src: string; alt: string }) {
     </div>
   )
 }`,
-            explanation: 'return () => cleanup() pattern. addEventListener + removeEventListener. setInterval/setTimeout + clear. WebSocket open + close. AbortController + abort() — fetch cancel karo. IntersectionObserver disconnect. Cleanup next effect se pehle bhi call hoti hai — dep change pe.',
+            explanation: 'Har resource apna cleanup pattern jaanta hai: addEventListener → removeEventListener. setInterval → clearInterval. setTimeout → clearTimeout. WebSocket → ws.close(). fetch → AbortController.abort(). IntersectionObserver → observer.disconnect(). Pattern: setup in effect body, cleanup in return function. Ye pairs yaad karo — production code mein daily use.',
           }}
-          realWorldScenario="Stock price ticker: WebSocket se live prices. User navigates to another page (component unmount) — cleanup closes WebSocket. Bina cleanup: WebSocket open, prices aate rehte hain, setState crash (component gone). Proper cleanup — professional behavior."
+          realWorldScenario="Stock market ticker — live prices WebSocket se aate hain. User portfolio page se navigate karke settings mein jaata hai. Component unmount hota hai. Cleanup mein ws.close() — WebSocket close hota hai, server connection free. Bina cleanup: WebSocket open rehta hai, prices aate rehte hain, setState call hoti hai unmounted component pe — React warning, potential memory leak. App eventually sluggish hoti hai."
           commonMistakes={[
             {
               mistake: 'cleanup function return karna bhoolna',
@@ -582,7 +582,7 @@ function LazyImage({ src, alt }: { src: string; alt: string }) {
               fix: 'Cleanup synchronous honi chahiye. Agar async cleanup zaroori ho — cancelled flag use karo, cleanup mein sync cancel karo.',
             },
           ]}
-          proTip="React 18 Strict Mode development mein effects twice run karte hain (mount → unmount → remount) — cleanup properly test hoti hai. Production mein once run hota hai. Ye design decision — cleanups test karna zaroori hai. Agar cleanup nahi hai, Strict Mode mein bugs visible ho jaate hain."
+          proTip="React 18 Strict Mode development mein effects deliberately twice run karte hain. Ye feature hai, bug nahi. React tumhara cleanup test kar raha hai. mount → cleanup → remount — agar cleanup properly likhа hai toh second mount correctly work karega. Agar Strict Mode mein bugs aate hain — cleanup mein issue hai. Production mein once run hota hai — Strict Mode development health check hai."
         />
       </div>
 
@@ -591,14 +591,14 @@ function LazyImage({ src, alt }: { src: string; alt: string }) {
           title="useEffect Patterns — Data Fetching, Titles, Listeners"
           emoji="🎯"
           difficulty="intermediate"
-          whatIsIt="Common useEffect patterns: data fetching with loading/error states, document title update, global event listeners, outside click detection, media query watching, online/offline status. Ye sab patterns production mein daily use hote hain — master karo inhe."
+          whatIsIt="useEffect patterns ko custom hooks mein abstract karo — ye React ka power move hai. useData, useDocumentTitle, useOutsideClick, useOnlineStatus, useMediaQuery — ye sab custom hooks hain jo useEffect wrap karte hain. Component logic clean rehti hai — sirf hook call karo, implementation details hidden. Ek baar likho, poori app mein use karo. Ye custom hooks React ka best practice hai."
           whenToUse={[
             'Data fetch hook banana — useUser, useProducts',
             'Global keyboard shortcuts — Escape key, Ctrl+K',
             'Outside click — modal/dropdown close karna',
             'Responsive hooks — useMediaQuery',
           ]}
-          whyUseIt="Ye patterns reusable hooks mein abstract ho sakte hain — ek jagah likho, sab jagah use karo. Custom hooks useEffect wrap karte hain — component logic clean rehti hai. Production-proven patterns — edge cases already handled."
+          whyUseIt="Custom hooks ka fayda real-world mein: useOutsideClick ek baar likho — dropdown, modal, tooltip — sab components use karein. useOnlineStatus ek baar — poori app mein. Edge cases ek jagah handle — AbortController, cleanup, Strict Mode compatibility sab ek jagah. Components mein sirf useData('/api/users') — implementation concern nahi, result concern hai."
           howToUse={{
             filename: 'UseEffectPatterns.tsx',
             language: 'tsx',
@@ -709,9 +709,9 @@ function useMediaQuery(query: string) {
 }
 
 // const isMobile = useMediaQuery('(max-width: 768px)')`,
-            explanation: 'Custom hooks useEffect wrap karte hain — reusable. useData generic data fetching + loading/error. useOutsideClick modal/dropdown pattern. useOnlineStatus connectivity detect karta hai. useMediaQuery responsive JavaScript. Ye sab patterns custom hooks mein abstract karo — components clean.',
+            explanation: 'Custom hook = use se shuru hone wala function jo React hooks call kare. Ek mental model: React ne tumhe tools diye (useState, useEffect), tum unse apne tools bana sakte ho (useData, useOutsideClick). useData AbortController se fetch cancel karta hai. useOutsideClick ref + document listener pattern. useOnlineStatus online/offline events track karta hai. Ye sab wrappers hain, magic nahi.',
           }}
-          realWorldScenario="Modal component: useOutsideClick(modalRef, closeModal) + useDocumentTitle('Dialog - App') + useEffect ke andar Escape key listener. Teeno useEffect patterns ek modal mein — professional behavior. User Escape press karo ya bahar click karo — modal closes."
+          realWorldScenario="Professional modal component — useOutsideClick(modalRef, closeModal), useDocumentTitle('Modal Open - App'), aur Escape key listener useEffect mein. Teen custom hooks, ek clean component. User Escape dabaye — modal close. Bahar click kare — modal close. Tab title change ho — context pata chale. Ye UX polish hai jo custom hooks se easily milti hai."
           commonMistakes={[
             {
               mistake: 'Custom hook mein callback prop without useCallback',
@@ -724,7 +724,7 @@ function useMediaQuery(query: string) {
               fix: 'Error state expose karo. Callers error handle karein. Error boundary se wrap karo important sections.',
             },
           ]}
-          proTip="usehooks.com aur ahooks library mein production-tested custom hooks available hain — useLocalStorage, useDebounce, useIntersection, useGeolocation, etc. Pehle dekhna — wheel reinvent mat karo. React Query, SWR data fetching hooks comprehensive solutions provide karte hain."
+          proTip="Production apps mein manual useEffect data fetching avoid karo — React Query (TanStack Query) ya SWR use karo. Ye libraries caching, background refetching, loading/error states, optimistic updates sab automatically handle karti hain. useData hook khud likhna — caching nahi, refetching nahi. React Query — sab built-in. Ye investment worthwhile hai production apps mein — less bugs, better UX."
         />
       </div>
 

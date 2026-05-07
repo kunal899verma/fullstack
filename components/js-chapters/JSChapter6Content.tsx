@@ -67,10 +67,10 @@ export default function JSChapter6Content() {
         style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.2)' }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3">
-          Objects — JavaScript Ki Backbone
+          Objects — JavaScript Mein Sab Kuch Object Hai!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Objects JavaScript mein sab kuch hain — functions objects hain, arrays objects hain, almost everything is an object. Key-value pairs store karna, data structure banana, behavior encapsulate karna — sab objects se hota hai. Modern ES6+ syntax ne objects ke saath kaam karna bahut cleaner bana diya hai.
+          <strong className="text-[#F5F5F7]">Ye sunke shock lagega</strong> — JavaScript mein functions bhi objects hain! <code className="text-[#06B6D4]">typeof function(){'{}'}</code> return karta hai <code className="text-[#06B6D4]">&quot;function&quot;</code> lekin functions Object ka extension hain — unhe bhi properties attach kar sakte ho! Arrays bhi objects hain — <code className="text-[#06B6D4]">typeof []</code> return karta hai <code className="text-[#06B6D4]">&quot;object&quot;</code>. Objects JavaScript ka heart hai — Heap mein store hote hain, reference se access hote hain, prototype chain ke through inherit karte hain.
         </p>
         <div
           className="rounded-xl p-4 mt-4"
@@ -82,13 +82,24 @@ export default function JSChapter6Content() {
         </div>
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}
+      >
+        <p className="text-sm font-bold text-[#F59E0B] mb-1">Execution Context Mein Objects — Heap Ka Khel</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ab sawaal ye aata hai</strong> — jab tum object banate ho, kahan store hota hai? <strong className="text-[#F5F5F7]">Heap mein!</strong> Aur variable mein? Variable (Call Stack) mein sirf ek reference (address) store hota hai — actual object Heap mein hai. Isliye jab tum object ko doosre variable ko assign karte ho, sirf reference copy hota hai — dono same Heap object ko point karte hain. Yahi reference type ka raaz hai!
+        </p>
+      </div>
+
       {/* Card 1: Object Creation */}
       <div id="object-creation">
         <ConceptCard
-          title="Object Creation — Char Tarike"
+          title="Object Creation — Sabse Simple Se Sabse Powerful"
           emoji="🏗️"
           difficulty="beginner"
-          whatIsIt="JavaScript mein objects banane ke multiple ways hain. Object literal {}: simplest aur most common. Constructor function: new keyword se. Object.create(): prototype-based creation. ES6 Class: syntactic sugar over prototypes. Har method ka apna use case hai — lekin 90% cases mein object literal hi use hota hai."
+          whatIsIt="JavaScript mein objects banane ke multiple ways hain — lekin 90% cases mein object literal {'{'} {'}'} hi use hota hai. Constructor function: new keyword se similar objects ka blueprint. Object.create(): specific prototype chain ke saath. ES6 Class: syntactic sugar over prototypes — under the hood same hi hai. Factory functions: closure ke saath private state — ye bhi ek powerful pattern hai!"
           whenToUse={[
             'Object literal {}: simple data containers, configuration, return values',
             'Constructor function / Class: blueprints se multiple similar objects banana',
@@ -164,13 +175,24 @@ store.key1 = 'value1'
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(6,182,212,0.07)', border: '1px solid rgba(6,182,212,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#06B6D4] mb-1">Optional Chaining — Production Code Ka Lifesaver</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">API data hamesha expected nahi hoti</strong> — kabhi user null hota hai, kabhi profile missing. Bina optional chaining: <code className="text-[#06B6D4]">user.profile.avatar</code> → TypeError: Cannot read property &apos;avatar&apos; of null. With optional chaining: <code className="text-[#06B6D4]">user?.profile?.avatar ?? &apos;/default.png&apos;</code> → safely undefined, no crash. Production mein crashes se bachna ho toh ?. aur ?? yaad rakho!
+        </p>
+      </div>
+
       {/* Card 2: Property Access & Shorthand */}
       <div id="property-access">
         <ConceptCard
-          title="Property Access, Computed & Shorthand"
+          title="Property Access, Computed &amp; Shorthand — Modern JS Ka Style"
           emoji="🔑"
           difficulty="beginner"
-          whatIsIt="Property access ke do ways: dot notation (obj.name) aur bracket notation (obj['name']). Bracket notation dynamic keys ke liye zaroori hai. ES6 shorthand: jab variable name aur key name same ho — { name } instead of { name: name }. Computed properties: [expression] se dynamic keys. Optional chaining (?.) se null-safe access."
+          whatIsIt="Property access ke do ways: dot notation (obj.name) aur bracket notation (obj[&apos;name&apos;]). Bracket notation dynamic keys ke liye zaroori hai. ES6 shorthand: jab variable name aur key name same ho — {'{'} name {'}'} instead of {'{'} name: name {'}'}. Computed properties: [expression] se dynamic keys. Optional chaining (?.) se null-safe access — ye game changer hai production code mein!"
           whenToUse={[
             'Dot notation: static, known property names ke liye — most common',
             'Bracket notation: dynamic keys, variable-based access, special characters wale keys',
@@ -247,13 +269,24 @@ user.hasOwnProperty('name') // true — older way`,
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#7C3AED] mb-1">Destructuring — Rename Syntax Confuse Karta Hai</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ye common mistake hai</strong> — <code className="text-[#06B6D4]">const {'{'} name: displayName {'}'} = user</code> mein colon rename hai, assignment nahi! Ye user.name ko displayName variable mein dalta hai. Aur <code className="text-[#06B6D4]">const {'{'} role = &apos;user&apos; {'}'} = user</code> mein equals sign default value hai — role undefined hone par &apos;user&apos; use hoga. Dono alag alag cheezein hain — yaad karo!
+        </p>
+      </div>
+
       {/* Card 3: Destructuring */}
       <div id="destructuring">
         <ConceptCard
-          title="Object Destructuring — Variables Nikalo"
+          title="Object Destructuring — Variables Ek Line Mein Nikalo"
           emoji="📦"
           difficulty="beginner"
-          whatIsIt="Destructuring syntax se object ke properties ko directly variables mein extract karo. Basic: const { name, age } = user. Rename: const { name: displayName } = user. Default value: const { role = 'user' } = user. Nested: const { address: { city } } = user. Function parameters mein: function process({ id, items }) {}. Ye ES6 ka ek killer feature hai."
+          whatIsIt="Destructuring syntax se object ke properties ko directly variables mein extract karo — boilerplate zero! Basic: const {'{'} name, age {'}'} = user. Rename: const {'{'} name: displayName {'}'} = user (colon = rename!). Default value: const {'{'} role = &apos;user&apos; {'}'} = user (equals = default!). Nested: const {'{'} address: {'{'} city {'}'} {'}'} = user. Function parameters mein destructuring named arguments ki tarah readable hota hai — ye ES6 ka ek killer feature hai!"
           whenToUse={[
             'API responses se specific properties extract karne ke liye',
             'Function parameters mein — named arguments ki tarah readable',
@@ -333,13 +366,24 @@ const { [key]: selectedTheme } = user.preferences
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#10B981] mb-1">React State Update — Immutability Ka Raaz</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ye React ka central concept hai</strong> — state.user.name = &apos;Priya&apos; kyun nahi karte? Kyunki reference same rehti hai, React detect nahi karta change. Spread se nayi object banao: <code className="text-[#06B6D4]">{'{'} ...state, user: {'{'} ...state.user, name: &apos;Priya&apos; {'}'} {'}'}</code> — naya reference, React re-render karta hai. Spread operator immutable updates ka tool hai — Redux, React dono mein yahi pattern hai!
+        </p>
+      </div>
+
       {/* Card 4: Spread & Merge */}
       <div id="spread-merge">
         <ConceptCard
-          title="Spread, Object.assign & Merge Patterns"
+          title="Spread, Object.assign &amp; Merge Patterns — Immutability Ka Tool"
           emoji="🔀"
           difficulty="beginner"
-          whatIsIt="Spread operator (...) objects ko expand karta hai — clone karo, merge karo, override karo. Object.assign(target, ...sources) target mein properties copy karta hai — mutates target! Object.keys() array of keys, Object.values() array of values, Object.entries() array of [key, value] pairs — ye sab iteration ke liye powerful tools hain."
+          whatIsIt="Spread operator (...) objects ko expand karta hai — clone karo, merge karo, override karo. Object.assign(target, ...sources) target mein properties copy karta hai — mutates target! (Isliye spread prefer karo.) Object.keys() array of keys, Object.values() array of values, Object.entries() array of [key, value] pairs — ye sab object iteration ke liye powerful tools hain. Object.fromEntries() entries ko wapas object mein convert karta hai!"
           whenToUse={[
             'Spread {...obj}: shallow clone, merge multiple objects, override specific properties',
             'Object.assign: existing object mein properties add karna (rare in modern code)',
@@ -451,13 +495,24 @@ const merged = { ...defaults, ...overrides }`,
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}
+      >
+        <p className="text-sm font-bold text-[#F59E0B] mb-1">JSON.stringify Ka Khatarnak Surprise</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ye baat khud test karo</strong> — <code className="text-[#06B6D4]">JSON.stringify({'{'} name: &apos;Rahul&apos;, greet: () =&gt; &apos;Hi&apos;, age: undefined, id: Symbol() {'}'})</code> kya deta hai? <strong className="text-[#F59E0B]">&quot;{'{'}&quot;name&quot;:&quot;Rahul&quot;{'}'}&quot;</strong> — functions, undefined, Symbols silently gayab! Aur Date object string ban jaata hai. Ye JSON ki limitations hain — samjho toh bugs nahi aayenge!
+        </p>
+      </div>
+
       {/* Card 5: Object Methods */}
       <div id="object-methods">
         <ConceptCard
-          title="Object Methods — freeze, seal, JSON caveats"
+          title="Object Methods — freeze, seal, JSON Caveats"
           emoji="🛡️"
           difficulty="beginner"
-          whatIsIt="Object.freeze() object ko completely immutable banata hai — properties add, delete, ya modify nahi ho sakti. Object.seal() structure lock karta hai — properties add/delete nahi ho sakti lekin existing modify ho sakti hain. JSON.stringify() object ko JSON string mein convert karta hai — lekin functions, undefined, aur Symbols silently skip ho jaate hain, Dates strings ban jaati hain."
+          whatIsIt="Object.freeze() object ko completely immutable banata hai — properties add, delete, ya modify nahi ho sakti. Lekin ye shallow freeze hai — nested objects phir bhi mutable! Ye magic nahi, ye JavaScript ka memory model hai — reference freeze hota hai, nested Heap objects nahi. Object.seal() structure lock karta hai — add/delete nahi, lekin existing modify ho sakti hain. JSON.stringify() object ko JSON string mein convert karta hai — lekin functions, undefined, Symbols silently skip ho jaate hain, Dates strings ban jaati hain. Ye sab production mein important gotchas hain!"
           whenToUse={[
             'freeze(): constants, configuration objects jo kabhi change nahi hone chahiye',
             'seal(): objects jo extend nahi honge lekin values update ho sakti hain',
@@ -538,9 +593,9 @@ JSON.stringify(tricky)
       <div id="chapter-quiz">
         <div className="mb-4">
           <h3 className="text-lg font-display font-bold text-[#F5F5F7] mb-1">
-            Chapter 6 Quiz — Objects
+            Chapter 6 Quiz — Objects &amp; Reference Types
           </h3>
-          <p className="text-sm text-[#71717A]">5 questions — 80%+ chahiye clear karne ke liye!</p>
+          <p className="text-sm text-[#71717A]">Heap aur Stack ka khel samjha? freeze aur seal ka fark pata hai? 5 sawaal, 80%+ chahiye!</p>
         </div>
         <QuizSection questions={quizQuestions} chapterSlug="objects" />
       </div>

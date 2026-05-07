@@ -67,10 +67,13 @@ export default function JSChapter19Content() {
           Testing JavaScript — Code Ka Safety Net
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Tests confidence dete hain — code change karo, tests pass karein, ship karo. Bina tests ke refactoring fearful hoti hai. Testing pyramid, Jest basics, mocking, async testing, TDD — ye sab professional developer ke essential tools hain.
+          Ek honest baat: 90% developers tests likhna avoid karte hain — boring lagta hai, time waste lagta hai. Phir ek din production mein bug aata hai — 2 AM pe phone. Client ka pura data corrupt. "Bhai tune test kiya tha?" Tests likhna boring nahi — 2 AM pe phone rehne se bachne ka tarika hai!
+        </p>
+        <p className="text-[#A1A1AA] leading-relaxed mb-3">
+          Ab sawaal ye aata hai — "Bhai itna sab test karo toh development slow nahi hogi?" Actually ulta hota hai! Bina tests ke tum code change karte ho aur darr ke rahte ho — "kuch toot gaya toh?" Tests ke saath code change karo — tests pass hain, ship karo. Confident, fast development.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum practical testing patterns cover karenge jo aap real projects mein immediately use kar sako.
+          Is chapter mein hum practical testing patterns cover karenge jo aap real projects mein immediately use kar sako. Testing pyramid, Jest basics, mocking, async testing, TDD — ye sab professional developer ke essential tools hain.
         </p>
       </div>
 
@@ -79,14 +82,14 @@ export default function JSChapter19Content() {
           title="Testing Pyramid — Kya Test Karo, Kitna?"
           emoji="🔺"
           difficulty="advanced"
-          whatIsIt="Testing pyramid batata hai kitne tests kis level pe hone chahiye. Base: Unit tests — fast, isolated, many. Middle: Integration tests — components ka interaction, moderate. Top: E2E tests — real browser/environment, slow, few. Each level trade-offs hain — speed vs confidence."
+          whatIsIt="Ek surprising failure mode: company ne sirf E2E tests likhey — 500 tests, 2 ghante CI pipeline. Feature add karo — 2 ghante wait. Developer frustrated, tests skip karne lagte hain. Testing pyramid ye galti rokta hai! Base: Unit tests — fast (milliseconds), isolated, many. Middle: Integration tests — components ka interaction, moderate. Top: E2E tests — real browser/environment, slow, few. Each level trade-offs hain — speed vs confidence."
           whenToUse={[
             'Unit tests: individual functions, classes, components',
             'Integration tests: API endpoints, database queries, module interactions',
             'E2E tests: critical user flows — login, checkout, signup',
             'Snapshot tests: UI component rendering',
           ]}
-          whyUseIt="Pyramid shape optimal balance hai — zyada unit tests fast feedback dete hain. E2E tests slow hain aur flaky (network issues, timing). Integration tests middle ground — real interactions test karo without full browser. Test strategy decide karo upfront — random tests waste of time."
+          whyUseIt="Pyramid shape optimal balance hai — zyada unit tests fast feedback dete hain. E2E tests slow hain aur flaky (network issues, timing, animations) — CI mein 30% randomly fail ho sakte hain! Integration tests middle ground — real interactions test karo without full browser. 70/20/10 ratio target karo: 70% unit, 20% integration, 10% E2E. Test strategy decide karo upfront — random tests waste of time aur false confidence dete hain."
           howToUse={{
             filename: 'testing-strategy.js',
             language: 'javascript',
@@ -161,9 +164,9 @@ test('user can log in', async ({ page }) => {
   await expect(page).toHaveURL('/dashboard')
   await expect(page.locator('h1')).toContainText('Dashboard')
 })`,
-            explanation: 'Unit tests pure functions — no setup, fast. Integration tests real DB/server — setup/teardown zaroori. E2E tests real browser — slow, fragile, use karo kam. 70% unit, 20% integration, 10% E2E — approximate target. Critical paths E2E se cover karo, edge cases unit se.',
+            explanation: 'Unit test trace karo: calculateDiscount(1000, 20) — expect 800. No setup, no database, no network — sirf pure function. Milliseconds mein run. Integration test mein: real DB — beforeEach mein fresh seed, afterEach mein rollback. Slower lekin route logic verify hota hai. E2E Playwright mein: real Chrome browser, real page navigation, real form fill. Slowest — sirf critical user flows ke liye. Critical paths E2E se cover karo, edge cases unit se.',
           }}
-          realWorldScenario="Payment system mein: Unit tests har calculation function ke liye. Integration tests payment API route ke liye — real DB lekin mocked payment gateway. E2E test sirf happy path checkout flow ke liye. Agar sab unit hote aur integration nahi — route level bugs miss hote."
+          realWorldScenario="Payment system mein: Unit tests har calculation (discount, tax, total) ke liye — 50 tests, 2 seconds. Integration tests payment API route ke liye — real DB lekin mocked payment gateway — 10 tests, 30 seconds. E2E test sirf happy path checkout ke liye — 3 tests, 2 minutes. Total CI: 2.5 minutes — acceptable! Sab unit hote aur integration nahi — route bugs (wrong HTTP codes, missing auth) miss hote."
           commonMistakes={[
             {
               mistake: 'Sirf E2E tests likhna — pyramid invert karna',
@@ -176,8 +179,17 @@ test('user can log in', async ({ page }) => {
               fix: 'Coverage useful hai dead code dhundne ke liye. Lekin test quality assertions ki quality se measure karo, coverage se nahi.',
             },
           ]}
-          proTip="Property-based testing (fast-check library) se random inputs generate karo aur properties verify karo — 'for any valid input, output should satisfy X'. Edge cases automatically discover ho jaate hain jo manually nahi socha. Mutation testing (Stryker) code changes karta hai — agar test fail nahi hote toh tests weak hain."
+          proTip="Property-based testing (fast-check library) se random inputs generate karo — ek baar try karo! 'For any discount between 0-100, result should be between 0 and original price' — automatically 1000 random inputs test hote hain. Jo edge cases tumne socha nahi — woh bhi! Mutation testing (Stryker) code changes karta hai — agar tests fail nahi hote toh tests weak hain. Eye-opener hai!"
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.25)' }}
+      >
+        <p className="text-sm text-[#FCD34D] font-medium">
+          💡 Akshay ka insight: Jest itna popular kyun hai? Zero config! npm install jest, package.json mein "test": "jest" — done. Automatic test discovery (.test.js, .spec.js files), parallel execution, built-in coverage — sab included. Shuru karne ki cost zero!
+        </p>
       </div>
 
       <div id="jest-basics">
@@ -185,14 +197,14 @@ test('user can log in', async ({ page }) => {
           title="Jest Basics — Testing Framework"
           emoji="🃏"
           difficulty="advanced"
-          whatIsIt="Jest Facebook ka JavaScript testing framework hai — test runner, assertion library, mocking, coverage sab built-in. describe se tests group karo, it/test se individual test likho, expect se assertions. beforeEach/afterEach setup aur cleanup karo. Matchers — toBe, toEqual, toContain, toThrow, toHaveBeenCalled."
+          whatIsIt="Ek common confusion: toBe vs toEqual. expect({a:1}).toBe({a:1}) — FAIL! Objects different references. expect({a:1}).toEqual({a:1}) — PASS! Deep comparison. Ye ek baar confuse karo phir hamesha yaad rahega! Jest Facebook ka JavaScript testing framework hai — test runner, assertion library, mocking, coverage sab built-in. describe se tests group karo, it/test se individual test likho, expect se assertions. beforeEach/afterEach setup aur cleanup karo."
           whenToUse={[
             'Unit aur integration tests likhne ke liye',
             'Mocking aur spying — jest.fn(), jest.mock()',
             'Coverage report — kaunsa code test nahi',
             'Snapshot testing — UI components',
           ]}
-          whyUseIt="Jest zero-config setup deta hai — npm install jest aur chalo. Parallel test execution se fast. Built-in watch mode se instant feedback. Snapshot testing UI regressions catch karta hai. TypeScript ke saath ts-jest ya @swc/jest se seamless."
+          whyUseIt="Jest zero-config setup deta hai — npm install jest aur chalo. Parallel test execution se fast — 100 tests ek second mein. Built-in watch mode se instant feedback — file save karo, tests automatically run. beforeEach har test ke pehle fresh state ensure karta hai — tests ek doosre pe depend nahi karte. jest.clearAllMocks() afterEach mein — mock state reset. TypeScript ke saath @swc/jest se blazing fast compilation."
           howToUse={{
             filename: 'jest-basics.test.js',
             language: 'javascript',
@@ -274,9 +286,9 @@ expect(null).toBeNull()
 expect(undefined).toBeUndefined()
 expect('').toBeFalsy()
 expect(1).toBeTruthy()`,
-            explanation: 'describe groups related tests. beforeEach fresh state ensure karta hai. expect(value).matcher() se assertions. toMatchObject partial object match karta hai — flexible. expect.any() type-based matching. jest.clearAllMocks() mocks reset karta hai between tests.',
+            explanation: 'Test structure trace karo: beforeAll — ek baar setup (DB connect). beforeEach — har test ke pehle (fresh service). Test runs. afterEach — mock clear. Next test runs. afterAll — cleanup (DB disconnect). Nested describe blocks apne beforeEach hain — outer + inner dono run. toMatchObject partial match karta hai — expect.any(String) sahi email check bina exact value jaane. expect.arrayContaining([1,3]) — order matter nahi, elements hone chahiye.',
           }}
-          realWorldScenario="React component testing with Jest + React Testing Library: render(<Button onClick={fn}>Click</Button>); userEvent.click(screen.getByRole('button')); expect(fn).toHaveBeenCalledTimes(1); expect(screen.getByRole('button')).toHaveClass('active')."
+          realWorldScenario="React component testing with Jest + React Testing Library: render(Button), userEvent.click(screen.getByRole('button')), expect(fn).toHaveBeenCalledTimes(1). Implementation details nahi test karo — user interactions test karo. getByRole — accessibility-friendly query, screen reader ke saath bhi test hota hai!"
           commonMistakes={[
             {
               mistake: 'toBe vs toEqual confuse karna objects ke liye',
@@ -289,8 +301,17 @@ expect(1).toBeTruthy()`,
               fix: 'Async test functions mein async/await use karo: it("test", async () => { await someAsyncFn(); expect(...) })',
             },
           ]}
-          proTip="jest.config.js mein setupFilesAfterFramework se global setup karo — jest-extended matchers, custom matchers. --watch mode development mein use karo — save karo, tests run. --coverage se HTML report milti hai. GitHub Actions se CI mein jest --ci flag use karo — watch mode disable, fail fast."
+          proTip="Daily workflow: jest --watch mode on rakho — save karo, tests automatically run. Failed test pe p se filter karo specific test. --coverage HTML report generate karta hai — browser mein kholo, exactly kaunsi lines test nahi hua dikhta hai. GitHub Actions mein jest --ci flag use karo — interactive mode off, fail fast on first error."
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)' }}
+      >
+        <p className="text-sm text-[#6EE7B7] font-medium">
+          💡 Akshay ka insight: Mocking ka golden rule — external dependencies mock karo, internal helpers nahi. Agar tum har function mock kar rahe ho — test likhne ka point kya hai? Behavior test karo, implementation nahi.
+        </p>
       </div>
 
       <div id="mocking">
@@ -298,14 +319,14 @@ expect(1).toBeTruthy()`,
           title="Mocking — Dependencies Isolate Karo"
           emoji="🎭"
           difficulty="advanced"
-          whatIsIt="Mocking real dependencies ko fake implementations se replace karta hai — testing ke liye. jest.fn() spy/stub function banata hai. jest.mock() module completely mock karta hai. jest.spyOn() existing function pe spy lagata hai. Mocking se tests fast, reliable aur isolated hote hain."
+          whatIsIt="Test likhte waqt real database connect karo — test slow ho jaata hai. Network request karo — flaky ho jaata hai (server down ho toh?). Real email bhejo — test users ko actual emails milne lagte hain! Mocking real dependencies ko fake implementations se replace karta hai — testing ke liye. jest.fn() spy/stub function banata hai. jest.mock() module completely mock karta hai. jest.spyOn() existing function pe spy lagata hai — original implementation wrap karta hai."
           whenToUse={[
             'External APIs — real network calls test mein nahi',
             'Database — real DB slow aur state-dependent',
             'File system — reads/writes test environment mein',
             'Time — Date.now(), Math.random() deterministic banana',
           ]}
-          whyUseIt="Real dependencies tests slow, flaky aur environment-dependent banate hain. Mocking se tests deterministic hote hain — same input → same output, always. Function calls verify karo — toHaveBeenCalledWith. Error scenarios easily simulate karo — database down, network timeout."
+          whyUseIt="Real dependencies tests slow, flaky aur environment-dependent banate hain. Mocking se tests deterministic hote hain — same input → same output, always, even in CI. Function calls verify karo — toHaveBeenCalledWith exact arguments. Error scenarios easily simulate karo — mockRejectedValue se database down simulate karo, bina actual DB down kiye. mockResolvedValueOnce se specific call pe specific response."
           howToUse={{
             filename: 'mocking.test.js',
             language: 'javascript',
@@ -392,9 +413,9 @@ it('debounce waits for delay', () => {
 
   jest.useRealTimers()  // Restore
 })`,
-            explanation: 'jest.fn() calls track karta hai aur return values control karta hai. jest.mock() module level pe mock karta hai — import automatically mocked milti hai. jest.spyOn() existing implementation wrap karta hai — spy lagao, restore karo. jest.useFakeTimers() setTimeout/setInterval control karta hai — time-based tests deterministic.',
+            explanation: 'jest.mock() module ke top pe call karna zaroori hai — Jest hoisting karta hai isko file ke upar. import se pehle mock effective ho jaata hai. jest.fn() calls count, arguments, return values sab track karta hai — mockFn.mock.calls array mein sab calls stored. mockResolvedValueOnce: pehli call pe ye value, doosri pe different value — sequential mocking! jest.useFakeTimers() critical: real timers replace ho jaate hain, advanceTimersByTime se time skip karo bina actually waiting.',
           }}
-          realWorldScenario="Payment service test mein: jest.mock('stripe') — real charge nahi. stripe.charges.create.mockResolvedValue({ id: 'ch_test', status: 'succeeded' }). Test karo kya function sahi arguments se call hoi — expect(stripe.charges.create).toHaveBeenCalledWith({ amount: 999, currency: 'inr', source: token })."
+          realWorldScenario="Payment service test mein: jest.mock('stripe') — real charge nahi, real money nahi! stripe.charges.create.mockResolvedValue({ id: 'ch_test', status: 'succeeded' }). Test karo kya function sahi arguments se call hui — expect(stripe.charges.create).toHaveBeenCalledWith({ amount: 999, currency: 'inr', source: token }). Failure scenario bhi test karo: mockRejectedValue se card declined simulate karo!"
           commonMistakes={[
             {
               mistake: 'jest.spyOn ke baad mockRestore bhoolna',
@@ -407,8 +428,17 @@ it('debounce waits for delay', () => {
               fix: 'Behavior test karo, implementation nahi. External dependencies mock karo — internal helpers nahi.',
             },
           ]}
-          proTip="msw (Mock Service Worker) API mocking ke liye excellent hai — network level intercept karta hai. Test aur browser dono mein same mocks. nock Node.js HTTP mocking ke liye. jest-environment-jsdom browser environment simulate karta hai. Happy-dom lighter alternative hai jsdom se."
+          proTip="msw (Mock Service Worker) — next level API mocking! Network level intercept karta hai — test aur browser dono mein same mocks. React Testing Library ke saath perfect pair. nock Node.js HTTP mocking ke liye. afterEach mein jest.restoreAllMocks() — sab spies automatically restore. Too much mocking se tests brittle hote hain — implementation change karo, tests break."
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.25)' }}
+      >
+        <p className="text-sm text-[#93C5FD] font-medium">
+          💡 Akshay ka insight: Async testing ka sabse common bug — test pass ho jaata hai bina assertion run kiye! it("test", () =&gt; asyncFn().then(result =&gt; expect(result).toBe(x))) — agar asyncFn throw kare, test pass hoga! async/await use karo hamesha.
+        </p>
       </div>
 
       <div id="async-testing">
@@ -416,14 +446,14 @@ it('debounce waits for delay', () => {
           title="Testing Async Code — Promises aur Timers"
           emoji="⏳"
           difficulty="advanced"
-          whatIsIt="Async code test karna sync se alag hai. async/await tests mein natural feel deta hai. rejects.toThrow() async errors test karta hai. waitFor() DOM changes ka wait karta hai. jest.useFakeTimers() time-based code test karta hai bina actually waiting. Promise.race mocks se timeouts simulate karo."
+          whatIsIt="Ek shocking false positive: it('test', () => { expect(asyncFn()).toBe(result) }) — test green! But actually assertion never ran! Promise pe .then laga bhi diya toh agar throw hota hai — test pass. Ye false sense of security hai. Async code test karna sync se alag hai. async/await tests mein natural feel deta hai — await lagao, assertion run hogi. rejects.toThrow() async errors test karta hai. jest.useFakeTimers() time-based code bina actual wait ke test karta hai."
           whenToUse={[
             'API call se data fetch karo aur result check karo',
             'Error scenarios — network failure, timeout',
             'Event-based code — setTimeout, setInterval',
             'Real-time features — WebSocket messages, polling',
           ]}
-          whyUseIt="Async code mein false positives easy hain — test completes before assertion runs. Proper async testing patterns ensure assertions actually run. Fake timers se debounce, polling, retry logic fast test hoti hai — real wait nahi. waitFor React Testing Library mein DOM updates ka wait karta hai."
+          whyUseIt="Fake timers ka power: debounce test karo bina actually 300ms wait kiye — jest.advanceTimersByTime(300) instant! Polling service test karo bina 30 second wait kiye — advance karo, check karo. Retry logic — 3 attempts simulate karo. Real wait hoti toh test suite slow ho jaata. await Promise.resolve() — microtask queue flush karta hai — async state updates visible ho jaate hain tests mein."
           howToUse={{
             filename: 'async-testing.test.js',
             language: 'javascript',
@@ -514,9 +544,9 @@ it('succeeds on second attempt', async () => {
   expect(result).toEqual({ success: true })
   expect(fn).toHaveBeenCalledTimes(2)
 })`,
-            explanation: 'async/await in tests natural hai — await result, then assert. rejects.toThrow() async errors ke liye. Fake timers time-based code test fast karte hain. await Promise.resolve() microtask queue flush karta hai — async updates visible ho jaate hain. Mock chaining se different calls different results deti hain.',
+            explanation: 'Polling test trace karo: jest.useFakeTimers() — real timers off. service.start() — immediate call (count: 1). jest.advanceTimersByTime(30000) — timer fires synchronously! Lekin setTimeout callback async ho sakta hai — await Promise.resolve() se microtask flush karo. ab count: 2. Doosri advance — count: 3. 90 seconds ka test — milliseconds mein! Retry test mein mockFn: 1st call reject, 2nd call reject, 3rd call resolve — chained mockRejectedValueOnce.',
           }}
-          realWorldScenario="Retry mechanism test karna: mockFn pehle 2 baar fail kare, teesri baar succeed. withRetry(mockFn, 3) call karo — expect 2 failures, 1 success. expect(mockFn).toHaveBeenCalledTimes(3). Backoff timing fake timers se verify karo. Real API call nahi."
+          realWorldScenario="Retry mechanism test karna: mockFn pehle 2 baar fail kare, teesri baar succeed. withRetry(mockFn, 3) call karo — expect 2 failures, 1 success. expect(mockFn).toHaveBeenCalledTimes(3). Exponential backoff timing fake timers se verify karo bina actually waiting. Real API call nahi — fast, deterministic, reliable!"
           commonMistakes={[
             {
               mistake: 'Async test mein async keyword missing',
@@ -529,8 +559,17 @@ it('succeeds on second attempt', async () => {
               fix: 'afterEach(() => jest.useRealTimers()) ya jest.clearAllTimers(). beforeEach mein useFakeTimers karo.',
             },
           ]}
-          proTip="React Testing Library ke waitFor() aur findBy* queries DOM mutations ka automatically wait karte hain — manual setTimeout nahi. findByText('Loading...') await karo — jab appear ho tab resolve. waitForElementToBeRemoved loading spinner remove hone ka wait karta hai."
+          proTip="React Testing Library: findBy* queries DOM mutations ka automatically wait karte hain — getBy* nahi, findBy*! findByText('Loading...') — jab appear ho tab resolve. waitForElementToBeRemoved loading spinner remove hone ka wait karta hai. Manual setTimeout ya sleep mat lagao tests mein — fragile aur slow. waitFor bhi available hai custom assertions ke liye."
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)' }}
+      >
+        <p className="text-sm text-[#FCA5A5] font-medium">
+          💡 Akshay ka insight: TDD pehli baar karne pe weird lagta hai — "test kaise likhoon jab code hai hi nahi?" Yehi TDD ka point hai! Test likhne se tum PEHLE sochte ho — yeh function kya lega, kya return karega, kya edge cases hain. Design pehle hoti hai, code baad mein.
+        </p>
       </div>
 
       <div id="tdd">
@@ -538,14 +577,14 @@ it('succeeds on second attempt', async () => {
           title="TDD — Test-Driven Development"
           emoji="🔴🟢♻️"
           difficulty="advanced"
-          whatIsIt="TDD ek development methodology hai — code se pehle test likho. Red: failing test likho. Green: minimum code likho test pass karne ke liye. Refactor: code clean karo tests green rakhte hue. Repeat. TDD se emergent design milti hai — code inherently testable hota hai kyunki tests pehle likhe."
+          whatIsIt="TDD ka cycle sirf teen steps mein: Red — failing test likho (compile bhi nahi hoga!). Green — minimum code likho test pass karne ke liye (sirf itna, jyada nahi). Refactor — code clean karo, tests green rakhte hue. Repeat. TDD se emergent design milti hai — code inherently testable hota hai kyunki tests pehle likhe jaate hain. Agar test likhna mushkil lag raha hai — design poor hai! Yahi TDD ka design feedback hai."
           whenToUse={[
             'New features — requirements clear hon toh TDD excellent',
             'Bug fixes — pehle failing test likho bug ko reproduce karo',
             'Complex algorithms — TDD se step-by-step build karo',
             'Refactoring — existing tests safety net hain',
           ]}
-          whyUseIt="TDD se code inherently decoupled aur testable hota hai — hard-to-test code usually poor design ka sign hai. Tests living documentation hain — intent clear hoti hai. Regression automatic catch hoti hai. Developer confidence badhti hai. Over-engineering avoid hota hai — sirf itna likho jitna test requires."
+          whyUseIt="TDD se code inherently decoupled aur testable hota hai — hard-to-test code usually poor design ka sign hai! 'Ye function test karna mushkil hai' — matlab function bahut zyada kaam karta hai ya dependencies hard-coded hain. Tests living documentation hain — test names requirements describe karte hain. Regression automatic catch hoti hai. Over-engineering avoid hota hai — YAGNI (You Aren't Gonna Need It) naturally enforce hota hai."
           howToUse={{
             filename: 'tdd-example.test.js',
             language: 'javascript',
@@ -627,9 +666,9 @@ add(item) {
 }
 
 // Now refactor freely — tests are green safety net!`,
-            explanation: 'TDD Red→Green→Refactor cycle. Pehle failing test (Red) — exact requirement specify karta hai. Minimum code pass karo (Green) — no more. Refactor cleanly (Refactor) — tests ensure correctness. Har step small — focus clear. Emergent design — complex upfront design nahi.',
+            explanation: 'Cart TDD trace karo: Test 1: cart.items should equal []. Cart class banao: items = []. Pass! Test 2: add karo, items.length 1 hona chahiye. add() method implement karo — push. Pass! Test 3: total 53000 chahiye. get total() implement karo — reduce. Pass! Test 4: same item add karo, length 1 rehna chahiye (merge). add() update karo — existing check. Pass! Har step laser-focused — sirf current test pass karna. Emergent design — upfront design karne ki zaroorat nahi padi.',
           }}
-          realWorldScenario="Bug fix ke saath TDD: user report karta hai ki coupon code apply nahi ho raha. Test likho: it('applies coupon discount', ...) — FAIL. Fix karo code — PASS. Regression test permanently wahan hai — wahi bug phir nahi aayega."
+          realWorldScenario="Bug fix ke saath TDD: user report karta hai ki coupon code apply nahi ho raha. Pehle test likho: it('applies coupon discount', ...) — FAIL. Ye confirm karta hai bug exist karta hai. Fix karo code — PASS. Regression test permanently wahan hai — wahi bug phir kabhi nahi aayega kyunki test hamesha run hoga CI mein!"
           commonMistakes={[
             {
               mistake: 'Saara code pehle likhna, phir tests',
@@ -642,7 +681,7 @@ add(item) {
               fix: 'Red→Green→Refactor — teeno steps mandatory. Green ke baad code review karo — clean karo, tests pass rakhkar.',
             },
           ]}
-          proTip="TDD sirf tests nahi — design tool hai. Agar test likhna mushkil lag raha hai toh design poor hai — too many dependencies, too many responsibilities. Design pressure se push karo — simpler interface, better separation. TDD se self-documenting code milta hai — test names requirements describe karte hain."
+          proTip="TDD sirf tests nahi — design tool hai! Agar test likhna mushkil lag raha hai toh design poor hai — too many dependencies, too many responsibilities. Yahi signal hai refactor karo. 'Outside-in TDD' — high level test se shuru karo, neeche unit tests mein jaao. BDD (Behavior-Driven Development) TDD ka extension hai — Given/When/Then format. Real-world mein hamesha strict TDD nahi hoga — lekin test-first mindset hamesha rakhna chahiye."
         />
       </div>
 

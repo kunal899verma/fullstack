@@ -11,13 +11,13 @@ export default function Chapter10Content() {
         style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Buffers & Binary Data — Raw Bytes Ka Duniya
+          JavaScript strings Unicode mein hoti hain — lekin computer sirf 0 aur 1 jaanta hai. Buffer woh gap fill karta hai.
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Node.js streams mein, file system mein, network packets mein — sab kuch ultimately bytes hain. Buffer Node.js ka raw memory representation hai. Images, audio files, encrypted data, network protocols — ye sab Buffer ke through handle hote hain.
+          Image upload karo, encrypted data bhejo, network packet parse karo — sab kuch ultimately bytes hain. Buffer Node.js ka raw memory representation hai — V8 heap ke bahar. Ye concept tab samajh aata hai jab pehli baar koi image corrupt hoti hai kyunki galat encoding use ki. Tab realization hoti hai — binary data strings se bilkul alag hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          JavaScript mein strings Unicode hoti hain — binary data ke liye Buffer ya TypedArrays chahiye. Jab bhi binary protocol implement karo ya binary file process karo, Buffer tumhara tool hai.
+          JavaScript mein strings Unicode hoti hain — binary data ke liye Buffer ya TypedArrays chahiye. Jab bhi binary protocol implement karo ya binary file process karo, Buffer tumhara sabse close tool hai.
         </p>
       </div>
 
@@ -26,14 +26,14 @@ export default function Chapter10Content() {
           title="Buffer Kya Hai?"
           emoji="📦"
           difficulty="intermediate"
-          whatIsIt="Buffer ek fixed-size raw memory allocation hai — JavaScript heap ke bahar. Ye raw bytes store karta hai — 0 se 255 tak ke integers (unsigned 8-bit). String ke jaisa nahi — no encoding, no character concept, sirf bytes. Node.js ne browser JavaScript mein missing binary data handling add kiya — Buffer se."
+          whatIsIt="Pehle shocking baat — Buffer JavaScript heap ke bahar allocate hota hai. V8 garbage collector isko touch nahi karta directly. Ye ek fixed-size raw memory allocation hai jo 0 se 255 tak ke integers (unsigned 8-bit bytes) store karta hai. String ke jaisa bilkul nahi — no encoding, no character concept, sirf bytes. Ab sawaal ye aata hai — JavaScript mein strings hoti hain na, Buffer kyun chahiye? Kyunki strings Unicode mein hain — binary data accurately represent nahi kar sakti. JPEG image ka byte 0xD8 string mein rakhoge toh data corrupt ho sakta hai — Buffer mein rakhoge toh safe."
           whenToUse={[
             'Binary file read/write karna — images, videos, PDFs',
             'Network protocols — TCP packets, binary protocols (gRPC, MessagePack)',
             'Encryption/hashing — crypto module Buffer use karta hai',
             'Streams — readable/writable streams data Buffer mein aata-jaata hai',
           ]}
-          whyUseIt="JavaScript strings Unicode mein hoti hain — binary data accurately represent nahi kar sakti. Buffer V8 heap ke bahar allocate hoti hai — garbage collection pressure nahi. Large binary data efficient handle hoti hai. Node.js core modules (fs, net, crypto) Buffer return/accept karte hain."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki JavaScript strings Unicode mein hoti hain — binary data accurately represent nahi kar sakti. Buffer V8 heap ke bahar allocate hoti hai — garbage collection pressure nahi. Large binary data efficient handle hoti hai. Node.js core modules (fs, net, crypto) Buffer return/accept karte hain."
           howToUse={{
             filename: 'buffer-basics.js',
             language: 'javascript',
@@ -60,9 +60,9 @@ console.log(str === decoded)  // true
 const imageBuffer = Buffer.from([0xFF, 0xD8, 0xFF])  // JPEG magic bytes
 const isJPEG = imageBuffer[0] === 0xFF && imageBuffer[1] === 0xD8
 console.log('Is JPEG:', isJPEG)  // true`,
-            explanation: "Buffer Node.js 4+ se globally available hai — import ki zaroorat nahi. length property bytes count hai, string length nahi — multi-byte characters alag count karenge. TypedArray view same memory share karta hai Buffer ke saath — zero-copy operations possible hain.",
+            explanation: "Under the hood: Buffer ek TypedArray (Uint8Array) hai jo Node.js ne extend kiya hai extra methods add karne ke liye. Same underlying ArrayBuffer share hota hai. Buffer.poolSize (8192 bytes) ek pre-allocated pool hai — chhote buffers is pool se slice karte hain, bahut fast allocation. Bade buffers directly allocate hote hain. Ye hi Buffer ka performance secret hai.",
           }}
-          realWorldScenario="Image upload API mein — client multipart form se image bhejta hai, server Buffer mein receive karta hai, magic bytes se file type validate karta hai (JPEG: FF D8 FF, PNG: 89 50 4E 47), phir S3/Cloudinary pe upload karta hai. Sab kuch Buffer operations mein."
+          realWorldScenario="Image upload API mein — client multipart form se image bhejta hai, server Buffer mein receive karta hai, magic bytes se file type validate karta hai (JPEG: FF D8 FF, PNG: 89 50 4E 47), phir S3/Cloudinary pe upload karta hai. Sab kuch Buffer operations mein. Galat encoding use karo — image corrupt hogi."
           commonMistakes={[
             {
               mistake: 'Buffer(size) ya new Buffer() use karna',
@@ -75,8 +75,13 @@ console.log('Is JPEG:', isJPEG)  // true`,
               fix: 'Sensitive data ke liye Buffer.alloc() use karo — zero fills. allocUnsafe sirf jab immediately overwrite karne wale ho — performance critical code.',
             },
           ]}
-          proTip="Buffer JavaScript TypedArray ke saath interoperable hai: Buffer.from(arrayBuffer) ya buffer.buffer se underlying ArrayBuffer access karo. WebAssembly ke saath kaam karte waqt ya SharedArrayBuffer use karte waqt ye conversions common hain."
+          proTip="Buffer JavaScript TypedArray ke saath interoperable hai: Buffer.from(arrayBuffer) ya buffer.buffer se underlying ArrayBuffer access karo. WebAssembly ke saath kaam karte waqt ya SharedArrayBuffer use karte waqt ye conversions common hain. Ye interoperability Node.js ka powerful feature hai."
         />
+      </div>
+
+      <div className="rounded-xl p-4 my-4" style={{background:'rgba(245,158,11,0.06)', border:'1px solid rgba(245,158,11,0.2)'}}>
+        <p className="text-sm font-bold text-[#F59E0B] mb-2">🤔 Sawaal: Buffer aur String mein kya fundamental fark hai?</p>
+        <p className="text-sm text-[#A1A1AA]">Ye samajhna zaroori hai! String — Unicode characters ka sequence, variable bytes per character (emoji = 4 bytes lekin length = 1). Buffer — raw bytes ka sequence, har index ek byte (0-255). String.length characters count karta hai. Buffer.length bytes count karta hai. Isliye 'Hello' ka Buffer.from('Hello').length = 5, lekin 'Namaste 🙏'.length = 9 characters lekin Buffer.from('Namaste 🙏').length = 13 bytes!</p>
       </div>
 
       <div id="buffer-creation">
@@ -84,14 +89,14 @@ console.log('Is JPEG:', isJPEG)  // true`,
           title="Buffer Creation — alloc, allocUnsafe, from"
           emoji="🏗️"
           difficulty="intermediate"
-          whatIsIt="Teen primary ways: Buffer.alloc(size, fill?) — zero-initialized ya custom fill. Buffer.allocUnsafe(size) — fast lekin garbage data ho sakti hai, use karo jab turant overwrite karoge. Buffer.from(source) — string, array, ArrayBuffer ya Buffer se create. Sahi method choose karna security aur performance dono affect karta hai."
+          whatIsIt="Pehle galti karo aur new Buffer() use karo — Node.js warning dega. Ye deprecated hai aur security risk hai kyunki memory uninitialized hoti hai. Teen sahi tarike hain: Buffer.alloc(size, fill?) — zero-initialized ya custom fill (safe, thoda slow). Buffer.allocUnsafe(size) — fast lekin garbage data ho sakti hai, use karo jab turant overwrite karoge (speed ke liye, sensitive data ke liye never). Buffer.from(source) — string, array, ArrayBuffer ya Buffer se create. Sahi method choose karna security aur performance dono affect karta hai."
           whenToUse={[
             'alloc: Initialization required — default, safe choice',
             'allocUnsafe: Performance critical code jahan immediately write karoge',
             'from(string, encoding): Text ko bytes mein convert karna',
             'from(array): Raw byte values se Buffer',
           ]}
-          whyUseIt="Buffer creation method choice security implications rakhti hai. alloc vs allocUnsafe fark sirf initialization ka hai — allocUnsafe 5-10x faster ho sakta hai large allocations mein. Production code mein sensitive contexts mein hamesha alloc use karo."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki Buffer creation method choice security implications rakhti hai. alloc vs allocUnsafe fark sirf initialization ka hai — allocUnsafe 5-10x faster ho sakta hai large allocations mein. Production code mein sensitive contexts mein hamesha alloc use karo."
           howToUse={{
             filename: 'buffer-creation.js',
             language: 'javascript',
@@ -127,9 +132,9 @@ const copy = Buffer.from(original)
 copy[0] = 0x4A                              // 'J'
 console.log(original.toString())            // "Hello" — untouched
 console.log(copy.toString())                // "Jello"`,
-            explanation: "Buffer.from(buffer) deep copy karta hai — same memory share nahi hoti. Buffer.from(arrayBuffer) slice reference karta hai — same memory share hoti hai. Hex format mein each byte 2 characters: 'ff' = 255. Encoding parameter important hai — wrong encoding = garbled text.",
+            explanation: "Step-by-step trace: Buffer.alloc(10) — 10 bytes ke liye memory allocate hoti hai, sab 0x00 se initialize hoti hai. Buffer.allocUnsafe(10) — 10 bytes allocate hote hain bina initialization ke — previous memory content wahi rehta hai. Buffer.from(another) — deep copy karta hai, same memory share nahi hoti. Buffer.from(arrayBuffer) — slice reference, same memory share hoti hai.",
           }}
-          realWorldScenario="JWT token decode karne ke liye: token split karo '.', Buffer.from(part, 'base64url') se decode karo, toString('utf8') se JSON string lo, JSON.parse karo. Sab Buffer operations chain mein."
+          realWorldScenario="JWT token decode karne ke liye: token split karo '.', Buffer.from(part, 'base64url') se decode karo, toString('utf8') se JSON string lo, JSON.parse karo. Sab Buffer operations chain mein. Galat encoding specify karo toh JSON parse fail hoga — silent bug."
           commonMistakes={[
             {
               mistake: 'Encoding specify nahi karna Buffer.from(string) mein',
@@ -142,7 +147,7 @@ console.log(copy.toString())                // "Jello"`,
               fix: 'Independent copy chahiye toh: Buffer.from(new Uint8Array(arrayBuffer)) ya Buffer.from(buffer) use karo.',
             },
           ]}
-          proTip="Performance critical code mein Buffer pool use karo: Buffer.allocUnsafeSlow() pool ke bahar allocate karta hai (larger buffers ke liye), pooled allocation Buffer.allocUnsafe() se faster hai chhote buffers ke liye. Buffer.poolSize (default 8KB) se pool size tune karo."
+          proTip="Performance critical code mein Buffer pool use karo: Buffer.allocUnsafeSlow() pool ke bahar allocate karta hai (larger buffers ke liye), pooled allocation Buffer.allocUnsafe() se faster hai chhote buffers ke liye. Buffer.poolSize (default 8KB) se pool size tune karo — ye tumhara performance gatekeeper hai."
         />
       </div>
 
@@ -151,14 +156,14 @@ console.log(copy.toString())                // "Jello"`,
           title="Buffer Encodings — utf8, hex, base64, binary"
           emoji="🔤"
           difficulty="intermediate"
-          whatIsIt="Buffer encoding specify karta hai ki bytes ko string kaise represent karein ya string ko bytes mein kaise convert karein. Common encodings: utf8 (default, text), hex (debug, network), base64 (images, APIs), latin1/binary (legacy). Wrong encoding = data corruption."
+          whatIsIt="Ye shocking hai — same bytes, alag encoding, completely different output. 0x48 0x65 0x6C 0x6C 0x6F — utf8 mein 'Hello', hex mein '48656c6c6f', base64 mein 'SGVsbG8='. Ab sawaal ye aata hai — kab kaunsa use karein? utf8 (default): text data — hamesha. hex: debugging, checksums, cryptographic hashes. base64: binary data as text — email attachments, data URIs, JWT tokens. latin1/binary: legacy protocols. Wrong encoding use karo — data corruption. Production mein ye ek common bug source hai."
           whenToUse={[
             'utf8: Text data — hamesha default — JSON, HTML, plain text',
             'base64: Binary data as text — email attachments, data URIs, JWT tokens',
             'hex: Debugging, checksums, cryptographic hashes',
             'latin1/binary: Legacy protocols, ISO-8859-1 systems',
           ]}
-          whyUseIt="Different contexts alag encodings use karte hain. HTTP APIs base64 images accept karte hain. JWT tokens base64url encoded hote hain. SHA-256 hashes hex representation mein share hote hain. Wrong encoding se data loss ya corruption hoti hai."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki different contexts alag encodings use karte hain. HTTP APIs base64 images accept karte hain. JWT tokens base64url encoded hote hain. SHA-256 hashes hex representation mein share hote hain. Wrong encoding se data loss ya corruption hoti hai."
           howToUse={{
             filename: 'buffer-encodings.js',
             language: 'javascript',
@@ -196,9 +201,9 @@ const dataUrl = \`data:image/jpeg;base64,\${base64Image}\`
 const crypto = require('crypto')
 const hash = crypto.createHash('sha256').update('password').digest('hex')
 console.log(hash)  // 64 char hex string`,
-            explanation: "UTF-8 mein emoji aur non-ASCII characters multiple bytes lete hain — string.length !== buffer.length. Base64 encoding 4/3 ratio add karta hai — 3 bytes = 4 base64 chars. Base64URL URL-safe version hai (no + / = chars). hex encoding 2 chars per byte = double size.",
+            explanation: "Under the hood trace: UTF-8 mein emoji aur non-ASCII characters multiple bytes lete hain — 'Hello 🌍' = 9 chars lekin 13 bytes. Base64 encoding 4/3 ratio add karta hai — 3 bytes = 4 base64 chars, isliye base64 size 33% bada hota hai. Base64URL URL-safe version hai — '+' ko '-' se aur '/' ko '_' se replace karta hai, padding '=' remove karta hai.",
           }}
-          realWorldScenario="S3 pre-signed URL se image upload karne ke baad — image buffer read karo, base64 encode karo, OpenAI API ko bhejo image analysis ke liye. API base64 strings accept karta hai raw bytes nahi. Encoding conversion seamless hona chahiye."
+          realWorldScenario="S3 pre-signed URL se image upload karne ke baad — image buffer read karo, base64 encode karo, OpenAI API ko bhejo image analysis ke liye. API base64 strings accept karta hai raw bytes nahi. Encoding conversion seamless hona chahiye — galat encoding = 'Invalid image format' error."
           commonMistakes={[
             {
               mistake: "Binary data ko 'utf8' string mein store karna",
@@ -211,8 +216,13 @@ console.log(hash)  // 64 char hex string`,
               fix: "JWT decode karne ke liye: Buffer.from(token, 'base64url'). Agar atob() use kar rahe ho browser mein toh replace karo '+' → '+' aur '-' → '+' pehle. Node.js mein Buffer.from(str, 'base64url') directly kaam karta hai.",
             },
           ]}
-          proTip="Buffer.byteLength(string, encoding) se string ke exact bytes count karo before allocation: const len = Buffer.byteLength(text, 'utf8'); const buf = Buffer.allocUnsafe(len); buf.write(text, 'utf8'). Ye efficient hai — pre-calculate size, avoid reallocation."
+          proTip="Buffer.byteLength(string, encoding) se string ke exact bytes count karo before allocation: const len = Buffer.byteLength(text, 'utf8'); const buf = Buffer.allocUnsafe(len); buf.write(text, 'utf8'). Ye efficient hai — pre-calculate size, avoid reallocation. Ye performance optimization ka gatekeeper hai."
         />
+      </div>
+
+      <div className="rounded-xl p-4 my-4" style={{background:'rgba(245,158,11,0.06)', border:'1px solid rgba(245,158,11,0.2)'}}>
+        <p className="text-sm font-bold text-[#F59E0B] mb-2">🤔 Sawaal: base64 aur base64url mein practically kab fark padta hai?</p>
+        <p className="text-sm text-[#A1A1AA]">Real mein fark padta hai JWT tokens mein! JWT header.payload.signature format hai — teen base64url-encoded parts hain. Agar regular base64 use karo URL mein toh '+' encode hota hai '%2B', '/' encode hota hai '%2F' — URL routing break ho sakta hai. base64url safe hai URLs ke liye. Node.js 14.18+ mein Buffer.from(str, 'base64url') direct support hai — purane versions mein manually replace karo.</p>
       </div>
 
       <div id="buffer-operations">
@@ -220,14 +230,14 @@ console.log(hash)  // 64 char hex string`,
           title="Buffer Operations — Read, Write, Compare, Slice"
           emoji="⚙️"
           difficulty="intermediate"
-          whatIsIt="Buffer mein data read aur write karne ke multiple methods hain — indexed access, readUInt8/writeUInt8, readInt32BE/LE (big-endian/little-endian). compare se buffers compare karo. copy se data transfer karo. subarray/slice se views create karo (same memory). concat se multiple buffers join karo."
+          whatIsIt="Buffer mein data read aur write karne ke multiple methods hain — indexed access, readUInt8/writeUInt8, readInt32BE/LE. Aur ye BE aur LE ka kya chakkar hai? BE = Big-Endian (most significant byte first — network byte order, jaise TCP/IP). LE = Little-Endian (least significant byte first — x86 processors). Wrong byte order se binary protocols fail ho jaate hain silently — bytes sahi hain lekin galat order mein hain. compare se buffers compare karo. subarray se views create karo — same memory, zero-copy."
           whenToUse={[
             'Binary protocol implement karna — fixed format data structures',
             'Network data parse karna — TCP stream, UDP packets',
             'File format handling — parse image headers, binary file formats',
             'Performance-sensitive data processing — zero-copy operations',
           ]}
-          whyUseIt="Low-level binary manipulation sirf Buffer se possible hai JavaScript mein. Big-endian/little-endian byte order network protocols mein critical hai. copy aur subarray se memory-efficient operations possible hain — no unnecessary allocation."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki low-level binary manipulation sirf Buffer se possible hai JavaScript mein. Big-endian/little-endian byte order network protocols mein critical hai. copy aur subarray se memory-efficient operations possible hain — no unnecessary allocation."
           howToUse={{
             filename: 'buffer-operations.js',
             language: 'javascript',
@@ -268,9 +278,9 @@ console.log(main)   // <Buffer 01 02 63 04 05 06 07 08> — original changed!
 const parts = [Buffer.from('Hello'), Buffer.from(', '), Buffer.from('World')]
 const joined = Buffer.concat(parts)
 console.log(joined.toString())  // 'Hello, World'`,
-            explanation: "BE = Big-Endian (most significant byte first — network byte order). LE = Little-Endian (least significant byte first — x86 processors). TCP/IP BE use karta hai. subarray same memory share karta hai — efficient lekin modify karne se original change hota hai. copy independent copy banata hai.",
+            explanation: "Step-by-step trace: writeUInt16BE(1024, 1) — 1024 = 0x0400. BE mein: offset 1 = 0x04, offset 2 = 0x00. LE hota toh: offset 1 = 0x00, offset 2 = 0x04. Network protocols hamesha BE use karte hain (network byte order). subarray same memory reference karta hai — efficient lekin modify karne se original change hota hai — ye side effect yaad rakho.",
           }}
-          realWorldScenario="Binary message protocol implement karna: first 2 bytes message length, next byte message type, remaining bytes payload. readUInt16BE(0) length, readUInt8(2) type, subarray(3, 3+length) payload — zero-copy payload extraction. Efficient binary parsing."
+          realWorldScenario="Binary message protocol implement karna: first 2 bytes message length, next byte message type, remaining bytes payload. readUInt16BE(0) length, readUInt8(2) type, subarray(3, 3+length) payload — zero-copy payload extraction. Efficient binary parsing. TCP socket se data receive karo aur parse karo — ye real-world use case hai."
           commonMistakes={[
             {
               mistake: 'subarray aur slice confuse karna — thinking both copy',
@@ -283,7 +293,7 @@ console.log(joined.toString())  // 'Hello, World'`,
               fix: 'Read karne se pehle offset + size < buffer.length check karo. Production code mein try-catch ya explicit bounds check karo.',
             },
           ]}
-          proTip={'Node.js mein Buffer.from(string) internals — 8192 bytes ka pre-allocated pool hota hai. Chhote buffers is pool se slice karte hain — very fast allocation. Bade buffers (> poolSize/2 = 4096 bytes) directly allocate hote hain. allocUnsafe(< 4096) pool se, allocUnsafeSlow() direct — performance profiling mein useful distinction.'}
+          proTip={'Node.js mein Buffer.from(string) internals — 8192 bytes ka pre-allocated pool hota hai. Chhote buffers is pool se slice karte hain — very fast allocation. Bade buffers (> poolSize/2 = 4096 bytes) directly allocate hote hain. allocUnsafe(< 4096) pool se, allocUnsafeSlow() direct — performance profiling mein useful distinction. Ye pool Buffer ka hidden power hai.'}
         />
       </div>
 
@@ -292,14 +302,14 @@ console.log(joined.toString())  // 'Hello, World'`,
           title="Buffer vs Stream — Kab Kya Use Karein"
           emoji="🌊"
           difficulty="intermediate"
-          whatIsIt="Buffer: poora data ek jagah memory mein. Stream: data chunks mein process karo — chunk by chunk. Buffer simple hai lekin large files ke liye memory problem. Stream memory efficient hai lekin complex code. 1MB file — Buffer theek hai. 1GB file — Stream mandatory hai. Binary protocols — Buffer. Large file processing — Stream."
+          whatIsIt="Ye fundamental architecture decision hai. Buffer: poora data ek jagah memory mein — simple, random access, lekin memory hungry. Stream: data chunks mein process karo — thoda complex, lekin memory efficient. Ab sawaal ye aata hai — line kahan draw karein? Practical rule: 100MB se chhota aur complete data ek baar chahiye — Buffer theek hai. 100MB se bada, network data, real-time processing, piping — Stream mandatory hai. Binary protocols — Buffer (complete packet ek baar parse). Video encoding, log processing — Stream. Node.js mein default 1.5GB memory limit hai — 2GB file Buffer mein = crash guaranteed."
           whenToUse={[
             'Buffer: Small to medium files (<100MB), complete data ek baar chahiye, random access',
             'Stream: Large files (>100MB), network data, real-time processing, piping',
             'Buffer: Binary protocol parsing — complete packet ek baar parse',
             'Stream: Video encoding, log processing, file transformation',
           ]}
-          whyUseIt="Node.js mein default 1.5GB memory limit hai per process. 2GB file Buffer mein load karna = crash. Stream se wo same file 50MB memory mein process hoti hai — chunk by chunk. Memory efficiency critical hai server applications mein jahan many concurrent operations hoti hain."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki Node.js mein default 1.5GB memory limit hai per process. 2GB file Buffer mein load karna = crash. Stream se wo same file 50MB memory mein process hoti hai — chunk by chunk. Memory efficiency critical hai server applications mein jahan many concurrent operations hoti hain."
           howToUse={{
             filename: 'buffer-vs-stream.js',
             language: 'javascript',
@@ -349,9 +359,9 @@ const { Readable } = require('stream')
 function bufferToStream(buffer) {
   return Readable.from(buffer)
 }`,
-            explanation: "highWaterMark stream buffer size control karta hai — kitne bytes memory mein ek baar rakhein. pipe() backpressure automatically handle karta hai — fast writer slow reader ko overwhelm nahi karta. Buffer.concat(chunks) final assembly efficient hai — ek baar join karo, baar baar concat nahi.",
+            explanation: "highWaterMark stream buffer size control karta hai — kitne bytes memory mein ek baar rakhein. pipe() backpressure automatically handle karta hai — fast writer slow reader ko overwhelm nahi karta. Buffer.concat(chunks) final assembly efficient hai — ek baar join karo, baar baar concat nahi. streamToBuffer() pattern use karo jab streaming API se Buffer chahiye — test mein ya legacy code mein.",
           }}
-          realWorldScenario="Video transcoding service — 4K video 8GB ka. Buffer mein load? Server crash. Stream se: input stream read, FFmpeg transform stream, output stream write. Memory 100MB se kam use hoti hai. Thousands of concurrent transcoding jobs possible without memory issues."
+          realWorldScenario="Video transcoding service — 4K video 8GB ka. Buffer mein load? Server crash. Stream se: input stream read, FFmpeg transform stream, output stream write. Memory 100MB se kam use hoti hai. Thousands of concurrent transcoding jobs possible without memory issues. Ye architecture decision ek company ke infrastructure cost determine karta hai."
           commonMistakes={[
             {
               mistake: 'Stream data ko string mein concatenate karna',
@@ -364,7 +374,7 @@ function bufferToStream(buffer) {
               fix: 'Default 16KB most cases ke liye theek hai. Network streams mein 64KB common hai. Disk I/O ke liye 1MB. Profile karo, tune karo.',
             },
           ]}
-          proTip={'Node.js 16+ mein stream/promises API use karo: import { pipeline } from "stream/promises"; await pipeline(readStream, transformStream, writeStream). Error handling automatic, cleaner code, no manual event listeners. Old pipe() ke saath error handling manual aur tricky tha.'}
+          proTip={'Node.js 16+ mein stream/promises API use karo: import { pipeline } from "stream/promises"; await pipeline(readStream, transformStream, writeStream). Error handling automatic, cleaner code, no manual event listeners. Old pipe() ke saath error handling manual aur tricky tha. pipeline() = production-ready streams ka gatekeeper.'}
         />
       </div>
     </div>

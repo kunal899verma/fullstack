@@ -59,13 +59,13 @@ export default function GenAIChapter3Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          ML Fundamentals — Models Kaise Seekhte Hain?
+          ML Fundamentals — Garbage In, Garbage Out!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Machine learning mein models data se patterns seekhte hain — bina explicitly programming kiye. Is chapter mein hum training data, loss functions, overfitting, regularization, aur evaluation metrics cover karenge — practical ML workflow ke liye essential concepts.
+          Shocking reality: duniya ka best model bhi bekar data par train karoge toh bekar output dega. "Garbage in, garbage out" — ye ML ka sabse important lesson hai. Is chapter mein hum training data, loss functions, overfitting, regularization, aur evaluation metrics cover karenge. Ye concepts itne important hain ki ChatGPT se lekar kisi bhi simple spam classifier tak — sab mein yahi apply hote hain.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Ye concepts har ML project mein kaam aate hain — chahe simple linear regression ho ya GPT fine-tuning.
+          Ye foundations samajhne ke baad tune har ML project mein better decisions lega — chahe simple regression ho ya GPT fine-tuning.
         </p>
       </div>
 
@@ -75,14 +75,14 @@ export default function GenAIChapter3Content() {
           title="Training Data — Garbage In, Garbage Out"
           emoji="📊"
           difficulty="beginner"
-          whatIsIt="ML model utna hi achha hoga jitna uska training data. Features (inputs), labels (expected outputs), aur train/val/test split — ye sab model quality determine karte hain. Data quality > model complexity."
+          whatIsIt="Ek shocking lekin sach baat: ML mein data > algorithm. Ek simple model excellent data par > ek complex model bad data par. Features (inputs), labels (expected outputs), aur train/val/test split — ye sab decide karte hain ki tera model production mein accha karega ya nahi. 70% train / 15% validation / 15% test — golden ratio hai ye. Aur ek critical rule: test set sirf ek baar use karo — final evaluation ke liye. Baar baar dekhne se tum khud bias ho jaate ho."
           whenToUse={[
             'Dataset collect karo — quality aur quantity dono matter karte hain',
             'Features engineer karo — raw data se useful representations banao',
             'Train/val/test split karo — generalization measure karo',
             'Data imbalance handle karo — oversampling, undersampling',
           ]}
-          whyUseIt="Best model bhi bad data par fail hoga. Train set se model learn karta hai. Validation set par hyperparameters tune karo. Test set final evaluation ke liye — ek baar hi use karo. Data leak avoid karo — future data training mein nahi aana chahiye."
+          whyUseIt="Ye samajhna critical kyun hai? Kyunki data split galat kiya toh model overfit ho sakta hai test set par — production mein fail hoga. Validation set = hyperparameter tuning ke liye. Test set = ek baar, final evaluation — Kaggle competitions bhi isliye public + private leaderboard rakhte hain. Data leakage ka matlab: future information training mein aa gayi — model unrealistically good lagega, production mein disaster. Time-series data mein ye common mistake hai."
           howToUse={{
             filename: 'data-split.ts',
             language: 'typescript',
@@ -136,9 +136,9 @@ function engineerFeatures(rawData: {
     hasLinks(rawData.text) ? 1 : 0,               // Binary feature
   ]
 }`,
-            explanation: 'Seed fix karo shuffle mein — reproducibility ke liye. Test set ek baar hi use karo — bar bar test set pe tune karne se data leakage ho jaati hai aur optimistic estimates milte hain.',
+            explanation: 'Under the hood: seed fix karo shuffle mein — reproducibility ke liye zaroori hai. Ek hafte baad same results mile. Test set ek baar — ye ironclad rule hai. Baar baar test set dekhke optimize karna = test set par overfit karna = production fail. Time-series mein temporal split karo — future ka data training mein nahi jaana chahiye.',
           }}
-          realWorldScenario="Fraud detection model 99% accurate tha test set par. Production mein 30% false positives. Issue: test set mein latest data tha, training mein old data. Future information leak ho gayi training mein (data leakage). Time-based split zaroori tha — train on old data, test on recent."
+          realWorldScenario="Real incident: Fraud detection model 99% accurate tha test set par. Production mein 30% false positives — disaster. Root cause: test set mein latest data tha, training mein old data tha — future information leak ho gayi training mein. Sawaal: ye kaise fix hota? Time-based split: train = first 70% timestamps, test = last 15%. Ye ek data split mistake thi — millions ka loss hua. Ye concepts sirf theory nahi hain."
           commonMistakes={[
             {
               mistake: 'Test set par repeatedly evaluate karna model select karne ke liye',
@@ -151,7 +151,7 @@ function engineerFeatures(rawData: {
               fix: 'Time-series mein temporal split karo: train = first 70% timestamps, val = next 15%, test = last 15%.',
             },
           ]}
-          proTip="Cross-validation use karo small datasets mein — k-fold CV se better estimate milta hai generalization ka. 5-fold ya 10-fold common hai. Expensive hai (k times training) lekin small data mein variance reduce karta hai evaluation ka."
+          proTip="Small datasets ke liye cross-validation use karo — k-fold CV se better estimate milta hai generalization ka. 5-fold: data 5 parts mein split, har baar ek part validation, baaki train. 5 baar train karo, average accuracy lo. Expensive hai lekin small data mein bahut reliable estimate deta hai. K = 10 commonly used hai — balance of accuracy aur compute cost."
         />
       </div>
 
@@ -161,14 +161,14 @@ function engineerFeatures(rawData: {
           title="Loss Functions — Galti Measure Karo"
           emoji="📉"
           difficulty="beginner"
-          whatIsIt="Loss function model ki predictions aur actual values ke beech difference measure karta hai. Gradient descent loss minimize karta hai. Sahi loss function choose karna zaroori hai — task ke hisaab se alag hoti hai."
+          whatIsIt="Loss function model ka compass hai — ye batata hai ki model kitna galat hai. Gradient descent is compass se guide hoke weights update karta hai. Sahi loss function choose karna bahut zaroori hai — galat choose kiya toh model galat direction mein optimize karega. MSE regression ke liye (squared error — outliers pe sensitive). MAE outlier-robust alternative. Binary cross-entropy binary classification ke liye. Categorical cross-entropy multi-class ke liye. Accuracy loss function nahi hai — wo evaluation metric hai."
           whenToUse={[
             'Regression (continuous output) — MSE, MAE, Huber Loss',
             'Binary classification — Binary Cross-Entropy',
             'Multi-class classification — Categorical Cross-Entropy',
             'Generative models — KL Divergence, perceptual loss',
           ]}
-          whyUseIt="Loss function training ka compass hai — model us direction mein improve karta hai jo loss minimize kare. Galat loss function se model galat cheez learn karta hai. MSE outliers ke liye sensitive hai — MAE robust hai. Cross-entropy probabilistic outputs ke liye better hai."
+          whyUseIt="Galat loss function choose kiya toh model technically 'train' hoga — loss reduce hoga — lekin galat cheez optimize karega. Example: classification mein MSE use kiya toh probabilities sahi nahi niklengi, predictions unreliable hongi. Accuracy as loss use ki toh backprop work hi nahi karega — accuracy differentiable nahi hai! Training aur evaluation metrics same nahi hote. Ye distinction bahut important hai."
           howToUse={{
             filename: 'loss-functions.ts',
             language: 'typescript',
@@ -224,7 +224,7 @@ function categoricalCrossEntropy(
 }`,
             explanation: 'MSE squared error hai — outliers heavily penalize hote hain. MAE absolute — outliers less impact. Regression mein typically MSE ya Huber Loss. Classification mein cross-entropy — probabilistic interpretation chahiye hota hai.',
           }}
-          realWorldScenario="House price prediction mein MSE use kiya — ek ₹10Cr outlier ne training dominate ki, model consistently ₹2Cr houses ke predictions skew kar raha tha. MAE pe switch kiya — outlier resistant, predictions zyada balanced ho gayi. Loss function choice matters."
+          realWorldScenario="Real case: House price prediction mein MSE use kiya. Mumbai mein ek ₹10Cr outlier property ne puri training dominate ki — model consistently overestimate karta tha average homes. MAE pe switch kiya (absolute error, squared nahi) — outlier ka impact kam hua, predictions zyada balanced ho gayi. Loss function choice = practical results par direct impact. Ye sirf math nahi hai."
           commonMistakes={[
             {
               mistake: 'Accuracy as loss function use karna',
@@ -237,7 +237,7 @@ function categoricalCrossEntropy(
               fix: 'Classification ke liye cross-entropy use karo — probabilistic interpretation better hai aur gradients smoother hain.',
             },
           ]}
-          proTip="Custom loss functions design karo business requirements match karne ke liye — jaise false negatives zyada penalize karo medical diagnosis mein. PyTorch mein autograd se custom losses differentiable rehti hain. Focal Loss imbalanced datasets ke liye excellent hai — rare class par zyada focus."
+          proTip="Advanced tip: Custom loss functions banao business requirements ke liye — medical diagnosis mein false negative (cancer miss karna) false positive se zyada costly hai. Ye cost difference loss function mein encode karo. PyTorch mein autograd se custom losses differentiable rehti hain — sirf differentiable operations use karo. Focal Loss imbalanced datasets ke liye excellent hai — rare class par zyada focus, common class par kam."
         />
       </div>
 
@@ -247,14 +247,14 @@ function categoricalCrossEntropy(
           title="Overfitting vs Underfitting"
           emoji="📈"
           difficulty="beginner"
-          whatIsIt="Overfitting: model training data memorize kar leta hai — unseen data par poor performance. Underfitting: model bahut simple — patterns nahi seekh pa raha. Bias-variance tradeoff: sweet spot dhundna hai. Learning curves se diagnose karo."
+          whatIsIt="Shocking scenario: tera model 99.5% training accuracy deta hai. Tu excited hai. Production mein 62% accuracy — disaster. Ye overfitting hai. Model training data memorize kar gaya — generalize nahi kiya. Ulta bhi hota hai — underfitting: model bahut simple hai, patterns hi nahi seekhe. Training accuracy bhi low, validation bhi low. Sweet spot: training aur validation dono acche, gap chhota. Ye bias-variance tradeoff hai aur learning curves se clearly diagnose hota hai."
           whenToUse={[
             'Training aur validation loss plot karo — diagnose karo',
             'Model too complex? Regularization add karo — overfitting fix',
             'Model too simple? Complexity increase karo — underfitting fix',
             'Learning curves se training data ka impact dekho',
           ]}
-          whyUseIt="Overfitting = high variance = unseen data par fail. Underfitting = high bias = even training data sahi predict nahi hoti. Dono problems alag solutions chahiye. Diagnosis pehle, treatment baad mein — symptoms se pehle root cause samjho."
+          whyUseIt="Diagnosis pehle, treatment baad mein — yahi doctor karta hai, yahi data scientist karta hai. Training low + validation low = underfitting (complexity badho). Training high + validation low, bada gap = overfitting (regularization, more data). Dono treatments bilkul alag hain — galat treatment se problem aur badh sakti hai. Learning curves tensorboard par plot karo — real-time monitor karo."
           howToUse={{
             filename: 'bias-variance.md',
             language: 'markdown',
@@ -297,7 +297,7 @@ High Variance (Overfitting): Complex model, memorizes noise
 Sweet Spot: Enough complexity to learn, not so much to memorize`,
             explanation: 'Learning curves hamesha plot karo — tensorboard ya wandb se real-time monitor. Val loss increase hone lage toh early stopping trigger karo. Test set sirf ek baar — val set se diagnose karo regularly.',
           }}
-          realWorldScenario="Image classifier 99.5% training accuracy, 62% validation accuracy — severe overfitting. 50K images the sirf 10K distinct. Solutions layered: data augmentation (flip, rotate, crop) → 85K effective images, dropout 0.5 added, L2 regularization. Final: 94% training, 91% validation — good generalization."
+          realWorldScenario="Real case: Image classifier — 99.5% training accuracy, 62% validation accuracy. Severe overfitting. Jaanch patal: sirf 10K distinct images the, 50K labels (same images multiple baar). Solutions: Data augmentation (flip, rotate, crop → 85K effective images), Dropout 0.5 hidden layers mein, L2 regularization. Result: 94% training, 91% validation — 3% gap, good generalization. Ek problem, teen solutions — systematic approach."
           commonMistakes={[
             {
               mistake: 'Training accuracy dekh ke satisfied ho jaana',
@@ -310,7 +310,7 @@ Sweet Spot: Enough complexity to learn, not so much to memorize`,
               fix: 'Pehle diagnose karo: big gap = overfitting (regularize). Both high = underfitting (complexity badho). Then treat.',
             },
           ]}
-          proTip="Bias-variance decomposition: total error = bias² + variance + irreducible noise. Irreducible noise control mein nahi. Model complexity badho: bias ↓ variance ↑. Regularization: variance ↓ slight bias ↑. Tradeoff balance karo — val set pe optimize karo."
+          proTip="Mathematics: total error = bias² + variance + irreducible noise. Irreducible noise ko control nahi kar sakte. Model complexity badho: bias ↓ lekin variance ↑. Regularization: variance ↓ slight bias ↑. Goal = balance. Yaad rakhne wala shortcut: Training-Val gap bada = overfitting (variance problem). Both high = underfitting (bias problem). Validation set par optimize karo — wo tera guide hai."
         />
       </div>
 
@@ -320,14 +320,14 @@ Sweet Spot: Enough complexity to learn, not so much to memorize`,
           title="Regularization — Overfitting Se Bachao"
           emoji="🎛️"
           difficulty="beginner"
-          whatIsIt="Regularization techniques overfitting rokne ke liye hain — model ko 'cheat' karne se rokti hain. L1 (Lasso), L2 (Ridge), Dropout, Early Stopping — sab alag tarike se complexity control karte hain."
+          whatIsIt="Model overfit ho raha hai — ab kya? Regularization! Ye techniques model ko training data memorize karne se rokti hain. L1 (Lasso) — weights sparse banata hai, kuch zero ho jaate hain (implicit feature selection). L2 (Ridge / Weight Decay) — weights large hone se rokta hai, smooth model. Dropout — training mein random neurons temporarily off karo — model depend nahi kar sakta kisi specific neuron par. Early Stopping — jab validation loss badhne lage, toh rok do — seedha simple!"
           whenToUse={[
             'Training-validation gap bada ho — overfitting hai',
             'Small dataset par complex model train karna',
             'Production deployment se pehle — generalization ensure karo',
             'Neural networks mein — dropout almost always helpful hai',
           ]}
-          whyUseIt="L2 regularization weights large hone se rokta hai — smoother decision boundaries. L1 weights sparse karta hai — feature selection implicit hoti hai. Dropout ensemble effect deta hai — multiple sub-networks train hote hain. Early stopping simplest aur often best strategy."
+          whyUseIt="Real production mein regularization almost always zaroori hoti hai — enough data ke bina complex models overfit ho jaate hain. L2 weight decay Neural Networks mein standard hai — AdamW optimizer (Adam + weight decay) use karo by default. Dropout 0.2-0.5 hidden layers mein. Early Stopping simplest aur often most effective — patience = 10 epochs start karo. Ye combination usually kaam karta hai."
           howToUse={{
             filename: 'regularization.ts',
             language: 'typescript',
@@ -387,7 +387,7 @@ class EarlyStopping {
 }`,
             explanation: 'Dropout rate 0.2-0.5 common hai. Lower rate for input layers, higher for middle. Inference mein dropout off hota hai — frameworks automatically handle karte hain (model.eval() PyTorch mein). Early stopping patience = kitne epochs improvement ka wait karo.',
           }}
-          realWorldScenario="Text sentiment model 10K reviews par 95% training, 71% validation accuracy. Dropout 0.3 add kiya hidden layers mein + early stopping (patience=5). Training 85% par ruka early stopping se — 87% validation accuracy. Simpler model, better generalization. Dropout alone 12% validation improvement diya."
+          realWorldScenario="Text sentiment model, 10K reviews: 95% training, 71% validation accuracy — severe overfitting. Steps: Dropout 0.3 add kiya hidden layers mein + Early stopping (patience=5). Training 85% par automatically ruka — validation 87%! Dropout alone ne 12% validation improvement diya. Early stopping ne training time bhi save kiya. Simple techniques, dramatic improvement."
           commonMistakes={[
             {
               mistake: 'Test time mein dropout on rakhna',
@@ -400,7 +400,7 @@ class EarlyStopping {
               fix: 'Small se shuru karo: 1e-4, 1e-3. Validation performance ke hisaab se tune karo. Grid search ya Bayesian optimization use karo.',
             },
           ]}
-          proTip="Batch normalization bhi regularization effect deta hai — training stabilize karta hai aur overfitting reduce karta hai. Most modern networks BatchNorm + mild Dropout use karte hain. Data augmentation most powerful regularization often hai — more diverse data = better generalization."
+          proTip="Hidden gem: Batch Normalization bhi regularization effect deta hai — training stabilize karta hai aur overfitting reduce karta hai. Most modern networks BatchNorm + mild Dropout use karte hain together. Lekin sabse powerful regularization technique hai: more diverse data (data augmentation). More unique examples = model ko memorize karna impossible. Data augmentation pehle try karo — har regularization trick se pehle."
         />
       </div>
 
@@ -410,14 +410,14 @@ class EarlyStopping {
           title="Model Evaluation — Sahi Metrics Choose Karo"
           emoji="📏"
           difficulty="beginner"
-          whatIsIt="Accuracy sirf ek metric hai — aur akele rely karna dangerous hai. Precision, Recall, F1, AUC-ROC — sab alag scenarios ke liye. Imbalanced data mein accuracy misleading hoti hai. Business goals se metrics align karo."
+          whatIsIt="Shocking scenario: 99% negative, 1% positive data mein model sirf 'negative' predict kare — 99% accuracy milegi! Completely useless model. Accuracy lie karti hai imbalanced data mein. Precision: predicted positive mein kitne sach mein positive. Recall: actual positive mein kitne caught kiye. F1: dono ka harmonic mean. AUC-ROC: threshold-independent overall quality. Business context decide karta hai kaun important hai — medical mein recall, spam filter mein precision."
           whenToUse={[
             'Imbalanced classes — F1, AUC-ROC accuracy se better',
             'False positive vs false negative cost alag ho — precision vs recall prioritize karo',
             'Ranking/retrieval tasks — NDCG, MAP',
             'Regression — RMSE, MAE, MAPE',
           ]}
-          whyUseIt="Medical diagnosis mein false negative (cancer miss karna) false positive se bahut zyada costly hai — recall maximize karo. Spam filter mein false positive (important email spam) annoying hai — precision important. Business context se metrics decide hote hain, nahi math se."
+          whyUseIt="Metrics choice = business decision, math nahi. Medical diagnosis: false negative (cancer miss karna) catastrophic — recall maximize karo, precision thodi kam bhi chalegi. Spam filter: false positive (important email spam mein jaana) annoying — precision zyada important. HR resume screening: pehle broad net (high recall), phir manually filter. Har use case ka alag optimal point hai precision-recall curve par — business samjho, phir metrics choose karo."
           howToUse={{
             filename: 'evaluation-metrics.ts',
             language: 'typescript',
@@ -475,7 +475,7 @@ function confusionMatrix(preds: number[], actuals: number[]): number[][] {
 }`,
             explanation: 'Precision = sahi positive predictions / all positive predictions. Recall = sahi positive predictions / all actual positives. F1 = harmonic mean — dono balance karta hai. Threshold adjust karo precision-recall tradeoff ke liye.',
           }}
-          realWorldScenario="COVID test ki 99% accuracy thi jab positive rate 1% tha. Ek infected patient detect hone par: 99 false alarms bhi aate. Precision = 1% — terrible! Recall = 99% — great. Medical diagnosis mein: recall critical. Model evaluation mein business context samjho — accuracy lie kar sakti hai."
+          realWorldScenario="COVID rapid test: 99% accuracy claim kiya jab 1% population infected tha. Ek infected patient pakda = 99 false alarms! Precision = 1% — useless practically! Lekin recall = 99% — almost koi infected nahi chhoota. Medical domain: recall critical (false negative = miss). Spam filter: precision critical (false positive = important email spam mein). Sawaal: tera use case kya demand karta hai? Pehle ye samjho, phir model evaluate karo."
           commonMistakes={[
             {
               mistake: 'Single metric optimize karna — recall ya precision mein se ek',
@@ -488,7 +488,7 @@ function confusionMatrix(preds: number[], actuals: number[]): number[][] {
               fix: 'Imbalanced data mein F1, AUC-ROC, precision-recall curve report karo. Class weights adjust karo ya resampling use karo.',
             },
           ]}
-          proTip="ROC curve plot karo — different thresholds par TPR vs FPR. AUC-ROC = 0.5 random, 1.0 perfect. Threshold-independent metric hai. Precision-Recall curve imbalanced datasets ke liye better — AUC-PR use karo. scikit-learn se: roc_auc_score(), f1_score(), classification_report()."
+          proTip="Must-know: ROC curve plot karo — different decision thresholds par TPR vs FPR. AUC-ROC = 0.5 random classifier jaisa, 1.0 perfect. Threshold-independent overall quality metric hai. Imbalanced data ke liye Precision-Recall curve better — AUC-PR use karo ROC se zyada informative hai. scikit-learn: roc_auc_score(), f1_score(), classification_report() — ye functions use karo hamesha model evaluate karte waqt."
         />
       </div>
 

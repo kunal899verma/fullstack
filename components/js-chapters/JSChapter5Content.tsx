@@ -67,10 +67,10 @@ export default function JSChapter5Content() {
         style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.2)' }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3">
-          Arrays — Data Collections Ka Power
+          Arrays — map, filter, reduce Seekh Lo, Code Ka Tarika Badal Jaayega
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Arrays JavaScript ka sabse used data structure hai. Bhai, ek ordered list of values — numbers, strings, objects, functions — kuch bhi. Lekin arrays ki real power unke methods mein hai — map, filter, reduce ye teen methods aane ke baad coding style completely change ho jaata hai.
+          <strong className="text-[#F5F5F7]">Ye shocking hai</strong> — ek junior developer for loop likhta hai data transform karne ke liye. Ek senior developer <code className="text-[#06B6D4]">.filter().map().reduce()</code> likh ke baat khatam karta hai. Dono ek hi kaam karte hain — lekin senior code padhna, samajhna, maintain karna aasaan hai. Arrays JavaScript ka sabse used data structure hai, aur inke methods sikhna programming mindset hi shift kar deta hai — imperative se declarative!
         </p>
         <div
           className="rounded-xl p-4 mt-4"
@@ -82,13 +82,26 @@ export default function JSChapter5Content() {
         </div>
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}
+      >
+        <p className="text-sm font-bold text-[#F59E0B] mb-1">Ab Sawaal Ye Aata Hai — new Array(3) aur [3] mein kya fark?</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <code className="text-[#06B6D4]">new Array(3)</code> = <strong className="text-[#F5F5F7]">[empty × 3]</strong> — teen empty slots wala array! <br/>
+          <code className="text-[#06B6D4]">[3]</code> = <strong className="text-[#F5F5F7]">[3]</strong> — value 3 wala array! <br/>
+          Yahi trap hai bhai. Isliye hamesha array literal <code className="text-[#F59E0B]">[]</code> prefer karo. <code className="text-[#06B6D4]">Array.from({'{'} length: 5 {'}'}, (_, i) =&gt; i)</code> se initialized array banao — ye powerful pattern hai!
+        </p>
+      </div>
+
       {/* Card 1: Array Creation */}
       <div id="array-creation">
         <ConceptCard
-          title="Array Creation & Basics"
+          title="Array Creation &amp; Basics — Ye Sab Tarike Kyon?"
           emoji="📦"
           difficulty="beginner"
-          whatIsIt="Arrays ordered collections hain — ek hi variable mein multiple values store karo. JavaScript arrays dynamic hain — size change ho sakta hai, mixed types store ho sakte hain. Creation ke multiple ways hain: literal [], Array.from(), Array.of(), spread operator. Array ka har element 0-indexed hai — pehla element index 0 par."
+          whatIsIt="Arrays ordered collections hain — ek hi variable mein multiple values store karo. JavaScript arrays dynamic hain — size change ho sakta hai, mixed types store ho sakte hain. Heap mein store hote hain aur reference se access hote hain. Creation ke multiple ways hain: literal [], Array.from(), spread operator. Array ka har element 0-indexed hai — pehla element index 0, last element arr.at(-1) se access karo (ES2022 ka clean syntax)."
           whenToUse={[
             'Literal []: hamesha prefer karo — simple, readable, fast',
             'Array.from(): DOM NodeLists, strings, Set, Map, ya custom iterables convert karne ke liye',
@@ -153,13 +166,24 @@ Array.isArray('arr') // false`,
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#EF4444] mb-1">Mutation Trap — React Mein Yahi Sabse Bada Bug Hai</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">sort() aur reverse() original array mutate karte hain!</strong> Agar tum kisi function mein received array sort karo bina copy ke — caller ka array bhi change ho jaata hai. React state mein direct mutation = React detect nahi karta = UI update nahi hota. Rule: <code className="text-[#F59E0B]">const sorted = [...arr].sort()</code> — pehle copy, phir sort!
+        </p>
+      </div>
+
       {/* Card 2: Mutating Methods */}
       <div id="mutating-methods">
         <ConceptCard
-          title="Mutating Methods — Array Ko Change Karna"
+          title="Mutating Methods — In-Place Modify Ka Khel"
           emoji="✏️"
           difficulty="beginner"
-          whatIsIt="Mutating methods original array ko modify karte hain — push, pop, shift, unshift, splice, reverse, sort, fill. Ye sab in-place modify karte hain. Ye important hai samajhna ki kaunse methods mutate karte hain aur kaunse nahi — side effects aur unexpected bugs ka source hain shared arrays mein."
+          whatIsIt="Mutating methods original array ko modify karte hain — push, pop, shift, unshift, splice, reverse, sort, fill. Ye sab in-place modify karte hain. Ye critical samajhna hai ki kaunse methods mutate karte hain aur kaunse nahi — shared arrays mein mutation unexpected bugs ka biggest source hai. ES2023 mein non-mutating alternatives aaye: toSorted(), toReversed(), toSpliced() — ye use karo production mein!"
           whenToUse={[
             'push/pop: stack implementation — LIFO (Last In First Out)',
             'shift/unshift: queue implementation — FIFO (First In First Out)',
@@ -226,13 +250,27 @@ new Array(5).fill(0)          // [0, 0, 0, 0, 0]
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#10B981] mb-1">map, filter, reduce — Teen Sawaal Ka Jawab</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">map</strong> — &quot;har element ko transform karna hai?&quot; Use map. <br/>
+          <strong className="text-[#F5F5F7]">filter</strong> — &quot;kuch elements nikaalne hain?&quot; Use filter. <br/>
+          <strong className="text-[#F5F5F7]">reduce</strong> — &quot;array se ek value banana hai?&quot; Use reduce. <br/>
+          Teeno milake: <code className="text-[#06B6D4]">.filter().map().reduce()</code> — data pipeline! Initial value hamesha dena reduce ko — warna empty array pe crash.
+        </p>
+      </div>
+
       {/* Card 3: Big Three */}
       <div id="map-filter-reduce">
         <ConceptCard
           title="map, filter, reduce — The Big Three"
           emoji="🔥"
           difficulty="beginner"
-          whatIsIt="map, filter, reduce — teen methods jo array programming ko completely transform karte hain. map: har element transform karo — same length array return. filter: condition pass karne wale elements rakhho — smaller or same length array return. reduce: array ko kisi bhi value mein reduce karo — number, string, object, another array. Ye teeno pure, declarative, chainable hain."
+          whatIsIt="map, filter, reduce — teen methods jo array programming ko completely transform karte hain. map: har element transform karo — same length array return, original unchanged. filter: condition pass karne wale elements rakhho — chhota ya same length array return. reduce: array ko kisi bhi single value mein reduce karo — number, string, object, another array. Ye teeno pure functions hain — original array nahi badlate, chainable hain, declarative hain. Ye magic nahi, ye functional programming ka science hai — sikhne ke baad for loops ki zaroorat 80% kam ho jaati hai!"
           whenToUse={[
             'map: data transform karna — API response ko UI format mein convert karna',
             'filter: subset nikalna — active users, in-stock items, recent orders',
@@ -340,13 +378,24 @@ const activeUsers = users
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#7C3AED] mb-1">includes vs indexOf — NaN Ka Surprise</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ab sawaal ye aata hai</strong> — <code className="text-[#06B6D4]">[1, NaN, 3].indexOf(NaN)</code> kya return karta hai? <strong className="text-[#F59E0B]">-1</strong>! Kyunki <code className="text-[#06B6D4]">NaN === NaN</code> is false! Lekin <code className="text-[#06B6D4]">[1, NaN, 3].includes(NaN)</code> return karta hai <strong className="text-[#F59E0B]">true</strong> — includes SameValueZero algorithm use karta hai. Aur objects ke liye: <code className="text-[#06B6D4]">indexOf</code> reference dhundta hai — <code className="text-[#06B6D4]">find()</code> use karo!
+        </p>
+      </div>
+
       {/* Card 4: Search Methods */}
       <div id="search-methods">
         <ConceptCard
           title="Search Methods — find, some, every, includes"
           emoji="🔍"
           difficulty="beginner"
-          whatIsIt="Array search methods elements dhundne aur check karne ke liye hain. find() pehla matching element return karta hai. findIndex() pehla matching index return karta hai. some() check karta hai koi ek element condition satisfy karta hai. every() check karta hai sab elements condition satisfy karte hain. includes() check karta hai value exists karti hai. indexOf() index return karta hai."
+          whatIsIt="Array search methods elements dhundne aur check karne ke liye hain. find() pehla matching element return karta hai (ya undefined — handle karna mat bhulo!). findIndex() pehla matching index return karta hai. some() check karta hai koi ek element condition satisfy karta hai — short-circuit karta hai. every() check karta hai sab elements condition satisfy karte hain. includes() primitive value check ke liye, indexOf se better NaN handling ke saath."
           whenToUse={[
             'find(): ek specific object dhundna — user by id, product by sku',
             'some(): validation — kya koi element valid hai, koi error toh nahi',
@@ -418,10 +467,10 @@ const lastActive = users.findLast(u => u.active)
       {/* Card 5: Advanced Array Methods */}
       <div id="advanced-arrays">
         <ConceptCard
-          title="Advanced Array Methods — flat, flatMap & Chaining"
+          title="Advanced Array Methods — flat, flatMap &amp; Chaining"
           emoji="🚀"
           difficulty="beginner"
-          whatIsIt="flat() nested arrays ko flatten karta hai — ek level ya specified depth tak. flatMap() map + flat(1) combine karta hai — transform karo aur flatten karo ek step mein. Array chaining multiple methods ek pipeline mein combine karta hai. Ye methods complex data transformations ko elegant banate hain."
+          whatIsIt="flat() nested arrays ko flatten karta hai — ek level ya specified depth tak. flatMap() map + flat(1) combine karta hai — ek element se multiple elements generate karo aur flatten karo ek step mein. Array chaining multiple methods ek pipeline mein combine karta hai — readable data transformations. flatMap ek powerful trick deta hai: empty array return karo element exclude karne ke liye — filter aur map ek saath!"
           whenToUse={[
             'flat(): nested API responses flatten karne ke liye',
             'flatMap(): ek element se multiple elements generate karna — expand karna',
@@ -496,9 +545,9 @@ const uniqueTags = [...new Set(tags)]  // ['js', 'node', 'react', 'ts']`,
       <div id="chapter-quiz">
         <div className="mb-4">
           <h3 className="text-lg font-display font-bold text-[#F5F5F7] mb-1">
-            Chapter 5 Quiz — Arrays
+            Chapter 5 Quiz — Arrays Ka Asli Test
           </h3>
-          <p className="text-sm text-[#71717A]">5 questions — 80%+ chahiye clear karne ke liye!</p>
+          <p className="text-sm text-[#71717A]">map, filter, reduce — ye teeno clear hain? 5 sawaal, 80%+ chahiye clear karne ke liye!</p>
         </div>
         <QuizSection questions={quizQuestions} chapterSlug="arrays" />
       </div>

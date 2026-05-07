@@ -14,10 +14,10 @@ export default function Chapter13Content() {
           Databases & ORMs — Data Layer Master Karo
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Database selection aur ORM choice application success par bahut zyada impact karti hai. PostgreSQL vs MongoDB, Prisma vs Mongoose — ye decisions early karo aur soch-samajh ke karo. Is chapter mein sab cover karenge — tradeoffs, patterns, pitfalls.
+          Kya aap jaante ho ki ek galat database choice production mein jaake poori application ko slow kar sakti hai — aur fix karna itna mushkil ho jaata hai ki rewrite karna aasaan lagta hai? PostgreSQL ya MongoDB, Prisma ya Mongoose — ye decisions sirf "kya accha lagta hai" se nahi hote. Ye decisions data ke nature, transaction requirements, aur scaling patterns se hote hain.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          ORM (Object-Relational Mapper) ya ODM (Object-Document Mapper) raw SQL/queries se bacha ke high-level API deta hai. Lekin ORM magic samajhna zaroori hai — warna N+1 problems aur slow queries production mein surprise dete hain.
+          ORM (Object-Relational Mapper) ek container ki tarah hai jo tumhare TypeScript objects aur database rows ke beech ka kaam karta hai. Lekin is container ke andar kya ho raha hai — ek ORM magic nahi hai, woh SQL generate karta hai. Aur agar tum woh SQL nahi samjho, toh N+1 problem ek khamoshi se maarne wala bug hai jo production mein tum par attack karta hai.
         </p>
       </div>
 
@@ -26,14 +26,14 @@ export default function Chapter13Content() {
           title="PostgreSQL vs MongoDB — Sahi Choice Karo"
           emoji="⚖️"
           difficulty="intermediate"
-          whatIsIt="PostgreSQL: Relational database — tables, relationships, ACID transactions, SQL, schema enforced. MongoDB: Document database — JSON-like documents, flexible schema, horizontal scaling, no joins. Dono excellent databases hain — use case decide karta hai kaunsa sahi hai."
+          whatIsIt="Socho PostgreSQL ek strict bank locker hai — har cheez apni jagah par rakho, rules follow karo, koi bhi item bina permission ke nahi jaayega. MongoDB ek bada flexible bag hai — kuch bhi daalo, structure baad mein decide karo. PostgreSQL: relational tables, relationships, ACID transactions, schema enforced. MongoDB: JSON-like documents, flexible schema, horizontal scaling. Dono excellent hain — use case decide karta hai kaun jeeta hai."
           whenToUse={[
             'PostgreSQL: Structured data with relationships — users, orders, products, payments',
             'PostgreSQL: Financial data — ACID transactions critical hain',
             'MongoDB: Unstructured ya rapidly evolving schema — content, events, logs',
             'MongoDB: High write throughput, horizontal sharding — IoT, analytics',
           ]}
-          whyUseIt="Wrong database choice migration cost bahut high hai later. PostgreSQL schema enforcement bugs early pakadta hai. MongoDB flexibility rapid prototyping ke liye. ACID transactions financial apps mein mandatory hain — partial updates nahi hone chahiye. CAP theorem: consistency vs availability tradeoff samjho."
+          whyUseIt="Ab sawaal ye aata hai — agar MongoDB itna flexible hai toh PostgreSQL kyun use karein? Kyunki flexibility ka ek price hai. Ek bank transfer sochو: 'Account A se 1000 rupay nikalo, Account B mein daalo.' Agar beech mein system crash ho? PostgreSQL ACID guarantee deta hai — ya dono ho, ya koi nahi. MongoDB mein ye guarantee default nahi hai. Wrong database choice migration cost itna zyada ho jaata hai baad mein ki team prefer karti hai naya project shuru karna."
           howToUse={{
             filename: 'db-comparison.md',
             language: 'bash',
@@ -65,9 +65,9 @@ BEGIN;
   UPDATE accounts SET balance = balance + 100 WHERE id = 2;
 COMMIT;
 -- Ya dono ho ya koi nahi — guaranteed`,
-            explanation: "ACID: Atomicity (ya sab ho ya kuch nahi), Consistency (valid state se valid state), Isolation (concurrent transactions interfere nahi karte), Durability (committed data persistent hai). Financial apps ke liye ACID mandatory — PostgreSQL perfect. MongoDB transactions bade MongoDB clusters mein complex aur slow hote hain.",
+            explanation: "Under the hood: ACID ka matlab hai — Atomicity (ya sab ho ya kuch nahi — half transfer impossible), Consistency (invalid state mein database kabhi nahi rahega), Isolation (ek transaction doosre ko affect nahi karta), Durability (committed = permanently saved, crash ke baad bhi). Financial apps ke liye ACID mandatory — PostgreSQL perfect choice. MongoDB transactions complex aur slow hote hain large clusters mein.",
           }}
-          realWorldScenario="Sequifi CRM: User accounts, leads, pipeline stages, invoices — PostgreSQL (relationships, transactions, reporting). Activity logs, email events — MongoDB (high write, flexible schema). Ek app mein dono databases — polyglot persistence — real world mein common hai."
+          realWorldScenario="Sequifi CRM: User accounts, leads, pipeline stages, invoices — PostgreSQL choose karo (relationships, ACID transactions, complex reporting queries). Activity logs, email events, raw webhooks — MongoDB choose karo (high write throughput, flexible schema, koi join nahi chahiye). Ek hi app mein dono databases — polyglot persistence — ye real world mein common hai aur correct approach hai."
           commonMistakes={[
             {
               mistake: 'MongoDB ke liye relational data model banana',
@@ -80,7 +80,7 @@ COMMIT;
               fix: 'Known structure ke liye proper columns use karo. Genuinely flexible/unknown attributes ke liye JSONB column add karo as addition.',
             },
           ]}
-          proTip="PostgreSQL JSONB support karta hai — best of both worlds. Structured columns + JSONB column for flexible attributes. Array columns, full-text search, GIS extensions — PostgreSQL surprisingly flexible hai. Zyada cases mein PostgreSQL choose karo — MongoDB sirf specific use cases mein shine karta hai."
+          proTip="PostgreSQL ek secret weapon deta hai — JSONB column. Matlab structured columns + flexible JSON attributes ek hi table mein. Array columns, full-text search, GIS extensions — PostgreSQL itna flexible hai ki 90% cases mein MongoDB ki zaroorat hi nahi padti. Default choice PostgreSQL rakho — MongoDB sirf tab jab specific use case genuinely demand kare."
         />
       </div>
 
@@ -89,14 +89,14 @@ COMMIT;
           title="Prisma ORM — Schema, Migrations, CRUD"
           emoji="🔷"
           difficulty="intermediate"
-          whatIsIt="Prisma TypeScript-first ORM hai — schema.prisma file mein data model define karo, migrations auto-generate hoti hain, type-safe client milta hai. Query results TypeScript types ke saath aate hain — no casting needed. Prisma Studio GUI tool bhi deta hai data browse karne ke liye."
+          whatIsIt="Prisma socho ek contract ki tarah — schema.prisma file mein likhdo 'User model ka email field String type ka hai aur unique hoga.' Bas. Prisma TypeScript types auto-generate karta hai, migrations auto-create karta hai, aur agar tum galat field name likhte ho to TypeScript compile error aata hai — runtime par nahi, build time par. Schema.prisma file practically database ki living documentation ban jaati hai."
           whenToUse={[
             'TypeScript Node.js apps jahan type safety zaroori ho',
             'PostgreSQL, MySQL, SQLite — relational databases',
             'Team collaboration — schema file version control mein',
             'Complex relations — Prisma include/select efficient hai',
           ]}
-          whyUseIt="Prisma type-safety ensure karta hai database level tak — wrong field name TypeScript compile error deta hai. Auto-generated client har schema change pe update hota hai. Migrations track hoti hain — database schema version control mein. Prisma Studio free database GUI tool hai."
+          whyUseIt="Ab sawaal ye aata hai — raw SQL ya ORM? Raw SQL mein tum sirf strings likhte ho — prisma.user.findUnique({ where: { idd: userId } }) — agar 'idd' likhoge to TypeScript bol dega 'ye field exist nahi karta.' Ye production mein pahucha hota toh runtime error hota. Prisma type-safety ensure karta hai database level tak. Aur migrations track hoti hain — team ka koi bhi member database ki current state dekhna chahein, schema.prisma mein dekh lo."
           howToUse={{
             filename: 'schema.prisma',
             language: 'typescript',
@@ -173,9 +173,9 @@ async function examples() {
     orderBy: { _count: { id: 'desc' } },
   })
 }`,
-            explanation: "global singleton pattern hotReload mein zyada connections prevent karta hai. include se related records fetch hote hain — JOIN equivalent. select se specific fields only — performance optimization. findUnique null return karta hai agar nahi mila — findUniqueOrThrow exception throw karta hai.",
+            explanation: "Under the hood: global singleton pattern isliye hai kyunki development mein hot-reload har file save par module re-execute karta hai — bina singleton ke har reload pe naya PrismaClient = naya connection pool = database connections exhaust. include under the hood JOIN query generate karta hai — ek efficient query. select se specific fields only — unnecessary data fetch avoid hota hai. findUnique null return karta hai — findUniqueOrThrow directly exception throw karta hai.",
           }}
-          realWorldScenario="Next.js SaaS app mein Prisma perfect fit hai — schema.prisma file database documentation ka kaam karta hai, migrations version control mein tracked hain, TypeScript intellisense database fields pe milti hai. Production accidents dramatically kam hote hain type-safety se."
+          realWorldScenario="Next.js SaaS app mein Prisma: naya developer join kiya, schema.prisma dekha — database structure samajh gaya bina DBA se poochhe. TypeScript intellisense database fields pe milti hai — galat field naam type karo, red underline immediately. Production accidents dramatically kam hote hain kyunki bugs build time par pakad mein aate hain, runtime par nahi."
           commonMistakes={[
             {
               mistake: 'Development mein baar baar new PrismaClient() banana',
@@ -188,8 +188,18 @@ async function examples() {
               fix: 'include use karo: prisma.post.findMany({ include: { author: true } }) — ek JOIN query. Ya DataLoader se batch karo.',
             },
           ]}
-          proTip="Prisma Accelerate (Prisma's connection pooler + global cache) use karo serverless environments mein — AWS Lambda, Vercel Edge Functions. Serverless mein har invocation new connection banana slow aur connection limit exhaust karta hai. Accelerate connection pooling centralize karta hai."
+          proTip="Serverless environments (Vercel, AWS Lambda) mein ek dangerous trap hai — har function invocation naya PrismaClient() banata hai, matlab naya connection pool. 1000 concurrent requests = 1000 connections = database overwhelmed. Solution: Prisma Accelerate — ye centralized connection pooler hai jo serverless ke liye specifically bana hai. Pehle ye problem samjho, phir Accelerate use karo."
         />
+      </div>
+
+      <div
+        className="rounded-xl p-5"
+        style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)' }}
+      >
+        <p className="text-[#F5A623] font-semibold mb-2">🤔 Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          Prisma ke saath relational databases ke liye great — lekin agar MongoDB use karna ho toh? Prisma MongoDB bhi support karta hai lekin community mein Mongoose zyada popular hai MongoDB ke saath. Dono ka use case alag hai — relational DB ke liye Prisma, document DB ke liye Mongoose generally better experience deta hai. Neeche dekhte hain Mongoose kyun.
+        </p>
       </div>
 
       <div id="mongoose">
@@ -197,14 +207,14 @@ async function examples() {
           title="Mongoose — MongoDB ODM"
           emoji="🍃"
           difficulty="intermediate"
-          whatIsIt="Mongoose MongoDB ke liye ODM (Object-Document Mapper) hai — JavaScript schema define karo, validation, methods, virtuals, middleware (hooks) define karo. mongoose.model() se MongoDB collection interact karo type-safe way mein. populate() se referenced documents fetch karo — manual $lookup ki zaroorat nahi."
+          whatIsIt="MongoDB ke saath kaam karna bina Mongoose ke aise hai jaise kuch bhi daalo, koi rok nahi. Mongoose ek blueprint deta hai — schema define karo, uspe validation lagao, lifecycle hooks lagao. Socho Mongoose ek mold ki tarah — usme MongoDB documents daalo, shape guarantee ho jaati hai. populate() se referenced documents automatically resolve hote hain — manual $lookup likhne ki zaroorat nahi."
           whenToUse={[
             'MongoDB ke saath Node.js apps',
             'Schema validation MongoDB level par chahiye — required, type checks',
             'Model methods aur statics chahiye — business logic encapsulate karna',
             'Middleware hooks — pre-save password hash, post-remove cleanup',
           ]}
-          whyUseIt="Raw MongoDB driver complex hai — Mongoose abstraction deta hai. Schema validation bugs early pakadta hai — invalid documents save hone se pehle. Virtuals (computed properties), hooks (lifecycle callbacks), population (references resolve karna) — features jo raw driver mein manually implement karne padte hain."
+          whyUseIt="Ab sawaal ye aata hai — MongoDB toh schema-less hai, toh Mongoose kyun? Kyunki schema-less ka matlab free-for-all nahi hona chahiye production mein. Bina Mongoose ke ek developer 'email' field save kare, doosra 'emailAddress' — aur ab query kaise likhoge? Mongoose validation bugs save hone se pehle pakadta hai. Hooks (pre-save password hash, post-remove cleanup) business logic ko model ke andar rakhte hain — controllers clean rehte hain."
           howToUse={{
             filename: 'models/User.ts',
             language: 'typescript',
@@ -278,9 +288,9 @@ const Post = mongoose.model('Post', new Schema({
   author: { type: Schema.Types.ObjectId, ref: 'User' },
 }))
 const post = await Post.findById(postId).populate('author', 'name email')`,
-            explanation: "select: false se sensitive fields default query mein nahi aate — security. isModified('password') se sirf password change hone par hash karo — update operations mein important. timestamps: true createdAt/updatedAt automatically manage karta hai. populate() ObjectId ko actual document se replace karta hai.",
+            explanation: "Under the hood: select: false ka matlab password field default queries mein never return hoga — security layer. isModified('password') check isliye ki agar sirf name update ho raha ho, password re-hash mat karo — expensive bcrypt operation waste hogi. pre-save hook tab fire hota hai jab bhi document.save() call ho — ye Mongoose's lifecycle event system hai. populate() ObjectId ko actual document se replace karta hai — internally separate query fire hoti hai.",
           }}
-          realWorldScenario="Blog platform mein Mongoose ideal hai — Post schema flexible (content structure vary kar sakta hai), Author population efficient, pre-save middleware se automatic slug generation. MongoDB flexible schema se naye content types easily add hote hain."
+          realWorldScenario="Blog platform: Post schema flexible hai — koi post mein video embed hai, koi mein gallery, koi sirf text. MongoDB + Mongoose perfect fit. Author populate efficient hai. Pre-save middleware se automatic slug generation — har baar manually likhne ki zaroorat nahi. Naye content types add karne ke liye schema mein ek field add karo — migration ka jhanjhat nahi."
           commonMistakes={[
             {
               mistake: 'Connection error handle nahi karna',
@@ -293,7 +303,7 @@ const post = await Post.findById(postId).populate('author', 'name email')`,
               fix: 'Carefully choose karo kya populate karna hai. Agar join heavy ho toh MongoDB aggregation pipeline use karo — $lookup, $unwind. Selective populate karo.',
             },
           ]}
-          proTip="Mongoose lean() method raw JavaScript objects return karta hai — Mongoose document overhead nahi. Faster aur less memory: User.find().lean(). Methods aur virtuals accessible nahi hote lean documents mein — read-only operations ke liye perfect (API responses)."
+          proTip="Mongoose ek secret weapon deta hai — .lean() method. By default Mongoose full document objects return karta hai with getters, setters, virtual methods — sab overhead. .lean() sirf plain JavaScript object return karta hai — 2-5x faster, kam memory. API responses ke liye User.find().lean() use karo — methods access nahi honge lekin speed ka fark clearly dikhega."
         />
       </div>
 
@@ -302,14 +312,14 @@ const post = await Post.findById(postId).populate('author', 'name email')`,
           title="Connection Pooling — Database Performance"
           emoji="🏊"
           difficulty="intermediate"
-          whatIsIt="Database connection establish karna expensive hai — TCP handshake, authentication, session setup — 100-500ms. Connection pool pre-established connections maintain karta hai — query aate hi available connection use karo, done hone par return karo. Pool ke bina har request 100ms+ slow hogi."
+          whatIsIt="Socho restaurant mein waiter hire karna expensive hai — interview, training, onboarding. Har customer ke liye naya waiter hire karo, kaam hone par fire karo — ye insane hai. Connection pool wohi kaam karta hai jo samjhadaar restaurant karta hai — pehle se waiters ready rakho, customer aaye to immediately serve karo. Database connection establish karna expensive hai — TCP handshake, authentication, session setup — 100-500ms. Pool pre-established connections maintain karta hai — query aate hi available connection use karo, done hone par return karo."
           whenToUse={[
             'Production database connections — hamesha pool use karo',
             'High concurrency — many simultaneous requests',
             'Serverless ke alawa — Lambda/Vercel ke liye connection pool issues hain',
             'Performance optimization — benchmark karo pool size',
           ]}
-          whyUseIt="Connection pool reuse connections — dramatic performance improvement. Pool size tuning zaroori hai — too small: requests wait. Too large: database overwhelmed. PostgreSQL max connections default 100 — agar 50 Node.js processes 20 connections each rakhe toh 1000 connections = DB crash."
+          whyUseIt="Connection pool reuse karna matlab 100ms+ overhead har request se hata dena. Lekin ab sawaal ye aata hai — pool kitna bada rakho? Too small: requests queue mein wait karte hain. Too large: database overwhelmed ho jaata hai. PostgreSQL max connections default sirf 100 hain. Agar 10 Node.js processes hain aur har ek 20 connections rakhe — 200 connections = database reject karega naye connections. Pool size carefully tune karo."
           howToUse={{
             filename: 'db-pool.ts',
             language: 'typescript',
@@ -365,9 +375,9 @@ mongoose.connect(uri, {
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
 })',`,
-            explanation: "client.release() try-finally mein — exception hone par bhi release hoga. Warna pool exhausted ho jaata hai. pool.query() automatically connect aur release karta hai — simple use cases ke liye prefer karo. Transactions ke liye client.connect() + explicit release zaroori hai.",
+            explanation: "Under the hood: client.release() try-finally mein isliye ki agar query fail bhi ho, exception throw bhi ho — finally block hamesha execute hoga aur connection pool mein wapas jaayega. Warna pool mein ek slot forever occupied — slowly sab slots khali nahi honge — naye requests hang karenge indefinitely. pool.query() ye sab automatically handle karta hai — simple cases ke liye prefer karo. Transactions ke liye explicit client zaroori hai kyunki BEGIN → COMMIT ek hi connection par hona chahiye.",
           }}
-          realWorldScenario="API server 1000 concurrent requests handle kare toh 20 connections pool mein aur 980 requests wait karein briefly — 980 requests phir bhi fast complete hoti hain kyunki DB queries fast hoti hain. 1000 connections open karna DB ko crash kar dega."
+          realWorldScenario="API server pe 1000 concurrent requests aaye — 20 connections pool mein hain. 20 requests immediately serve hote hain, 980 requests milliseconds wait karti hain. DB queries fast hain (10-50ms) — jab tak pehli 20 khatam hongi, next 20 start ho jaayengi. Sab users fast response pate hain. 1000 connections open karna? Database crash guaranteed."
           commonMistakes={[
             {
               mistake: 'client.release() bhoolna',
@@ -380,8 +390,18 @@ mongoose.connect(uri, {
               fix: 'Rule of thumb: (max_connections - reserved_connections) / number_of_processes. PgBouncer use karo intermediate connection pooler ke roop mein — thousands of connections 10-20 actual DB connections mein multiplex karo.',
             },
           ]}
-          proTip="Serverless environments (Vercel, Lambda) mein traditional connection pooling kaam nahi karta — har invocation new connection. Solutions: PgBouncer (external connection pooler), Prisma Accelerate, Supabase Pooler ya PlanetScale (serverless-friendly databases). ye specially design kiye hain serverless ke liye."
+          proTip="Serverless (Vercel, Lambda) mein ek hidden trap hai — traditional connection pooling kaam nahi karta. Har function invocation naya connection banata hai, 100ms+ overhead. Solutions: PgBouncer (external connection pooler), Prisma Accelerate, ya Supabase Pooler. Ye tools specifically serverless ke liye design kiye gaye hain — connection management ko centralize karte hain. Serverless deploy karo to pehla kaam ye tools setup karna hai."
         />
+      </div>
+
+      <div
+        className="rounded-xl p-5"
+        style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)' }}
+      >
+        <p className="text-[#F5A623] font-semibold mb-2">🤔 Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          Connections manage kar liye, pool bana liya — lekin ek aur problem hai jo ORM use karne waale developers ko silently slow karta hai. Iska naam hai N+1 problem. Ye aisa bug hai jo development mein dikh nahi deta — test data 10 rows hota hai. Production mein data 10,000 rows hota hai — aur tab poori picture saamne aati hai.
+        </p>
       </div>
 
       <div id="n-plus-one">
@@ -389,14 +409,14 @@ mongoose.connect(uri, {
           title="N+1 Problem — Detection & Fix"
           emoji="🔍"
           difficulty="intermediate"
-          whatIsIt="N+1 problem: N records fetch karo, phir har record ke liye 1 aur query — N+1 total queries instead of 1. 100 posts fetch karo, phir 100 separate queries for each author = 101 queries instead of 2. Database killer aur very common ORM mistake. Prisma mein include, Mongoose mein populate, SQL mein JOIN — sabse N+1 fix hota hai."
+          whatIsIt="N+1 problem ek khamoshi se maarne wala bug hai. Step by step trace karo: Step 1 — posts fetch karo (1 query). Step 2 — loop mein har post ke liye author fetch karo (N queries). Total: 1 + N = N+1 queries. 10 posts ke saath? 11 queries — theek lagta hai. 1000 posts ke saath? 1001 queries — production database kneel karta hai. ORM use karo to ye silently ho sakta hai — tumhe pata bhi nahi chalta jab tak monitoring nahi lagaate."
           whenToUse={[
             'API slow ho gayi ho — database query count check karo',
             'Related data har item ke saath dikhani ho — N+1 risk',
             'ORM use karo aur lazy loading available ho',
             'GraphQL — DataLoader N+1 ke liye specifically bana hai',
           ]}
-          whyUseIt="N+1 exponential performance degradation deta hai. 10 posts fast, 1000 posts 100x slow. Production mein aane se pehle detect karna zaroori hai. Prisma/Mongoose query logging se detect karo, phir include/populate se fix karo."
+          whyUseIt="N+1 se bachne ka fayda: social media feed — 50 posts, har post ka author — naively 51 queries. include ke saath 1 query. 50x improvement. Real numbers: 200ms vs 10 seconds response time. Users 3 seconds se zyada wait nahi karte — bounce kar jaate hain. N+1 sirf slow app nahi banata — users bhaga deta hai. Development mein query logging enable karo — production mein ye bug dhundhna bahut costly hai."
           howToUse={{
             filename: 'n-plus-one.ts',
             language: 'typescript',
@@ -445,9 +465,9 @@ const userLoader = new DataLoader(async (ids: readonly string[]) => {
 
 // Multiple graphQL resolvers same batch mein load honge
 const author = await userLoader.load(post.authorId)  // Batched!`,
-            explanation: "include — Prisma JOIN ke through efficiently fetch karta hai — 1 query. Manual batching — 2 queries — posts aur authors separately, phir map karo. DataLoader — GraphQL ke saath perfect — automatic batching + caching per request. Prisma logging enable karo query count dekhne ke liye.",
+            explanation: "Under the hood: include — Prisma ek JOIN query generate karta hai — ek hi trip mein sab data. Manual batching — 2 queries: posts pehle, phir authorIds collect karo, WHERE id IN (...) ek query. Map karo in-memory — O(n) but fast. DataLoader GraphQL ke saath magical hai — multiple resolvers ek hi batch mein resolve hote hain automatically. Prisma mein log: ['query'] enable karo — console mein SQL print hoga, N+1 immediately visible ho jaayega.",
           }}
-          realWorldScenario="Social media feed — 50 posts, har post ka author, har post ke like count — naively 151 queries. include + _count se: 1 query. 150x improvement. Real app mein ye difference 200ms vs 3000ms hota hai. Users bounce karte hain slow pages se."
+          realWorldScenario="Social media feed — 50 posts, har post ka author, har post ke like count — naively 151 queries. include + _count se: 1 query. 150x improvement. Real production numbers: 200ms vs 3000ms response time. Aur ye sirf 50 posts ke liye — 500 posts pe? 1500 queries vs 1 query. N+1 ek compounding problem hai jaise interest rate — post count badhega to damage exponentially badhega."
           commonMistakes={[
             {
               mistake: 'ORM use karte waqt queries count check nahi karna',
@@ -460,7 +480,7 @@ const author = await userLoader.load(post.authorId)  // Batched!`,
               fix: 'Sirf wo relations include karo jo is use case mein actually chahiye. API endpoint-specific projections use karo. select se specific fields only.',
             },
           ]}
-          proTip={`Prisma mein query metrics enable karo: const prisma = new PrismaClient({ log: ['query'] }). Ye log karta hai SQL queries. Production mein pganalyze, New Relic ya Datadog se slow queries track karo. Query performance monitoring continuous process hai — ek baar fix karna kaafi nahi.`}
+          proTip={`Pehla kaam: Prisma mein log: ['query'] enable karo aur apni app chalao. Console mein SQL queries print hongi — count karo kitni queries ek API call pe fire ho rahi hain. Agar 10 se zyada hain, N+1 check karo. Production mein pganalyze ya Datadog slow query tracking lagao. Query performance monitoring ek baar ka kaam nahi — naye features add hone par N+1 wapas aa sakta hai. Ongoing vigilance chahiye.`}
         />
       </div>
     </div>

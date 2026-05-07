@@ -153,7 +153,7 @@ export default function GenAIChapter21Content() {
           AI Architecture Patterns — Production Design 🏗️
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          AI features build karna ek baat hai, scalable production architecture banana doosri baat. Async queues, semantic caching, multi-model routing — enterprise patterns sikhо.
+          AI feature banana easy hai. Scalable, reliable, cost-efficient AI system banana — ye alag kaam hai. Jo log sirf features banate hain unka system production mein toot jaata hai. Jo log architecture patterns sikhte hain unka system scale pe bhi kaam karta hai. Async queues, semantic caching, multi-model routing, dedicated AI service — ye enterprise-grade patterns hain, aaj sikhte hain.
         </p>
         <div
           className="rounded-xl p-4"
@@ -163,7 +163,7 @@ export default function GenAIChapter21Content() {
           }}
         >
           <p className="text-[#67E8F9] text-sm italic">
-            &quot;Architecture patterns AI ko production-ready banate hain — reliable, scalable, cost-efficient.&quot;
+            &quot;Code likhna skill hai. Architecture sochna craft hai. AI features ship karo — lekin sahi architecture ke saath, warna scale pe regret hoga.&quot;
           </p>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default function GenAIChapter21Content() {
           title="Async AI Processing — Queue-Based AI Tasks"
           emoji="⏳"
           difficulty="advanced"
-          whatIsIt="AI calls slow hoti hain (1-30+ seconds). Synchronous approach: user request → API call → wait → response. Problem: server blocked, user frustrated, timeouts possible. Async approach: user request → immediate 'processing' response → background job → result deliver. BullMQ + Claude pattern."
+          whatIsIt="AI calls 1 se 30+ seconds le sakti hain. Synchronous approach: user request kare, server block ho, user wait kare, timeout ho — aur sab fail. Async approach: user request kare, immediate 'aapki request process ho rahi hai' response mile, background mein kaam ho, result deliver ho jab ready ho. BullMQ + Claude = ye pattern implement karta hai."
           whenToUse={[
             'Long AI processing: document analysis, research, code generation.',
             'Batch operations: 100s of items process karna.',
@@ -182,7 +182,7 @@ export default function GenAIChapter21Content() {
             'Retry-critical: API failures pe automatic retry.',
             'Cost-controlled: rate limit workers se API costs control.',
           ]}
-          whyUseIt="Synchronous LLM call pe 30-second response — user bounce karta hai. Async: 'Aapki request process ho rahi hai' → user continues browsing → notification aata hai. UX dramatically better. Backend bhi: queue workers rate-limited kaam karte hain, server threads block nahi hote, retries automatic."
+          whyUseIt="30-second synchronous response: user bounce karta hai, server threads block hote hain, timeout fail hoti hai. Async: user ko immediate response, continues browsing, notification aata hai jab done. UX dramatically better. Backend bhi cleaner: queue workers rate-controlled kaam karte hain, server resources free, automatic retries, dead letter queue for failures. Ye professional engineering hai."
           howToUse={{
             filename: 'async-ai-processing.ts',
             language: 'typescript',
@@ -301,9 +301,9 @@ async function notifyUser(userId: string, result: AIJobResult) {
   // Implement: send websocket message, email, push notification
   console.log(\`Notifying user \${userId}: job \${result.jobId} complete\`);
 }`,
-            explanation: 'BullMQ: Queue (jobs add karo) + Worker (jobs process karo). Worker concurrency: 5 parallel Claude calls. Limiter: rate limit control. Retry: 3 attempts exponential backoff. Progress tracking: job.updateProgress(). Status check: getJobStatus(). User notification: webhook/websocket/email.',
+            explanation: 'BullMQ two parts: Queue (jobs add karo) + Worker (jobs process karo). defaultJobOptions mein: 3 attempts, exponential backoff 2s, last 100 completed jobs rakho. Worker: concurrency 5 parallel calls, limiter 10/second. job.updateProgress() se real-time progress tracking. submitAIJob immediately jobId return karta hai — user ye ID se status poll kare ya webhook wait kare. notifyUser: websocket, email, push notification — implement as needed.',
           }}
-          realWorldScenario="Legal document review platform: 100+ page contracts upload karne pe immediate 'processing' response. BullMQ queue: 10 concurrent workers, 3 retries. Progress bar: 10% → 50% → 90% → done. Email notification jab complete. Processing time: 2-5 min. Synchronous: timeout ho jaata (60s limit). Queue-based: 100% success rate."
+          realWorldScenario="Legal document review platform: 100+ page contracts. Synchronous approach try kiya — 60-second timeout hit karta tha. Switch to async BullMQ queue: immediate 'processing' response, 10 concurrent workers, 3 auto-retries. Progress bar: 10% → 50% → 90% → done. Email notification on completion. Processing time: 2-5 minutes. Synchronous: 100% timeout failures. Queue-based: 100% success rate. Architecture change ne product ship kiya."
           commonMistakes={[
             {
               mistake: 'Job data mein poora document store karna queue mein',
@@ -311,7 +311,7 @@ async function notifyUser(userId: string, result: AIJobResult) {
               fix: 'File/content S3 ya database mein store karo. Queue mein sirf reference (fileId, s3Key) pass karo. Worker reference se content fetch kare.',
             },
           ]}
-          proTip="BullMQ Board (npm install @bull-board/express) se visual dashboard milta hai — running, completed, failed jobs sab dekho. Development mein extremely helpful hai. Production mein: metrics export karo Prometheus/Grafana mein. Job success rate, avg processing time, queue depth — sab monitor karo."
+          proTip="@bull-board/express install karo — ek line se visual dashboard milta hai running, completed, failed jobs ka. Development mein bahut helpful hai. Production mein: BullMQ metrics Prometheus pe export karo, Grafana mein dashboard banao. Queue depth, success rate, average processing time — ye metrics AI product ki health tell karte hain."
         />
       </div>
 
@@ -321,7 +321,7 @@ async function notifyUser(userId: string, result: AIJobResult) {
           title="Event-Driven AI — Webhooks & Async Callbacks"
           emoji="⚡"
           difficulty="advanced"
-          whatIsIt="Event-driven AI: kuch event trigger hone pe AI automatically kaam kare — new document uploaded → analyze karo, new support ticket → categorize karo, code pushed → review karo. Webhooks, message queues (Redis/RabbitMQ/Kafka), event buses — triggers ke mechanisms."
+          whatIsIt="Event-driven AI: kuch hota hai → AI automatically react karta hai. New document uploaded → automatically analyze karo. New support ticket → automatically categorize karo. Code pushed → automatically review karo. User signed up → personalized onboarding generate karo. Triggers: webhooks (external events), message queues (Redis/Kafka), event bus (internal events). Ye reactive architecture hai — AI background mein kaam karta hai, users interact karte rehte hain."
           whenToUse={[
             'File upload → AI processing: document analysis, image recognition.',
             'New record → AI enrichment: customer signup → persona, lead → score.',
@@ -329,7 +329,7 @@ async function notifyUser(userId: string, result: AIJobResult) {
             'Schedule-triggered: nightly reports, weekly summaries.',
             'User action → AI reaction: comment posted → sentiment analysis.',
           ]}
-          whyUseIt="Polling (periodic check if new data available) vs Event-driven (push notification when data available). Polling: wastes resources, adds latency, doesn't scale. Events: instant reaction, no wasted polls, scales with event volume. Google Calendar, GitHub, Stripe — sab webhooks use karte hain AI processing trigger karne ke liye."
+          whyUseIt="Polling vs Events — ek important distinction. Polling: 'kuch naya aaya?' har 30 seconds check karo — wasted resources, added latency, nahi scale. Event-driven: kuch hota hai toh push notification — instant reaction, zero wasted polls, naturally scales. GitHub, Stripe, Slack — sab webhooks pe rely karte hain. AI ke liye event-driven matlab: AI reactive hai, proactive nahi — sahi architecture."
           howToUse={{
             filename: 'event-driven-ai.ts',
             language: 'typescript',
@@ -431,9 +431,9 @@ eventBus.on('user.signup', async (data) => {
   const block = message.content[0];
   console.log('Welcome email for user', userId, ':', block.type === 'text' ? block.text.slice(0, 50) : '');
 });`,
-            explanation: 'Webhook: external event → verify signature → queue mein job → process. Event bus: internal events ke liye — signup, upload, action. Queue: immediate response (queued), background processing. Security: webhook signature verify karo timingSafeEqual se (timing attack prevent karo).',
+            explanation: 'GitHub webhook handler: signature verify karo (timingSafeEqual — timing attacks prevent karne ke liye), payload parse karo, queue mein job daalo — immediate 200 OK return karo. Event bus: internal events ke liye — signup, upload, action. AIEventBus.on() se handlers register karo, emit() se fire karo. Security critical: webhook bina signature verification ke koi bhi fake kar sakta hai.',
           }}
-          realWorldScenario="GitHub PR bot: code push pe webhook → BullMQ queue → Claude review → GitHub comment post. Team ne manual code review time 50% reduce kiya — AI catches obvious issues, humans focus on architecture/logic. Setup: 1 day. Impact: permanent. Event-driven architecture se bot runs automatically on every PR."
+          realWorldScenario="GitHub PR review bot: code push webhook → BullMQ queue → Claude code review → GitHub comment automatically. Team ne manual review time 50% reduce kiya — AI obvious issues pakdta hai, humans architecture aur business logic pe focus karte hain. Setup: 1 din ka kaam. Impact: har PR pe permanently. Event-driven architecture ka beauty: ek baar set karo, forever run karo."
           commonMistakes={[
             {
               mistake: 'Webhook signature verify nahi karna',
@@ -441,7 +441,7 @@ eventBus.on('user.signup', async (data) => {
               fix: 'Hamesha X-Hub-Signature-256 ya equivalent verify karo. timingSafeEqual use karo (not ===) — timing attacks prevent karo. Reject invalid signatures 401 se.',
             },
           ]}
-          proTip="Webhook delivery reliable nahi hoti — servers down ho sakte hain, timeouts happen. Retry logic implement karo: Svix ya Hookdeck use karo managed webhook delivery ke liye. Automatic retries, delivery logs, dashboard — webhook infrastructure manage karna complicated hai, managed service easy banata hai."
+          proTip="Webhook delivery unreliable hai — tumhara server down tha toh event miss ho jaata hai. Ye production mein real problem hai. Svix ya Hookdeck use karo — managed webhook delivery: automatic retries, delivery logs, dashboard. Webhook infrastructure manage karna complicated hai. Managed service use karo, apna kaam karo — ye sahi tradeoff hai."
         />
       </div>
 
@@ -451,7 +451,7 @@ eventBus.on('user.signup', async (data) => {
           title="AI Caching Patterns — Semantic Cache"
           emoji="⚡"
           difficulty="advanced"
-          whatIsIt="AI caching: responses cache karo similar future queries ke liye. Regular cache: exact key match. Semantic cache: similar meaning queries → same cached result. 'Node.js kya hai?' aur 'NodeJS explain karo' same response cache se serve ho sakte hain. GPTCache, Redis + embeddings se implement."
+          whatIsIt="Regular response cache: exact string match chahiye — ek character alag toh miss. Semantic cache: similar meaning queries → same cached result. 'Node.js kya hai?' aur 'NodeJS explain karo' dono same cache hit kar sakte hain — meaning similar hai. Implementation: query embed karo, existing cache entries se cosine similarity compare karo, threshold pe hit. GPTCache library ya Redis + embeddings se implement karo."
           whenToUse={[
             'FAQ systems: same questions repeatedly asked.',
             'Documentation Q&A: same concepts different phrasings.',
@@ -459,7 +459,7 @@ eventBus.on('user.signup', async (data) => {
             'High-traffic endpoints: cost + latency reduce karo.',
             'Consistent answers: policy questions exact same response chahiye.',
           ]}
-          whyUseIt="Production FAQ chatbot: 10K queries/day, 70% similar. Without cache: 10K * $0.003 = $30/day = $900/month. With 70% hit rate: 3K * $0.003 = $9/day = $270/month. 70% savings. Latency bhi: cache hit = <10ms vs LLM = 1-3 seconds. UX + cost improvement simultaneously."
+          whyUseIt="Numbers dekho: 10K queries/day, 70% similar — without cache $900/month. With 70% semantic cache hit: $270/month. 70% savings. Lekin asli bonus: cache hit latency 10ms vs LLM call 1-3 seconds. UX aur cost dono simultaneously improve. FAQ-type applications mein semantic cache ROI clearly positive hoti hai — implement karo."
           howToUse={{
             filename: 'semantic-cache.ts',
             language: 'typescript',
@@ -556,9 +556,9 @@ const r1 = await semanticCachedQuery('Node.js kya hai?');
 const r2 = await semanticCachedQuery('NodeJS explain karo'); // should hit cache
 console.log('Q1 cache hit:', r1.cacheHit); // false
 console.log('Q2 cache hit:', r2.cacheHit); // true (similarity ~0.95)`,
-            explanation: 'Semantic cache: query embed karo → existing cache entries se compare → similarity threshold check → hit ya miss. Production mein: Redis + RediSearch (vector similarity), ya GPTCache Python library (most mature option), ya Qdrant (vector DB as cache). Threshold: 0.9-0.95 usually good — tune karo false positive rate ke hisaab se.',
+            explanation: 'semanticCachedQuery flow: embed karo → cacheStore scan karo → cosineSim > SIMILARITY_THRESHOLD? Cache hit. Nahi? LLM call karo, result cache karo, stale entries evict karo. SIMILARITY_THRESHOLD 0.92 — tune karo apne domain ke hisaab se. In-memory demo hai — production mein Redis + RediSearch (vector similarity support hai), ya Qdrant as cache, ya GPTCache Python library (most mature). False positives log karo aur threshold adjust karo.',
           }}
-          realWorldScenario="EdTech platform ke AI tutor pe: 60% queries similar variations hain (kaise karo, explain karo, batao — same topic). Semantic cache implement kiya Redis + embeddings se. Result: 58% cache hit rate, $800/month API cost → $340/month. Response time: P50 1.2s → P50 with cache: 0.4s (40ms cache + 360ms overhead). Win-win."
+          realWorldScenario="EdTech AI tutor: 60% queries similar variations thi — 'kaise karo', 'explain karo', 'batao' — same topic, alag phrasing. Redis + embeddings se semantic cache implement kiya. 58% cache hit rate mila. API cost: $800/month → $340/month. Response P50: 1.2s → 0.4s (cache overhead sirf 40ms). Cost aur speed dono simultaneously improve — ye architecture win hai."
           commonMistakes={[
             {
               mistake: 'Bahut low similarity threshold set karna (< 0.85)',
@@ -566,7 +566,7 @@ console.log('Q2 cache hit:', r2.cacheHit); // true (similarity ~0.95)`,
               fix: 'Start 0.95 se, analyze false positives, cautiously lower karo. Better to miss cache than return wrong answer. Domain-specific: technical queries higher threshold chahiye.',
             },
           ]}
-          proTip="GPTCache (Python, pip install gptcache) production semantic caching ke liye best library hai — OpenAI drop-in replacement, multiple embedding models support, Redis/Chroma backends. Node.js se: Python GPTCache service deploy karo, REST API expose karo — Node.js se HTTP call karo."
+          proTip="Production semantic caching ke liye GPTCache (Python) best mature option hai — OpenAI drop-in replacement, multiple embedding models, Redis/Chroma backends. Node.js se: GPTCache ko separate Python microservice ke roop mein deploy karo, REST API expose karo, Node.js se HTTP call karo. Ek service extra hogi lekin caching logic battle-tested hogi."
         />
       </div>
 
@@ -576,14 +576,14 @@ console.log('Q2 cache hit:', r2.cacheHit); // true (similarity ~0.95)`,
           title="Multi-model Routing — Cost + Quality Balance"
           emoji="🚦"
           difficulty="advanced"
-          whatIsIt="Multi-model routing: task complexity assess karo, appropriate model select karo. Simple question → Haiku (fast, cheap). Complex analysis → Sonnet. Deep reasoning → Opus. Escalation strategy: cheap model try karo, quality insufficient? Expensive model pe escalate. 40-70% cost reduction without significant quality loss."
+          whatIsIt="Multi-model routing: task complexity assess karo, appropriate model select karo. Simple factual question → Haiku (fast, cheap). Complex analysis → Sonnet. Escalation strategy: pehle cheap model try karo, quality threshold nahi mili → expensive model pe escalate. Result: most requests Haiku se handle, kuch Sonnet se — 40-70% cost reduction without significant quality loss."
           whenToUse={[
             'Mixed workloads: simple FAQs + complex analysis mix.',
             'Cost-sensitive production: hundreds of thousands of queries/month.',
             'Latency priority: simple tasks fast response chahiye.',
             'Quality-critical tasks: important decisions expensive model pe.',
           ]}
-          whyUseIt="Haiku: $0.25/1M input tokens. Sonnet: $3/1M. Opus: $15/1M. 60x price difference. Agar 80% queries Haiku se handle ho sakte hain: $1000/month → $280/month. Quality-based routing: automatic escalation ensure karta hai quality nahi giregi. Cost optimize without manual intervention."
+          whyUseIt="Price gap dekho: Haiku $0.25/1M tokens, Sonnet $3/1M, Opus $15/1M — 60x difference. Agar 80% queries Haiku se handle ho sakte hain: $1000/month → $280/month. Quality-based escalation: automatic — model decide karta hai upgrade karna hai ya nahi. Cost optimize ho without manual intervention. Ye ki architecture pattern automatically intelligent cost management karta hai."
           howToUse={{
             filename: 'model-routing.ts',
             language: 'typescript',
@@ -685,9 +685,9 @@ const routingMetrics = {
     console.log('By model:', this.byModel);
   }
 };`,
-            explanation: 'Task analysis: word count, keywords se complexity classify karo. Model assign karo. Quality check karo. Threshold nahi mili? Escalate karo. Metrics track karo — escalation rate, model distribution. Production mein: LLM-as-judge quality assessment use karo (more accurate than heuristics).',
+            explanation: 'analyzeTask function: word count + keyword indicators se complexity classify karo. Model select karo. Haiku try karo, assessQuality run karo (heuristic-based). Threshold nahi mili? Sonnet pe escalate. routingMetrics: escalation rate track karo. High escalation rate (>20%) = classifier fix karo. Production mein: LLM-as-judge quality assessment zyada accurate hai heuristics se — Haiku se answer generate karo, phir Haiku se quality rate karo.',
           }}
-          realWorldScenario="Customer support AI: 75% simple questions (order status, basic FAQs) → Haiku. 20% moderate (product troubleshooting) → Haiku with escalation. 5% complex (technical issues, disputes) → Sonnet. Escalation rate: 8%. Monthly savings: $4200 → $1100. Quality: unchanged per customer satisfaction score."
+          realWorldScenario="Customer support AI: 75% simple queries (order status, FAQs) → Haiku direct. 20% moderate (troubleshooting) → Haiku with escalation path. 5% complex (disputes, technical issues) → Sonnet. Overall escalation rate: 8%. Monthly cost: $4,200 → $1,100. Customer satisfaction score: unchanged. 74% cost reduction, zero quality impact — ye routing ka ROI hai."
           commonMistakes={[
             {
               mistake: 'Routing classify karna bina validation ke — wrong classification',
@@ -695,7 +695,7 @@ const routingMetrics = {
               fix: 'Routing classifier ko validate karo ground truth se. LLM-as-classifier use karo: "Is this query simple/moderate/complex?" — meta-call karo. Track escalation rate — too high? Classifier fix karo.',
             },
           ]}
-          proTip="RouteLLM (open-source library) production-grade routing implement karta hai trained classifier ke saath — manually rules likhne se better. Paper: 'RouteLLM: Learning to Route LLMs with Preference Data'. Models: Haiku-level quality at 40% of Sonnet cost on their benchmarks. Python library, Node.js se API karo."
+          proTip="RouteLLM open-source library manually rules likhne se better trained classifier provide karta hai — production-grade routing. Paper: 'RouteLLM: Learning to Route LLMs with Preference Data'. Result: Haiku-level quality at 40% of Sonnet cost on their benchmarks. Python library hai — Node.js se API karo ya Python service deploy karo. Manual heuristics se start karo, RouteLLM pe upgrade karo jab scale karo."
         />
       </div>
 
@@ -705,7 +705,7 @@ const routingMetrics = {
           title="AI in Microservices — Dedicated AI Service"
           emoji="🏗️"
           difficulty="advanced"
-          whatIsIt="Dedicated AI service pattern: AI functionality ek separate service mein isolate karo — other services is AI service ko call kare. Benefits: independent scaling, centralized model management, shared rate limits + caching, AI-specific monitoring, team boundary clarity. API gateway se route karo."
+          whatIsIt="Dedicated AI service pattern: AI functionality ek separate microservice mein isolate karo — baki services is AI service ko HTTP call kare. Benefits: independent scaling (AI heavy compute chahta hai), centralized model management (model change karo bina app redeploy ke), shared rate limiting + caching across all consumers, AI-specific monitoring, team boundary clarity. Ye pattern jab multiple services AI chahti hain tab especially valuable hai."
           whenToUse={[
             'Multiple services AI chahti hain — centralize karo.',
             'AI resource requirements different hain — GPU/memory alag scale karo.',
@@ -713,7 +713,7 @@ const routingMetrics = {
             'Shared caching — multiple services same AI calls se benefit karein.',
             'Compliance — AI calls audit centrally karo.',
           ]}
-          whyUseIt="Monolith mein AI: har team apna API key manage karta hai, har service apna rate limiting implement karta hai, caching duplicate hoti hai. Dedicated AI service: ek jagah API keys, ek jagah rate limiting, shared cache, centralized monitoring. Governance bhi easy — ek service ki compliance verify karo."
+          whyUseIt="Monolith mein AI imagine karo: har team apna API key manage karta hai, har service apna retry logic likhta hai, caching duplicate hoti hai — ye mess hai. Dedicated AI service: ek jagah API keys, ek rate limiting, shared cache (cross-service cache hits!), centralized monitoring, ek jagah compliance. Governance clear: AI team AI service manage kare, product teams consume karein."
           howToUse={{
             filename: 'ai-service.ts',
             language: 'typescript',
@@ -824,9 +824,9 @@ function hashString(str: string): string {
 }
 
 app.listen(3001, () => console.log('AI Service running on :3001'));`,
-            explanation: 'Dedicated AI service: Express server on port 3001, other services call kare. Rate limiting per client. Semantic cache (Redis). Sync endpoint (fast tasks) + async endpoint (long tasks). Model routing built-in (fast/balanced/powerful). Other services: HTTP call karo — AI internals hidden.',
+            explanation: 'AI service port 3001 pe: rate limiting per client (keyGenerator: x-client-id header), Redis semantic cache (hash-based), sync endpoint fast tasks ke liye, async endpoint long tasks ke liye. AIRequest interface: type, model (fast/balanced/powerful), options. Consumers sirf HTTP call karte hain — AI internals, model names, caching sab hidden. Model upgrade karo? Sirf AI service redeploy.',
           }}
-          realWorldScenario="E-commerce platform: 5 services sab AI chahte the (product descriptions, customer support, review analysis, search ranking, recommendations). Instead of 5 API key setups: 1 AI service. Benefits: shared cache hit rate 55% (cross-service same queries), centralized cost tracking, ek jagah model upgrade. Dev velocity improved."
+          realWorldScenario="E-commerce platform: 5 services AI chahti thi — product descriptions, customer support, review analysis, search ranking, recommendations. 5 alag API key setups ke bajaye: 1 dedicated AI service. Results: shared cache hit rate 55% (different services same queries karte hain), centralized cost tracking, ek model upgrade se sab services benefit. Dev velocity improved — AI features add karna fast hua. Architecture investment: 1 sprint. Benefit: ongoing."
           commonMistakes={[
             {
               mistake: 'AI service mein synchronous calls sirf use karna',
@@ -834,7 +834,7 @@ app.listen(3001, () => console.log('AI Service running on :3001'));`,
               fix: 'Sync endpoint: <2 second tasks ke liye. Async endpoint + webhook: long tasks ke liye. Service calling AI service ko job ID return karke webhook pe result receive karna chahiye.',
             },
           ]}
-          proTip="AI Gateway products available hain — Portkey.ai, Helicone, LiteLLM — ye managed AI service ka kaam karte hain: provider routing, rate limiting, caching, observability, cost tracking. Self-hosted se zyada easy. LiteLLM: open-source, self-host karo, 100+ providers support karta hai uniform OpenAI API se."
+          proTip="Khud AI service banana nahi chahte? LiteLLM use karo — open-source AI gateway, 100+ providers uniform OpenAI API se. Self-host karo, Docker pe chalao. Portkey.ai aur Helicone managed options hain — provider routing, rate limiting, caching, observability sab built-in. Ye tools AI service ka kaam karte hain bina code likhe. Evaluate karo apni requirements ke saath."
         />
       </div>
 

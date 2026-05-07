@@ -49,13 +49,13 @@ export default function TSChapter5Content() {
     <div className="space-y-8">
       <div className="rounded-2xl p-6" style={{ background: 'rgba(49,120,198,0.06)', border: '1px solid rgba(49,120,198,0.25)' }}>
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Classes & OOP in TypeScript
+          Classes & OOP in TypeScript — Encapsulation Ka Asli Matlab
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          TypeScript classes mein JavaScript classes ke upar type system add hota hai — access modifiers (public/private/protected), abstract classes, interfaces implement karna, aur readonly fields. Ye features large codebases mein bugs prevent karte hain.
+          JavaScript mein classes hain — lekin access modifiers nahi the. TypeScript ne woh gap fill kiya. private, protected, readonly — ye sirf keywords nahi, ye <strong className="text-[#F5F5F7]">encapsulation ka enforcement</strong> hai. Sochte hain: BankAccount ka balance koi seedha access nahi kar sakta — sirf deposit/withdraw methods se. TypeScript ensure karta hai ye rule kabhi break na ho.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          OOP patterns — encapsulation, inheritance, polymorphism — TypeScript mein type-safe tarike se implement hote hain.
+          Ek important baat yaad rakho: TypeScript private compile-time check hai — runtime pe technically accessible hai. Truly private ke liye JavaScript # syntax use karo. Aur abstract classes — sirf extend ho sakti hain, instantiate nahi. Kyun? Template method pattern ke liye — base mein common logic, subclass mein variation. Samjhenge sab andar.
         </p>
       </div>
 
@@ -64,14 +64,14 @@ export default function TSChapter5Content() {
           title="Access Modifiers — public, private, protected"
           emoji="🔒"
           difficulty="intermediate"
-          whatIsIt="Access modifiers control karte hain ki class ke members (properties/methods) bahar se accessible hain ya nahi."
+          whatIsIt="Access modifiers — TypeScript ka encapsulation mechanism. public: sabke liye, default hai. private: sirf is class ke andar. protected: is class aur subclasses mein. readonly: set karo but change mat karo. Compiler ka perspective: ye rules compile time pe enforce hoti hain — galat access karo toh JavaScript file generate hi nahi hoti."
           whenToUse={[
             'public: sabke liye accessible (default)',
             'private: sirf us class ke andar accessible',
             'protected: us class aur subclasses mein accessible',
             'readonly: set karne ke baad change nahi ho sakta',
           ]}
-          whyUseIt="Encapsulation ke liye — internal state bahar se directly change nahi hona chahiye. private se implementation details hide hoti hain — public API clean rehta hai."
+          whyUseIt="Ek real problem sochte hain: acc.balance = 99999 — JavaScript mein ye perfectly valid hai. TypeScript private ke saath? Compile error. Yahi encapsulation ka fayda hai — implementation details hide, public API expose. Koi bhi directly balance change nahi kar sakta, sirf deposit/withdraw ke through. Bank ki real duniya jaisa — teller ke through transaction, directly vault access nahi."
           howToUse={{
             code: `class BankAccount {
   private balance: number   // sirf is class ke andar
@@ -115,14 +115,14 @@ class SecureAccount {
   }
 }`,
             language: 'typescript',
-            explanation: 'balance private hai — directly access nahi ho sakta, sirf deposit/withdraw/getBalance ke through. id readonly hai — set ho sakta hai but change nahi.',
+            explanation: 'acc.balance = 99999 — compile error! acc.id = "new-id" — compile error! Ye TypeScript enforced contracts hain. SecureAccount mein # syntax — ye JavaScript native privacy hai, truly private, runtime pe bhi accessible nahi. Production sensitive data ke liye # prefer karo — TypeScript private compile-time only hai.',
             filename: 'access-modifiers.ts',
           }}
-          realWorldScenario="Service class mein database connection private rakho, query methods public. Bahar se connection directly manipulate nahi ho sakta — sirf intended methods se interact kar sakte hain."
+          realWorldScenario="DatabaseService class mein connection pool private rakho, query method public. Koi bhi directly pool ko manipulate nahi kar sakta — sirf execute() ya transaction() ke through. Ye ensures ek entry point hai — connection management centralized, bugs isolated. Real production code yahi karta hai."
           commonMistakes={[
             { mistake: 'TypeScript private aur JavaScript # private confuse karna', why: 'TypeScript private compile time check hai — runtime pe accessible hai. # truly private hai', fix: 'Sensitive data ke liye # (JavaScript private fields) use karo' },
           ]}
-          proTip="TypeScript private compile time only hai — runtime pe access ho sakta hai. Real privacy ke liye JavaScript native # syntax use karo: #balance."
+          proTip="Ye important distinction yaad rakho: TypeScript private = compile-time check, JavaScript private (#) = runtime enforcement. Passwords, tokens, sensitive data ke liye hamesha # use karo. TypeScript private developer experience ke liye hai — consumers ko galti se access karne se rokne ke liye. Real security ke liye # mandatory hai."
         />
       </div>
 
@@ -131,13 +131,13 @@ class SecureAccount {
           title="Abstract Classes — Template Methods Pattern"
           emoji="🎭"
           difficulty="intermediate"
-          whatIsIt="Abstract class ek base class hai jo directly instantiate nahi ho sakti — sirf extend ho sakti hai. Abstract methods subclasses ko implement karne force karte hain."
+          whatIsIt="Abstract class ek incomplete blueprint hai — directly use nahi kar sakte, sirf extend kar sakte ho. Abstract methods force karte hain subclass mein implement karo. Template method pattern ke liye perfect: base class mein algorithm ka flow fix karo, steps abstract rakho — subclass apna implementation de. Compiler guarantee karta hai koi abstract method miss nahi hoga."
           whenToUse={[
             'Jab common implementation share karni ho lekin subclass-specific behavior bhi ho',
             'Template method pattern implement karna ho',
             'Partial implementation provide karni ho',
           ]}
-          whyUseIt="Abstract classes inheritance aur shared code ka balance deti hain — base class mein common logic, abstract methods mein variation points."
+          whyUseIt="Sawaal: interface aur abstract class mein kyun choose karun? Interface sirf contract hai — koi code share nahi hota. Abstract class mein concrete methods bhi hote hain — shared implementation plus forced customization. Use karo jab 'is-a' relationship ho aur common code share karna ho. Dog IS-AN Animal — abstract class. Dog CAN-DO Serialization — interface."
           howToUse={{
             code: `abstract class Animal {
   constructor(protected name: string) {}
@@ -183,14 +183,14 @@ abstract class DataExporter {
   }
 }`,
             language: 'typescript',
-            explanation: 'Animal abstract class mein makeSound() abstract hai — Dog aur Cat dono implement karte hain. describe() shared method hai. Template method pattern se export() ka flow fixed hai lekin steps variable hain.',
+            explanation: 'new Animal("Generic") — compile error! Abstract class direct instantiate nahi hoti. Dog aur Cat makeSound() implement karte hain — compiler check karta hai. DataExporter mein template method pattern: export() ka flow fixed hai (processData → format → addHeaders), sirf steps abstract hain. Subclass flow change nahi kar sakta, sirf steps customize kar sakta hai.',
             filename: 'abstract-classes.ts',
           }}
-          realWorldScenario="Database repository abstract class: abstract findById(), abstract save() — concrete implementations PostgresRepo aur MongoRepo alag hoti hain lekin interface same rehta hai."
+          realWorldScenario="Database repository pattern — abstract BaseRepository mein findAll(), findById(), save(), delete() abstract methods. PostgresRepo aur MongoRepo dono extend karte hain — implementation alag, interface same. Service layer BaseRepository type ka use karta hai — underlying database change karo, service layer untouched. Ye abstraction ka real power hai."
           commonMistakes={[
             { mistake: 'Abstract class ko interface ki jagah use karna', why: 'Abstract class inheritance hierarchy create karta hai — ye tight coupling hai', fix: 'Interface prefer karo contract ke liye, abstract class sirf jab shared implementation truly chahiye' },
           ]}
-          proTip="Abstract class vs interface: abstract class 'is-a' relationship ke liye, interface 'can-do' ke liye. Dog is-an Animal, Serializable can-do serialization."
+          proTip="Abstract classes tight coupling create karte hain — inheritance hierarchy ek design decision hai jo baad mein change karna mushkil hota hai. Prefer composition over inheritance. Abstract class sirf jab truly 'is-a' relationship ho aur shared implementation genuinely zaroorat ho. Interface + multiple small classes aksar better design hoti hai."
         />
       </div>
 
@@ -199,13 +199,13 @@ abstract class DataExporter {
           title="implements — Interface Ko Enforce Karo"
           emoji="✅"
           difficulty="intermediate"
-          whatIsIt="implements keyword se class ko ek ya zyada interfaces ka contract fulfill karna hota hai. TypeScript verify karta hai ki class mein saari required properties aur methods hain."
+          whatIsIt="implements se class ek guaranteed contract follow karta hai. Jab class Serializable implements karta hai — TypeScript checklist banata hai: serialize() hai? deserialize() hai? Ek bhi miss karo — compile error, class incomplete hai. Ek aur powerful feature: ek class multiple interfaces implement kar sakti hai — class UserService implements Serializable, Loggable, Cacheable."
           whenToUse={[
             'Class ko specific interface ka contract satisfy karna ho',
             'Multiple interfaces implement karni hon (multiple implements)',
             'Duck typing verify karna ho compile time pe',
           ]}
-          whyUseIt="implements se class ek guaranteed contract follow karta hai — dono sides (class aur interface) change hone pe TypeScript immediately error deta hai."
+          whyUseIt="Interface update karo — nayi method add karo — TypeScript immediately batayega kaunsi classes contract fulfill nahi kar rahi. Manual search nahi, grep nahi — compiler khud bolta hai. Ye refactoring safety hai. 20 classes ek interface implement karti hain, interface change karo — 20 errors immediate. Zero silently broken code."
           howToUse={{
             code: `interface Serializable {
   serialize(): string
@@ -249,14 +249,14 @@ class Point {
 const p = new Point(3, 4)
 console.log(p.x, p.y)  // 3, 4 — no manual this.x = x needed!`,
             language: 'typescript',
-            explanation: 'UserService Serializable aur Loggable dono implement karta hai. Parameter properties shorthand mein constructor parameters automatically properties ban jaati hain.',
+            explanation: 'Point class dekho — constructor(public readonly x: number, public readonly y: number). Sirf itna likhne se x aur y automatically public readonly properties ban gayi. this.x = x alag se likhna nahi pada. Ye parameter property shorthand hai — boilerplate minimum, readability maximum.',
             filename: 'implements.ts',
           }}
-          realWorldScenario="Express-style middleware pattern: interface Middleware { handle(req: Request, res: Response): void }. Har middleware class ye contract implement kare — router automatically sab handle kar sakta hai."
+          realWorldScenario="Plugin system banao — interface Plugin { initialize(): Promise<void>; teardown(): Promise<void>; name: string }. Koi bhi plugin class ye implement kare. Plugin manager sirf Plugin[] array rakhta hai — actual class types nahi jaanta. Naya plugin add karo, existing system untouched. Open/closed principle in action."
           commonMistakes={[
             { mistake: 'implements aur extends confuse karna', why: 'extends: class se inherit karo. implements: interface ka contract fulfill karo', fix: 'class Dog extends Animal implements Runnable — dono alag hain' },
           ]}
-          proTip="Parameter properties shorthand bahut common hai — constructor(private db: Database, private logger: Logger) likhne se automatically private fields ban jaate hain."
+          proTip="Parameter properties ek habit banao — constructor(private readonly db: Database, private logger: Logger) se zero boilerplate. readonly injection ke liye perfect — dependency inject ho, change na ho. NestJS jaisi frameworks internally yahi pattern use karti hain har service class mein."
         />
       </div>
 
@@ -265,14 +265,14 @@ console.log(p.x, p.y)  // 3, 4 — no manual this.x = x needed!`,
           title="Static Members & Singleton Pattern"
           emoji="🏛️"
           difficulty="intermediate"
-          whatIsIt="Static members class ke instance pe nahi, class itself pe hote hain. Class ka ek hi shared state hota hai."
+          whatIsIt="Static members class ke instances se belong nahi karte — class khud ka state hota hai. Matlab 100 instances bano ya 1000 — static member ek hi hai, shared. Singleton pattern isi pe based hai: private constructor — directly new se ban nahi sakta — aur static getInstance() method — ek hi instance guaranteed."
           whenToUse={[
             'Factory methods (static create())',
             'Singleton pattern',
             'Class-level constants',
             'Utility methods jo instance state na use karein',
           ]}
-          whyUseIt="Static members class-level functionality ke liye useful hain — instance banaye bina use kar sakte hain. Singleton pattern ek commonly needed pattern hai."
+          whyUseIt="Config class sochte hain — poori app mein ek hi config chahiye, multiple instances nahi. Singleton guarantee karta hai Config.getInstance() hamesha same object return kare. config === config2 true — yahi singleton ka proof hai. Ek common warning: singletons testing mein painful hote hain — global state. Dependency injection better approach hai production mein."
           howToUse={{
             code: `class Config {
   private static instance: Config | null = null
@@ -313,14 +313,14 @@ console.log(Config.isProduction())  // false in dev
 const config2 = Config.getInstance()
 console.log(config === config2)  // true — singleton!`,
             language: 'typescript',
-            explanation: 'Config singleton class — private constructor se direct new Config() block hai. getInstance() always same instance return karta hai.',
+            explanation: 'Private constructor ka matlab: new Config() likhne se compile error. Sirf Config.getInstance() se instance mile. First call pe create hota hai, baad ke calls pe same instance return hoti hai. Static isProduction() factory method hai — class pe call karo, instance ki zaroorat nahi. TypeScript static members ko class ke naam se access karta hai, this se nahi.',
             filename: 'static-members.ts',
           }}
-          realWorldScenario="Database connection pool — ek hi pool instance poori app mein share karo. Logger class — ek instance poori app ke logs handle kare."
+          realWorldScenario="Database connection pool singleton pattern mein perfect hai — connections expensive hain, ek pool poori app share kare. Logger bhi classic singleton example hai. Lekin real production apps mein — dependency injection frameworks (NestJS, inversify) singleton lifecycle manage karte hain, manual Singleton class likhne ki zaroorat nahi hoti usually."
           commonMistakes={[
             { mistake: 'Singleton ko overuse karna (global state become karta hai)', why: 'Testing difficult ho jaata hai — sab tests same instance share karte hain', fix: 'Dependency injection prefer karo — singleton sirf truly global resources ke liye' },
           ]}
-          proTip="TypeScript 4.2+ mein abstract constructors hain: abstract new() syntax. Modern TypeScript mein Singleton se zyada dependency injection use karo — testability bahut better hoti hai."
+          proTip="Singleton overuse mat karo — global state testing ka dushman hai. Har test same instance share kare toh test isolation gone. Iska alternative: module-level exports — Node.js mein module cache karta hai, effectively singleton behavior milti hai bina explicit pattern ke. Simple aur testable."
         />
       </div>
 

@@ -206,17 +206,17 @@ export default function Chapter7Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Callback hell se aage niklo.
+          Tumhara callback code ek din tumhe rula dega — aur us din Promise yaad aayega.
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Promises ek contract hain — future mein value milegi. Aaj hi samjho kaise ye pattern ne JavaScript async programming ko completely badal diya.
+          Sochte ho callback theek hai? Ek level, do level — fine. Lekin jab user fetch karo, phir orders fetch karo, phir payments fetch karo, phir invoice generate karo... toh tumhara code pyramid ban jaata hai. Developers isse pyaar se "Pyramid of Doom" kehte hain. Promises ne is duniya ko hila diya.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Callbacks mein problem thi — nested callbacks, error handling nightmare, code readability zero. Promises ne ek clean, chainable API diya jahan
-          {' '}<code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">.then()</code>{', '}
+          Promise ek guarantee hai — "bhai, main future mein ek value doonga, pakka." Ye ek object hai jiske teen states hain. Aur sabse important baat — ye{' '}
+          <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">.then()</code>{', '}
           <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">.catch()</code>{' '}
           aur <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">.finally()</code>{' '}
-          se async code likhna ek pleasure ban gaya.
+          se chain hota hai — bilkul assembly line ki tarah.
         </p>
       </div>
 
@@ -231,7 +231,7 @@ export default function Chapter7Content() {
           title="Promise — Future Ka Contract"
           emoji="🤝"
           difficulty="intermediate"
-          whatIsIt="Promise ek object hai jo future mein available hone wali value ya error represent karta hai. Teen states hain: Pending (abhi wait kar rahe hain), Fulfilled (kaam ho gaya, value mili), Rejected (kuch galat hua, error mila). Ek baar state set ho jaaye toh change nahi hoti — ye immutability promises ko reliable banati hai."
+          whatIsIt="Tum sochte ho Promise ek function hai — nahi bhai, ye ek object hai. Ek aisa object jo represent karta hai ek value jo abhi available nahi hai, lekin future mein hogi. Jaise tumne pizza order kiya — receipt mil gayi (Promise), pizza baad mein aayega (value). Receipt ke teen states hain: Pending (pizza ban raha hai), Fulfilled (pizza aa gaya!), Rejected (delivery cancel). Aur ek baar pizza cancel ho jaaye, woh order phir se pending nahi hoga — immutability ka magic."
           whenToUse={[
             'Callback-based APIs ko Promise mein wrap karna — cleaner code ke liye',
             'Database queries jahan result future mein milega',
@@ -239,7 +239,7 @@ export default function Chapter7Content() {
             'Jab tumhe async operations chain karne hon sequentially',
             'Error handling centralize karne ke liye — ek .catch() sab handle kare',
           ]}
-          whyUseIt="Callbacks mein problem thi — error-first convention, deep nesting, aur error propagation nightmare. Promises ne ye sab solve kiya: chainable API, built-in error propagation, aur composable async operations. Async/await bhi under the hood Promises hi use karta hai."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki callbacks mein ek bada dard tha — error-first convention, 4-5 levels ki nesting, aur errors propagate nahi hoti thi. Promises ne ye sab solve kiya: chainable API, built-in error propagation, aur composable async operations. Aur dhyan rakho — async/await bhi under the hood Promises hi use karta hai. Promise samjhe bina async/await ek illusion hai."
           howToUse={{
             filename: 'promise-basics.js',
             language: 'javascript',
@@ -277,9 +277,9 @@ instant.then(val => console.log(val)) // 42
 // Promise.reject — already rejected promise
 const failed = Promise.reject(new Error('Something broke'))
 failed.catch(err => console.error(err.message))`,
-            explanation: 'new Promise() mein resolve aur reject callbacks milte hain. resolve() se Promise fulfill hota hai, reject() se reject. .then() success handle karta hai, .catch() errors, .finally() hamesha run hota hai dono cases mein.',
+            explanation: 'Under the hood kya hota hai — Step 1: new Promise() execute hota hai, executor function immediately chalti hai. Step 2: resolve() ya reject() call hone par Promise ki state change hoti hai — Pending se Fulfilled ya Rejected. Step 3: .then() aur .catch() microtask queue mein jaate hain — synchronous code pehle complete hota hai, phir ye chalte hain. Ye immutability guarantee karta hai ki state ek baar set hone ke baad change nahi hoti.',
           }}
-          realWorldScenario="Express route mein DB query — return ek promise, usse chain karo. User fetch karo, phir uske orders fetch karo, phir response bhejo. Agar koi bhi step fail ho, ek .catch() sab handle kar leta hai — centralized error handling ka maza!"
+          realWorldScenario="Express route mein user fetch karo — return ek promise, usse chain karo. Step 1: fetchUser() call karo — immediately Promise milta hai Pending state mein. Step 2: DB query asynchronously chalti hai. Step 3: Result aane par resolve() call hota hai. Step 4: .then() mein clean user object milta hai. Agar koi bhi step fail ho — ek .catch() sab handle kar leta hai. Production mein ye pattern life-saver hai!"
           commonMistakes={[
             {
               mistake: 'new Promise() banate waqt reject case handle na karna',
@@ -292,8 +292,13 @@ failed.catch(err => console.error(err.message))`,
               fix: 'return new Promise(...) — return keyword mat bhulo! Arrow functions mein implicit return bhi kaam karta hai ek-liner ke liye.',
             },
           ]}
-          proTip="Promise.resolve(value) ek already-resolved Promise banata hai — useful for converting synchronous values to promises, ya testing mein mock promises banane ke liye. Promise.reject(error) similarly ek already-rejected promise deta hai."
+          proTip="Ye yaad rakho — Promise.resolve(value) ek already-resolved Promise banata hai. Jab bhi koi synchronous value ko Promise mein convert karna ho — Promise.resolve() tumhara gatekeeper hai. Testing mein mock promises banane ke liye bhi isi ka use hota hai."
         />
+      </div>
+
+      <div className="rounded-xl p-4 my-4" style={{background:'rgba(124,58,237,0.06)', border:'1px solid rgba(124,58,237,0.2)'}}>
+        <p className="text-sm font-bold text-[#7C3AED] mb-2">🤔 Sawaal: Promises aur Callbacks mein kya fark hai?</p>
+        <p className="text-sm text-[#A1A1AA]">Achha sawaal! Callback ek function hai jo baad mein call hoga. Promise ek guarantee hai — "main future mein ek value doonga." Lekin asli fark hai composability — Promises chain ho sakte hain, callbacks nahi. Aur error handling? Callback mein har level par check karo. Promise mein ek .catch() chain ke end mein — sab errors wahan aa jaate hain.</p>
       </div>
 
       {/* ConceptCard 2: Chaining */}
@@ -302,14 +307,14 @@ failed.catch(err => console.error(err.message))`,
           title="Promise Chaining — .then().catch().finally()"
           emoji="⛓️"
           difficulty="intermediate"
-          whatIsIt="Promise chaining ka matlab hai .then() calls ko connect karna — ek ke baad ek. Har .then() ek nayi Promise return karta hai jiska value woh hai jo callback ne return kiya. Errors automatically chain ke through propagate hote hain jab tak koi .catch() unhe handle na kare."
+          whatIsIt="Sochte ho .then() sirf ek callback hai? Nahi bhai — ye ek nayi Promise return karta hai. Ye hi chaining ka secret hai. Har .then() mein jo value return karo, woh next .then() ka input ban jaata hai. Ab sawaal ye aata hai — errors kahan jaate hain? Simple: error automatically chain ke through float karta hai jab tak nearest .catch() nahi milta. Baich ke saare .then() skip ho jaate hain — seedha error handler tak."
           whenToUse={[
             'Sequential async operations jahan ek ka output doosre ka input ho',
             'Data transformation pipeline — fetch, parse, validate, save',
             'Error handling centralize karna — ek .catch() poori chain ke liye',
             '.finally() mein cleanup — DB connection close, loading spinner stop',
           ]}
-          whyUseIt="Chaining se callback hell khatam hoti hai. Code linear aur readable rehta hai. Error ek baar reject ho jaaye toh chahe chain kitni bhi lambi ho, seedha nearest .catch() tak pahunch jaata hai — baich ke .then() skip ho jaate hain."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki chaining se callback hell khatam hoti hai. Code linear aur readable rehta hai. Error ek baar reject ho jaaye toh chahe chain kitni bhi lambi ho, seedha nearest .catch() tak pahunch jaata hai — baich ke .then() skip ho jaate hain. Ye automatic error bubbling ka magic hai."
           howToUse={{
             filename: 'promise-chain.js',
             language: 'javascript',
@@ -335,9 +340,9 @@ fetchUser(userId)
     db.connection.close()
     hideLoadingSpinner()
   })`,
-            explanation: 'Har .then() mein return karo — warna next .then() ko undefined milega. Errors automatically nearest .catch() tak float karte hain. .finally() cleanup ke liye perfect — ye hamesha run hota hai.',
+            explanation: 'Step-by-step trace karo — Step 1: fetchUser() ek Promise return karta hai. Step 2: .then() ek nayi Promise return karta hai jiska value woh hai jo callback return karta hai. Step 3: fetchOrders() ka Promise resolve hone par, next .then() ko orders milte hain. Step 4: Agar koi bhi step throw kare — error seedha .catch() tak jaata hai. Step 5: .finally() hamesha chalti hai — cleanup ke liye perfect.',
           }}
-          realWorldScenario="File upload flow: validate file → upload to S3 → save URL to DB → send notification email. Ye sab chain ho sakte hain. Agar S3 upload fail ho, directly .catch() mein jaayega — notification email nahi bhejega (sahi behavior!)."
+          realWorldScenario="File upload flow imagine karo: validate file → upload to S3 → save URL to DB → send notification email. Ye sab ek chain hai. Agar S3 upload fail ho, directly .catch() mein jaayega — notification email nahi bhejega. Sahi behavior! Kyunki incomplete upload ka URL DB mein save nahi hona chahiye."
           commonMistakes={[
             {
               mistake: '.then() ke andar return bhool jaana',
@@ -350,7 +355,7 @@ fetchUser(userId)
               fix: 'Chain ke end mein hamesha .catch() lagao. Ya global handler: process.on("unhandledRejection", handler)',
             },
           ]}
-          proTip="Har .then() ek new Promise return karta hai — isliye chain karna possible hai. Agar .then() mein tum ek value return karo toh next .then() ko woh value milti hai. Agar ek Promise return karo toh next .then() wait karta hai us Promise ke resolve hone ka."
+          proTip="Ye trust issues wali baat yaad rakho — har .then() ek new Promise return karta hai. Isliye chain karna possible hai. Agar .then() mein tum ek value return karo toh next .then() ko woh value milti hai. Agar ek Promise return karo toh next .then() wait karta hai us Promise ke resolve hone ka. Ye Promise ki trust guarantee hai."
           demo={
             <DiffBlock
               title="Callback Hell vs Promise Chain"
@@ -387,13 +392,18 @@ fetchUser(userId)
         />
       </div>
 
+      <div className="rounded-xl p-4 my-4" style={{background:'rgba(124,58,237,0.06)', border:'1px solid rgba(124,58,237,0.2)'}}>
+        <p className="text-sm font-bold text-[#7C3AED] mb-2">🤔 Sawaal: Agar .then() mein return nahi kiya toh kya hoga exactly?</p>
+        <p className="text-sm text-[#A1A1AA]">Bilkul sahi sawaal! Dekho — .then() ek nayi Promise return karta hai. Agar tumhara callback kuch return nahi karta, toh woh implicitly undefined return karta hai. Matlab next .then() ko Promise.resolve(undefined) milega. Chain toot nahi gayi technically, lekin next step ko tumhara data nahi milega. Ye ek silent bug hai — koi error nahi aata, bas galat result milta hai.</p>
+      </div>
+
       {/* ConceptCard 3: Promise.all */}
       <div id="promise-all">
         <ConceptCard
           title="Promise.all — Sab Saath Chalao"
           emoji="🏃‍♂️"
           difficulty="intermediate"
-          whatIsIt="Promise.all ek array of promises leta hai aur ek nayi Promise return karta hai jo tab resolve hoti hai jab sari promises resolve ho jaayein. Sab parallel mein chalte hain — total time = slowest operation ka time, na ki sab ka sum. Agar ek bhi reject ho toh turant reject ho jaata hai (fail-fast)."
+          whatIsIt="Ye shocking hai — log 3 sequential awaits likhte hain aur 650ms waste karte hain jab kaam 300ms mein ho sakta tha! Promise.all ek array of promises leta hai aur ek nayi Promise return karta hai jo tab resolve hoti hai jab sari promises resolve ho jaayein. Sab parallel mein chalte hain — total time = slowest operation ka time, na ki sab ka sum. Ab sawaal ye aata hai — agar ek bhi fail ho? Turant reject ho jaata hai (fail-fast). Ye ek gatekeeper ki tarah hai — sab aayenge tabhi andar jaayenge."
           whenToUse={[
             'Independent async operations jo parallel mein chal sakti hain',
             'Dashboard data — user info + orders + notifications ek saath fetch karo',
@@ -401,7 +411,7 @@ fetchUser(userId)
             'Jab sari operations ka result chahiye aur order matter karta ho',
             'API calls jo ek doosre par depend nahi karti',
           ]}
-          whyUseIt="Sequential awaits 650ms le sakte hain jab tak parallel mein 300ms mein ho sake. Performance ka fark bohot bada hota hai real-world mein — especially dashboard pages ya report generation mein jahan kaafi data fetch karna hota hai."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki sequential awaits 650ms le sakte hain jab tak parallel mein 300ms mein ho sake. Performance ka fark bohot bada hota hai real-world mein — especially dashboard pages ya report generation mein jahan kaafi data fetch karna hota hai. Users ko fark pata chalta hai."
           howToUse={{
             filename: 'promise-all.js',
             language: 'javascript',
@@ -427,9 +437,9 @@ try {
   // Koi bhi ek fail hone par yahan aata hai
   console.error('Koi operation fail hua:', err.message)
 }`,
-            explanation: 'Promise.all sab promises ek saath start karta hai — parallel execution. Total time sirf slowest operation ka hota hai. Destructuring se result seedha variables mein aa jaata hai. Ek bhi reject ho toh poora reject ho jaata hai.',
+            explanation: 'Step-by-step trace: Step 1 — Promise.all() ko array dete hain, woh turant sab promises start karta hai parallel mein. Step 2 — sab promises simultaneously execute ho rahi hain. Step 3 — jab bhi koi reject kare, immediately poora Promise.all reject ho jaata hai. Step 4 — sab fulfill ho jaayein toh results array milti hai, order guaranteed — chahe koi pehle complete ho jaaye.',
           }}
-          realWorldScenario="Dashboard page pe user info + recent orders + notifications — teen parallel API calls, sequential nahi. Ya report generation mein — 10 different DB queries ek saath chalao, na ki ek ke baad ek. Ye sab Promise.all se possible hai."
+          realWorldScenario="Dashboard page pe user info + recent orders + notifications — teen parallel API calls. Sequential hote toh 600ms+ lagta. Promise.all se 200ms mein done. Ya report generation mein — 10 different DB queries ek saath chalao. Ye performance difference production mein users feel karte hain — especially mobile pe slow network par."
           commonMistakes={[
             {
               mistake: 'Dependent operations ke liye Promise.all use karna',
@@ -442,7 +452,7 @@ try {
               fix: 'try/catch use karo await Promise.all ke saath, ya .catch() lagao. Ya Promise.allSettled use karo agar partial failures acceptable hain.',
             },
           ]}
-          proTip="Promise.all ek array return karta hai — order guaranteed hota hai chahe koi pehle complete ho jaaye. Agar 3 promises hain, result array mein wahi order hoga. Ye predictability ke liye bahut useful hai destructuring mein."
+          proTip="Ye guarantee yaad rakho — Promise.all ek array return karta hai aur order guaranteed hota hai chahe koi pehle complete ho jaaye. Agar 3 promises hain, result array mein wahi order hoga. Ye predictability ke liye bahut useful hai destructuring mein."
         />
       </div>
 
@@ -452,14 +462,14 @@ try {
           title="Promise Utilities — race, allSettled, any"
           emoji="🛠️"
           difficulty="intermediate"
-          whatIsIt="JavaScript mein 4 main Promise combinators hain: Promise.all (sab fulfill ho), Promise.allSettled (sab settle ho chahe fail ho), Promise.race (pehla settle hone wala), Promise.any (pehla fulfill hone wala). Har ek ka alag use case hai — sahi choose karna performance aur reliability ke liye zaroori hai."
+          whatIsIt="Sochte ho sirf Promise.all hi enough hai? Nahi — JavaScript mein 4 main Promise combinators hain. Har ek ek specific problem solve karta hai. Promise.all (sab chahiye ya kuch nahi — gatekeeper). Promise.allSettled (sab ka result chahiye chahe fail ho — patient collector). Promise.race (pehla settle hone wala wins — race judge). Promise.any (pehla succeed hone wala wins — optimist). Sahi choose karna ek professional developer ki pehchan hai."
           whenToUse={[
             'Promise.race: timeout implement karna — agar operation slow ho toh cancel karo',
             'Promise.allSettled: jab sab results chahiye chahe kuch fail ho — bulk operations',
             'Promise.any: multiple sources try karo, pehla successful use karo — fallback pattern',
             'Promise.all: sab chahiye aur ek failure = total failure acceptable hai',
           ]}
-          whyUseIt="Ye utilities complex async scenarios handle karne mein madad karte hain. Timeout? race. Partial failures okay? allSettled. Fastest server use karo? any. Sab chahiye ya kuch nahi? all. Inhe samajhna professional Node.js development ke liye zaroori hai."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki ye utilities complex async scenarios handle karne mein madad karte hain. Timeout? race. Partial failures okay? allSettled. Fastest server use karo? any. Sab chahiye ya kuch nahi? all. Inhe samajhna professional Node.js development ke liye zaroori hai."
           howToUse={{
             filename: 'promise-utilities.js',
             language: 'javascript',
@@ -497,9 +507,9 @@ const data = await Promise.any([
 ])
 // Pehla jo succeed kare — woh use hoga
 // Agar sab fail ho: AggregateError throw hota hai`,
-            explanation: 'Promise.race timeout ke liye perfect hai. Promise.allSettled bulk operations mein partial failure handle karta hai. Promise.any fallback pattern mein — agar primary server down ho toh backup use karo.',
+            explanation: 'Under the hood trace: Promise.race — internally sab promises start hoti hain, pehli jo resolve/reject kare woh winner. Baaki cancel nahi hoti — sirf unka result ignore hota hai. Promise.allSettled — har promise ka status track karta hai, sab settle hone par ek array return karta hai. Promise.any — pehli fulfillment par resolve, sirf tab reject karta hai jab sab reject ho jaayein.',
           }}
-          realWorldScenario="CDN failover: images primary CDN se load karo, agar 3 seconds mein na aaye toh backup CDN try karo — Promise.race + Promise.any combination. Bulk email send: sab bhejo aur report karo kitne gaye kitne failed — Promise.allSettled perfect hai."
+          realWorldScenario="CDN failover: images primary CDN se load karo, agar 3 seconds mein na aaye toh backup CDN try karo — Promise.race + Promise.any combination. Bulk email send: sab bhejo aur report karo kitne gaye kitne failed — Promise.allSettled perfect hai. Ye real-world patterns hain jo production mein use hote hain."
           commonMistakes={[
             {
               mistake: 'Promise.any aur Promise.race ko confuse karna',
@@ -512,8 +522,13 @@ const data = await Promise.any([
               fix: 'result.status === "fulfilled" check karo value access karne se pehle. result.status === "rejected" mein result.reason mein error hoga.',
             },
           ]}
-          proTip="Promise.any ES2021 mein aaya — Node.js 15+ mein available hai. Agar tum CDN fallback, fastest API selection, ya retry-with-alternatives pattern implement kar rahe ho — Promise.any sabse elegant solution hai."
+          proTip="Promise.any ES2021 mein aaya — Node.js 15+ mein available hai. Agar tum CDN fallback, fastest API selection, ya retry-with-alternatives pattern implement kar rahe ho — Promise.any sabse elegant solution hai. Ye optimist combinator hai."
         />
+      </div>
+
+      <div className="rounded-xl p-4 my-4" style={{background:'rgba(124,58,237,0.06)', border:'1px solid rgba(124,58,237,0.2)'}}>
+        <p className="text-sm font-bold text-[#7C3AED] mb-2">🤔 Sawaal: Promise.race mein agar pehli promise reject ho gayi, toh kya doosri promises run hoti hain?</p>
+        <p className="text-sm text-[#A1A1AA]">Bilkul run hoti hain! Ye bahut important point hai. Promise.race sirf yeh decide karta hai ki pehla result kisko maano — baaki promises cancel nahi hoti. Woh background mein chalti rehti hain, bas unka result ignore hota hai. JavaScript mein koi bhi running Promise cancel nahi hoti — isliye timeout pattern mein yeh yaad rakho ki actual operation background mein chal sakta hai.</p>
       </div>
 
       {/* ConceptCard 5: Promisifying */}
@@ -522,14 +537,14 @@ const data = await Promise.any([
           title="Callback ko Promise Mein Convert Karo"
           emoji="🔄"
           difficulty="intermediate"
-          whatIsIt="Bahut saari Node.js APIs abhi bhi old-style callbacks use karti hain (fs.readFile, dns.lookup, etc.). Promisification ka matlab hai — un callback-based APIs ko Promise-returning functions mein convert karna taaki .then() / async-await se use kar sako."
+          whatIsIt="Bahut saari Node.js APIs abhi bhi old-style callbacks use karti hain — fs.readFile, dns.lookup, etc. Ab sawaal ye aata hai — hum modern async/await code likhna chahte hain lekin library callbacks return karti hai, kya karein? Promisification ka magic use karo! Callback-based functions ko Promise-returning functions mein convert karo. Node.js ne khud util.promisify() diya hai is kaam ke liye — ek line mein karo."
           whenToUse={[
             'Old Node.js APIs jo callbacks use karti hain unhe modern code mein use karna',
             'Third-party libraries jo still callback pattern follow karti hain',
             'apna legacy code refactor karna bina poori library rewrite kiye',
             'Testing mein — async wrappers banana',
           ]}
-          whyUseIt="Naye code mein async/await use karna chahte ho, lekin legacy library callbacks return karti hai? Promisify karo! util.promisify() built-in Node.js function hai jo ye automatically karta hai error-first callbacks ke liye."
+          whyUseIt="Bhai, ye samajhna zaroori hai kyunki naye code mein async/await use karna chahte ho, lekin legacy library callbacks return karti hai. Promisify karo! util.promisify() built-in Node.js function hai jo ye automatically karta hai error-first callbacks ke liye. Ye ek bridge hai purane aur naye duniya ke beech."
           howToUse={{
             filename: 'promisify.js',
             language: 'javascript',
@@ -570,9 +585,9 @@ async function modernWay() {
   const data = await fsPromises.readFile('package.json', 'utf8')
   return JSON.parse(data)
 }`,
-            explanation: 'Manual promisification mein error-first callback pattern wrap karo. util.promisify() ye automatically karta hai. Lekin best approach — fs.promises, dns.promises jaise modern APIs use karo jo already Promise-based hain.',
+            explanation: 'Step-by-step trace: util.promisify() under the hood kya karta hai — ek wrapper function banata hai jo (err, result) callback pattern ko Promise mein convert karta hai. Jab callback mein err aata hai — Promise reject() call hoti hai. Jab result aata hai — resolve() call hoti hai. Ye automatic error-first convention handling hai.',
           }}
-          realWorldScenario="Legacy codebase mein redis client v3 callbacks use karta tha. util.promisify se redis.get, redis.set sab promisify kar diye — bina library change kiye async/await code mein use karne laga. Phir jab time mila redis v4 migrate kiya jo natively promises return karta hai."
+          realWorldScenario="Legacy codebase mein redis client v3 callbacks use karta tha. util.promisify se redis.get, redis.set sab promisify kar diye — bina library change kiye async/await code mein use karne laga. Phir jab time mila redis v4 migrate kiya jo natively promises return karta hai. Ye gradual migration ka tarika hai."
           commonMistakes={[
             {
               mistake: 'util.promisify non-standard callbacks ke saath use karna',
@@ -585,7 +600,7 @@ async function modernWay() {
               fix: 'Pehle check karo — modern Node.js APIs already Promise versions deti hain: fs.promises.readFile(), dns.promises.lookup(), etc.',
             },
           ]}
-          proTip="fs.promises, dns.promises — bahut saari Node.js core APIs already have promise versions. Node.js 10+ mein available hain. Pehle check karo wahan — promisify karne ki zarurat hi nahi padegi. require('fs/promises') ya require('fs').promises dono kaam karte hain."
+          proTip="fs.promises, dns.promises — bahut saari Node.js core APIs already have promise versions. Node.js 10+ mein available hain. Ye built-in gatekeeper hai — pehle yahan check karo, promisify karne ki zarurat hi nahi padegi. require('fs/promises') ya require('fs').promises dono kaam karte hain."
           demo={
             <DiffBlock
               title="Callback Style vs Promisified Style"

@@ -67,10 +67,13 @@ export default function JSChapter17Content() {
           JavaScript Performance — Speed Ka Science
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Performance optimization sirf code fast banana nahi hai — sahi jagah optimize karna hai. Profile pehle, optimize baad mein. V8 internals samajhna, memory leaks dhundna, debounce/throttle implement karna — ye sab production-grade skills hain.
+          V8 engine ka JIT compiler bahut smart hai — lekin tum usse bhi bewakoof bana sakte ho! Kaise? Ek object banao — x:1, y:2. Doosra banao — y:2, x:1. Properties ka order alag! V8 ek nayi hidden class banata hai — aur optimization window miss ho jaati hai! Yahi aaj seekhenge.
+        </p>
+        <p className="text-[#A1A1AA] leading-relaxed mb-3">
+          Ab sawaal ye aata hai — "Bhai ye sab jaanna zarooori hai kya normal developer ke liye?" Zaroor hai! Ye directly user experience affect karta hai. Amazon ne research kiya — 100ms delay = 1% revenue loss. 100 milliseconds! Ek slow function loop mein call karo — wahi 100ms ban jaata hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum JavaScript performance ke real tools aur techniques cover karenge — measurement se lekar optimization tak.
+          Is chapter mein hum JavaScript performance ke real tools aur techniques cover karenge — measurement se lekar optimization tak. Golden rule yaad rakho: "Pehle measure karo, phir optimize karo!" Guess mat karo.
         </p>
       </div>
 
@@ -79,14 +82,14 @@ export default function JSChapter17Content() {
           title="V8 Optimization — Engine Kaise Sochta Hai"
           emoji="⚡"
           difficulty="advanced"
-          whatIsIt="V8 JavaScript engine hidden classes (shapes) use karta hai objects ko internally represent karne ke liye. Monomorphic code ek hidden class use karta hai — V8 heavily optimize karta hai. Polymorphic code multiple shapes use karta hai — optimization difficult. JIT compiler hot code ko native machine code mein compile karta hai."
+          whatIsIt="V8 ke andar kya hota hai — jaante ho? Jab tum object banate ho, V8 ek 'hidden class' (shape) banata hai. Sab objects jo same properties same order mein hain — ek hi hidden class share karte hain. Ab V8 unke liye optimized machine code generate karta hai. Ye monomorphic code hai — fastest! Lekin agar ek object mein x pehle, doosre mein y pehle — alag hidden classes — polymorphic. V8 optimize nahi kar sakta. JIT compiler hot code ko native machine code mein compile karta hai — isliye JavaScript itna fast hai!"
           whenToUse={[
             'Hot paths optimize karne ke liye — frequently called functions',
             'Object creation patterns — consistent shapes maintain karo',
             'Array optimizations — typed arrays CPU-intensive code mein',
             'Performance bottleneck identify karte waqt',
           ]}
-          whyUseIt="V8 optimizations samajhne se accidentally de-optimize nahi karte. Monomorphic functions V8 ke liye best case hain — 10x ya zyada faster ho sakte hain polymorphic se. delete operator, property order change — hidden class deoptimize karte hain."
+          whyUseIt="V8 optimizations samajhne se accidentally de-optimize nahi karte. Monomorphic functions V8 ke liye best case hain — benchmark karo: same shape objects ke liye code 3x-10x faster ho sakta hai polymorphic se. delete operator — ye ek cheez hai jo V8 ko bahut paresaan karta hai! Property delete karo toh hidden class change hoti hai — optimization throw away hoti hai. Isliye delete ki jagah null ya undefined assign karo."
           howToUse={{
             filename: 'v8-optimization.js',
             language: 'javascript',
@@ -153,9 +156,9 @@ function sum(arr) {
 // node --trace-deopt app.js  — deoptimizations dekhne ke liye
 // node --trace-opt app.js    — optimizations dekhne ke liye
 // node --allow-natives-syntax app.js + %OptimizeFunctionOnNextCall(fn)`,
-            explanation: 'Hidden classes consistent object shape se stable rehti hain — same properties, same order. delete operator aur conditional properties de-optimize karte hain. TypedArrays numerical computation ke liye much faster hain — direct memory layout, no boxing overhead. V8 flags se deoptimizations trace karo.',
+            explanation: 'Step by step trace karo: createPoint(1, 2) call hota hai — object { x: 1, y: 2, z: undefined } banta hai. Hamesha same shape! V8 ek hidden class banata hai aur optimize karta hai. Agar conditional property add karo — different shapes, V8 de-optimize karta hai. TypedArrays ke andar kya hota hai: regular array mein har element ek JavaScript object hai (boxing). Float64Array mein directly 64-bit floats — no boxing, no GC pressure, CPU-friendly memory layout.',
           }}
-          realWorldScenario="Game loop ya data processing pipeline mein: consistent object shapes, TypedArrays for positions/colors, avoid polymorphic calls in hot paths. Node.js streaming data process karna — Buffer (TypedArray) use karo regular arrays ki jagah — 3-5x speed improvement possible."
+          realWorldScenario="Game loop ya physics simulation mein: particles ke positions store karo Float32Array mein — millions of particles bhi handle ho jaate hain smoothly. Node.js mein image processing: Buffer (TypedArray) use karo regular arrays ki jagah — directly memory mein kaam karo, boxing overhead nahi, 3-5x speed improvement real-world mein measurable hai."
           commonMistakes={[
             {
               mistake: 'Premature optimization — profile kiye bina optimize karna',
@@ -168,8 +171,17 @@ function sum(arr) {
               fix: 'delete ki jagah property ko undefined ya null set karo: obj.prop = undefined. Ya new object banao without that property.',
             },
           ]}
-          proTip="--inspect flag ke saath Node.js run karo: node --inspect app.js. Chrome DevTools se connect karo (chrome://inspect) — full profiler, heap snapshots, real-time performance. Production profiling ke liye: 0x library se flamegraphs generate karo — visual bottleneck identification."
+          proTip="Kabhi bhi guess mat karo — measure karo pehle! node --inspect app.js run karo, Chrome DevTools se connect karo (chrome://inspect) — full profiler, heap snapshots, real-time performance graph. 0x library se flamegraphs generate karo — visual bottleneck identification. Flamegraph mein wide bars = slow functions = optimize karo!"
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.25)' }}
+      >
+        <p className="text-sm text-[#FCD34D] font-medium">
+          💡 Akshay ka insight: Memory leaks ka ek surprising fact — JavaScript mein garbage collection automatic hai, phir bhi leaks hote hain! Kyun? Kyunki GC sirf wahi objects collect karta hai jinke koi references nahi hain. Agar tum accidentally reference hold kar rahe ho — GC nahi kar sakta!
+        </p>
       </div>
 
       <div id="memory-management">
@@ -177,14 +189,14 @@ function sum(arr) {
           title="Memory Management — Leaks Dhundo"
           emoji="🧠"
           difficulty="advanced"
-          whatIsIt="JavaScript automatic garbage collection karta hai — V8 unreachable objects memory se hatata hai. Memory leaks tab hoti hain jab objects reference mein hain lekin actual use nahi hota — event listeners, closures, global variables, detached DOM nodes. Heap mein objects live karte hain, stack mein local variables."
+          whatIsIt="Ek real scenario: Node.js server deploy kiya. Pehle din — 200MB memory. Ek hafta baad — 800MB. Ek mahina baad — OOM crash, server down! Ye hai memory leak. JavaScript automatic garbage collection karta hai — V8 unreachable objects memory se hatata hai. Lekin unreachable tab hota hai jab koi reference nahi hota. Memory leaks tab hoti hain jab objects reference mein hain lekin actual use nahi hota — event listeners, closures, global variables, detached DOM nodes. Heap mein objects live karte hain, stack mein local variables."
           whenToUse={[
             'Application memory slowly grow ho — suspected leak',
             'Long-running Node.js servers — eventual OOM avoid karna',
             'Browsers mein SPA — user navigate kare aur memory kam na ho',
             'Large data processing — memory efficient hona zaroori',
           ]}
-          whyUseIt="Memory leaks gradually performance degrade karte hain aur eventually crash karte hain. Server pe memory leak — process restart required. Browser mein — page slow, freeze, crash. WeakMap/WeakRef se cache bina leak ke. Cleanup functions — event listeners, timers, subscriptions — essential."
+          whyUseIt="Memory leaks gradually performance degrade karte hain aur eventually crash karte hain — silently! Server pe memory leak — process restart required (but temporarily fix, leak fir hoga). Browser mein SPA — user navigate kare pages pe, memory grow karti jaati hai. WeakMap/WeakRef se cache bina leak ke — GC objects collect kar sakta hai. Cleanup functions — event listeners, timers, subscriptions — essential. React mein useEffect cleanup — yahi kaam karta hai!"
           howToUse={{
             filename: 'memory.js',
             language: 'javascript',
@@ -271,9 +283,9 @@ console.log(\`Heap total: \${memory.totalJSHeapSize / 1024 / 1024} MB\`)
 const { heapUsed, heapTotal, rss } = process.memoryUsage()
 console.log(\`Heap used: \${heapUsed / 1024 / 1024} MB\`)
 console.log(\`RSS: \${rss / 1024 / 1024} MB\`)`,
-            explanation: 'Event listeners cleanup essential hai — useEffect return function mein, component destroy pe. WeakMap cache se objects GC ho sakte hain — no leak. Bounded collections — max size limit. process.memoryUsage() Node.js mein memory monitor karo. Chrome DevTools Heap Snapshot se leaks find karo.',
+            explanation: 'Under the hood trace karo: document.addEventListener("click", handler) — DOM ek internal list mein handler reference store karta hai. Component unmount ho — DOM reference hata do, nahi toh handler living raha, closure ke through saara component data memory mein hold hota raha. WeakMap ka secret: keys weakly held hain — agar key object GC ho jaaye toh entry automatically hatati hai! Regular Map mein key hold karta hai reference — GC nahi hota. WeakRef similarly — object GC ho sakta hai, deref() se check karo exist karta hai kya.',
           }}
-          realWorldScenario="React SPA mein: useEffect cleanup function event listeners remove karta hai. Bina cleanup ke navigate karo 100 pages — 100 listeners DOM par accumulate. Memory continuously grow karti hai. setTimeout aur setInterval bhi clear karo cleanup mein."
+          realWorldScenario="React SPA mein: useEffect cleanup function event listeners remove karta hai. Bina cleanup ke navigate karo 100 pages — 100 listeners DOM par accumulate! Har listener closure ke through apna component data hold karta hai. Memory continuously grow karti jaati hai. Pro tip: setTimeout aur setInterval bhi clear karo cleanup mein — ye bhi leak karte hain!"
           commonMistakes={[
             {
               mistake: 'setInterval clear karna bhoolna',
@@ -286,8 +298,17 @@ console.log(\`RSS: \${rss / 1024 / 1024} MB\`)`,
               fix: 'Local variables scope mein use karo. Global cache ke liye bounded size (LRU cache) ya WeakMap use karo.',
             },
           ]}
-          proTip="Chrome DevTools: Memory tab → Take Heap Snapshot. Do snapshots lao — before aur after suspected leak. Objects tab filter karo — retained size dekhkhar leaking objects dhundo. Allocation instrumentation on timeline — leaking allocations real-time dekho."
+          proTip="Chrome DevTools memory leak dhundne ka step-by-step: Memory tab → Take Heap Snapshot. Suspected action karo. Dusra snapshot lo. Comparison mode mein dekho — kaunse objects badhenge jo nahi badhne chahiye. '#Detached' elements dhundo — DOM se hataye gaye lekin reference hold hain. Allocation instrumentation on timeline — leaking allocations real-time dekho!"
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)' }}
+      >
+        <p className="text-sm text-[#6EE7B7] font-medium">
+          💡 Akshay ka insight: Ek surprising number — scroll event ek second mein 100+ baar fire ho sakta hai! Agar har event pe API call ya DOM update karo — page freeze. Debounce aur Throttle — ye do patterns ye problem solve karte hain.
+        </p>
       </div>
 
       <div id="debounce-throttle">
@@ -295,14 +316,14 @@ console.log(\`RSS: \${rss / 1024 / 1024} MB\`)`,
           title="Debounce & Throttle — Rate Limiting"
           emoji="⏱️"
           difficulty="advanced"
-          whatIsIt="Debounce: function call delay karta hai jab tak calls rok na jaayein. Typing mein — user type kare toh search delay karo, type ruka toh search karo. Throttle: function ek fixed interval mein sirf ek baar fire hoti hai — scroll, resize events pe. Dono event-heavy scenarios mein performance improve karte hain."
+          whatIsIt="Pehle dono ki definition sticky way mein yaad karo: Debounce = 'last call ke baad X time tak ruko, phir execute karo.' Throttle = 'X time mein maximum ek baar execute karo.' User 'react hooks' type kare — r-e-a-c-t (5 keystrokes) — Debounce ke saath sirf ek API call ('react hooks' pe). Bina debounce: 5 API calls. Scroll event pe Throttle — har 100ms mein ek baar position check, chahe 50 scroll events fire hoon."
           whenToUse={[
             'Search input — debounce: har keystroke pe API call nahi',
             'Window resize — debounce: resize complete hone pe',
             'Scroll events — throttle: har 100-200ms mein position check',
             'Button click — debounce: accidental double-click prevent',
           ]}
-          whyUseIt="Scroll event hundred times per second fire ho sakti hai — throttle se 10 times per second tak limit karo. Search input pe har keystroke API call bahut expensive — debounce se sirf meaningful pause ke baad call. Network requests, DOM updates, heavy computations protect karo."
+          whyUseIt="Real numbers dekhte hain: scroll event 100 times/second. Throttle 10 times/second tak limit karo — 90% calls save! Search input: user 'javascript tutorial' type kare — 20 keystrokes — 20 API calls bina debounce. Debounce se: 1 API call. Backend pe 95% load kam. Network requests, DOM updates, heavy computations sab protect karo. Ye simple patterns bahut bada impact dete hain."
           howToUse={{
             filename: 'debounce-throttle.js',
             language: 'javascript',
@@ -402,9 +423,9 @@ function useDebounce<T>(value: T, delay: number): T {
 const [search, setSearch] = useState('')
 const debouncedSearch = useDebounce(search, 300)
 // useEffect([debouncedSearch]) — API call when typing stops`,
-            explanation: 'Debounce timer reset karta hai har call pe — sirf last call fire hoti hai after pause. Throttle fixed interval maintain karta hai — ek interval mein ek call. React mein useDebounce hook value debounce karta hai — component re-renders se independent. Lodash debounce/throttle battle-tested implementations hain.',
+            explanation: 'Debounce ke andar kya hota hai trace karo: pehli call — clearTimeout (kuch nahi), naya timer set. Doosri call 100ms baad — clearTimeout (pehla cancel!), naya timer set. Teesri call 200ms baad — clearTimeout (doosra cancel!), naya timer set. 300ms koi call nahi — timer fires! Sirf teesri call execute hui. Throttle mein: pehli call immediately execute. Doosri call 50ms baad — remaining = 100-50 = 50ms. setTimeout 50ms ke liye. Koi aur calls? Cancel-replace. 100ms total pe fire.',
           }}
-          realWorldScenario="Autocomplete search bar: debounce(300ms). User 'react' type kare — r, re, rea, reac, react — sirf last 'react' pe API call. Bina debounce: 5 API calls. Debounce ke saath: 1 API call. 80% API calls save!"
+          realWorldScenario="Autocomplete search bar: debounce(300ms). User 'react' type kare — r, re, rea, reac, react — sirf last 'react' pe API call. Bina debounce: 5 API calls, server pe 5x load, pehle wale results outdated. Debounce ke saath: 1 API call, sahi result! Ye production mein bahut noticeable difference hai!"
           commonMistakes={[
             {
               mistake: 'React mein debounce function inline create karna',
@@ -417,8 +438,17 @@ const debouncedSearch = useDebounce(search, 300)
               fix: 'Debounced function ko variable mein store karo: const throttledFn = throttle(fn, 100). Same reference use karo add aur remove mein.',
             },
           ]}
-          proTip="lodash.debounce aur lodash.throttle production-ready implementations hain — edge cases handle karte hain (leading/trailing calls, cancel, flush). Tree-shakeable import: import debounce from 'lodash/debounce'. React Query, TanStack Form bhi built-in debouncing provide karte hain."
+          proTip="React mein common gotcha — debounce function component ke andar mat banao! Har render pe nayi function — timer reset, kabhi fire nahi! useCallback ya useRef mein wrap karo. lodash.debounce production-ready hai — leading/trailing options, cancel, flush — sab handle karta hai. React Query mein built-in staleTime bhi ek tarah ka debouncing hai!"
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.25)' }}
+      >
+        <p className="text-sm text-[#93C5FD] font-medium">
+          💡 Akshay ka insight: JavaScript single-threaded hai — ye suna hai. Lekin iska matlab ye nahi ki heavy computation nahi kar sakte! Web Workers alag thread mein kaam karte hain — UI thread free rehta hai. Browser freeze ka daur khatam!
+        </p>
       </div>
 
       <div id="web-workers">
@@ -426,14 +456,14 @@ const debouncedSearch = useDebounce(search, 300)
           title="Web Workers — CPU Work Offload Karo"
           emoji="👷"
           difficulty="advanced"
-          whatIsIt="Web Workers background threads hain — JavaScript main thread se independent. CPU-intensive tasks (image processing, data parsing, ML inference, encryption) workers mein run karo — UI smooth rehti hai. Workers DOM access nahi kar sakte — message passing se communicate karte hain. Node.js mein worker_threads module same concept."
+          whatIsIt="Ek experiment karo: 1 billion tak loop chalao main thread pe — browser tab freeze ho jaayega, scroll nahi hoga, buttons click nahi hote! Ye hai main thread blocking. Web Workers background threads hain — JavaScript main thread se bilkul alag. CPU-intensive tasks (image processing, data parsing, ML inference, encryption) workers mein run karo — UI smooth rehti hai. Workers DOM access nahi kar sakte — message passing se communicate karte hain, data structured clone se transfer hota hai. Node.js mein worker_threads module same concept."
           whenToUse={[
             'Heavy computation — image processing, video encoding',
             'Large data parsing — CSV, JSON, XML processing',
             'Real-time data processing — streaming analytics',
             'WebAssembly heavy operations alongside JS',
           ]}
-          whyUseIt="Main thread blocking UI freeze karta hai — user frustration. Workers parallel computation enable karte hain. Multi-core CPUs effectively use hoti hain. Node.js mein CPU-intensive operations server throughput reduce karte hain — workers se isolate karo."
+          whyUseIt="Main thread blocking UI freeze karta hai — user frustration, bounce rate badh jaata hai. Workers parallel computation enable karte hain. Modern CPUs 8-16 cores hain — sirf ek core use karna waste! Workers se multi-core effectively use hoti hain. Node.js mein CPU-intensive operations (image resize, PDF generate, ML inference) sirf ek request pe server ko slow kar dete hain — workers mein isolate karo."
           howToUse={{
             filename: 'worker-main.js',
             language: 'javascript',
@@ -506,9 +536,9 @@ function runInWorker(workerFile, data) {
 
 // Usage
 const result = await runInWorker('./worker-thread.js', { items: largeDataset })`,
-            explanation: 'Browser workers separate JS file mein define hote hain — postMessage se communicate. Inline worker Blob URL se banate hain. Node.js mein worker_threads module — workerData input, parentPort.postMessage output. Workers DOM access nahi kar sakte. Comlink library worker communication simple banata hai.',
+            explanation: 'Communication flow trace karo: main.js → worker.postMessage(data) → serialization (structured clone) → Worker thread receives event.data → heavy computation → self.postMessage(result) → serialization → main thread receives event.data.result. Data ko serialize-deserialize karna hota hai — isliye very large objects ke liye slow ho sakta hai. Solution: Transferable objects (ArrayBuffer) — zero-copy transfer, ownership main thread se worker ko transfer hota hai.',
           }}
-          realWorldScenario="Image editing app mein: filter apply karna (blur, sharpen) CPU-intensive hai. Worker mein ImageData process karo — main thread UI events (buttons, sliders) handle karta hai. Bina worker: browser freeze during processing. Worker ke saath: smooth UI, background processing."
+          realWorldScenario="Image editing app mein: user filter apply karta hai (blur, sharpen) — CPU-intensive operation. Worker mein ImageData process karo — main thread UI events (buttons, cancel button, sliders) handle karta hai. Bina worker: progress bar freeze, cancel button nahi kaam karta — user tab close karta hai! Worker ke saath: smooth UI, background processing, cancel bhi possible."
           commonMistakes={[
             {
               mistake: 'Har choti computation ke liye worker banana',
@@ -521,8 +551,17 @@ const result = await runInWorker('./worker-thread.js', { items: largeDataset })`
               fix: 'Transferable objects use karo (ArrayBuffer, MessagePort) — zero-copy transfer. transfer array mein pass karo: worker.postMessage(buffer, [buffer]).',
             },
           ]}
-          proTip="Comlink library (by Google) workers ko regular async functions ki tarah feel deta hai — no manual postMessage/onmessage. import { wrap } from 'comlink'; const worker = wrap(new Worker('./worker.js')); await worker.compute(data) — clean async API. WorkerPool pattern reuse karo workers ko."
+          proTip="Comlink library (by Google) workers ko regular async functions ki tarah feel deta hai — no manual postMessage/onmessage boilerplate. const worker = wrap(new Worker('./worker.js')); await worker.compute(data) — clean async API! Worker pool pattern reuse karo workers ko — ek worker create karo, multiple tasks queue karo, overhead minimize karo."
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)' }}
+      >
+        <p className="text-sm text-[#FCA5A5] font-medium">
+          💡 Akshay ka insight: Ye chapter ka golden rule: "Measure first, optimize second." Bina measure kiye optimize karna — andhere mein taeer karna hai. Performance API aur DevTools — ye tumhara torch hai!
+        </p>
       </div>
 
       <div id="performance-measurement">
@@ -530,14 +569,14 @@ const result = await runInWorker('./worker-thread.js', { items: largeDataset })`
           title="Performance Measurement — Profile First"
           emoji="📊"
           difficulty="advanced"
-          whatIsIt="Performance API browser aur Node.js mein high-resolution timing provide karta hai. performance.now() microsecond accuracy. performance.mark() aur measure() custom timing. PerformanceObserver LCP, FID, CLS (Core Web Vitals) monitor karta hai. Chrome DevTools Performance tab aur Node.js --prof flag profiling karte hain."
+          whatIsIt="Tumne kabhi console.time() use kiya hoga performance measure karne ke liye. Ye theek hai — lekin production mein real users ka data chahiye! Performance API browser aur Node.js mein high-resolution timing provide karta hai. performance.now() microsecond accuracy deta hai — Date.now() milliseconds mein hota hai, Performance API sub-millisecond precision. performance.mark() aur measure() custom timing ke liye. PerformanceObserver LCP, FID, CLS (Core Web Vitals) monitor karta hai — real user data!"
           whenToUse={[
             'Code path slow hai — exact timing measure karo',
             'Core Web Vitals optimize karne ko',
             'API response times monitor karne ko',
             'Regression detect karne ko — before/after benchmark',
           ]}
-          whyUseIt="Measurement se pehle optimization guess work hai — aur wrong place optimize hota hai. Performance API production mein bhi use ho sakta hai — real user data. Chrome Profiler flamegraph se exactly kaunsa function time le raha hai pata chalta hai. Lighthouse automated audit karta hai."
+          whyUseIt="Measurement se pehle optimization guess work hai — 9 out of 10 baar wrong jagah optimize karte ho! Performance API production mein bhi use ho sakta hai — real user data collect karo. Chrome Profiler flamegraph se exactly kaunsa function kitna time le raha hai pata chalta hai — andazaa nahi, exact data. Lighthouse automated audit karta hai — score deta hai, specific improvements suggest karta hai."
           howToUse={{
             filename: 'performance-api.js',
             language: 'javascript',
@@ -609,9 +648,9 @@ performance.mark('start')
 await expensiveOperation()
 performance.mark('end')
 performance.measure('My Operation', 'start', 'end')`,
-            explanation: 'performance.now() hamesha Date.now() se prefer karo timing ke liye — higher resolution. Marks se readable named timing. PerformanceObserver Core Web Vitals real-user data collect karta hai. Node.js mein perf_hooks same API provide karta hai. Chrome --prof flag V8 profiling enable karta hai.',
+            explanation: 'performance.mark() aur measure() DevTools Performance tab mein bhi dikhte hain — visual timeline mein apni custom marks! LCP target: 2.5 seconds se kam — is se zyada toh Google ranking impact hoti hai. FID target: 100ms se kam — ye interaction responsiveness hai. PerformanceObserver ke saath buffered: true dena — page load ke pehle jo entries aayi hain unhe bhi milti hain. Node.js perf_hooks same API hai — server-side operations bhi measure karo.',
           }}
-          realWorldScenario="Core Web Vitals production monitoring: PerformanceObserver se LCP, FID, CLS data collect karo aur analytics service ko bhejo. Median user ka actual experience measure karo — synthetic tests se different hota hai. Slow LCP — server response time ya large images; FID — heavy JS blocking."
+          realWorldScenario="Core Web Vitals production monitoring: PerformanceObserver se LCP, FID, CLS data collect karo aur analytics ko bhejo. Median user ka actual experience measure karo — synthetic tests se alag hota hai! Slow LCP? Server response time ya large images check karo. High FID? Heavy JS blocking main thread hai — split karo. Real data se real decisions!"
           commonMistakes={[
             {
               mistake: 'Date.now() se performance measure karna',
@@ -624,7 +663,7 @@ performance.measure('My Operation', 'start', 'end')`,
               fix: 'Production monitoring setup karo — Real User Monitoring (RUM). Sentry, Datadog RUM, web-vitals library use karo.',
             },
           ]}
-          proTip="web-vitals npm package (Google) se Core Web Vitals easily measure karo: import { getCLS, getFID, getLCP } from 'web-vitals'; getLCP(console.log). Production mein analytics ko bhejo — Plausible, Amplitude, ya custom endpoint. Lighthouse CI se automated performance regression testing."
+          proTip="web-vitals npm package (Google) — sirf 2 lines: import getLCP from 'web-vitals'; getLCP(metric =&gt; sendToAnalytics(metric)). Production mein har user ka LCP data collect karo — Plausible, Amplitude, ya custom endpoint. Lighthouse CI setup karo — PR merge karo toh automatically performance score check ho. Score girega toh build fail!"
         />
       </div>
 

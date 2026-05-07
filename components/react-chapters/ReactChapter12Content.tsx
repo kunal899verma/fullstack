@@ -11,13 +11,16 @@ export default function ReactChapter12Content() {
         style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          State Management — Zustand Se Global State Master Karo
+          Zustand — Redux Ka Chhota Bhai Jo Zyada Kaam Ka Hai
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Chhoti apps mein useState kaafi hai. Lekin jab app grow hoti hai — cart, user auth, notifications, filters — tab prop drilling aur Context ke limitations saamne aate hain. Zustand ek minimal, fast, aur scalable global state solution hai.
+          Shocking comparison — Redux Toolkit mein ek simple counter ke liye: createSlice, configureStore, Provider, useSelector, useDispatch — 50+ lines. Zustand mein wahi counter: create() mein ek object — 10 lines. Same power. 5x less code. Koi Provider nahi. Koi reducers nahi.
+        </p>
+        <p className="text-[#A1A1AA] leading-relaxed mb-3">
+          Zustand ka core insight — state ek JavaScript object hai, mutations simple function calls hain, aur subscriptions automatic hain. Context ke saath farq: Context mein sab consumers re-render hote hain. Zustand mein? Sirf jo specific state piece use kar raha hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Zustand ka philosophy: No boilerplate. No providers. No reducers. Bas ek store banao, use karo. Redux ki power, Context ki simplicity se bhi kam code.
+          Is chapter mein basics se le kar persist middleware, async actions, aur slice pattern tak — sab cover karenge.
         </p>
       </div>
 
@@ -26,14 +29,14 @@ export default function ReactChapter12Content() {
           title="Global State Ka Problem"
           emoji="🌐"
           difficulty="intermediate"
-          whatIsIt="Jab state multiple components mein share karni ho — cart count (header + cart page), user info (navbar + profile + settings) — toh problem hoti hai. useState local hai. Props drilling deeply nested components mein messy ho jaata hai. Context frequent updates par slow ho jaata hai."
+          whatIsIt="Global state problem ka ek concrete example samjhte hain. Cart — Header mein count chahiye, CartDrawer mein items chahiye, CheckoutPage mein total chahiye. Teeno components mein same cart data. useState se? Kahan rakhoge — lift up to App component — toh prop drilling. Context se? CartContext.Provider wraps sab — lekin har cart update pe Header, Sidebar, Footer — sab re-render. Zustand se? Store mein cart. Header: sirf cart.length subscribe karo. Cart change hone pe sirf length consumers re-render. Surgical precision."
           whenToUse={[
-            'User authentication state — har jagah user chahiye',
-            'Shopping cart — header mein count, cart page mein items',
-            'App-wide notifications/toasts',
-            'Complex filters jo URL aur multiple components mein sync honi chahiye',
+            'User auth state — har jagah chahiye, rarely changes',
+            'Shopping cart — header count, drawer items, checkout total',
+            'App-wide notifications, toasts, alerts',
+            'Complex filters jo multiple components mein sync hone chahiye',
           ]}
-          whyUseIt="Prop drilling 5-6 levels deep ho toh code unreadable aur unmaintainable ho jaata hai. Context re-renders sab consumers ko trigger karta hai — performance issue. Zustand targeted updates karta hai — sirf wahi components re-render hote hain jo specific state piece use karte hain."
+          whyUseIt="Prop drilling — itna pain hai ki developers Redux seekhte hain sirf escape karne ke liye. Context — simple lekin selective subscriptions nahi, sab consumers re-render. Zustand — ek store, selector-based subscriptions, no provider, 1kb bundle. Middle ground perfect hai."
           howToUse={{
             filename: 'problem-demo.tsx',
             language: 'typescript',
@@ -60,9 +63,9 @@ const CartContext = createContext<CartContextType>({} as CartContextType)
 // jab bhi cart update hoti hai — chahe wo component cart use na kare
 
 // ✅ Zustand solution — is chapter mein aata hai`,
-            explanation: "Ye demo dikhata hai kyun local state aur Context large apps mein struggle karti hain. Prop drilling intermediate components ko props pass karne par majboor karta hai jo unhe use nahi karte. Context sab consumers ko re-render trigger karta hai — even agar unka relevant state change na hua ho.",
+            explanation: "Two problems clearly dikhte hain — PropDrilling: Layout, Dashboard, Sidebar sirf postman hain, useUser aur setUser unhe use nahi karte. Aur Context problem: har CartContext.Provider consumer re-render hoga jab bhi cart change hogi — chahe component sirf user dikhata ho. Zustand dono solve karta hai — koi prop passing nahi, selective re-renders.",
           }}
-          realWorldScenario="Instagram jaisi app — Stories viewer, Feed, Profile, DMs — sab jagah same user data chahiye. Notifications badge header mein aur notification page dono mein. Zustand se ek store banao — sab components independently read karo, performance issue nahi."
+          realWorldScenario="Instagram jaisi app — Stories, Feed, Profile, DMs, Notifications — sab jagah same user data chahiye, notification count chahiye. Zustand store: useUserStore, useNotificationStore. Har component exactly jo chahiye sirf wo subscribe karta hai. Notification count update? Sirf NotificationBadge re-render. Feed? Undisturbed."
           commonMistakes={[
             {
               mistake: 'Everything ek global store mein daalna',
@@ -75,7 +78,7 @@ const CartContext = createContext<CartContextType>({} as CartContextType)
               fix: 'App size aur complexity ke hisaab se tool choose karo. Small app? useState + Context. Medium-large? Zustand add karo.',
             },
           ]}
-          proTip="State ko categories mein sochna help karta hai: Local state (this component only) → useState. Shared state (few siblings) → prop lifting. Global state (app-wide) → Zustand. Server state (from API) → TanStack Query. Ye 4 categories clear hoti hain toh architecture decisions easy ho jaate hain."
+          proTip="State categories matrix yaad rakho — ye architectural clarity deta hai. Local (sirf ye component) → useState. Sibling share (2-3 levels) → prop lifting ya Context. App-wide (sab jagah) → Zustand. Server data (API se) → TanStack Query. In categories se sochna shuru karo — decision automatic hoti hai. 'Ye state kahan se aati hai aur kahan jaati hai?' Ye sawaal poocho."
         />
       </div>
 
@@ -84,14 +87,14 @@ const CartContext = createContext<CartContextType>({} as CartContextType)
           title="Zustand Basics — Store Banao, Use Karo"
           emoji="🐻"
           difficulty="intermediate"
-          whatIsIt="Zustand mein ek store create() function se banta hai. Store mein state aur actions ek saath define hote hain. Components useStore hook se state read karte hain — selector function pass karo sirf wo state lo jo chahiye. No Provider wrap, no reducers, no dispatch."
+          whatIsIt="Zustand ke andar kya hota hai? create() function ek closure banata hai — state internally store hoti hai is closure mein. Component call karta hai useStore — Zustand internally subscribe karta hai. State change hoti hai set() se — Zustand dekhta hai kaunse components subscribe hain, sirf unhe notify karta hai. Selector — state ka ek piece select karo. Sirf woh piece change hone par re-render. Context mein ye granularity nahi hai — wahan poora value object change pe sab re-render."
           whenToUse={[
             'Global state chahiye without Redux boilerplate',
-            'Multiple components same state share karein',
-            'Actions (state mutations) bhi state ke saath define karni hain',
-            'Async operations (API calls) directly store actions mein handle karne hain',
+            'Multiple components same state share karein with selective updates',
+            'State aur actions ek saath define karne ho (clean code)',
+            'Async operations (API calls) directly store actions mein handle karne ho',
           ]}
-          whyUseIt="Zustand ka API extremely minimal hai — ek function create(), ek hook useStore(). Redux mein actions, reducers, store setup, Provider, useSelector, useDispatch — Zustand mein bas create aur use. Same power, 10x less code. Bundle size bhi sirf ~1kb."
+          whyUseIt="Redux comparison — actions file, reducers file, store config file, Provider wrap, useSelector, useDispatch — sirf ek counter ke liye 5 files. Zustand — create() mein state aur actions, useStore hook — ek file, ek function. Same selective subscriptions. Same devtools support. 10x less code. Ye fark jaruri hai samajhna."
           howToUse={{
             filename: 'store.ts',
             language: 'typescript',
@@ -143,9 +146,9 @@ function UserMenu() {
   const logout = useStore((state) => state.logout)
   return user ? <button onClick={logout}>{user.name}</button> : null
 }`,
-            explanation: "create() function ek hook return karta hai. set() se state update karo — object ya function pass karo (function se current state milti hai). Selectors (arrow functions) ensure karte hain ki component sirf specific state change par re-render ho — performance critical.",
+            explanation: "Selector pattern trace karo — CartBadge: useStore(state =&gt; state.cart.length). Zustand internally: ye selector baar baar run karta hai jab bhi state change hoti hai. Previous result: 3. New result: 4? Changed! Re-render. New result: 3 again? Same! Skip re-render. Ye selector memoization automatic hai. CartTotal alag selector — sirf total change pe re-render. Teeno components independently optimized.",
           }}
-          realWorldScenario="Food delivery app — RestaurantCard mein addToCart action call karo, CartDrawer mein cart items show karo, Header mein cart count badge dikhaao. Teeno components ek shared store se independently kaam karte hain — koi prop drilling nahi."
+          realWorldScenario="Food delivery app — RestaurantCard pe addToCart button: useCartStore.getState().addToCart(item) ya useStore selector se. CartDrawer: useStore(s =&gt; s.cart) — items dikhao. Header CartBadge: useStore(s =&gt; s.cart.length) — sirf count. Teeno independent. Cart update? Sirf CartDrawer aur CartBadge re-render. RestaurantCard? Not a single re-render."
           commonMistakes={[
             {
               mistake: 'Selector ke bina poora store subscribe karna',
@@ -158,7 +161,7 @@ function UserMenu() {
               fix: 'Hamesha new object/array return karo: set(state => ({ cart: [...state.cart, newItem] })) — spread operator ya .map() use karo.',
             },
           ]}
-          proTip="Zustand devtools middleware se Redux DevTools extension mein store debug kar sakte ho: import { devtools } from 'zustand/middleware'; create(devtools((set) => ({ ... }), { name: 'MyStore' })). Time-travel debugging aur state inspection milti hai production-grade apps ke liye."
+          proTip="Redux DevTools Zustand ke saath kaam karta hai! devtools middleware wrap karo: create(devtools((set) =&gt; ({ ... }), { name: 'CartStore' })). Browser mein Redux DevTools open karo — CartStore state tree dikhi, action log mein addToCart, removeFromCart sab. Time-travel: purani state restore karo, debug karo. Production mein bhi devtools kaam karta hai — toggle kar sakte ho. This is powerful."
         />
       </div>
 
@@ -167,14 +170,14 @@ function UserMenu() {
           title="Zustand Patterns — Selectors, Computed, Async"
           emoji="🔧"
           difficulty="intermediate"
-          whatIsIt="Zustand mein advanced patterns: computed values (total price from cart), async actions (API calls inside store), aur multiple slice pattern (bade stores ko organize karna). Ye patterns production-ready stores banane ke liye zaroori hain."
+          whatIsIt="Production patterns dekhte hain. Computed values — cartTotal har component mein calculate karna? Duplicate logic + multiple sources of truth. Store selector mein calculate karo — ek jagah, sab jagah correct. Async actions — fetchUser API call store mein hi rakho, isLoading bhi store mein. Component clean — sirf { user, isLoading } use karo, fetch logic kuch pata nahi. get() function — async actions mein current state fresh milti hai, stale closure nahi."
           whenToUse={[
-            'Cart total calculate karna — computed value pattern',
-            'Login API call store action mein — async actions',
-            'Bada store multiple files mein organize karna — slice pattern',
-            'Derived state jo multiple state pieces se aaye — selectors',
+            'Cart total, derived values — computed selector pattern',
+            'Login, data fetch — async actions in store',
+            'Bada store multiple files mein — slice pattern',
+            'Derived state multiple pieces se — selector composition',
           ]}
-          whyUseIt="Computed values component mein calculate karne se har use karne wale component mein duplicate logic. Store mein computed values centralize hoti hain. Async actions se loading state bhi store mein manage hoti hai — component clean rehta hai. Slice pattern large teams ke liye maintainable code deta hai."
+          whyUseIt="Async logic component mein rakhne se: component complex hoti hai, testing hard hoti hai, loading states manual hote hain. Store mein: action ek function, loading/error state bhi store mein, component sirf UI — render karo aur action call karo. Separation of concerns properly implement hota hai."
           howToUse={{
             filename: 'store-patterns.ts',
             language: 'typescript',
@@ -222,9 +225,9 @@ function CartSummary() {
   const { isLoading } = useStore((state) => ({ isLoading: state.isLoading }))
   return <div>Total: ₹{total.toFixed(2)}</div>
 }`,
-            explanation: "create() mein dusra argument get hai — current state access karne ke liye async functions mein. Computed values selector mein calculate karo — memoized hoti hain. Async actions loading aur error state manage karte hain directly store mein.",
+            explanation: "get() kyon zaroori hai async actions mein? set() inside async function — state change ho chuki hogi jab await complete hoga (stale closure). get() hamesha latest state deta hai — fresh snapshot. fetchUser: set isLoading true → await fetch → get() se fresh check → set user + isLoading false. Cart total selector: har render pe calculate hoga? Nahi — Zustand selector result memoize karta hai.",
           }}
-          realWorldScenario="Swiggy cart — cartTotal (sum of price * qty) computed selector se milta hai. Place order async action pehle cart validate karta hai (get() se current cart dekho), phir API call karta hai, success par cart clear karta hai — sab store mein, component clean rehta hai."
+          realWorldScenario="Food delivery app — placeOrder async action: get() se cart check karo (empty? error return), set isLoading: true, API call karo, success? set cart: [], set isLoading: false, navigate to success. Fail? set error: message. Component: useStore(s =&gt; s.isLoading) se spinner, useStore(s =&gt; s.error) se error message. Component bilkul clean."
           commonMistakes={[
             {
               mistake: 'Async action mein get() ki jagah stale closure use karna',
@@ -237,7 +240,7 @@ function CartSummary() {
               fix: 'Simple primitive values return karo selector se ya useMemo ke saath computed values cache karo components mein.',
             },
           ]}
-          proTip="Large apps ke liye store slices pattern: separate files mein cartSlice.ts, authSlice.ts, uiSlice.ts banao — har file mein apna (set, get) => ({...}) function likho. Main store mein combine karo: create<StoreState>()((...args) => ({ ...cartSlice(...args), ...authSlice(...args) })). Clean aur modular."
+          proTip="Bada app — ek store file 500 lines — messy. Slice pattern: cartSlice.ts mein sirf cart state aur actions. authSlice.ts mein sirf auth. uiSlice.ts mein sirf UI state. Main store.ts: create()((...args) =&gt; ({ ...cartSlice(...args), ...authSlice(...args), ...uiSlice(...args) })). Har slice alag file, alag owner, alag tests. Clean architecture scales with team size."
         />
       </div>
 
@@ -246,14 +249,14 @@ function CartSummary() {
           title="Zustand Persist Middleware"
           emoji="💿"
           difficulty="intermediate"
-          whatIsIt="Zustand ka persist middleware automatically store state ko localStorage (ya sessionStorage, ya custom storage) mein save karta hai. Page refresh karne par state restore hoti hai — cart persist, auth token persist, user preferences persist. Zero extra code from component side."
+          whatIsIt="Persist middleware Zustand ka ek killer feature hai. Ek baar configure karo — store automatically localStorage se sync rehti hai. Page refresh karo — state wahi se shuru hoti hai jahan chhoodi thi. Cart mein items the? Abhi bhi hain. Theme dark tha? Abhi bhi dark. partialize option se choose karo kya persist karna hai — actions nahi karni (wo functions hain, serialize nahi hoti), sirf state values."
           whenToUse={[
-            'Shopping cart persist karni ho refresh ke baad',
-            'User theme/language preference save karni ho',
-            'Auth token localStorage mein store karna ho (httpOnly cookies better hain sensitive apps mein)',
-            'Onboarding progress save karna ho',
+            'Shopping cart refresh ke baad persist karni ho',
+            'User theme/language preference — tab close pe bhi save',
+            'Onboarding progress — user wahan se shuru kare jahan chhooda',
+            'Form draft — user reload kare toh data loss nahi',
           ]}
-          whyUseIt="Bina persist ke har refresh par state reset — frustrating UX. Manual localStorage.setItem har action mein — repetitive code. persist middleware ek baar configure karo — automatically sab handle hota hai. Partial persistence bhi possible hai — sirf cart persist karo, UI state nahi."
+          whyUseIt="Bina persist: user ne cart mein 5 items daale, accidentally page refresh — cart gone. Frustrating! Manual localStorage: har action mein localStorage.setItem — boilerplate everywhere. Persist middleware: ek baar name batao, partialize karo — middleware khud sab handle karta hai. Zero component code."
           howToUse={{
             filename: 'persisted-store.ts',
             language: 'typescript',
@@ -289,9 +292,9 @@ function App() {
   const theme = useStore((state) => state.theme)
   // theme automatically localStorage se restore hoti hai on refresh
 }`,
-            explanation: "persist middleware store ko wrap karta hai. name localStorage key hai. partialize se selective persistence — actions ko persist karna zaroori nahi. createJSONStorage() JSON parse/stringify handle karta hai. Migration support bhi hai — version number add karo store schema change hone par.",
+            explanation: "Flow trace karo — app load hoti hai. persist middleware localStorage se 'myapp-storage' key read karta hai. JSON parse karta hai. cart aur theme store mein inject karta hai. Component useStore(s =&gt; s.cart) — refreshed cart milti hai. User cart update karta hai — set() chalta hai — persist middleware automatically localStorage update karta hai. Transparent!",
           }}
-          realWorldScenario="Amazon ka cart — login ke bina bhi cart persist rehta hai. Zustand persist middleware se cart localStorage mein save hota hai. User session expire ho toh cart phir bhi rehta hai — login karne par cart merge hota hai server-side cart se."
+          realWorldScenario="E-commerce — login ke bina bhi cart persist hoti hai. Zustand persist middleware: cart localStorage mein. User browser band karta hai, kal wapas aata hai — cart wahi hai. Login karta hai? Server pe stored cart se merge karo. Best of both worlds — offline persistence + server sync."
           commonMistakes={[
             {
               mistake: 'Sensitive data (passwords, full credit card numbers) localStorage mein persist karna',
@@ -304,7 +307,7 @@ function App() {
               fix: 'persist middleware mein version: 1 add karo aur migrate function likho: migrate: (oldState, version) => { if (version === 0) return { ...newDefaults } }.',
             },
           ]}
-          proTip="Testing mein persist middleware skip karo — jest tests mein localStorage mock ya disable karo: jest.mock('zustand/middleware', () => ({ persist: (fn: unknown) => fn, createJSONStorage: () => ({}) })). Warna tests ek doosre ke state se contaminate hoti hain."
+          proTip="Testing mein persist middleware ek headache hai — test ek doosre ke localStorage state se contaminate hote hain. Fix: jest.mock('zustand/middleware', () =&gt; ({ persist: (fn: unknown) =&gt; fn, createJSONStorage: () =&gt; ({}) })). Ya beforeEach mein localStorage.clear() karo. Aur migration versioning — store schema change hone par version: 1 se version: 2 karo aur migrate function likho — warna old data type mismatch crash karega."
         />
       </div>
 
@@ -313,14 +316,14 @@ function App() {
           title="Zustand vs Context vs Redux — Kab Kya?"
           emoji="⚖️"
           difficulty="intermediate"
-          whatIsIt="Teen main state management approaches: Context API (built-in, no install), Zustand (minimal external library), Redux Toolkit (powerful, more setup). Sahi choice app size, team size, aur requirements par depend karti hai. Har tool ka apna sweet spot hai."
+          whatIsIt="Final comparison — decision guide. Context: zero install, built-in React. Low-frequency updates ke liye perfect (auth, theme). Limitation: no selectors, sab consumers re-render. Zustand: 1kb, no provider, selectors, devtools, middleware — sweet spot 90% apps ke liye. Redux Toolkit: powerful, verbose, enterprise-grade — strict patterns, excellent DevTools, badi teams ke liye. TanStack Query: server state specialist — inmen se koi nahi karta jo ye karta hai."
           whenToUse={[
-            'Context — simple theme, auth, language — rarely changing global values',
-            'Zustand — medium-large apps, frequent updates, performance matters',
-            'Redux Toolkit — very large apps, time-travel debugging zaroori, strict patterns chahiye',
-            'TanStack Query — server state (API data) — inme se koi nahi',
+            'Context — auth, theme, locale — simple, rarely changing global values',
+            'Zustand — medium-large apps, frequent updates, cart, UI state',
+            'Redux Toolkit — very large apps (10k+ lines), badi teams, strict patterns zaroori',
+            'TanStack Query — server state, API data — always, no exceptions',
           ]}
-          whyUseIt="Wrong tool choose karne ka cost high hota hai — premature optimization (Redux for todo app) ya under-powered solution (Context for high-frequency updates). Ye comparison matrix clear decision deta hai."
+          whyUseIt="Wrong tool ka cost real hai. Todo app mein Redux — 50 files, 500 lines boilerplate, ek counter. E-commerce mein sirf Context — cart update pe poori app re-render. Decision matrix follow karo — app size, update frequency, team size — sahi tool milega."
           howToUse={{
             filename: 'comparison.tsx',
             language: 'typescript',
@@ -354,9 +357,9 @@ const counterSlice = createSlice({
 // App 1000-10000 lines? → Zustand
 // App > 10000 lines, large team? → Redux Toolkit
 // Server data? → Always TanStack Query`,
-            explanation: "Ye comparison tools ke trade-offs clearly dikhata hai. Context frequency of updates ke saath poorly scales. Zustand 90% use cases ke liye sweet spot hai. Redux Toolkit large enterprise apps mein shines karta hai jahan strict patterns aur excellent debugging zaroori hain.",
+            explanation: "Decision guide line by line — App < 1000 lines? useState + Context. 1000-10000 lines? Zustand add karo. 10000+ lines, large team? Redux Toolkit. Server data? Always TanStack Query. Ye matrix real experience se bana hai — ghar pe try karo, apni app pe lagu karo.",
           }}
-          realWorldScenario="Startup MVP: Context + useState (fast to build). Product grows → users complain performance slow — Zustand add karo. Company scales, 50 developers → Redux Toolkit adopt karo team consistency ke liye. Tools evolve karte hain app ke saath."
+          realWorldScenario="Startup journey — MVP: Context + useState (fast to build, zero overhead). 6 months: users complain cart is slow — profile karo, Context consumers re-render — Zustand add karo. 2 years: 50 developers, strict patterns zaroori — Redux Toolkit adopt karo. Tools app ke saath evolve karte hain — ye normal hai."
           commonMistakes={[
             {
               mistake: 'Server state Zustand ya Redux mein manage karna',
@@ -369,7 +372,7 @@ const counterSlice = createSlice({
               fix: 'Team ki familiarity consider karo. Zustand learn karna 30 minutes ka kaam hai. Redux toolkit proper learning invest karo — tutorials, workshops.',
             },
           ]}
-          proTip="Jotai aur Recoil bhi popular alternatives hain — atom-based model (bottom-up) jo Context se better aur Redux se simpler hai. Server Components future mein global client state ki zaroorat aur kam kar denge — Next.js 14 mein server state React Server Components mein handle hoti hai bina client bundle ke."
+          proTip="Jotai explore karo — atom-based state. Zustand top-down hai (ek store), Jotai bottom-up hai (atomic units). Fine-grained reactivity chahiye, independent atoms — Jotai. One store, organized state — Zustand. Future mein React Server Components server state handle karenge client bundle ke bina — global client state ki zaroorat aur kam hogi. Abhi ke liye Zustand solid choice hai."
         />
       </div>
     </div>

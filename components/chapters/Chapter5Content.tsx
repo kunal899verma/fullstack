@@ -149,14 +149,16 @@ export default function Chapter5Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          fs Module — Node.js Ka File Operations Boss
+          readFileSync server code mein use kiya? Tumne Event Loop murder kar diya!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Synchronous, Async callback, aur Promise-based APIs — teen tarike hain. Sahi waqt par sahi API use karna sikhna padega.
+          Bhai, ye shocking lagta hai, lekin sach hai. Server request handler mein{' '}
+          <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">readFileSync</code>{' '}
+          likhna matlab Event Loop ko ek file read hone tak completely freeze karna. Baaki 500 requests wait karengi. Ye ek common beginner mistake hai jo production mein server unresponsive kar deti hai. fs module teen styles mein aata hai — sync (dangerous in servers), callback (old style), aur promises (sahi tarika). Is chapter mein hum sahi tarika seekhenge.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
           <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">fs</code>{' '}
-          module Node.js mein file system operations ke liye hai — read, write, delete, directories, watching — sab kuch. Is chapter mein hum teen API styles, common patterns, error handling, aur production-ready techniques cover karenge.
+          module Node.js mein file system ka door hai — read, write, delete, directories, watching — sab kuch. Is chapter mein hum teen API styles, common patterns, production-ready techniques, aur ek critical concept — streaming — cover karenge.
         </p>
       </div>
 
@@ -166,14 +168,14 @@ export default function Chapter5Content() {
           title="fs Module — Sync, Async, aur Promises"
           emoji="📁"
           difficulty="beginner"
-          whatIsIt="Node.js ka fs (file system) module teen flavors mein available hai: fs callbacks wala (purana), fs.promises async/await wala (modern aur recommended), aur fs synchronous (blocking — sirf startup scripts ke liye). Teeno same kaam karte hain — alag style mein. Production code mein hamesha fs.promises use karo."
+          whatIsIt="fs module teen personalities mein aata hai — aur har ek ka use case bilkul alag hai! Style 1: Callbacks wala fs — purana, verbose, callback hell possible. Style 2: Synchronous fs — BLOCKING, Event Loop freeze! Sirf startup scripts mein allowed hai. Style 3: fs.promises — modern, async/await ke saath clean, production ke liye sahi. Rule yaad karo: Server mein hamesha fs.promises. CLI scripts aur startup mein sync OK hai. Callbacks legacy code mein hain — naya code mein use mat karo."
           whenToUse={[
             'fs.promises — Production servers, APIs, koi bhi async context',
             'fs callbacks — Legacy code maintain karna, stream-based operations',
             'Synchronous fs — CLI scripts, config load at startup (before server starts), one-time initialization',
             'fs.createReadStream — Large files efficiently process karna',
           ]}
-          whyUseIt="Sync APIs event loop block karte hain — server ke saare dusre requests ek file read hone tak wait karte hain. Callback APIs kaam karte hain lekin callback hell ho sakta hai. fs.promises + async/await se clean, readable, maintainable code milta hai — aur non-blocking bhi. Naya code sirf fs.promises likho."
+          whyUseIt="Ye comparison dekho — callback style mein teen nested files padhna pyramid of doom! Error handling har jagah duplicate. fs.promises style mein: Promise.all se dono files parallel padho, ek try/catch sab handle karta hai, code linear aur readable. Aur performance bonus: parallel read matlab total time = slowest file ka time, na sum of all files. Ye ek architectural difference hai — readability aur speed dono!"
           howToUse={{
             filename: 'fs-styles.js',
             language: 'javascript',
@@ -225,7 +227,7 @@ import { promises as fsp } from 'node:fs'
 const content = await fsp.readFile('./file.txt', 'utf8')`,
             explanation: 'node:fs/promises se named imports lo — cleanest approach. Sync sirf startup mein jab server abhi start nahi hua. Production request handling mein hamesha await use karo — event loop free rehta hai.',
           }}
-          realWorldScenario="Express server mein: startup mein readFileSync se SSL certificates load karo (server start hone se pehle, ek baar). Runtime mein user uploads ke liye fs.promises.writeFile use karo — server responsive rehta hai dusre requests ke liye. Ye split approach production-grade apps mein standard hai."
+          realWorldScenario="Ek production Express server sochte hain — startup mein SSL certificate padhna hai, templates load karni hain, config file padhni hai. Ye sab server shuru hone SE PEHLE hota hai — koi request abhi nahi aa rahi. Yahan readFileSync bilkul sahi hai! Lekin server start hone ke baad koi bhi readFileSync = danger. User request aaye, file padhi, Event Loop frozen. Rule: Startup mein sync, runtime mein async. Ye distinction production engineers daily use karte hain."
           commonMistakes={[
             {
               mistake: 'Server request handlers mein readFileSync use karna',
@@ -238,7 +240,7 @@ const content = await fsp.readFile('./file.txt', 'utf8')`,
               fix: "import { readFile, writeFile, mkdir } from 'node:fs/promises' — ek consistent import statement. node: prefix use karo built-in modules ke liye — explicit aur clear.",
             },
           ]}
-          proTip="fs.promises.readFile sab se clean approach hai — async/await ke saath perfectly works. node: prefix use karo imports mein (node:fs, node:path) — ye clearly indicate karta hai ki ye built-in module hai, npm package nahi. Better readability, future-proof."
+          proTip="node: prefix use karo hamesha — import { readFile } from 'node:fs/promises'. Ye explicitly batata hai ki ye built-in module hai, koi npm package 'fs' nahi. Clearer code, future-proof. Aur ek hidden gem: import { promises as fs } from 'node:fs' se pura promises API ek object mein milta hai — fs.readFile, fs.writeFile, fs.mkdir sab. Ek import, saari zarooraten!"
         />
 
         <div className="mt-6">
@@ -303,14 +305,14 @@ async function processFiles() {
           title="Files Padhna — readFile, readline, aur JSON"
           emoji="📖"
           difficulty="beginner"
-          whatIsIt="File reading ke kai tarike hain: readFile se poori file ek baar mein, createReadStream se streaming (large files ke liye), readline se line-by-line. Text, JSON, aur binary files ke liye alag approaches. Error handling mein ENOENT (file not found) aur EACCES (permission denied) common errors hain."
+          whatIsIt="100MB log file padhni hai — readFile se padho ya stream se? Ye choice production mein critical hai! readFile se padho: 100MB memory instantly use hogi. 10 concurrent requests same file padhen: 1GB+ memory. Docker container OOM crash. Stream se padho: sirf ek chunk memory mein, file kitni bhi badi ho — memory constant rehti hai. Rule: Small files (config, templates) ke liye readFile OK hai. Large files (logs, CSVs, data exports) ke liye hamesha streaming. Aur error handling mein ENOENT (file not found) aur EACCES (permission denied) — ye dono hamesha handle karo!"
           whenToUse={[
             'readFile — small/medium files jo poori memory mein fit ho jaayein',
             'createReadStream + readline — large files (logs, CSVs) jo line by line process honi hain',
             'readFile + JSON.parse — JSON config files load karna',
             'readFile encoding nahi dena — binary data (images, PDFs) ke liye Buffer milta hai',
           ]}
-          whyUseIt="File reading ka right approach performance aur memory use determine karta hai. 100MB log file readFile se padhoge toh 100MB memory use hogi. readline streaming se? Memory constant rehti hai — sirf ek line at a time. Large file processing ke liye streaming mandatory hai production mein."
+          whyUseIt="for await...of loop ka readline interface ke saath combination — ye modern Node.js ka sab se clean pattern hai large files ke liye. Ye generator-based iteration hai — ek line process karo, agli lo. Memory constant. 1GB file bhi 10-15MB memory mein process ho jaayegi. Aur JSON files ke liye readFile + JSON.parse combo bahut common hai — lekin error handling carefully karo: ENOENT (file nahi) aur SyntaxError (invalid JSON) dono alag cases hain, dono alag handle karo!"
           howToUse={{
             filename: 'reading-examples.js',
             language: 'javascript',
@@ -382,7 +384,7 @@ const [userFile, productFile, orderFile] = await Promise.all([
 ])`,
             explanation: 'for await...of loop se readline interface iterate karo — sabse clean aur modern way. Memory constant rehti hai regardless of file size. Binary data ke liye encoding mat do — Buffer milega. Multiple files parallel padho Promise.all se.',
           }}
-          realWorldScenario="Log analysis tool jo production servers ki daily logs process karta hai. Logs 500MB+ hoti hain. readline + createReadStream se memory 10-15MB se zyada kabhi nahi jaata. readFile use karte toh 500MB+ memory chahiye hoti — Docker container crash ho jaata. Streaming = production-ready."
+          realWorldScenario="Ek log analysis service — production servers ki daily logs 500MB+ hoti thi. Developer ne pehle readFile use kiya: memory 500MB+ ho jaati thi, Docker container 512MB limit ke saath crash hota tha. readline + createReadStream pe switch kiya — memory kabhi 15MB se nahi gayi, same file process karna shuru hua. Zero crashes. Streaming ek architectural decision hai jo production reliability guarantee karta hai — sirf syntax change nahi!"
           commonMistakes={[
             {
               mistake: 'Large files ko readFile se poora memory mein load karna',
@@ -395,7 +397,7 @@ const [userFile, productFile, orderFile] = await Promise.all([
               fix: 'Hamesha try/catch mein err.code check karo: ENOENT = file nahi, EACCES = permission denied. Har case mein meaningful response do.',
             },
           ]}
-          proTip="JSON files ke liye readFile + JSON.parse combo sabse common hai. Lekin agar file bahut badi hai (jaise huge dataset JSON), JSON streaming parsers dekho: stream-json npm package. Aur hamesha readFile errors mein err.code check karo — generic error message se better debugging hoti hai."
+          proTip="Error codes yaad kar lo — production mein chhota lagta hai, bada fark padta hai! ENOENT = file nahi mili. EACCES = permission denied. ENOSPC = disk full. EMFILE = too many open files (file descriptors exhausted). Generic catch mein err.code check karo aur meaningful response do — 'file not found' vs 'internal server error' user experience mein bahut fark hai. Aur EMFILE error aaye toh — tumhara app files band nahi kar raha, file descriptor leak hai. Stream close karo properly — stream.destroy() ya async iteration complete karo!"
         />
       </div>
 
@@ -405,14 +407,14 @@ const [userFile, productFile, orderFile] = await Promise.all([
           title="Files Likhna — writeFile, appendFile, aur Atomic Writes"
           emoji="✍️"
           difficulty="beginner"
-          whatIsIt="File writing mein writeFile (overwrite), appendFile (add to existing), aur writeFileSync (blocking) hain. Production mein ek important concept hai atomic writes — pehle temp file mein likho, phir rename karo. Agar write ke beech mein crash ho, original file safe rehti hai. Critical data (configs, user data) ke liye ye essential hai."
+          whatIsIt="File write karna simple lagta hai — writeFile karo, kaam khatam! Lekin production mein ek silent danger hai: agar directly file mein likhte waqt server crash ho, file partially written ho sakti hai — corrupt data! Ye config files ke saath especially dangerous hai. Solution: Atomic write pattern. Pehle temp file mein likho, phir rename() se move karo. rename() OS level par atomic hai — ya poora hoga ya bilkul nahi. Corrupt file ka risk ZERO. Critical data ke liye ye pattern mandatory hai!"
           whenToUse={[
             'writeFile — nayi file banana ya existing ko completely overwrite karna',
             'appendFile — existing file mein data add karna (logs, audit trails)',
             'Atomic writes (temp + rename) — configs, user data, koi bhi critical file',
             'writeFileSync — sirf startup ya CLI scripts mein',
           ]}
-          whyUseIt="File write operations fail ho sakti hain — disk full, permissions, network filesystem issues. Agar directly file mein likhte waqt crash ho, partially written file ho sakti hai — corrupt data. Atomic writes se ye risk zero ho jaata hai. rename() OS level par atomic hai (same filesystem) — either complete hoti hai ya nahi hoti."
+          whyUseIt="Atomic write pattern step by step: Step 1: Same directory mein temp file banao (UUID naam se). Step 2: Temp file mein data likho. Step 3: rename() se target location par move karo — OS atomic operation. Agar Step 2 fail ho? Temp file hatao, original safe. Agar Step 3 fail ho? Temp file hatao, original safe. Kisi bhi point par crash ho — original file kabhi corrupt nahi hogi! rename() same filesystem par OS guarantee deta hai. JSON.stringify(data, null, 2) se human-readable JSON — debugging bahut aasan!"
           howToUse={{
             filename: 'writing-examples.js',
             language: 'javascript',
@@ -488,7 +490,7 @@ async function safeWrite(filePath, content) {
 }`,
             explanation: 'Atomic write pattern: temp file mein likho, rename se move karo. rename() same filesystem par atomic hai. JSON.stringify(data, null, 2) human-readable output deta hai. mkdir({ recursive: true }) se directories automatically create hoti hain.',
           }}
-          realWorldScenario="User profile save karne wala API. Directly user-123.json mein likhte toh agar server crash ho mid-write, file corrupt ho jaati. Atomic write pattern se: temp file mein likha, rename kiya — either complete file hai ya purani safe file. Kabhi corrupt nahi hogi. Production financial apps mein ye pattern critical hai."
+          realWorldScenario="User profile update API — atomic writes ka perfect use case. Server 1000 concurrent users ke profiles update kar raha tha. Ek deployment ke dauran mid-write server restart hua — 3 user profiles corrupt ho gayi thi (direct writeFile use tha). Data recovery manually karni padi, users ko compensate karna pada. Atomic write pattern implement kiya — phir kabhi nahi hua. Ek pattern change, data integrity guaranteed!"
           commonMistakes={[
             {
               mistake: 'Write errors handle nahi karna — fire and forget',
@@ -501,7 +503,7 @@ async function safeWrite(filePath, content) {
               fix: 'await writeFile() use karo — async, non-blocking. Sirf CLI one-off scripts ya server startup mein writeFileSync allowed hai.',
             },
           ]}
-          proTip="JSON.stringify(data, null, 2) aur JSON.stringify(data, null, '\\t') se formatted, human-readable JSON files milti hain — debugging mein bahut help karta hai. Production mein log rotation consider karo appendFile ke saath — daily naye log files banao. winston ya pino logging libraries ye sab handle karti hain automatically."
+          proTip="Atomic write ka ek important gotcha — temp file SAME DIRECTORY mein hona chahiye jahan target file hai! Agar temp file alag drive ya filesystem par ho, rename() fail ho jaayega — different filesystems par atomic rename possible nahi. Isliye path.dirname(targetPath) se same directory lo, wahan temp file banao. Ye ek detail hai lekin production mein galat karo toh mysterious failures milti hain — especially Docker volumes aur NFS mounts par!"
         />
       </div>
 
@@ -511,7 +513,7 @@ async function safeWrite(filePath, content) {
           title="Directory Operations — mkdir, readdir, stat"
           emoji="📂"
           difficulty="intermediate"
-          whatIsIt="Directories ke saath kaam karna — create karna, list karna, information lena, aur recursively traverse karna. Node.js mein mkdir, readdir, stat, aur rm sab fs.promises mein available hain. recursive: true option se nested directories ek command mein banti hain. Directory walking se complex file operations possible hain."
+          whatIsIt="Directories ke saath kaam karna alag hai files se — aur bahut common bhi hai production mein. Upload folder banana, build output check karna, recursive file search karna — ye sab directory operations hain. Node.js mein mkdir({ recursive: true }) ek powerful tool hai — ye nested directories ek command mein banata hai, aur agar already exist kare toh error nahi deta (idempotent!). Idempotent operations production mein gold hain — baar baar call karo, same result. No 'already exists' errors!"
           whenToUse={[
             'Upload directories create karna user uploads ke liye',
             'Build output check karna — dist folder exist karta hai?',
@@ -520,7 +522,7 @@ async function safeWrite(filePath, content) {
             'File metadata lena — size, modified date, type',
             'Directory tree walk karna — all files recursively find karna',
           ]}
-          whyUseIt="Real applications mein directory operations bahut common hain — upload handlers directories ensure karte hain, build scripts output directories clean karte hain, log rotation tools date-wise folders banate hain. Node.js 16+ mein recursive mkdir aur rm sab natively available hai — koi external library nahi chahiye."
+          whyUseIt="Recursive directory walk — generator function + yield* combination — ye ek elegant pattern hai. Generator se memory efficient iteration hoti hai, yield* se recursive walk clean hota hai. withFileTypes: true — ye ek underappreciated optimization hai. Bina iske har entry ke liye alag stat() call karni padti — N+1 problem! withFileTypes se type info already available hai — ek call, poori directory info. Large directories mein ye performance difference significant hota hai."
           howToUse={{
             filename: 'directory-ops.js',
             language: 'javascript',
@@ -603,7 +605,7 @@ const sizeBytes = await getDirSize('./node_modules')
 console.log(\`node_modules size: \${Math.round(sizeBytes / 1024 / 1024)} MB\`)`,
             explanation: 'Generator function + yield* se elegant recursive directory walk. withFileTypes: true se extra stat() call nahi karna padta — type already entry mein hota hai. mkdir({ recursive: true }) idempotent hai — baar baar call karo, no error.',
           }}
-          realWorldScenario="File upload service mein: user upload karta hai, handler pehle check karta hai user ki upload directory exist karti hai (pathExists), nahi hai toh mkdir({ recursive: true }) se banata hai. Har user ka alag folder: uploads/user-123/. Build cleanup script mein: rm('./dist', { recursive: true }) phir fresh build. Standard patterns hain ye."
+          realWorldScenario="Multi-tenant SaaS app — har user ke liye alag upload directory: uploads/tenant-123/images/, uploads/tenant-123/docs/. User upload karta hai? mkdir({ recursive: true }) se directory ensure karo — agar exist kare toh no-op, nahi toh create. Race condition nahi (recursive mode mein), idempotent hai. Ab naye tenant ke liye onboarding — directory setup ek line. Scale karo 10,000 tenants tak — same code kaam karta hai. Ye production-ready patterns hain!"
           commonMistakes={[
             {
               mistake: 'fs.existsSync() ya exists() use karna file existence check ke liye',
@@ -616,7 +618,7 @@ console.log(\`node_modules size: \${Math.round(sizeBytes / 1024 / 1024)} MB\`)`,
               fix: 'const fullPath = path.join(dirPath, filename) — hamesha path.join use karo. withFileTypes: true se DirEnt objects milte hain — isFile() aur isDirectory() methods se type check karo.',
             },
           ]}
-          proTip="Node.js 22+ mein recursive readdir available hai: readdir(dir, { recursive: true }) — apna walk function nahi likhna! Older Node versions ke liye generator pattern use karo jaise example mein hai. Aur readdir ke saath withFileTypes: true hamesha pass karo — extra stat() calls bachte hain, performance better hoti hai."
+          proTip="fs.existsSync() trap se bachna! Ye deprecated method hai aur TOCTOU race condition create karta hai — check karo ki file exist karti hai, phir create karne se pehle doosra process same file bana le. Instead: mkdir({ recursive: true }) use karo — agar exists toh no-op, nahi toh create. 'Try first' pattern hamesha safer hai than 'check then do'. Aur Node.js 22+ mein readdir({ recursive: true }) available hai — apna walk function nahi likhna, built-in use karo!"
         />
       </div>
 
@@ -626,14 +628,14 @@ console.log(\`node_modules size: \${Math.round(sizeBytes / 1024 / 1024)} MB\`)`,
           title="File Watching — fs.watch aur Hot Reload"
           emoji="👁️"
           difficulty="intermediate"
-          whatIsIt="File watching se tumhare code ko pata chalta hai jab koi file ya directory change ho. Node.js ka built-in fs.watch() OS-level file system events use karta hai — polling nahi. Use case: hot reload (config change detect karna), development tools (file save hone par re-run), automated workflows. Lekin fs.watch() ke limitations hain production mein — chokidar better alternative hai."
+          whatIsIt="File watching — ek powerful concept jo bahut developers nahi jaante! fs.watch() se tumhara code OS-level events receive karta hai jab koi file change ho. Polling nahi — event-driven! Ye Kubernetes ConfigMap changes detect karne ke liye, development hot-reload ke liye, automated pipelines ke liye use hota hai. Lekin fs.watch() ke production limitations hain — Docker volumes, NFS mounts, network filesystems par unreliable hai. Production ke liye chokidar package — ye sab handle karta hai aur more. nodemon, Vite, webpack — sab internally chokidar use karte hain!"
           whenToUse={[
             'Development tools — file save hone par auto-restart (nodemon jaise)',
             'Config hot reload — server restart ke bina config changes apply karna',
             'File processing pipelines — nayi file aaye toh automatically process karo',
             'Build systems — source file change hone par re-build trigger karo',
           ]}
-          whyUseIt="Manual restart bahut slow hai development mein — file save karo, terminal mein jao, Ctrl+C, phir node app.js. File watching se ye automatic ho jaata hai. Production mein config hot reload se zero-downtime configuration updates possible hain. Kubernetes environments mein ConfigMap changes automatically detect ho sakte hain."
+          whyUseIt="Debounce — ye concept file watching mein critical hai! Ek file save karne par OS multiple events fire karta hai (rename + change). Bina debounce ke callback baar baar chalegi — unnecessary processing, performance hit. 100ms debounce: pehla event aaya, timer set karo. Doosra event aaya (100ms ke andar)? Timer reset. Jab 100ms tak koi naya event nahi, tab callback chalao — ek baar. Ye pattern file watching mein standard hai — yaad rakhna!"
           howToUse={{
             filename: 'file-watching.js',
             language: 'javascript',
@@ -712,7 +714,7 @@ chokidarWatcher
   .on('error', error => console.error(\`Watch error: \${error}\`))`,
             explanation: 'fs.watch() simple cases ke liye kaafi hai. Debounce lagao duplicate events ke liye. Production ya complex watching (network drives, Docker volumes) ke liye chokidar use karo — reliable, cross-platform, aur feature-rich.',
           }}
-          realWorldScenario="Microservice mein database connection string environment variable ya mounted config file mein hoti hai. Kubernetes ConfigMap update hone par file change hoti hai — chokidar detect karta hai, app new config load karta hai, database reconnect karta hai. Zero downtime. Manual restart nahi karna padta. Ye pattern k8s apps mein bahut common hai."
+          realWorldScenario="Kubernetes microservice mein config hot reload — ye ek real production pattern hai! ConfigMap update hota hai, mounted file change hoti hai, chokidar detect karta hai, app new database connection string load karta hai, reconnect karta hai. Zero downtime, koi pod restart nahi. Bina ye pattern ke har config change ke liye pod restart karna padta — downtime. File watching se zero-downtime config updates possible hoti hain. Modern k8s apps mein ye standard hai!"
           commonMistakes={[
             {
               mistake: 'fs.watch() ko Docker volumes aur network filesystems par use karna',
@@ -725,7 +727,7 @@ chokidarWatcher
               fix: '100-200ms debounce lagao: clearTimeout(timer); timer = setTimeout(handler, 100). Ya chokidar use karo jo awaitWriteFinish option se ye automatically handle karta hai.',
             },
           ]}
-          proTip="Production apps mein chokidar package prefer karo fs.watch() ke over — npm install chokidar. Ye cross-platform hai, Docker volumes pe bhi reliable hai, aur awaitWriteFinish option se partially written files ka issue solve hota hai. nodemon, Vite, Webpack sab chokidar hi use karte hain internally. Simple scripts ke liye fs.watch() kaafi hai."
+          proTip="Docker volumes mein fs.watch() broken hai — ye bahut commonly encountered production bug hai. Container mein app chalao, volume mounted config file change karo — event kabhi nahi aata! Fix: chokidar use karo usePolling: true option ke saath (Docker volumes ke liye). Ye native events ki jagah polling use karta hai — reliable but slightly more CPU. Production Docker environment hai? hamesha chokidar + usePolling: true. Development mein native events. Ye ek line ki config change hai jo production reliability guarantee karti hai!"
         />
       </div>
 

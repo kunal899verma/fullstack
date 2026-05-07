@@ -67,10 +67,13 @@ export default function JSChapter18Content() {
           Advanced JavaScript Patterns — Language Ka Deep End
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          JavaScript ke advanced features — Iterators, Generators, Proxy, Reflect, Tagged templates — powerful meta-programming tools hain. React, Vue, MobX, styled-components sab ye features internally use karte hain. Inhe samajhna senior developer banaata hai.
+          Ek surprising baat: Vue 3 ki reactivity system — jab tum reactive state change karte ho aur component automatically re-render hota hai — andar Proxy use hota hai. styled-components CSS-in-JS — Tagged template literals use hota hai. for...of loop kaise work karta hai? Iterator protocol! Ye sab features daily use karte ho — bas under the hood nahi pata tha.
+        </p>
+        <p className="text-[#A1A1AA] leading-relaxed mb-3">
+          Ab sawaal ye aata hai — "Kya mujhe ye features khud likhne ki zaroorat padegi?" Haan! Ek baar zaroor padegi. Custom data structure banao, paginated API lazily iterate karo, reactive system build karo — tabhi ye kaam aayenge. Aur jab inhe samjhoge toh dusre frameworks ka source code bhi padhna aayega.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum in advanced features ko practical examples ke saath cover karenge — theory nahi, real use cases.
+          Is chapter mein hum in advanced features ko practical examples ke saath cover karenge — theory nahi, real use cases. Senior developer territory mein aao!
         </p>
       </div>
 
@@ -79,14 +82,14 @@ export default function JSChapter18Content() {
           title="Iterators & Iterables — Custom Traversal"
           emoji="🔁"
           difficulty="advanced"
-          whatIsIt="Iterator protocol: object jo next() method implement kare jo { value, done } return kare. Iterable protocol: object jo Symbol.iterator implement kare jo iterator return kare. Arrays, strings, Maps, Sets sab built-in iterables hain. Custom iterables banao for...of, spread, destructuring ke saath."
+          whatIsIt="Pehle ek experiment: for (const char of 'hello') — string pe for...of! Ye kaise kaam karta hai? String Symbol.iterator implement karti hai — under the hood! Iterator protocol: object jo next() method implement kare jo { value, done } return kare. Iterable protocol: object jo Symbol.iterator implement kare jo iterator return kare. Arrays, strings, Maps, Sets sab built-in iterables hain. Custom iterables banao — for...of, spread, destructuring sab automatically kaam karte hain!"
           whenToUse={[
             'Custom data structures — linked list, tree traversal',
             'Lazy sequences — on-demand values generate karna',
             'Infinite sequences — jab tak chahiye values',
             'API ke results paginate karna lazily',
           ]}
-          whyUseIt="Custom iterables for...of, spread, Array.from() sab ke saath natively kaam karte hain. Lazy evaluation se memory efficient — poori sequence upfront generate nahi hoti. Generators se iterables banane ka easy way milta hai. Reactive streams ka foundation."
+          whyUseIt="Custom iterables for...of, spread, Array.from() sab ke saath natively kaam karte hain — ek baar implement karo, sab jagah use karo. Lazy evaluation se memory efficient — poori sequence upfront generate nahi hoti, sirf jab maango tab generate karo. 1 million items ka array memory mein load karne ki zaroorat nahi — lazily iterate karo! Generators se iterables banane ka easy way milta hai. Node.js streams ka foundation yehi protocol hai."
           howToUse={{
             filename: 'iterators.js',
             language: 'javascript',
@@ -180,9 +183,9 @@ async function* asyncRange(start, end) {
 for await (const n of asyncRange(1, 5)) {
   console.log(n)  // 1, 2, 3, 4, 5 with 100ms delay
 }`,
-            explanation: 'Iterator protocol: next() → { value, done }. Iterable protocol: [Symbol.iterator]() → iterator. Custom class pe Symbol.iterator implement karo — for...of, spread, destructuring sab kaam karte hain. Async iterables se paginated API results stream karo.',
+            explanation: 'Step by step trace karo for...of loop: engine rangeIterable[Symbol.iterator]() call karta hai — iterator milta hai. Har iteration pe iterator.next() call hota hai — { value: 1, done: false } milta hai. Loop body execute hota hai. Jab done: true milta hai — loop khatam! [...rangeIterable] spread: same process, sab values array mein push hote hain. Async iterable mein same — lekin next() Promise return karta hai, for await...of await karta hai.',
           }}
-          realWorldScenario="Database cursor — lazy rows fetch karo: for await (const row of db.cursor('SELECT * FROM logs')) — poora result set memory mein nahi load hota. Ek ek row process karo aur GC ko collect karne do. Large dataset processing mein essential."
+          realWorldScenario="Database cursor — lazy rows fetch karo: for await (const row of db.cursor('SELECT * FROM logs')) — poora result set memory mein nahi load hota! 10 million rows bhi process ho sakti hain limited memory mein. Ek ek row process karo aur GC ko collect karne do. Elasticsearch scroll API, MongoDB cursor — sab async iterables se elegantly handle hote hain."
           commonMistakes={[
             {
               mistake: 'Iterator aur Iterable confuse karna',
@@ -195,8 +198,17 @@ for await (const n of asyncRange(1, 5)) {
               fix: 'Infinite iterators ke saath hamesha for...of + break ya limit implement karo.',
             },
           ]}
-          proTip="Array destructuring ke saath custom iterables powerful hain: const [first, second] = myCustomIterable. Generator functions sabse easy way hai iterables banane ka — Symbol.iterator manually implement karne ki zaroorat nahi. Async generators se stream processing elegant ho jaati hai."
+          proTip="Generator functions sabse easy way hai iterables banane ka — Symbol.iterator manually implement karne ki zaroorat nahi! function* range() already iterable return karta hai. Destructuring ka ek fun use: const [first, , third] = myCustomIterable — sirf pehla aur teesra lo! Async generators se stream processing elegant ho jaati hai — file line by line padhna, API pages iterate karna."
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.25)' }}
+      >
+        <p className="text-sm text-[#FCD34D] font-medium">
+          💡 Akshay ka insight: Generator functions JavaScript ki most mind-bending feature hain! Function pause ho sakti hai — ye concept pehle confusing lagta hai. Ek baar simpleGen example trace karo line by line — phir sab clear ho jaayega.
+        </p>
       </div>
 
       <div id="generators">
@@ -204,14 +216,14 @@ for await (const n of asyncRange(1, 5)) {
           title="Generators — Pauseable Functions"
           emoji="⏸️"
           difficulty="advanced"
-          whatIsIt="Generator functions function* keyword se define hoti hain. yield se values produce karo — execution pause hoti hai. next() se resume karo. Infinite sequences, lazy evaluation, coroutines — generators se possible. Redux-Saga generators use karta hai async flows manage karne ke liye."
+          whatIsIt="Ek shocking output: simpleGen() call karo — kuch nahi hota! Log bhi nahi! kyun? Generator functions execute nahi hoti jab call karo — ek iterator return karti hain. Pehla gen.next() call karo tab 'Before first yield' print hoga aur yield 1 pe ruk jaayegi. Doosra gen.next() — resume, 'After first yield' print, yield 2 pe ruk. Ye hai function* aur yield ka magic! Redux-Saga generators use karta hai async flows manage karne ke liye — ek powerful concept."
           whenToUse={[
             'Lazy infinite sequences — IDs, timestamps, pagination',
             'Step-by-step async flows — Redux Saga style',
             'Cooperative multitasking — yield se control yield karo',
             'Infinite scrolling — generate next page on demand',
           ]}
-          whyUseIt="Generators state machine implement karte hain elegantly. Infinite sequence create karo without infinite loop — pull-based values. Redux Saga generators se complex async flows readable sequential code mein likhte hain. Memory efficient — sirf current value memory mein."
+          whyUseIt="Generators state machine implement karte hain elegantly. Infinite sequence create karo without infinite loop freezing — pull-based: sirf jab maango tab generate karo. idGenerator() — infinite IDs lazily generate karta hai. Fibonacci — infinite sequence, sirf jitna chahiye utna nikalo! Memory efficient — sirf current value memory mein, poori sequence nahi. Redux Saga generators se complex async flows (cancel, race, retry) readable sequential code mein likhte hain."
           howToUse={{
             filename: 'generators.js',
             language: 'javascript',
@@ -311,9 +323,9 @@ async function* paginate(url) {
 for await (const user of paginate('/api/users')) {
   await processUser(user)
 }`,
-            explanation: 'function* aur yield se pauseable execution. Infinite sequences — while(true) + yield — lazy, no memory issue. Generator composition se lazy pipelines bano — map, filter, take without creating intermediate arrays. Async generators se pagination seamless hai.',
+            explanation: 'Under the hood trace karo idGenerator: ids.next() call hota hai — generator resume hoti hai while(true) mein entry. id = 1. yield "USR-000001" — pause! ids.next() fir call — resume. id = 2. yield "USR-000002" — pause. Infinite loop hai lekin crash nahi — kyunki har yield pe pause hoti hai, next() call hone tak. Generator composition ka magic: map(fibonacci(), x =&gt; x*2) — ek generator dusre ko lazily wrap karta hai. Koi intermediate array nahi!',
           }}
-          realWorldScenario="Large CSV file process karna Node.js mein: async generator se ek ek line yield karo. Memory mein poora file nahi — sirf current line. 10GB CSV file bhi process ho sakti hai limited memory mein. Transform, filter karo lazily — disk pe bhi write karo on-the-fly."
+          realWorldScenario="Large CSV file process karna Node.js mein: async generator se ek ek line yield karo. Memory mein poora file nahi — sirf current line! 10GB CSV file bhi process ho sakti hai 50MB RAM mein. Transform, filter karo lazily — disk pe bhi write karo on-the-fly. Data pipeline — generator chain banao — CSV read → parse → filter → transform → write. Elegant aur memory-efficient!"
           commonMistakes={[
             {
               mistake: 'Generator return value expect karna for...of mein',
@@ -326,8 +338,17 @@ for await (const user of paginate('/api/users')) {
               fix: 'Naya generator instance banao: const gen = myGenerator(). Iterator factory pattern use karo.',
             },
           ]}
-          proTip="yield* doosre iterable ko delegate karta hai: yield* otherGenerator(). Nested generators compose karne ke liye. Generator.prototype.return() generator prematurely close karta hai — for...of mein break. Redux Saga generators se complex async workflows manage karta hai — race conditions, cancellation sab."
+          proTip="yield* ek powerful shortcut hai — doosre iterable ko delegate karo: yield* otherGenerator(). Nested generators compose karne ke liye. Generator.prototype.return() generator prematurely close karta hai — for...of mein break ye internally karta hai. Redux Saga ka tutorial zaroor padhna — wahan generators se async flows ka real-world use bahut clearly dikhta hai!"
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)' }}
+      >
+        <p className="text-sm text-[#6EE7B7] font-medium">
+          💡 Akshay ka insight: Proxy JavaScript ka bodyguard hai — object ke aage khada ho jaata hai, saari requests intercept karta hai. Vue 3 ki reactivity — Proxy. MobX — Proxy. Ye ek baar samjha toh reactive systems kaise kaam karte hain — raaz khul jaata hai!
+        </p>
       </div>
 
       <div id="proxy">
@@ -335,14 +356,14 @@ for await (const user of paginate('/api/users')) {
           title="Proxy — Object Operations Intercept Karo"
           emoji="🪞"
           difficulty="advanced"
-          whatIsIt="Proxy ek object wrap karta hai aur operations intercept karta hai — get, set, delete, has, apply (function calls), construct (new). Traps (handlers) define karo kya intercept karna hai. Validation, logging, reactivity (Vue 3!), memoization, sandboxing — Proxy se possible."
+          whatIsIt="Ek surprising demo: user.age = 'old' — JavaScript silently accept kar leta hai! Koi error nahi. Ab Proxy lagao — set trap mein type check karo — TypeError throw karo! Runtime validation bina class change kiye. Proxy ek object wrap karta hai aur operations intercept karta hai — get, set, delete, has, apply (function calls). Traps (handlers) define karo kya intercept karna hai. Vue 3 ki reactivity system entirely Proxy pe based hai — state.count++ karo toh set trap fire hota hai, component re-render hota hai!"
           whenToUse={[
             'Property access validate karna — type checking, range checking',
             'Reactive systems — property change pe notification — Vue 3 internals',
             'Logging — kaunsi property access hui, kab',
             'API mocking — test mein actual calls intercept karna',
           ]}
-          whyUseIt="Proxy AOP (Aspect-Oriented Programming) enable karta hai — cross-cutting concerns bina original object change kiye add karo. Vue 3 ki reactivity system entirely Proxy pe based hai. JavaScript sandboxing — unsafe code ke liye limited environment. Default values, validation — declarative approach."
+          whyUseIt="Proxy AOP (Aspect-Oriented Programming) enable karta hai — cross-cutting concerns bina original object change kiye add karo. Vue 2 Object.defineProperty use karta tha — arrays properly reactive nahi thi! Vue 3 Proxy use karta hai — sab kuch reactive. JavaScript sandboxing — unsafe code ke liye limited environment. Default values, validation — declarative approach. withLogging example dekhno — kisi bhi function ko wrap karo logging ke saath — original code ek character nahi badla!"
           howToUse={{
             filename: 'proxy.js',
             language: 'javascript',
@@ -430,9 +451,9 @@ function withLogging(fn) {
 
 const loggedFetch = withLogging(fetch)
 await loggedFetch('/api/data')  // Logged automatically!`,
-            explanation: 'Proxy handler traps define karta hai. Reflect.get/set use karo default behavior ke liye — agar kuch zyada karna ho sirf intercept karo. Vue 3 ki reactivity system Proxy use karta hai — dependencies automatically track hoti hain. withDefaults pattern fallback values elegant tarike se handle karta hai.',
+            explanation: 'Vue 3 reactivity trace karo: reactive(obj) call hota hai — Proxy banta hai. Component render hone pe state.count access hota hai — get trap fires — dependency track hoti hai (yahi dependency tracking hai!). state.count = 1 assign hota hai — set trap fires — onChange call hota hai — component re-render! Yehi hai reactivity ka core. withDefaults pattern: config.host access karo — get trap check karta hai obj mein hai kya? Nahi toh defaults se lo. Elegant!',
           }}
-          realWorldScenario="Testing mein API mock: const mockApi = new Proxy(realApi, { get(target, method) { return async (...args) => { logCall(method, args); return mockData[method]; } }}). Sab method calls logged aur real API call nahi hota. Integration tests ke liye."
+          realWorldScenario="Testing mein API mock: const mockApi = new Proxy(realApi, { get(target, method) { return async (...args) => { logCall(method, args); return mockData[method]; } }}). Sab method calls logged aur real API call nahi hota — bina koi specific mock likhne ke! Generic interceptor — koi bhi method mock ho jaata hai. Integration tests ke liye perfect."
           commonMistakes={[
             {
               mistake: 'Proxy traps mein Reflect na use karna',
@@ -445,8 +466,17 @@ await loggedFetch('/api/data')  // Logged automatically!`,
               fix: 'Profile pehle. Cache results, ya Proxy sirf non-hot paths mein. Vue 3 optimized compilation se Proxy overhead minimize karta hai.',
             },
           ]}
-          proTip="Proxy aur WeakMap milake private properties simulate karo: const _private = new WeakMap(); const obj = new Proxy({}, { get(t, k) { if (k === 'secret') return _private.get(t).secret; ... } }). Ye pattern true encapsulation deta hai — closure se better kyunki subclasses ke saath bhi kaam karta hai."
+          proTip="Important warning: Proxy performance-critical loops mein use mat karo — har property access trap se jaata hai, overhead hota hai. Hot paths mein profile karo pehle. Proxy aur WeakMap milake private properties simulate karo — true encapsulation deta hai. Vue 3 ke source code mein Proxy ke use dhundho — reactivity system samajhne ka best way hai!"
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.25)' }}
+      >
+        <p className="text-sm text-[#93C5FD] font-medium">
+          💡 Akshay ka insight: Reflect Proxy ka natural partner hai. Proxy trap mein agar sirf extra logic add karna hai aur default behavior preserve karna hai — Reflect.get(target, prop, receiver) use karo. target[prop] nahi — receiver ke saath getters properly kaam karte hain!
+        </p>
       </div>
 
       <div id="reflect">
@@ -454,14 +484,14 @@ await loggedFetch('/api/data')  // Logged automatically!`,
           title="Reflect — Meta-Programming API"
           emoji="🔮"
           difficulty="advanced"
-          whatIsIt="Reflect built-in object hai jo object operations ke liye functions provide karta hai — property get/set/delete, function calls, prototype operations. Proxy traps ke saath natural pair hai — trap mein Reflect.method() se default behavior delegate karo. Reflect.ownKeys() Symbol keys bhi include karta hai."
+          whatIsIt="Ye sunne mein simple lagta hai — Reflect sirf object operations ko functions ki tarah use karne deta hai. Lekin importance samjho: Proxy trap mein target[prop] use karo — getter pe receiver properly nahi pass hota! Edge case miss hota hai. Reflect.get(target, prop, receiver) use karo — bilkul correct. Reflect built-in object hai jo object operations ke liye functions provide karta hai — property get/set/delete, function calls, prototype operations. Reflect.ownKeys() Symbol keys bhi include karta hai — Object.keys() se complete!"
           whenToUse={[
             'Proxy traps mein default behavior delegate karna',
             'Object operations programmatically invoke karna',
             'Safer property access — no prototype pollution risk',
             'Object.defineProperty alternative — better ergonomics',
           ]}
-          whyUseIt="Reflect.get(obj, prop, receiver) — operator ke equivalent lekin function call ke roop mein. Proxy ke saath pair karna natural — each trap has a corresponding Reflect method. Reflect.has() — in operator equivalent. Reflect.ownKeys() — Object.getOwnPropertyNames() + Symbols."
+          whyUseIt="Reflect.get(obj, prop, receiver) — operator ke equivalent lekin function call ke roop mein — programmatic access! Proxy ke saath pair karna natural — each trap has a corresponding Reflect method. Rule: har Proxy trap mein corresponding Reflect method use karo default behavior ke liye. Reflect.ownKeys() — Object.getOwnPropertyNames() + Symbols — complete property list. Reflect.apply() — fn.call() ka functional version."
           howToUse={{
             filename: 'reflect.js',
             language: 'javascript',
@@ -530,9 +560,9 @@ const user = Reflect.construct(User, args)
 // With different prototype:
 const user2 = Reflect.construct(User, args, AdminUser)
 // instance of AdminUser, but User constructor ran`,
-            explanation: 'Reflect Proxy ke natural complement hai — each trap has matching Reflect method. receiver parameter getters/setters ke saath correctly kaam karta hai — target[prop] nahi. ownKeys symbols bhi deta hai. Reflect.apply function calls data-driven banata hai.',
+            explanation: 'Receiver ka importance: class A { get x() { return this._x } }. Proxy wrap karo — get trap mein target[prop] use karo. Getter mein this = target (proxy nahi!). Reflect.get(target, prop, receiver) mein this = receiver (proxy!) — getter chain properly work karta hai. Ye subtle lekin important hai. Reflect.ownKeys dekhno — name, age symbols bhi include karta hai. Object.keys sirf enumerable string keys deta hai — incomplete!',
           }}
-          realWorldScenario="Dependency injection container mein: Reflect.construct(ServiceClass, dependencies) — services dynamically instantiate karo. Reflect.ownKeys(prototype) se methods list karo — method decorators apply karo all methods pe automatically."
+          realWorldScenario="NestJS jaise frameworks DI container mein: Reflect.construct(ServiceClass, dependencies) — services dynamically instantiate karo. reflect-metadata ke saath: @Injectable() decorator metadata store karta hai, container Reflect.getMetadata se types read karta hai, Reflect.construct se instances banata hai. Angular bhi same pattern!"
           commonMistakes={[
             {
               mistake: 'Proxy trap mein target[prop] use karna Reflect.get ki jagah',
@@ -545,8 +575,17 @@ const user2 = Reflect.construct(User, args, AdminUser)
               fix: 'Reflect meta-programming ke liye hai — security ke liye proper patterns (class private fields, closures) use karo.',
             },
           ]}
-          proTip="TypeScript decorators under the hood Reflect.metadata use karte hain (reflect-metadata package). @Injectable, @Component decorators metadata store karte hain — DI container runtime pe metadata read karta hai. Angular, NestJS sab is pattern pe based hain. Stage 3 Decorator proposal built-in support la raha hai."
+          proTip="Rule 1: Proxy trap mein hamesha Reflect.method() use karo default behavior ke liye — target[prop] nahi. Rule 2: Reflect sirf meta-programming ke liye hai — security boundary nahi. TypeScript decorators under the hood Reflect.metadata use karte hain — @Injectable, @Component decorators metadata store karte hain. Stage 3 Decorator proposal built-in support la raha hai — exciting future hai!"
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)' }}
+      >
+        <p className="text-sm text-[#FCA5A5] font-medium">
+          💡 Akshay ka insight: styled-components ka syntax: const Button = styled.button`background: blue;` — ye koi magic nahi, tagged template literal hai! Ye samajhne ke baad styled-components, graphql-tag, sql templates — sab ka andar ka raaz pata chal jaata hai.
+        </p>
       </div>
 
       <div id="tagged-templates">
@@ -554,14 +593,14 @@ const user2 = Reflect.construct(User, args, AdminUser)
           title="Tagged Template Literals — Custom String Processing"
           emoji="🏷️"
           difficulty="advanced"
-          whatIsIt="Tagged templates template literal ke strings aur values ko function se process karne dete hain. tag\`Hello \${name}\` — tag function strings array aur values receive karta hai. SQL safe queries, CSS-in-JS (styled-components), i18n, HTML escaping — sab tagged templates se. Runtime mein template parts process karo."
+          whatIsIt="Pehle ek surprising output: sql`SELECT * FROM users WHERE id = ${userId}` — ye normal string concatenation nahi hai! sql function call ho raha hai with special arguments. tag`Hello ${name}!` — tag function ko milta hai: strings = ['Hello ', '!'], values = [name]. Alag! Tagged templates template literal ke strings aur values ko function se process karne dete hain. SQL injection prevent karo, XSS prevent karo, CSS-in-JS — sab tagged templates se possible!"
           whenToUse={[
             'SQL queries — injection-safe parameterized queries',
             'CSS-in-JS — styled-components exactly yahi karta hai',
             'HTML escaping — user content safely render karna',
             'i18n — localized strings with interpolation',
           ]}
-          whyUseIt="Tagged templates string construction ko type-safe aur feature-rich banate hain. SQL injection prevent karo — values automatically parameterize. styled-components CSS-in-JS syntax intuitive banata hai. i18n naturally fits — template parts translate karo, values as-is rakho. Powerful DSL (Domain Specific Language) banao JavaScript mein."
+          whyUseIt="SQL injection — ye web security ki sabse common vulnerability hai. Tagged sql template se values automatically parameterize ho jaate hain — `$1`, `$2` placeholders bante hain. Database driver safely escape karta hai. String concatenation se SQL inject karna impossible! styled-components mein CSS-in-JS — props-based dynamic styles naturally likhte hain. i18n naturally fits — template parts translate karo, values as-is rakho. Powerful DSL (Domain Specific Language) banao JavaScript mein!"
           howToUse={{
             filename: 'tagged-templates.js',
             language: 'javascript',
@@ -657,9 +696,9 @@ function i18n(key) {
 }
 
 i18n('greeting')\`\${'Rahul'}\${5}\`  // "Hello, Rahul! You have 5 messages." (en)`,
-            explanation: 'strings TemplateStringsArray hai — static parts. values interpolated values hain. Interleave karo strings aur values apni logic se. SQL parameterization injection prevent karta hai. HTML escaping XSS prevent karta hai. styled-components theming aur dynamic CSS isi se karta hai.',
+            explanation: 'Step by step trace karo sql tag: sql`SELECT WHERE id = ${userId}` — strings = ["SELECT WHERE id = ", ""], values = [userId]. reduce function: "SELECT WHERE id = " + "$1" + "" = "SELECT WHERE id = $1". values = [userId]. Database ko ye bhejo — database driver userId ko $1 position pe safely bind karta hai. Koi string interpolation nahi — injection impossible! HTML tag mein: values mein special chars replace hote hain — &lt; banta hai, script inject nahi ho sakta.',
           }}
-          realWorldScenario="Backend Node.js mein typed SQL queries: sql`SELECT * FROM users WHERE role = ${role} AND active = ${true}` — query.text aur query.values se pg/mysql safely execute karo. No string concatenation, no injection risk. slonik library exactly yahi karta hai."
+          realWorldScenario="Backend Node.js mein typed SQL queries: sql`SELECT * FROM users WHERE role = ${role} AND active = ${true}` — query.text aur query.values se pg/mysql safely execute karo. No string concatenation, no injection risk ever. slonik aur postgres.js libraries exactly yahi karte hain. Ek baar ye pattern adopt karo — SQL injection ki tension hamesha ke liye khatam!"
           commonMistakes={[
             {
               mistake: 'Tagged templates ko regular template literals samajhna',
@@ -672,7 +711,7 @@ i18n('greeting')\`\${'Rahul'}\${5}\`  // "Hello, Rahul! You have 5 messages." (e
               fix: 'sql tag function se values ko params array mein separately rakho — database driver parameterized queries use kare.',
             },
           ]}
-          proTip="strings.raw tagged template hai — no escape processing: String.raw\`C:\\Users\\path\` — Windows paths bina double backslash. regex tagged template literals compile-time regex validation ke liye use hote hain. gql tag — GraphQL queries type-safe banata hai (graphql-tag). i18n libraries tagged templates use karti hain."
+          proTip="String.raw built-in tag hai — String.raw`C:\\Users\\path` — backslash double nahi karna padta, Windows paths easy! gql tag — GraphQL queries type-safe banata hai (graphql-tag), IDE syntax highlighting bhi milti hai. i18n libraries tagged templates use karti hain — ek baar explore karo ke styled-components ka source code — tagged templates samajhne ka best way!"
         />
       </div>
 

@@ -180,30 +180,41 @@ export default function JSChapter1Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3">
-          JavaScript — duniya ki sabse popular language
+          Ek minute ruko — JavaScript sirf ek language nahi hai
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          JavaScript — duniya ki sabse popular programming language. Browser, server, mobile, desktop — sab jagah. Kaise hua ye? Aur actually kaam kaise karta hai? Let&apos;s go bhai.
+          JavaScript kya hai, ye sirf ek programming language nahi hai. Ye ek <strong className="text-[#F5F5F7]">specification</strong> hai — ECMAScript. Jo browser implement karta hai woh JavaScript hai. V8 (Chrome), SpiderMonkey (Firefox) — ye actual implementations hain. Toh jab tum JS likhte ho, actually kisi specific implementation mein likh rahe ho!
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum JS ki history samjhenge, V8 engine ko samjhenge, browser aur Node.js ka fark dekhenge, aur samjhenge ki single-threaded JS itna powerful kyun hai. Ye sab samajhna zaroori hai — baad ke chapters mein ye foundation kaam aayega.
+          Aur yahan shocking baat ye hai — <strong className="text-[#F5F5F7]">console.log JavaScript ka part hi nahi hai!</strong> Ye browser aur Node.js deta hai, language nahi. Is chapter mein hum JS ki asli kahani samjhenge — history, V8 engine, browser vs Node, aur single-threaded hone ka matlab. Ye sab foundation hai — bina iske aage badhoge toh concepts hawa mein rahenge.
+        </p>
+      </div>
+
+      {/* Akshay-style Insight Box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}
+      >
+        <p className="text-sm font-bold text-[#F59E0B] mb-1">Namaste JavaScript — Akshay Style Insight</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ab sawaal ye aata hai</strong> — agar JavaScript ek specification hai, toh kya V8 aur SpiderMonkey alag alag JS run karte hain? Technically haan — lekin ECMAScript standard ensure karta hai ki behavior consistent rahe. Yahi wajah hai ki tumhara code Chrome mein bhi kaam karta hai aur Firefox mein bhi. Standard ki power!
         </p>
       </div>
 
       {/* ConceptCard 1: History */}
       <div id="js-history">
         <ConceptCard
-          title="JavaScript Ki Kahani"
+          title="JavaScript Ki Kahani — 10 Din Ka Miracle"
           emoji="📜"
           difficulty="beginner"
-          whatIsIt="1995 mein Brendan Eich ne sirf 10 din mein JavaScript banaya — Netscape browser ke liye. Tabse ye language itni evolve hui hai ki aaj agar Brendan dekhe toh khud recognize na kare! Original naam tha Mocha, phir LiveScript, phir JavaScript. Java ke saath koi relation nahi — sirf marketing tha uss waqt Java ka hype dekh ke."
+          whatIsIt="1995 mein Brendan Eich ne sirf 10 din mein JavaScript banaya — Netscape browser ke liye. Socho bhai, 10 din! Tabse ye language itni evolve hui hai ki aaj agar Brendan dekhe toh khud recognize na kare! Original naam tha Mocha, phir LiveScript, phir JavaScript. Java ke saath koi relation nahi — sirf marketing tha uss waqt Java ka hype dekh ke. 'Java is to JavaScript as Car is to Carpet' — yaad rakho yeh phrase!"
           whenToUse={[
             'Jab JS ke design decisions samajhni hon — kyun kuch cheezein "weird" lagti hain',
             'Jab ES versions ka context samajhna ho (ES5 vs ES6 vs ES2022)',
             'Jab legacy code dekhte ho aur samajhna ho ye purani style kyun thi',
             'Interviews mein — JS history ek common topic hai',
           ]}
-          whyUseIt="JS ki history samajhne se uski quirks samajh mein aati hain. Kyun var hoisting hoti hai? Kyun type coercion ajeeb hai? Kyun prototypes classes se pehle aaye? Sab history mein answer hai. Language ke decisions backward compatibility aur speed of creation se aaye — 10 din mein banaya tha!"
+          whyUseIt="Bhai, JS ki history samajhna isliye zaroori hai kyunki uski saari quirks wahan se aati hain. Kyun var hoisting hoti hai? Kyun type coercion ajeeb hai? Kyun prototypes classes se pehle aaye? Sab history mein answer hai. Language ke decisions backward compatibility aur speed of creation se aaye — 10 din mein banaya tha! Ye magic nahi, ye history hai."
           howToUse={{
             filename: 'js-history.js',
             language: 'javascript',
@@ -239,7 +250,7 @@ const name = user?.profile?.name ?? 'Anonymous' // Optional chaining + nullish c
 console.log(typeof globalThis) // 'object' — ES2020 mein aaya`,
             explanation: 'JavaScript har saal evolve hoti hai. TC39 committee proposals review karti hai aur accepted features next ES version mein jaati hain. "Stage 4" proposals almost guaranteed hote hain. MDN pe compatibility tables dekhte rehna zaroori hai.',
           }}
-          realWorldScenario="Aaj React, Angular, Vue, Node.js, React Native, Electron — sab JS pe chalte hain. Ek language, everywhere. JavaScript ne khud ko browser se bahar nikala aur ab practically har computing environment mein hai. Brendan Eich ne sochा bhi na hoga 10-din ke kaam ka ye anjaam hoga!"
+          realWorldScenario="Aaj React, Angular, Vue, Node.js, React Native, Electron — sab JS pe chalte hain. Ek language, everywhere. JavaScript ne khud ko browser se bahar nikala aur ab practically har computing environment mein hai. Brendan Eich ne 10-din mein banaya tha — aur aaj duniya ki sabse zyada use hone wali language hai. Ek baar isko seedha samjho, phir sab cheez slot in hoti jaayegi!"
           commonMistakes={[
             {
               mistake: 'Ye sochna ki JavaScript aur Java related hain',
@@ -252,24 +263,35 @@ console.log(typeof globalThis) // 'object' — ES2020 mein aaya`,
               fix: 'Hamesha modern JS likho. Babel ya TypeScript transpile kar deta hai legacy environments ke liye automatically.',
             },
           ]}
-          proTip="ECMAScript (ES) official standard hai. 'ES6' = ECMAScript 2015 — ek major update tha. TC39 committee har saal naye features add karta hai. tc39.es pe sab proposals track kar sakte ho — Stage 1 se 4 tak. Stage 4 = browser mein aa gaya!"
+          proTip="ECMAScript (ES) official standard hai. 'ES6' = ECMAScript 2015 — ek major update tha. TC39 committee har saal naye features add karta hai. tc39.es pe sab proposals track kar sakte ho — Stage 1 se 4 tak. Stage 4 = browser mein aa gaya! Har saal JS better hoti ja rahi hai — exciting time hai seekhne ka!"
         />
+      </div>
+
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#10B981] mb-1">Under the Hood — Socho Yaar</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ab sawaal ye aata hai</strong> — agar dono Chrome aur Node.js same V8 engine use karte hain, toh fark kya hai? Fark <em>environment</em> ka hai — browser mein window aur DOM hote hain, Node mein process aur fs hote hain. Engine same, powers alag. Isliye ek developer jaise full-stack JS likhta hai — same language, alag superpower!
+        </p>
       </div>
 
       {/* ConceptCard 2: Browser vs Node */}
       <div id="browser-vs-node">
         <ConceptCard
-          title="Browser JS vs Node.js"
+          title="Browser JS vs Node.js — Same Engine, Alag Duniya"
           emoji="🌐"
           difficulty="beginner"
-          whatIsIt="Browser mein JS DOM manipulate karta hai, events handle karta hai, user ke saath interact karta hai. Node.js mein JS files, networks, servers handle karta hai. Same language, alag environments, alag capabilities. Dono V8 use karte hain — but ek ke paas window hai, doosre ke paas process."
+          whatIsIt="Dekho yaar — browser mein JS DOM manipulate karta hai, events handle karta hai, user ke saath interact karta hai. Node.js mein JS files, networks, servers handle karta hai. Same language, alag environments, alag capabilities. Dono V8 use karte hain — but ek ke paas window hai, doosre ke paas process. Jab tum window.localStorage Node mein use karo — ReferenceError! Kyunki window hai hi nahi wahan. Ye confusion bohot common hai beginners mein."
           whenToUse={[
             'Jab decide karna ho ki UI code browser mein likhna hai ya server pe',
-            'Jab window is not defined error aaye — ye browser-only code hai',
-            'Jab localStorage use karna ho — browser only, Node mein nahi',
-            'Jab file system access chahiye — Node mein hai, browser mein nahi (mostly)',
+            'Jab "window is not defined" error aaye — ye browser-only code hai, Node pe nahi chalega',
+            'Jab localStorage use karna ho — browser only, Node mein nahi hota',
+            'Jab file system access chahiye — Node mein hai, browser mein nahi (security reasons)',
           ]}
-          whyUseIt="Ye fark samajhna essential hai full-stack development ke liye. Bahut baar developers browser code server pe try karte hain ya vice-versa — aur confusing errors aate hain. Ek baar environment ki limits clear ho jaayein toh debugging much easier ho jaata hai."
+          whyUseIt="Ye fark samajhna essential hai full-stack development ke liye. Bahut baar beginners browser code server pe try karte hain ya vice-versa — aur confusing errors aate hain. Ek baar environment ki limits clear ho jaayein toh debugging much easier ho jaata hai. Next.js mein 'use client' directive exactly isi wajah se exist karta hai!"
           howToUse={{
             filename: 'environment-check.js',
             language: 'javascript',
@@ -321,20 +343,31 @@ if (typeof globalThis.document !== 'undefined') {
         />
       </div>
 
+      {/* Akshay-style insight box before V8 */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#7C3AED] mb-1">Shock Karo Khud Ko — V8 Se Pehle</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">JavaScript interpreted hai ya compiled?</strong> Ye question interviews mein poochhte hain. Sach ye hai — <em>dono hain!</em> V8 pehle interpret karta hai (fast startup ke liye), phir frequently run hone wala code compile kar deta hai (speed ke liye). Ye JIT — Just-In-Time compilation hai. Na poora interpreted, na poora compiled — beech ki koi cheez!
+        </p>
+      </div>
+
       {/* ConceptCard 3: V8 Engine */}
       <div id="v8-engine">
         <ConceptCard
-          title="JS Kaise Run Hoti Hai? — V8 Engine"
+          title="V8 Engine — JS se Machine Code tak Ka Safar"
           emoji="⚙️"
           difficulty="beginner"
-          whatIsIt="V8 Google ka JavaScript engine hai — Chrome aur Node.js dono use karte hain. Ye JS code ko machine code mein convert karta hai. JIT (Just-In-Time) compilation use karta hai — matlab pehle interpret karta hai, phir 'hot' code compile kar deta hai. Ye wajah hai ki JS ek interpreted language hone ke bawajood itni fast hai."
+          whatIsIt="V8 Google ka JavaScript engine hai — Chrome aur Node.js dono use karte hain. Ye JS code ko machine code mein convert karta hai. JIT (Just-In-Time) compilation use karta hai — matlab pehle bytecode banata hai (Ignition), phir 'hot' code ko native machine code mein compile kar deta hai (Turbofan). Ye wajah hai ki JS ek interpreted language hone ke bawajood itni fast hai. Hoisting magic nahi, V8 ka kaam hai — science hai, magic nahi!"
           whenToUse={[
-            'Performance bottlenecks understand karne ke liye',
-            'Memory management debug karne ke liye',
-            'Hot code optimization kaise hoti hai ye samajhne ke liye',
-            'Node.js flags use karne ke liye advanced debugging mein',
+            'Performance bottlenecks understand karne ke liye — kahan slow hai code?',
+            'Memory management debug karne ke liye — kahan leak ho raha hai?',
+            'Hot code optimization kaise hoti hai ye samajhne ke liye — kya optimize karna chahiye?',
+            'Node.js flags use karne ke liye advanced debugging mein — profiling, heap snapshots',
           ]}
-          whyUseIt="V8 ki internals samajhne se tum better code likh sakte ho. Jaise — V8 object shapes (hidden classes) track karta hai. Agar tum runtime mein object properties add ya delete karo, V8 ko re-optimize karna padta hai. Consistent object shapes = faster code. Ye sirf V8 samajh ke pata chalta hai."
+          whyUseIt="V8 ki internals samajhne se tum better code likh sakte ho — performance-aware programming. Jaise — V8 object shapes (hidden classes) track karta hai. Agar tum runtime mein object properties add ya delete karo, V8 ko re-optimize karna padta hai. Consistent object shapes = faster code. Ye sirf V8 samajh ke pata chalta hai. Ye science hai, magic nahi!"
           howToUse={{
             filename: 'v8-demo.js',
             language: 'javascript',
@@ -387,20 +420,38 @@ console.log(\`Memory used: \${Math.round((memAfter - memBefore) / 1024 / 1024)} 
         />
       </div>
 
+      {/* Akshay-style insight box before Single-Threaded */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}
+      >
+        <p className="text-sm font-bold text-[#F59E0B] mb-1">Ye Output Kya Aayega? — Shock Hoge!</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed mb-2">
+          Yaar, ye code dekho aur guess karo output kya aayega:
+        </p>
+        <pre className="text-xs text-[#06B6D4] bg-[rgba(0,0,0,0.3)] rounded p-2 mb-2">{`console.log('1')
+setTimeout(() => console.log('2'), 0)
+Promise.resolve().then(() => console.log('3'))
+console.log('4')`}</pre>
+        <p className="text-sm text-[#A1A1AA]">
+          Output: <strong className="text-[#10B981]">1, 4, 3, 2</strong> — hairan ho? Ye event loop ka kaam hai. setTimeout 0ms delay ke bawajood Promise se baad chalta hai! Isliye single-threaded samajhna zaroori hai.
+        </p>
+      </div>
+
       {/* ConceptCard 4: Single-Threaded */}
       <div id="single-thread">
         <ConceptCard
-          title="Single-Threaded JavaScript"
+          title="Single-Threaded JavaScript — Ek Thread, Poori Duniya"
           emoji="🔄"
           difficulty="beginner"
-          whatIsIt="JavaScript ek single main thread par run karta hai. Matlab ek time mein ek kaam. Phir bhi async operations possible hain — event loop ki wajah se. Call stack mein current sync code hota hai, Web APIs/Node APIs async work karte hain background mein, aur callback queue mein complete hue callbacks wait karte hain. Event loop ye sab orchestrate karta hai."
+          whatIsIt="JavaScript ek single main thread par run karta hai — matlab ek time mein sirf ek kaam. Phir bhi async operations possible hain — event loop ki wajah se. Socho ek bada dabba — Call Stack (current code), Web APIs (async work background mein), Callback Queue (completed callbacks waiting). Event loop ek watchman ki tarah hai — dekhta rehta hai, jab Call Stack khali ho, queue se kaam utha leta hai."
           whenToUse={[
-            'Jab async code ka order confuse kare tab event loop yaad aao',
-            'Jab CPU-heavy task server ko slow kar de — Worker Threads solution hai',
+            'Jab async code ka order confuse kare — tab event loop yaad karo, order clear ho jaayega',
+            'Jab CPU-heavy task server ko slow kare — Worker Threads solution hai',
             'Jab setTimeout(fn, 0) immediately nahi chalta — event loop explain karta hai kyun',
-            'Real-time applications design karte waqt — concurrency model clear hona chahiye',
+            'Real-time applications design karte waqt — concurrency model crystal clear hona chahiye',
           ]}
-          whyUseIt="Single-threaded hone ke faayde hain: no race conditions, no deadlocks, no mutex locks — concurrent programming bahut simpler ho jaata hai. Nuksan: CPU-heavy tasks block karte hain. Solution: async I/O ke liye event loop, CPU tasks ke liye Worker Threads. Ye mental model Node.js master karne ke liye essential hai."
+          whyUseIt="Single-threaded hone ke faayde hain: no race conditions, no deadlocks, no mutex locks — concurrent programming bahut simpler ho jaata hai. Nuksan: CPU-heavy tasks block karte hain main thread ko. Solution: async I/O ke liye event loop, CPU tasks ke liye Worker Threads. Ye mental model Node.js master karne ke liye foundational hai — bina iske async code confusing lagega hamesha."
           howToUse={{
             filename: 'event-loop-basics.js',
             language: 'javascript',
@@ -469,17 +520,17 @@ if (isMainThread) {
       {/* ConceptCard 5: Setup */}
       <div id="setup">
         <ConceptCard
-          title="Tumhara JavaScript Environment Setup"
+          title="Apna JavaScript Battlestation Setup Karo"
           emoji="🛠️"
           difficulty="beginner"
-          whatIsIt="JS seekhne ke liye tumhare paas teen cheezein chahiye: ek editor (VS Code best hai), Node.js installed (nvm se install karo — version manage karna easy hoga), aur Chrome browser (DevTools ke saath). Ye sab free hain aur industry-standard hain."
+          whatIsIt="JS seekhne ke liye tumhare paas sirf teen cheezein chahiye — VS Code (editor), Node.js (nvm se install karo, direct download mat karo!), aur Chrome browser (DevTools ke saath). Bus! Ye sab free hain aur industry-standard hain. Ye tools set karo ek baar, phir life bhar kaam aate hain."
           whenToUse={[
-            'Naya computer setup karte waqt — pehle nvm, phir Node',
-            'Multiple projects ke liye different Node versions manage karne ke liye nvm use karo',
-            'Browser mein quick JS experiment ke liye Chrome DevTools Console',
-            'VS Code extensions se productivity 2x ho jaati hai',
+            'Naya computer setup karte waqt — pehle nvm install karo, phir Node',
+            'Multiple projects ke liye different Node versions manage karne ke liye — nvm use karo',
+            'Browser mein quick JS experiment ke liye — Chrome DevTools Console mein directly likhte hain',
+            'VS Code extensions se productivity 2x ho jaati hai — ESLint, Prettier zaroori hain',
           ]}
-          whyUseIt="Sahi tools se learning 10x fast hoti hai. VS Code mein IntelliSense, error highlighting, aur Git integration built-in hai. nvm se Node versions switch karna easy hai. Chrome DevTools mein JS directly browser mein test kar sakte ho without any files."
+          whyUseIt="Sahi tools se learning 10x fast hoti hai — seriously. VS Code mein IntelliSense, error highlighting, aur Git integration built-in hai. nvm se Node versions switch karna ek command ka kaam hai — alag projects ko alag Node versions chahiye hote hain. Chrome DevTools mein JS directly browser mein test karo — fastest feedback loop!"
           howToUse={{
             filename: 'setup.sh',
             language: 'bash',
@@ -537,10 +588,10 @@ node hello.js
       <div id="chapter-quiz">
         <div className="mb-4">
           <h3 className="text-lg font-display font-bold text-[#F5F5F7] mb-1">
-            Chapter 1 Quiz — JS Basics Check
+            Chapter 1 Quiz — JavaScript Ka Asli Test
           </h3>
           <p className="text-sm text-[#71717A]">
-            Dekho yaar kitna samjha — 5 sawaal, 80%+ chahiye pass ke liye!
+            Ab sawaal ye aata hai — kitna genuinely samjha? 5 sawaal, 80%+ chahiye pass ke liye. Confidence se karo!
           </p>
         </div>
         <QuizSection questions={jsChapter1Quiz} chapterSlug="js-what-why" />

@@ -58,10 +58,10 @@ export default function TSChapter8Content() {
           TypeScript Modules & Declaration Files — Imports Ka Sahi Tarika
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          TypeScript modules ES Modules standard follow karte hain — lekin kuch TypeScript-specific additions hain. import type se runtime overhead zero karo. Declaration files (.d.ts) se JavaScript libraries TypeScript mein type-safe banate hain. @types packages community ka bada contribution hai — almost har popular library ke types available hain.
+          Ye sunke tumhe shock lagna chahiye — jab TypeScript compile hota hai, import type ki saari lines completely DELETE ho jaati hain JavaScript se. Compiler jaanta hai ye sirf type information hai, runtime pe koi zaroorat nahi. Isliye import type likhna sirf best practice nahi — ye ek architectural decision hai ki kya runtime pe exist karega aur kya nahi.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein modules, namespaces, .d.ts files, aur path aliases sab cover karenge — taaki aapka import game professional level ka ho jaaye.
+          Ab sawaal ye aata hai — JavaScript libraries jo TypeScript mein nahi likhi, unke types kahan se aate hain? .d.ts files. Ye ek alag file format hai sirf type declarations ke liye — koi executable code nahi. @types packages mein yahi hota hai. Is chapter mein hum ye poora ecosystem samjhenge — modules, declaration files, @types, aur path aliases.
         </p>
       </div>
 
@@ -70,14 +70,14 @@ export default function TSChapter8Content() {
           title="ES Modules in TypeScript — Import/Export Patterns"
           emoji="📦"
           difficulty="advanced"
-          whatIsIt="TypeScript ES Modules fully support karta hai — import/export syntax. Types export karne ke liye export type syntax hai. Re-exports, barrel files (index.ts), dynamic imports — sab TypeScript mein kaam karte hain. moduleResolution setting TypeScript ko batati hai modules kaise resolve kare — node, bundler, node16/nodenext options hain."
+          whatIsIt="TypeScript ES Modules ka poora support karta hai — named exports, default exports, re-exports, dynamic imports. Lekin TypeScript ka ek extra feature hai — export type. Ye sirf type information export karta hai, runtime pe woh export exist nahi karta. Barrel files (index.ts) se public API define karo — andar kya hai hide karo, bahar sirf select cheezein dikhao. moduleResolution setting TypeScript ko batati hai imports kaise resolve karo — bundler mode modern projects ke liye best hai."
           whenToUse={[
             'Har TypeScript file ek module hai — import/export use karo',
             'Public API barrel file (index.ts) se re-export karo',
             'Code splitting ke liye dynamic import() use karo',
             'Circular dependency avoid karne ke liye import type use karo',
           ]}
-          whyUseIt="ES Modules standard hai — future-proof. Named exports se tree-shaking better hoti hai. Barrel files se clean public API — internal implementation details hide hoti hain. Dynamic imports se code splitting aur lazy loading possible hai. TypeScript moduleResolution: bundler Next.js aur Vite ke saath best kaam karta hai."
+          whyUseIt="Named exports se tree-shaking better hoti hai — bundler exact kya use ho raha hai track kar sakta hai. Barrel files se team ke log andar ki structure nahi jaante — refactor karo andar, bahar ka API same rehta hai. Dynamic import se heavy libraries sirf tab load hoti hain jab zaroorat ho — initial bundle size chhota rehta hai. Ye sab WHY pehle — performance, maintainability, clean architecture."
           howToUse={{
             filename: 'modules.ts',
             language: 'typescript',
@@ -138,9 +138,9 @@ declare module 'express' {
     user?: { id: string; email: string }  // Custom property add
   }
 }`,
-            explanation: 'Named exports prefer karo — better tree-shaking. Barrel files se public API clean hoti hai. dynamic import() lazy loading ke liye — bundle size reduce hota hai. Module augmentation se third-party types extend kar sakte ho apni custom properties ke liye.',
+            explanation: 'Ab sawaal ye aata hai — module augmentation kya hai? declare module "express" se tum Express ke types extend kar rahe ho — req.user add kar rahe ho. Ye TypeScript compiler ko batata hai ki is module ka Request type ab user field bhi rakhta hai. Ye sirf types mein hota hai — runtime pe tum middleware mein actual user attach karte ho. Types aur runtime dono aligned rakhna zaroori hai.',
           }}
-          realWorldScenario="Large Next.js project mein components/ui/index.ts barrel file hai — 30 components export karta hai. Consumer sirf import { Button, Input, Modal } from '@/components/ui' likhta hai — which file se aata hai yeh concern nahi. Internal refactoring bhi safe hai — public API same rehti hai."
+          realWorldScenario="Large Next.js project mein components/ui/index.ts barrel file banao — 30 components sab wahan se export. Dusre developers sirf import { Button, Input, Modal } from '@/components/ui' likhte hain. Tum andar folder restructure karo, files rename karo — bahar ka code nahi toota. Ye encapsulation ka sahi use hai. Module augmentation use karo Express mein req.user ke liye — middleware attach karta hai, TypeScript types mein declare karo."
           commonMistakes={[
             {
               mistake: 'Default export har jagah use karna',
@@ -153,7 +153,7 @@ declare module 'express' {
               fix: 'Shared types/interfaces alag file mein nikalo. import type se type-only circular imports sometimes OK hain.',
             },
           ]}
-          proTip="moduleResolution: bundler (TypeScript 5.0+) use karo Next.js aur Vite projects mein — extensionless imports aur path aliases correctly resolve honge. node16/nodenext pure Node.js projects ke liye. bundler modern bundlers ke behavior match karta hai — best DX milti hai."
+          proTip="moduleResolution: bundler TypeScript 5.0 ka naya mode hai — Vite, Next.js, webpack ke behavior ko match karta hai. Extensionless imports kaam karte hain, path aliases sahi resolve hote hain. node16/nodenext use karo sirf jab pure Node.js ESM project ho. Zyataar modern projects ke liye bundler mode best developer experience deta hai."
         />
       </div>
 
@@ -162,14 +162,14 @@ declare module 'express' {
           title="import type — Only Import Types"
           emoji="🔍"
           difficulty="advanced"
-          whatIsIt="import type TypeScript 3.8 mein aaya — sirf type information import karta hai, values nahi. Compiled JavaScript mein completely erase ho jaata hai — zero runtime overhead. Verbatim module syntax (TypeScript 5.0+) enforce karta hai — agar sirf type use karo toh import type required."
+          whatIsIt="Ye shocking fact hai — import type ki line compiled JavaScript mein exist hi nahi karta. TypeScript 3.8 mein aaya ye feature. Jab tum sirf type annotation mein koi value use karte ho — interface, type alias — toh import type likhna chahiye. Compiler guarantee karta hai ki ye line delete ho jaayegi. Verbatim module syntax (TypeScript 5.0+) toh aur strict hai — type-only import karo aur import ki jagah import type nahi likha? Compile error."
           whenToUse={[
             'Interfaces aur type aliases import karne ke liye — hamesha import type use karo',
             'Circular dependency avoid karne ke liye — type-only imports safe hain',
             'Bundle size minimize karne ke liye — re-exports',
             'isolatedModules: true ke saath — import type required',
           ]}
-          whyUseIt="import type guaranteed zero runtime output — compiled JS mein line completely missing. Circular imports mein safe — type information module load hone se pehle available hai. Bundle analyzer mein saaf dikh ta hai — types alag, values alag. isolatedModules: true ke saath (Vite/esbuild/SWC) import type required hai type-only imports ke liye."
+          whyUseIt="Ab sawaal ye aata hai — sirf type import hai toh fark kya padta hai? Bahut fark padta hai! Vite aur esbuild single-file transpile karte hain — unhe nahi pata type hai ya value. Agar import type nahi likha toh woh value samjh ke include kar lete hain — bundle size badh sakta hai, circular dependency issues ho sakte hain. import type likh do — bundler ko pata hai ye erase karni hai. Clarity for humans, instruction for machines."
           howToUse={{
             filename: 'import-type.ts',
             language: 'typescript',
@@ -226,9 +226,9 @@ const handler: RequestHandler = (req, res) => {
   res.json({ ok: true })
 }
 // RequestHandler sirf type annotation mein use hua — import type perfect`,
-            explanation: 'import type zero runtime cost hai. isolatedModules: true se bundlers (Vite, SWC, esbuild) single-file transpile karte hain — bina full type checking ke. In cases mein import type required hai warna bundler type-only exports ko value samajh ke error deta hai.',
+            explanation: 'isolatedModules: true ka matlab — TypeScript ek file ko baaki sab se independent compile karta hai. Toh woh nahi jaanta koi import value hai ya type. Isliye import type zaroori ho jaata hai — bundler ya transpiler clearly samjhe ki ye erase karna hai. Vite projects mein ye automatically true hota hai. verbatimModuleSyntax: true aur bhi strict hai — ye enforce karta hai har type import pe import type likho.',
           }}
-          realWorldScenario="Vite ya Next.js project mein isolatedModules automatically true hota hai. Agar tum import { User } from './types' likhate ho aur User sirf interface hai — Vite error dega. import type { User } likhna force karta hai correct usage. Large teams mein consistency ke liye verbatimModuleSyntax: true enforce karo."
+          realWorldScenario="Team project mein ek developer import { User } from './types' likhta hai — User sirf interface hai. Local mein tsc kaam karta hai, lekin CI mein Vite build fail hoti hai. Reason: isolatedModules: true. Fix: import type { User }. Ye ek common gotcha hai. verbatimModuleSyntax: true tsconfig mein add karo — sab developers ko force karo correct imports likhne ke liye. CI failures zero."
           commonMistakes={[
             {
               mistake: 'import type se value (class, function) import karna',
@@ -241,7 +241,7 @@ const handler: RequestHandler = (req, res) => {
               fix: 'Const enum ya string literal union prefer karo. Regular enum ke liye regular import use karo.',
             },
           ]}
-          proTip="verbatimModuleSyntax: true tsconfig mein set karo (TypeScript 5.0+). Ye enforce karta hai ki type-only imports pe import type zaroor likho. Accidental runtime imports eliminate hote hain. File mein koi bhi import type se start karke type annotation mein aata hai — zero cost guaranteed."
+          proTip="verbatimModuleSyntax: true — ye TypeScript 5.0 ka recommended setting hai new projects ke liye. Set karo aur phir chhod do — compiler khud guide karega. Jab bhi type sirf annotation mein use ho aur tum import likhoge, error aayega. Ek baar ye habit ban gayi toh import type aur import ke beech confusion kabhi nahi hoga."
         />
       </div>
 
@@ -250,14 +250,14 @@ const handler: RequestHandler = (req, res) => {
           title="Declaration Files (.d.ts) — JS Libraries Ko Type Karo"
           emoji="📄"
           difficulty="advanced"
-          whatIsIt=".d.ts files pure type declarations hain — koi executable code nahi. JavaScript libraries ke liye TypeScript types describe karte hain. Jab tum import karte ho koi JS library, TypeScript .d.ts file dhundta hai types ke liye. tsc --declaration se automatically generate hote hain TypeScript source se."
+          whatIsIt=".d.ts files ek alag duniya hain — pure type declarations, koi executable code nahi. Socho ek blueprint jahan sirf structure hai, implementation nahi. Jab TypeScript import karta hai koi JavaScript library, toh woh .d.ts file dhundhta hai — kya hai is library mein? tsc --declaration flag se TypeScript khud generate karta hai tumhare source se .d.ts files. Npm package publish karo types ke saath — consumers ko @types install nahi karna padega."
           whenToUse={[
             'JavaScript library ke liye types likhna — @types packages nahi hain',
             'Global variables type karna — window.myLib, process.env',
             'Package publish karne ke liye — types field in package.json',
             'Ambient declarations — declare keyword se',
           ]}
-          whyUseIt=".d.ts files JavaScript world ko TypeScript world se connect karte hain. npm pe publish karo types ke saath — consumers ko @types install nahi karna. tsc --declaration se automatically generate hote hain — manually likhne ki zaroorat nahi zyada cases mein. Global augmentation — existing types extend karo."
+          whyUseIt="JavaScript aur TypeScript ke beech bridge hai .d.ts. Bina .d.ts ke — koi bhi old JS library import karo, TypeScript bolta hai 'any'. Aur any matlab type safety khatam. declare global se window object augment karo — window.analytics TypeScript-safe ho jaata hai. process.env typed karo — missing env variable pe compile error. Ye real production value hai — runtime surprises ko compile time pe pakadna."
           howToUse={{
             filename: 'declarations.d.ts',
             language: 'typescript',
@@ -327,9 +327,9 @@ export {}  // File ko module banane ke liye (global augmentation ke baad)
 // ── TRIPLE SLASH DIRECTIVES ────────────────────────────────────
 /// <reference types="node" />     // @types/node include karo
 /// <reference path="./other.d.ts" /> // Local .d.ts reference`,
-            explanation: 'declare module JS library ke types describe karta hai. declare global se window, process.env augment kar sakte ho. tsc --declaration automatic generation karta hai — manually likhne se better. package.json mein types field se consumers automatically types paate hain.',
+            explanation: 'Ab sawaal ye aata hai — declare module mein declare keyword kyu? Kyunki .d.ts mein koi implementation nahi hoti. declare bol raha hai "trust me TypeScript, ye exists hai at runtime." Bina declare ke TypeScript complaint karega. export {} at the end — ye file ko module banata hai, warna global script samjha jaata hai aur declare global kaam nahi karta. Ye ek common gotcha hai.',
           }}
-          realWorldScenario="Custom Webpack plugin likhte ho jo window.FEATURE_FLAGS inject karta hai build time pe. globals.d.ts mein declare: declare global { interface Window { FEATURE_FLAGS: { newUI: boolean; darkMode: boolean } } } — ab TypeScript window.FEATURE_FLAGS.newUI correctly type karta hai. Koi any nahi."
+          realWorldScenario="Webpack DefinePlugin se __APP_VERSION__ inject karo build time pe. Bina declaration ke — TypeScript bolta hai 'Cannot find name __APP_VERSION__'. globals.d.ts mein declare const __APP_VERSION__: string likho — done. Isi tarah window.FEATURE_FLAGS — Webpack inject karta hai runtime pe, TypeScript types declare karo .d.ts mein, aur window.FEATURE_FLAGS.darkMode type-safe ho jaata hai. No any, no TypeScript suppress karna."
           commonMistakes={[
             {
               mistake: '.d.ts mein implementation likhna',
@@ -342,7 +342,7 @@ export {}  // File ko module banane ke liye (global augmentation ke baad)
               fix: 'declare global { ... } ke baad export {} add karo file ko module banane ke liye.',
             },
           ]}
-          proTip="dtslint tool (Microsoft) .d.ts quality check karta hai. definitely typed contributor banna chahte ho? @types/lodash jaisi files dekho inspiration ke liye. Apni library ke liye publint + @arethetypeswrong/cli tools use karo — types correctly exported hain ya nahi verify karo."
+          proTip="Apni library npm pe publish karne wale hain? @arethetypeswrong/cli tool run karo — ye check karta hai ki tumhare .d.ts files correctly configured hain ya nahi. Package.json mein exports field mein bhi types specify karo modern bundlers ke liye. Ye ek common problem hai — types field hai lekin exports mein types nahi — modern bundlers miss kar jaate hain."
         />
       </div>
 
@@ -351,14 +351,14 @@ export {}  // File ko module banane ke liye (global augmentation ke baad)
           title="@types — Community Type Definitions"
           emoji="🌐"
           difficulty="advanced"
-          whatIsIt="DefinitelyTyped repository (@types npm scope) community-maintained TypeScript definitions hai JavaScript libraries ke liye. @types/node, @types/express, @types/lodash — sab yahan hain. devDependencies mein install karo — runtime pe zaroorat nahi. Modern libraries khud TypeScript mein likhi hain aur built-in types include karte hain."
+          whatIsIt="DefinitelyTyped — ye community ka ek massive project hai. 8000+ JavaScript libraries ke TypeScript type definitions yahan hain. @types/node, @types/express, @types/lodash — sab. Koi bhi contribute kar sakta hai. Lekin ek important baat — modern libraries jaise Prisma, Zod, tRPC, Fastify — ye khud TypeScript mein likhi hain, unhe @types ki zaroorat nahi. @types sirf wahan chahiye jahan library JS mein hai aur alag types maintain ho rahi hain."
           whenToUse={[
             '@types/node — Node.js built-ins: fs, path, process, http',
             '@types/express — Express.js Request, Response, NextFunction types',
             '@types/jest ya @types/mocha — Testing framework types',
             'Koi bhi old JS library jo natively types ship nahi karti',
           ]}
-          whyUseIt="@types packages devDependencies mein hain — production bundle mein nahi jaate. Community verify karta hai — quality generally good hai. TypeScript automatically inhe find karta hai — explicit import ki zaroorat nahi. Modern libraries (Prisma, tRPC, Zod) khud TypeScript mein likhi hain — @types ki zaroorat nahi."
+          whyUseIt="@types install karo aur TypeScript automatically pick up karta hai — koi explicit import nahi likhna. devDependencies mein rakho — production build mein nahi jaate, bundle size pe zero impact. Community review karta hai ye types — generally trustworthy hain. Lekin dependency alag maintain hoti hai — library update hoti hai lekin @types update nahi hua toh mismatch ho sakta hai. Hamesha major version match karo."
           howToUse={{
             filename: 'types-packages.ts',
             language: 'typescript',
@@ -417,9 +417,9 @@ const schema = z.object({ name: z.string() })
 // ── VERSION MATCHING ──────────────────────────────────────────
 // express@4.x ke liye @types/express@4.x install karo
 // Major version match karni chahiye generally`,
-            explanation: '@types packages devDependencies mein rakho — production mein jaate nahi. typeRoots aur types tsconfig options se granular control. Modern libraries ke liye @types zaroorat nahi — check karo pehle. Version mismatch se type errors aate hain — major version match karo.',
+            explanation: 'Ab sawaal ye aata hai — kaise pata chalega library khud types ship karti hai ya @types chahiye? Package.json mein "types" ya "typings" field dekho. Ya node_modules/library-name/index.d.ts dekho — agar hai toh @types ki zaroorat nahi. Dono install karo toh conflict ho sakta hai — duplicate type definitions, version mismatch. Pehle check karo, phir install karo.',
           }}
-          realWorldScenario="Node.js + Express API project: npm i -D @types/node @types/express. Ab process.env, req.body, res.status() sab typed. req.user? custom property ke liye module augmentation: declare module 'express-serve-static-core' { interface Request { user?: AuthUser } }. Full type safety without any."
+          realWorldScenario="Naya Express + TypeScript project shuru karo — npm i -D @types/node @types/express. Ab TypeScript jaanta hai fs.readFile kya return karta hai, req.body kya hai, res.status kya karta hai. Custom middleware mein req.user attach karo — declare module se Request type extend karo. Ek baar ye setup karo, poori team ko benefit milta hai — no any, no ts-ignore, proper intellisense everywhere."
           commonMistakes={[
             {
               mistake: '@types ko dependencies mein dalna (devDependencies ki jagah)',
@@ -432,7 +432,7 @@ const schema = z.object({ name: z.string() })
               fix: 'Pehle check karo: package.json mein types/typings field hai? Hai toh @types zaroorat nahi.',
             },
           ]}
-          proTip="TypeScript 5.5 mein aisa pattern kaam karta hai: npx typesync — package.json padta hai aur automatically @types packages add karta hai jo missing hain. CI mein run karo ensure karne ke liye koi type package miss na ho. are-the-types-wrong (arethetypeswrong.com) tool check karta hai @types quality."
+          proTip="npx typesync tool run karo — ye tumhara package.json padta hai aur automatically missing @types packages add karta hai. New developer join karo project mein, package.json clone karo, typesync run karo — sab types automatically set. CI pipeline mein bhi add karo ensure karne ke liye koi type package miss na ho. Simple tool, big time saver."
         />
       </div>
 

@@ -64,13 +64,13 @@ export default function TSChapter2Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Basic Types — TypeScript Ka Type System Samjho
+          Basic Types — Aur Ek Baat: any Use Karna = TypeScript Ko Off Karna
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          TypeScript ka type system bahut rich aur expressive hai. Primitive types (string, number, boolean) se lekar special types (any, unknown, never, void) tak — har cheez ka apna use case hai. Is chapter mein hum TypeScript ke sab important types cover karenge: primitive types, arrays, tuples, enums, aur woh special types jo TypeScript ko itna powerful banate hain.
+          TypeScript ka type system sirf string, number, boolean nahi hai — ye ek poora duniya hai. Aur is duniya mein <span className="text-[#3178C6] font-semibold">any</span> ek gaali hai. Seriously. any use karna matlab TypeScript ko bol raha ho: <em>"bhai, chhod de — mujhe pata hai main kya kar raha hoon."</em> Aur TypeScript maan jaata hai. Type safety zero. Bugs free to roam.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Ek important cheez: TypeScript bahut smart inference karta hai — har jagah type likhna zaroorat nahi. Jahan inference fail ho ya clarity chahiye wahan explicit types likho.
+          Is chapter mein ek important realization hogi: TypeScript inference bahut smart hai — har jagah type likhna zaroorat nahi hoti. Simple variables mein inference pe rely karo, functions mein explicit likho. Aur jab bahar se data aaye — API response, user input — toh <strong className="text-[#F5F5F7]">unknown</strong> use karo, any nahi. Kyun? Woh aage samjhenge.
         </p>
       </div>
 
@@ -79,14 +79,14 @@ export default function TSChapter2Content() {
           title="Primitive Types — string, number, boolean"
           emoji="🔤"
           difficulty="beginner"
-          whatIsIt="TypeScript ke core primitive types hain: string (text values), number (integers aur decimals dono — JavaScript sirf ek number type rakhta hai), boolean (true/false), null (intentionally empty), aur undefined (value assign nahi hui). Type inference se TypeScript aksar automatically type figure out kar leta hai — explicit annotation har jagah zaroorat nahi."
+          whatIsIt="Under the hood samajhte hain — TypeScript ke core primitive types: string (text values), number (integers aur decimals dono — JavaScript mein sirf ek number type hai, no int/float), boolean (true/false), null (intentionally khaali), undefined (value assign nahi hui). Interesting fact: TypeScript compiler in types ko compile time pe check karta hai aur phir JavaScript generate karte waqt ERASE kar deta hai. Runtime pe sirf plain JS chalta hai — types exist nahi karte."
           whenToUse={[
             'Function parameters — hamesha annotate karo',
             'Function return types — clarity ke liye',
             'Variables jahan inference wrong ya ambiguous ho',
             'Class properties — hamesha declare karo',
           ]}
-          whyUseIt="Primitive types se code self-documenting ho jaata hai. function add(a: number, b: number): number likhte hi documentation ready. Caller galat type pass kare toh compile error. IDE autocomplete bhi better kaam karta hai — string methods suggest hote hain string pe, number methods number pe."
+          whyUseIt="Ek real sawaal: function add(a, b) — IDE mein a pe kya methods dikhenge? Kuch nahi. Koi guarantee nahi a number hai. Ab function add(a: number, b: number): number — IDE pe a. type karo, number ke saare methods dikhenge: toFixed, toString, toPrecision. Code likhne ki speed 2x ho jaati hai. Aur galat type pass karo — compile time error, not runtime crash."
           howToUse={{
             filename: 'primitive-types.ts',
             language: 'typescript',
@@ -145,9 +145,9 @@ const user = findUser('123')  // string | null
 if (user !== null) {
   user.toUpperCase()           // ✅ Safe — narrowed to string
 }`,
-            explanation: 'Type inference use karo simple variables mein — let city = "Mumbai" pe string annotation redundant hai. Function parameters aur return types mein explicit annotation likho — yahan inference help nahi karta. null | string union se force karo caller null check kare.',
+            explanation: 'Inference vs explicit — ek simple rule: let city = "Mumbai" pe string annotation mat likho, TypeScript already jaanta hai. But function parameters pe hamesha likho — yahan TypeScript guess nahi kar sakta. Aur dekho: findUser function string | null return karta hai — caller ko force karo null check karo pehle. Ye TypeScript ka sabse powerful feature hai.',
           }}
-          realWorldScenario="Form validation function: function validateEmail(email: string): boolean. Caller ko pata hai string pass karna hai aur boolean milega. Agar number pass karne ki koshish karo toh compile error. Runtime pe no surprise — type contract clear hai."
+          realWorldScenario="Login form validation sochte hain: function validateEmail(email: string): boolean — caller ko ek hi contract samajhna hai: string do, boolean lo. Koi number pass karne ki koshish karo — IDE seedha red line dikhata hai. Yahi TypeScript ka kaam hai: contract enforce karna. Runtime pe surprise nahi, development mein hi sab clear."
           commonMistakes={[
             {
               mistake: 'let x: number = 42 — redundant annotation',
@@ -160,7 +160,7 @@ if (user !== null) {
               fix: 'Type annotations mein hamesha lowercase: string, number, boolean. Uppercase wale constructors hain.',
             },
           ]}
-          proTip="TypeScript mein template literal types bhi hain — string types precisely control karo: type Greeting = \`Hello, \${string}!\` — yahan koi bhi string interpolate ho sakti hai. Ya specific combinations: type EventName = \`on\${'Click' | 'Focus' | 'Blur'}\` — sirf 'onClick', 'onFocus', 'onBlur' valid honge."
+          proTip="Ek advanced trick — template literal types: type EventName = \`on\${'Click' | 'Focus' | 'Blur'}\` — sirf 'onClick', 'onFocus', 'onBlur' valid honge. Galat spell karo toh compile error. Ye TypeScript ka string-level type safety hai — bahut powerful, bahut underused. Explore karo."
         />
       </div>
 
@@ -169,14 +169,14 @@ if (user !== null) {
           title="Arrays & Tuples — Ordered Collections"
           emoji="📦"
           difficulty="beginner"
-          whatIsIt="Arrays same type ke multiple values store karte hain — string[], number[], CustomType[]. Tuples fixed-length arrays hain jahan har position ka type predetermined hota hai — [string, number] matlab index 0 hamesha string, index 1 hamesha number. Tuples se precise data shapes model karo."
+          whatIsIt="Arrays aur tuples dono ordered collections hain — lekin unka use case alag hai. Arrays same type ke multiple values ke liye — string[], number[]. Tuples fixed-length, fixed-order arrays hain — [string, number] matlab index 0 HAMESHA string, index 1 HAMESHA number. Aur interesting baat — React ka useState hook bhi ek tuple return karta hai: [value, setter]. Tum roz use karte ho tuples bina jaane."
           whenToUse={[
             'Arrays: Same type ki list — users, products, numbers',
             'Tuples: Fixed structure data — coordinates [x, y], key-value pairs [string, number]',
             'Tuples: Function se multiple values return karo — [data, error]',
             'Tuples: CSV rows, database records jahan positions fixed hain',
           ]}
-          whyUseIt="string[] se guarantee hai array mein sirf strings honge — koi number, object, null nahi. Tuple [string, number] se guarantee hai exactly do elements honge aur order correct hoga. React ke useState bhi tuple return karta hai — [value, setter]. TypeScript tuple mein destructuring pe bhi correct types milte hain."
+          whyUseIt="Sawaal: bina TypeScript ke array kya hoti hai? Any ka collection — kuch bhi andar aa sakta hai. string[] se TypeScript guarantee deta hai — sirf strings, koi number ghusta nahi, koi null nahi. Aur tuple [string, number] destructuring pe automatically correct types milte hain — const [name, age] = entry mein name: string aur age: number, TypeScript ne infer kar liya. Zero extra annotation."
           howToUse={{
             filename: 'arrays-tuples.ts',
             language: 'typescript',
@@ -251,9 +251,9 @@ if (error) {
 } else {
   console.log(result)  // number — type safe!
 }`,
-            explanation: 'string[] simplest array type. Tuples exact shape guarantee karte hain — [string, number] exactly 2 elements. Tuple destructuring pe TypeScript sahi types assign karta hai. Result<T> tuple pattern Go language se inspired hai — elegant error handling.',
+            explanation: 'Ek pattern note karo: Result<T> tuple — [T, null] | [null, Error]. Ye Go language se inspired hai. Koi function throw nahi karta, result tuple return karta hai. Caller ko force karo check karo — agar error hai toh handle karo, agar result hai toh use karo. TypeScript ensure karta hai dono cases cover hoon.',
           }}
-          realWorldScenario="React useState hook bhi tuple return karta hai: const [count, setCount] = useState<number>(0). count: number, setCount: Dispatch<SetStateAction<number>>. TypeScript automatically sahi types deta hai — count.toFixed() valid, setCount.toFixed() error. Tuples ka practical real-world use."
+          realWorldScenario="React useState hook ke andar dekho — const [count, setCount] = useState(0). count: number, setCount: Dispatch. TypeScript ne automatically infer kiya — count pe number methods valid hain, setCount pe nahi. Yahi hai tuples ka real-world use — aur tum daily use karte ho without knowing it."
           commonMistakes={[
             {
               mistake: 'Tuple mein push karna — tuple nahi raha phir',
@@ -266,7 +266,7 @@ if (error) {
               fix: 'Fixed structure ke liye tuple. Variable length collection ke liye array. Different use cases hain.',
             },
           ]}
-          proTip="Labeled tuple elements TypeScript 4.0+ mein: type Range = [start: number, end: number]. IDE mein hover karne pe start aur end labels dikhte hain — much better documentation. Function rest parameters bhi tuples se type ho sakte hain: function fn(...args: [string, number]) { }."
+          proTip="Labeled tuples TypeScript 4.0+ mein: type Range = [start: number, end: number]. IDE mein hover karo toh start aur end labels dikhte hain — anonymous [number, number] se zyada readable. Aur ek level upar: readonly [string, number] use karo agar tuple change nahi hona chahiye — accidental mutation compile time pe pakad jaata hai."
         />
       </div>
 
@@ -275,14 +275,14 @@ if (error) {
           title="Enums — Named Constants Organized"
           emoji="🏷️"
           difficulty="intermediate"
-          whatIsIt="Enum (enumeration) related named constants ka group hai. TypeScript mein 3 types: Numeric enum (default — 0, 1, 2...), String enum (explicit string values), aur Const enum (compile time mein inline ho jaate hain — no runtime object). Enums se magic numbers aur strings avoid karo — meaningful names use karo."
+          whatIsIt="Enum ka concept samajhne ke liye pehle problem samajhte hain: agar code mein if (status === 2) likha ho — ye 2 kya hai? Shipped? Cancelled? Koi nahi jaanta 6 mahine baad. Enum is magic number problem ko solve karta hai — if (status === OrderStatus.Shipped) zyada readable, zyada safe. TypeScript mein 3 types: Numeric (default — 0, 1, 2), String (explicit string values — prefer this), Const enum (compile time inline — fastest)."
           whenToUse={[
             'Fixed set of related values — directions, status codes, roles',
             'Switch statements ke liye — exhaustive checks ke saath',
             'API response status values',
             'Configuration options jo change nahi hote',
           ]}
-          whyUseIt="if (status === 2) ke bajaye if (status === OrderStatus.Shipped) zyada readable hai. Enum values IDEs mein autocomplete hoti hain. Rename karna easy — ek jagah change, sab update. Numeric enums mein TypeScript reverse mapping provide karta hai — value se name mil sakta hai. Const enums performance ke liye."
+          whyUseIt="Ek practical point: tum payment gateway ka code likhte ho aur status === 'SUCESS' type karte ho — typo hai, 'SUCCESS' hona chahiye tha. JavaScript mein: silent bug, wrong condition, production issue. String enum use karo: OrderStatus.Success se kabhi typo nahi hoga — IDE autocomplete karta hai. Rename karna ho toh ek jagah change karo — poori codebase update."
           howToUse={{
             filename: 'enums.ts',
             language: 'typescript',
@@ -362,9 +362,9 @@ type Role = 'admin' | 'user' | 'moderator'
 function processStatus(status: Status) {
   if (status === 'pending') { /* ... */ }
 }`,
-            explanation: 'String enums prefer karo — debugging mein actual string value dikhti hai, number nahi. Const enum performance ke liye. Modern TypeScript mein union types (string literals) often enums replace karte hain — simpler aur no runtime object. Switch pe TypeScript exhaustive check karta hai.',
+            explanation: 'Code mein dekho: canEdit(UserRole.Admin) — sahi. canEdit("admin") — compile error. TypeScript string ko enum ke liye accept nahi karta, explicit enum use karna padega. Const enum aur regular enum mein ek key fark: const enum compile time pe inline hota hai — const method = HttpMethod.GET compiled JS mein const method = "GET" ban jaata hai. Zero runtime object.',
           }}
-          realWorldScenario="Payment gateway integration mein: enum PaymentStatus { Success = 'SUCCESS', Failed = 'FAILED', Pending = 'PENDING', Refunded = 'REFUNDED' }. Database se string aata hai, TypeScript enum se compare karo — typos impossible, autocomplete available, readable code. Webhook handler mein switch(status) pe sab cases handle karo."
+          realWorldScenario="Payment webhook handler likhte hain — Razorpay se event aata hai, status check karo. enum PaymentStatus { Success = 'SUCCESS', Failed = 'FAILED', Refunded = 'REFUNDED' } — switch statement mein TypeScript exhaustive check karta hai. Nayi status add karo Razorpay ke saath, switch mein miss karo — compile error. Missed case kabhi production mein nahi jaata."
           commonMistakes={[
             {
               mistake: 'Numeric enum values directly compare karna (status === 2)',
@@ -377,7 +377,7 @@ function processStatus(status: Status) {
               fix: 'Ek approach choose karo. Modern TypeScript mein union types trend hai — simpler, no runtime cost. Enums jab reverse mapping ya const enum chahiye.',
             },
           ]}
-          proTip="Ambient enums declare karo external values ke liye: declare enum ExternalLibEnum { Value1, Value2 }. Ye sirf type checking ke liye hai — runtime object generate nahi hota. Third-party library ke enums TypeScript mein use karne ka clean way."
+          proTip="Modern TypeScript mein union types enums replace kar rahe hain: type Status = 'pending' | 'active' | 'inactive'. Simple, no runtime object, tree-shakable. Enums jab use karo jab reverse mapping chahiye ya const enum performance optimisation. Dono valid hain — team mein ek approach choose karo aur consistent raho."
         />
       </div>
 
@@ -386,14 +386,14 @@ function processStatus(status: Status) {
           title="any vs unknown — Fark Samjho"
           emoji="❓"
           difficulty="intermediate"
-          whatIsIt="any TypeScript ka escape hatch hai — type checking completely disable. any type ke value pe koi bhi operation allowed hai. unknown any ka safer version hai — value store kar sakte ho lekin use karne se pehle type check mandatory hai. void function return type hai — kuch return nahi karta. never impossible type — function jo kabhi return nahi karta."
+          whatIsIt="Ye section dhyan se padho — bahut log TypeScript seekhte hain aur any pe stuck ho jaate hain. any TypeScript ka 'I give up' button hai — type checking completely off. Seedha bolun: any use karna matlab TypeScript ko bol raha ho 'bhai, chhod de — mujhe pata hai main kya kar raha hoon.' Aur TypeScript maan jaata hai. Saari safety gone. unknown zyada honest hai — value store kar sakte ho, lekin use karne se pehle TypeScript bolega: 'pehle check karo ye kya hai, phir use karo.' Yahi fark hai any aur unknown mein."
           whenToUse={[
             'any: Kabhi nahi prefer — legacy code migrate karte waqt temporary',
             'unknown: Bahar se aaya data — API responses, user input, JSON.parse results',
             'void: Functions jo sirf side effects karte hain (console.log, addEventListener)',
             'never: Throw-only functions, exhaustive switch checks',
           ]}
-          whyUseIt="any use karne se TypeScript benefits khatam ho jaate hain. unknown pe operations force karta hai type check pehle — runtime errors prevent hote hain. never se switch statements exhaustive hote hain — agar koi case miss ho toh compile error. void clearly communicate karta hai function kuch return nahi karta."
+          whyUseIt="Ek sawaal: agar any everywhere use karo toh TypeScript ki zaroorat kya? Bilkul sahi — any = TypeScript uninstall karna. Isiliye any ko 'code smell' mante hain experienced developers. unknown safe alternative hai — API se jo bhi data aaye, unknown rakho, phir validate karo, phir use karo. never ek powerful tool hai switch statements ke liye — nayi case add karo aur handle karna bhool jao, compile error immediate milega."
           howToUse={{
             filename: 'any-unknown-never-void.ts',
             language: 'typescript',
@@ -466,9 +466,9 @@ function getArea(shape: Shape): number {
       throw new Error(\`Unhandled shape: \${_exhaustive}\`)
   }
 }`,
-            explanation: 'unknown safe hai kyunki operations se pehle type check force karta hai. any dangerous hai kyunki koi restriction nahi. never switch mein add karo — nayi Shape case miss karo toh compile error immediate milega. void aur undefined similar hain — subtle fark hai.',
+            explanation: 'Code mein dekho: dangerous pe nonexistent property access — koi error nahi (any). safe pe same karo — immediate error (unknown). Yahi real fark hai. Aur never ka exhaustive switch trick — _exhaustive: never = shape — agar Shape mein nayi value add karo aur switch handle nahi karo, TypeScript bol dega compile time pe. Production mai kabhi unhandled case nahi jaata.',
           }}
-          realWorldScenario="API response handle karna: const response: unknown = await fetch('/api/data').then(r => r.json()). unknown se force karo proper validation karo. Zod ya io-ts se schema validate karo — phir typed data milega. any use karo toh validation bhool sakte ho — production bugs."
+          realWorldScenario="Third-party API call karo — koi guarantee nahi response ka shape kya hoga. const rawData: unknown = await fetch('/api/user').then(r => r.json()). Unknown rakho, phir Zod se validate karo: const user = UserSchema.parse(rawData). Ab user TypeScript-typed hai. Agar any use karo? No validation, no safety — ek din server response change karo aur app silently break ho jaata hai."
           commonMistakes={[
             {
               mistake: 'any use karna type error "fix" karne ke liye',
@@ -481,7 +481,7 @@ function getArea(shape: Shape): number {
               fix: 'Function return type ke liye void use karo (side-effect only functions). undefined type ke liye undefined use karo.',
             },
           ]}
-          proTip="satisfies operator (TypeScript 4.9+) powerful hai: const config = { port: 3000, debug: false } satisfies Record<string, unknown>. config.port ka type 3000 (literal) remain karta hai — number nahi. Type check hota hai lekin narrow type preserve hota hai. any ka clean alternative."
+          proTip="TypeScript 4.9+ mein satisfies operator aaya — any ka ek aur clean alternative. const config = { port: 3000 } satisfies Record<string, unknown> — type check hota hai lekin config.port ka type 3000 (literal) rehta hai, number wide type nahi. Ek taraf type safety, doosri taraf narrow type preserved. Explore karo — bahut powerful hai."
         />
       </div>
 

@@ -55,13 +55,13 @@ export default function TSChapter1Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          TypeScript Kya Hai? — JavaScript Ka Type-Safe Bhai
+          TypeScript Kya Hai? — Ruko, Pehle Ye Myth Todte Hain
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          TypeScript ek programming language hai jo JavaScript ka superset hai — matlab sab valid JavaScript code TypeScript mein bhi valid hai. Par TypeScript ek powerful cheez add karta hai: <span className="text-[#3178C6] font-semibold">static types</span>. In types ki wajah se bugs deploy hone se pehle hi pakad jaate hain, IDE autocomplete better hoti hai, aur code khud apni documentation ban jaata hai.
+          Ruko — ye mat socho TypeScript ek naya language hai. Nahi hai! TypeScript = JavaScript + Types. Runtime pe TypeScript <span className="text-[#3178C6] font-semibold">exist hi nahi karta</span> — sab compile hokar JavaScript ban jaata hai. Toh TypeScript ka kaam sirf ek hai: DEVELOPMENT mein bugs pakadna before they reach production.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum samjhenge: TypeScript kya hai, JavaScript se kaise alag hai, installation kaise karein, aur apna pehla .ts file kaise likhein. Shuruat easy hai — bas JS pe kuch naya seekhna hai!
+          Socho TypeScript ek <strong className="text-[#F5F5F7]">spell-checker hai for code</strong> — jaise Word mein red line aati hai typo pe, waise TypeScript IDE mein red line dikhata hai type error pe. Difference sirf itna hai: spell-checker galat spelling pakadta hai, TypeScript galat <em>logic</em> pakadta hai. Is chapter mein hum seedha WHY se shuru karenge — phir HOW.
         </p>
       </div>
 
@@ -70,7 +70,7 @@ export default function TSChapter1Content() {
           title="TypeScript Ka Fayda — Kyun Seekhein?"
           emoji="🛡️"
           difficulty="beginner"
-          whatIsIt="TypeScript Microsoft ne banaya hua open-source language hai jo JavaScript mein compile hoti hai. Browser ya Node.js TypeScript seedha nahi samajhte — tsc compiler .ts files ko .js mein convert karta hai. Types sirf development time tak hote hain — runtime pe koi overhead nahi. Iska fayda: bugs code likhte waqt pakad jaate hain, production tak pahunchte hi nahi."
+          whatIsIt="Suno, ek important baat samajhte hain: TypeScript Microsoft ne banaya hua open-source language hai jo JavaScript MEIN compile hoti hai — matlab browser ya Node.js TypeScript seedha nahi samajhte. tsc compiler .ts files ko .js mein convert karta hai. Types sirf development time tak hote hain — runtime pe woh erase ho jaate hain, koi overhead nahi. Ye samajhna zaroori hai: TypeScript ek DEVELOPMENT TOOL hai, production runtime tool nahi."
           whenToUse={[
             'Koi bhi medium-to-large project — multiple files, multiple developers',
             'Public NPM libraries — consumers ko types chahiye hoti hain',
@@ -78,7 +78,7 @@ export default function TSChapter1Content() {
             'Long-term projects jahan refactoring hoti rehti hai',
             'React/Next.js projects — community standard ban gaya hai',
           ]}
-          whyUseIt="JavaScript mein TypeError: Cannot read properties of undefined runtime pe aata hai — user ke saamne crash. TypeScript mein wahi bug IDE mein red underline dikhaata hai — save karte waqt. Stack Overflow survey mein TypeScript consistently top 5 languages mein hai. GitHub pe most popular languages mein JavaScript ke baad TypeScript aa gaya hai. Ek baar TypeScript seekh lo — wapas plain JS pe jaana mushkil lagta hai."
+          whyUseIt="Sawaal: JavaScript mein TypeError: Cannot read properties of undefined kab aata hai? RUNTIME pe — user ke saamne, production mein, 2 baje raat ko. TypeScript mein wahi bug IDE mein red underline dikhaata hai — code save karte waqt, developer ke screen pe. Fark samjhe? Ek mein user crash report karta hai, doosre mein tum khud fix karte ho. Stack Overflow ke har survey mein TypeScript top loved languages mein hai. Ek baar TypeScript seekh lo — wapas plain JS pe jaana torture lagta hai."
           howToUse={{
             filename: 'why-typescript.ts',
             language: 'typescript',
@@ -110,9 +110,9 @@ getUserAge({ name: 'Rahul', age: 25, email: 'r@test.com' })  // ✅ OK!
 const user: User = { name: 'Priya', age: 30, email: 'p@test.com' }
 user.  // Type karo — IDE dikhayega: name, age, email
 // user.phone  // Error! Property 'phone' does not exist`,
-            explanation: 'TypeScript types function signatures ko self-documenting banate hain. getUserAge(user: User): number bolta hai — User chahiye, number milega. Galat call compile time pe rok deta hai — runtime surprise nahi.',
+            explanation: 'Dekho — getUserAge(user: User): number ek living documentation hai. Yeh function signature khud bol raha hai: mujhe User do, main number dunga. Galat call karo toh compile time pe rok lega — runtime surprise ka toh sawal hi nahi.',
           }}
-          realWorldScenario="Imagine karo ek e-commerce site ka cart logic: addToCart(product, quantity). JavaScript mein koi bhi pass kar sakta hai — string, null, undefined. TypeScript mein addToCart(product: Product, quantity: number) force karta hai sahi types pass karo. Team ka naya member bhi galti nahi kar sakta — TypeScript batata hai kya chahiye."
+          realWorldScenario="Imagine karo — ek e-commerce startup ka cart logic: addToCart(product, quantity). JavaScript mein koi bhi pass kar sakta hai — string, null, undefined, kuch bhi. Koi rok nahi hai. TypeScript mein addToCart(product: Product, quantity: number) ek contract hai. Team ka naya member join kare aur galat type pass karne ki koshish kare — TypeScript wahan khada hai: 'bhai, ye nahi chalega.' Production bug zero. Team frustration zero."
           commonMistakes={[
             {
               mistake: 'TypeScript install kiya lekin strict: false rakha',
@@ -125,7 +125,7 @@ user.  // Type karo — IDE dikhayega: name, age, email
               fix: 'Function parameters, return types, variables ko explicitly type karo. Start simple — ek function se karo.',
             },
           ]}
-          proTip="TypeScript gradually adopt kar sakte ho! allowJs: true tsconfig mein se mix JS+TS codebase chalao. Pehle .js files ko .ts mein rename karo ek ek karke. ts-migrate tool bhi hai jo automatically types add karta hai existing JS code mein. Zero se shuru karne ki zaroorat nahi."
+          proTip="Ek secret batata hoon — TypeScript gradually adopt kar sakte ho, kal se hi. allowJs: true tsconfig mein set karo aur JS+TS side-by-side chalao. Ek file rename karo .ts mein, errors dekho, fix karo, agle file pe jao. ts-migrate tool hai jo automatically types add karta hai. Ye sab-kuch-ek-saath-badlo wali mentality chhodo — incremental migration real duniya mein hoti hai."
         />
       </div>
 
@@ -134,14 +134,14 @@ user.  // Type karo — IDE dikhayega: name, age, email
           title="JS vs TypeScript — Side-by-Side Comparison"
           emoji="⚔️"
           difficulty="beginner"
-          whatIsIt="JavaScript aur TypeScript dono ke apne strengths hain. JavaScript: browser-native, no compilation step, quick prototyping. TypeScript: type safety, better IDE support, self-documenting code, safer refactoring. TypeScript JavaScript ka superset hai — TypeScript mein woh sab kuch likha ja sakta hai jo JavaScript mein likhte hain — plus type annotations."
+          whatIsIt="Yahan ek common confusion clear karte hain — JavaScript aur TypeScript competition mein nahi hain. TypeScript JavaScript ka superset hai — iska matlab hai aaj ka JavaScript code kal TypeScript mein bina ek line change kiye kaam karega. JavaScript: browser-native, zero compilation, quick prototype. TypeScript: type safety, mast IDE support, self-documenting code, safe refactoring. Dono ke strengths alag hain — aur production mein aaj TypeScript DEFAULT choice hai."
           whenToUse={[
             'JavaScript: Quick scripts, small utilities, learning projects',
             'TypeScript: Production applications, team projects, anything medium+',
             'TypeScript: APIs aur libraries jo doosre use karenge',
             'TypeScript: Code jahan refactoring hoti rehti ho',
           ]}
-          whyUseIt="JavaScript flexibility deta hai — quick likhna easy. TypeScript safety deta hai — large projects mein essential. Modern tooling (Next.js, NestJS, Angular) TypeScript default use karta hai. TypeScript seekhne ki cost: thodi zyada typing. Benefit: kam bugs, better autocomplete, safer changes. ROI positive hai almost always."
+          whyUseIt="Mujhse log poochte hain: 'bhai TypeScript sikhna worth hai?' Mere paas ek seedha jawab hai — Next.js, NestJS, Angular, SvelteKit — sab TypeScript by default hain. Matlab industry ne already decide kar liya. TypeScript seekhne ki cost: thodi zyada typing initially. Benefit: ek bade team mein ek production bug bhi save nahi karna padega — ROI guaranteed. 'Thoda complex hai' wala excuse kab tak chalega?"
           howToUse={{
             filename: 'js-vs-ts-comparison.ts',
             language: 'typescript',
@@ -186,9 +186,9 @@ calculateTotal([
 // | Browser support  | Native          | Needs compilation   |
 // | File extension   | .js             | .ts / .tsx          |
 // | Compilation      | Not needed      | tsc required        |`,
-            explanation: 'TypeScript mein types optional nahi hain — encouraged hain. Function signature itself documentation hai. CartItem interface bolta hai item mein price (number), qty (number), name (string) hona chahiye. Wrong structure pe compile error — runtime surprise nahi.',
+            explanation: 'Dekho side-by-side comparison — JavaScript wali calculateTotal ke 3 calls hain, 2 galat hain aur koi error nahi. TypeScript wali mein wrong calls pe immediate compile error. Yahi fark hai: ek mein runtime pe crash, doosre mein develop time pe catch. CartItem interface ek contract hai — sab ko follow karna padega.',
           }}
-          realWorldScenario="Sequifi jaisi product company mein 20 developers ek codebase pe kaam karte hain. JavaScript mein: developer A ek function likhta hai — developer B galat arguments pass karta hai — staging pe bug milta hai 2 din baad. TypeScript mein: galat arguments ke saath IDE seedha error — same line pe fix."
+          realWorldScenario="Kisi bhi 20+ developer wali company mein ye scenario roz hota hai — Developer A ek function likhta hai, Developer B galat arguments pass karta hai, QA 2 din baad bug dhundta hai, fix ke liye deploy lagta hai aur users ne already errors dekhe. TypeScript mein? Woh galat argument type karo toh IDE mein same second pe red underline. Bug kabhi QA tak pahunchta hi nahi."
           commonMistakes={[
             {
               mistake: 'Sochna ki TypeScript runtime pe safer hai',
@@ -201,7 +201,7 @@ calculateTotal([
               fix: 'Start simple: function parameters aur return types annotate karo. 80% benefit sirf isse milta hai.',
             },
           ]}
-          proTip="TypeScript Playground (typescriptlang.org/play) try karo — browser mein hi TypeScript likhao, compile karo, output dekho. Installation ki zaroorat nahi. Beginners ke liye best way hai concepts try karna without any setup."
+          proTip="Abhi karo — typescriptlang.org/play kholo. Browser mein hi TypeScript likhao, compile karo, JavaScript output dekho real time mein. Zero installation, zero setup. Beginners ke liye yahi best playground hai. Koi cheez samajh nahi aayi? Wahan try karo — instantly answer milega."
         />
       </div>
 
@@ -210,14 +210,14 @@ calculateTotal([
           title="Setup — 3 Minute Mein TypeScript Shuru Karo"
           emoji="⚙️"
           difficulty="beginner"
-          whatIsIt="TypeScript install karne ke do common ways hain: globally (npm install -g typescript) taaki tsc command anywhere use ho, ya project-specific (npm install --save-dev typescript) jab sirf ek project ke liye chahiye. Modern projects mein save-dev prefer kiya jata hai — version control mein pin hota hai. tsconfig.json compiler options define karta hai — strict mode, output directory, target JS version."
+          whatIsIt="Setup simple hai — 3 minute ka kaam. Do tarike hain: globally install (npm install -g typescript) taaki tsc command system mein anywhere chale, ya project-specific (npm install --save-dev typescript) jab sirf ek project ke liye chahiye. Real teams mein save-dev use hota hai — package.json mein version pin hoti hai, CI/CD pe automatically install hota hai. Ek important setting: tsconfig.json mein strict: true — yahi TypeScript ka asli power unlock karta hai."
           whenToUse={[
             'Global install: Quick experiments, command line se tsc use karna ho',
             'Local install: Production projects, team collaboration',
             'npx tsc: Ek baar use karna ho, install kiye bina',
             'ts-node: TypeScript seedha run karna bina compile kiye — development mein',
           ]}
-          whyUseIt="Local install (save-dev) prefer karo kyunki: team ka har member same TypeScript version use karta hai, CI/CD mein automatically install hota hai, package.json mein version pinned rehta hai. Global install convenience ke liye hai lekin version conflicts ho sakte hain different projects mein."
+          whyUseIt="Sawaal: local install ya global? Jawab: production projects mein hamesha local. Kyun? Team ka har member same TypeScript version use karta hai — koi 'mere machine pe kaam karta tha' wali problem nahi. CI/CD pipeline pe npm install se automatically sab setup hota hai. Version conflicts zero. Global install sirf quick experiments ke liye — isse zyada importance mat do usse."
           howToUse={{
             filename: 'setup.sh',
             language: 'bash',
@@ -270,9 +270,9 @@ node dist/hello.js  # Namaste, Duniya!
 # ── Development mein ts-node use karo ─────────────────────────
 npm install --save-dev ts-node
 npx ts-node src/hello.ts  # Seedha run — no manual compile needed`,
-            explanation: 'strict: true most important setting hai — hamesha on rakho. outDir compiled JS ke liye, rootDir TypeScript source ke liye. ts-node development mein convenient hai — compile step skip karta hai. Production build ke liye tsc use karo.',
+            explanation: 'strict: true — yahi ek setting hai jo TypeScript ko uski full potential pe use karwati hai. Isko kabhi false mat karna. outDir compiled JS ke liye, rootDir TypeScript source ke liye. Development mein ts-node se compile step skip karo. Production build pe tsc use karo — compiled JS fast aur clean hoti hai.',
           }}
-          realWorldScenario="Next.js project mein TypeScript already configured hota hai — npx create-next-app@latest --typescript se ready-to-go TypeScript project milta hai. NestJS, Angular bhi TypeScript by default. Pure Node.js APIs ke liye manually setup karo — 5 minutes ka kaam hai."
+          realWorldScenario="Ye mat bhoolna — Next.js, NestJS, Angular ye sab TypeScript by default setup dete hain. npx create-next-app@latest chalao toh pehla sawaal poochte hain: 'TypeScript use karna hai?' Seedha Yes karo. Pure Node.js API ke liye manually setup karo — 5 minute ka kaam hai jisko hum abhi kar rahe hain. Industry already TypeScript pe hai, tum sirf catch up kar rahe ho."
           commonMistakes={[
             {
               mistake: 'tsconfig.json mein strict: true miss karna',
@@ -285,7 +285,7 @@ npx ts-node src/hello.ts  # Seedha run — no manual compile needed`,
               fix: '.gitignore mein dist/ ya build/ add karo. Sirf src/ aur tsconfig.json commit karo.',
             },
           ]}
-          proTip="ts-node-dev (npm install -g ts-node-dev) development ke liye perfect tool hai — nodemon jaisa kaam karta hai but TypeScript ke saath. File change pe automatically recompile aur restart karta hai. Command: ts-node-dev --respawn src/server.ts. Production mein tsc + node use karo."
+          proTip="Development mein ts-node-dev use karo — nodemon ka TypeScript version. File change karo, automatically recompile, automatically restart. Command: ts-node-dev --respawn src/server.ts. Production build ke liye tsc + node. Ye workflow production-grade projects mein use hoti hai — internalize kar lo from day one."
         />
       </div>
 

@@ -64,10 +64,10 @@ export default function DBChapter8Content() {
           Prisma ORM — Type-Safe Queries Master Karo
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Prisma modern TypeScript-first ORM hai jo database operations ko type-safe, readable, aur maintainable banata hai. Schema-first approach — ek schema.prisma file mein apna data model define karo, Prisma migrations aur type-safe client generate karta hai automatically.
+          Ek baar socho — TypeScript mein column name galat likha, aur compile time pe hi error aa gayi. Database tak baat gayi hi nahi. Ye hai Prisma ka magic. Baaki ORMs mein galat field name runtime pe crash karta hai — production mein users ke saamne. Prisma mein? Editor mein red underline. Schema-first approach: ek schema.prisma file mein data model define karo — migrations aur type-safe client dono automatically generate.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein Prisma ka full power explore karenge — schema language, migrations workflow, CRUD operations with TypeScript types, relations with include, transactions, aur raw queries. Ye sab real production apps mein daily use hote hain.
+          Is chapter mein Prisma ka full arsenal cover karenge — schema language aur migrations workflow, CRUD operations with full TypeScript types, relations ke saath include (N+1 ka khatma), transactions ka ACID guarantee, aur jab ORM ka haath nahi pahunche tab raw SQL. Ye sab production apps mein daily use hone waale patterns hain.
         </p>
       </div>
 
@@ -76,14 +76,14 @@ export default function DBChapter8Content() {
           title="Prisma Schema — Database Ka Blueprint"
           emoji="🔷"
           difficulty="intermediate"
-          whatIsIt="schema.prisma file Prisma ka heart hai — yahan apna data model define karo. datasource block database connection specify karta hai. generator block Prisma Client configuration ke liye. model block har table/collection define karta hai with fields, types, attributes. @id, @unique, @default, @relation, @updatedAt, @@index — ye attributes schema behavior control karte hain."
+          whatIsIt="schema.prisma ek single source of truth hai — ek jagah change karo, sab jagah reflect hota hai. datasource block batata hai kaunsa database use karna hai aur kahan hai. generator block TypeScript client generate karne ke instructions deta hai. model block har table ka blueprint hai — fields, types, constraints sab. Under the hood: Prisma ne ye schema parse kiya, migration SQL generate kiya, aur TypeScript types banayi — teeno kaam ek file se. @updatedAt attribute magic karta hai — Prisma automatically timestamp update karta hai har save pe. onDelete: Cascade — parent delete hone par children automatically delete. Ye sab schema mein declare karo, application code mein bhoolne ka chance nahi."
           whenToUse={[
             'TypeScript Node.js apps with PostgreSQL, MySQL, SQLite',
             'Team collaboration — schema file version control mein track hoti hai',
             'Type-safe database access chahiye — compile time errors',
             'Auto-generated migrations — manual SQL likhne se bacho',
           ]}
-          whyUseIt="Prisma schema single source of truth hai — database structure aur TypeScript types dono yahan se generate hoti hain. ek jagah change karo, sab update. prisma generate se TypeScript client update hota hai. prisma migrate dev se migration SQL auto-generate hota hai. Prisma Studio se browser GUI milti hai free mein."
+          whyUseIt="Sawaal: team mein 5 developers hain, sab alag-alag schema changes kar rahe hain — kaise manage karoge? Prisma migrate dev har schema change ko versioned migration file mein convert karta hai — git mein track hota hai, koi bhi developer npx prisma migrate dev se latest schema sync kar sakta hai. Production pe npx prisma migrate deploy — sirf apply karta hai, kuch create nahi karta. Safe. Aur Prisma Studio? Browser mein database ka GUI — free mein data dekho, edit karo, bina SQL likhey."
           howToUse={{
             filename: 'schema.prisma',
             language: 'prisma',
@@ -172,9 +172,9 @@ enum Role { USER ADMIN MODERATOR }
 // npx prisma studio            — browser GUI open karo
 // npx prisma db push           — schema push karo (no migration file — prototyping only)
 // npx prisma db seed           — seed file run karo`,
-            explanation: "@default(cuid()) — collision-resistant unique IDs. @updatedAt — Prisma automatically timestamp update karta hai. onDelete: Cascade — parent delete hone par children bhi delete. @@index — table-level composite index. Schema change karo, phir npx prisma migrate dev — migration SQL auto-generate + apply hota hai.",
+            explanation: "@default(cuid()) collision-resistant IDs generate karta hai — UUID se bhi better sortability ke liye. @updatedAt magic hai — Prisma internally query mein updatedAt = NOW() inject karta hai, aap bhool bhi jao toh bhi update hoga. onDelete: Cascade = parent delete hone par children bhi automatically delete — referential integrity database level pe guaranteed. @@index composite index banata hai migration ke through. Schema change karo, npx prisma migrate dev chalao — Prisma SQL generate karta hai aur apply bhi karta hai. Ek command, sab ho jaata hai.",
           }}
-          realWorldScenario="Next.js SaaS app mein schema.prisma file git mein tracked hoti hai. New developer join kare toh npx prisma migrate dev se local DB schema set ho jaata hai. Production deploy mein CI/CD pipeline npx prisma migrate deploy chalata hai — zero manual SQL. Schema = documentation + migrations + types sab ek jagah."
+          realWorldScenario="Naya developer join hua team mein. Purane zamane mein: 'bhai database ka dump bhejo', 'ye 3 manual ALTER TABLE chalao', 'ye column add karna mat bhoolna'. Prisma ke saath: git clone, npm install, npx prisma migrate dev — done. Poori database history migrations mein hai. CI/CD mein npx prisma migrate deploy lagaya — har deploy pe automatically schema update. Zero manual SQL, zero communication overhead. Schema file documentation bhi hai, migration history bhi — ek file, teeno kaam."
           commonMistakes={[
             {
               mistake: 'prisma db push use karna production mein',
@@ -187,7 +187,7 @@ enum Role { USER ADMIN MODERATOR }
               fix: 'Schema change ke baad hamesha npx prisma generate. postinstall script mein add karo: "postinstall": "prisma generate" — automated.',
             },
           ]}
-          proTip={'Prisma mein preview features use karo — schema.prisma mein generator mein previewFeatures = ["fullTextSearch"] add karo. Full-text search, views support, PostgreSQL extensions (pgvector for AI embeddings) — cutting-edge features early access milta hai.'}
+          proTip={'postinstall script mein "prisma generate" add karo — npm install ke baad automatically Prisma Client regenerate hogi. Team members schema pull karein aur generate bhool jayein — build break hogi, confusing errors aayenge. postinstall se ye problem permanently solve hoti hai. Aur pgvector for AI embeddings chahiye? previewFeatures = ["postgresqlExtensions"] add karo — cutting-edge features Prisma ke through accessible hain.'}
         />
       </div>
 
@@ -196,14 +196,14 @@ enum Role { USER ADMIN MODERATOR }
           title="CRUD with Prisma Client — Fully Typed"
           emoji="⚡"
           difficulty="intermediate"
-          whatIsIt="Prisma Client auto-generated type-safe query builder hai. findMany, findFirst, findUnique, create, createMany, update, updateMany, upsert, delete, deleteMany — ye sab methods hain. Har method ke arguments TypeScript types ke saath hain — wrong field name compile error deta hai. Results bhi typed hain — IDE autocomplete milti hai."
+          whatIsIt="Prisma Client auto-generated hai schema se — aap likhte nahi, Prisma generate karta hai. findMany, findUnique, create, update, upsert, delete — ye sab fully typed methods hain. Wrong field name likhoge? Compile error — runtime nahi, editor mein. Return type bhi typed hai — IDE pe hover karo, exact shape dikhti hai. viewCount: { increment: 1 } ek powerful feature hai — atomic increment, no read-modify-write race condition. Ye sab raw SQL se zyada readable aur maintainable hai — aur type safety bonus mein."
           whenToUse={[
             'Koi bhi database read/write operation',
             'Filtered lists — findMany with where, orderBy, take, skip',
             'Upsert — record create ya update in one atomic operation',
             'Aggregations — count, sum, avg, min, max',
           ]}
-          whyUseIt="Prisma Client raw SQL se zyada readable aur maintainable hai. TypeScript types runtime errors prevent karte hain. Query builder SQL injection se safe hai — parameterized queries auto. Nested creates aur updates ek query mein possible hain — transaction implicit milti hai."
+          whyUseIt="Ek classic bug: developer ne 'userId' likhna tha, likha 'user_id' — camelCase vs snake_case. Raw SQL mein ye runtime pe crash karta hai. Prisma mein? Compile error. viewCount: { increment: 1 } atomic hai — 1000 users simultaneously views increment karein, koi race condition nahi. Manual read-modify-write (SELECT → increment → UPDATE) concurrent requests mein wrong count deta hai. Prisma ka atomic increment database level pe single UPDATE statement hai — bulletproof."
           howToUse={{
             filename: 'prisma-crud.ts',
             language: 'typescript',
@@ -322,9 +322,9 @@ const byAuthor = await prisma.post.groupBy({
   orderBy: { _count: { id: 'desc' } },
   take: 10
 })`,
-            explanation: "findUnique null return karta hai — findUniqueOrThrow error throw karta hai. increment/decrement atomic operations hain — multiple users simultaneously update kar sakte hain safely. _count se related records count ek query mein milta hai — N+1 avoid. select specific fields return karta hai — bandwidth optimize hoti hai.",
+            explanation: "findUnique null return karta hai — null.name access = crash. findUniqueOrThrow use karo jab record hona expected ho. increment/decrement single UPDATE statement hai database mein — concurrency-safe. _count ek killer feature hai: har post ke liye separate COUNT(*) query fire nahi hogi, Prisma ek JOIN ke saath count nikalta hai — N+1 prevent. select se bandwidth save karo — sirf wahi fields fetch karo jo is endpoint ke liye actually chahiye.",
           }}
-          realWorldScenario="Blog API: GET /posts — findMany with published: true, include author, _count comments, pagination. POST /posts — create with nested tag connect/create. PUT /posts/:id — update with upsert for tags (add new, connect existing). DELETE /posts/:id — cascade se comments bhi delete. Sab type-safe, compile-time checked."
+          realWorldScenario="Blog API real flow: GET /posts — findMany with published: true, include author, _count comments, pagination — ek query mein sab. POST /posts — create with nested tags (connect existing, create new) — ek atomic operation. PUT /posts/:id — upsert for tags (jo naya hai create, jo pehle se hai connect) — koi duplicate nahi. DELETE /posts/:id — onDelete: Cascade schema mein hai, toh comments automatically delete. Sab type-safe, IDE mein autocomplete, production mein confidence."
           commonMistakes={[
             {
               mistake: 'findUnique ke baad null check nahi karna',
@@ -337,7 +337,7 @@ const byAuthor = await prisma.post.groupBy({
               fix: 'updateMany use karo jab possible. Complex cases mein $transaction ke saath batch operations. Raw SQL UPDATE WHERE IN for bulk.',
             },
           ]}
-          proTip="Prisma mein result types automatically infer hote hain — Prisma.UserGetPayload<typeof query> se exact return type milta hai. Reusable query objects banao: const userSelect = { id: true, name: true, email: true } as const — type-safe select reuse karo multiple places pe."
+          proTip="Reusable select objects banao as const — const userPublicSelect = { id: true, name: true, email: true, avatar: true } as const. Ye multiple endpoints pe use karo — ek jagah field add karo, sab jagah reflect. Prisma.UserGetPayload<{ select: typeof userPublicSelect }> se exact return type milta hai — functions ke return types properly typed rehti hain. Ye pattern large codebases mein type safety maintain karne ka best way hai."
         />
       </div>
 
@@ -346,14 +346,14 @@ const byAuthor = await prisma.post.groupBy({
           title="Relations & include — Joined Queries"
           emoji="🔗"
           difficulty="intermediate"
-          whatIsIt="Prisma relations schema mein define hoti hain — @relation decorator se. One-to-many (User has many Posts), Many-to-many (Post has many Tags, Tag has many Posts), One-to-one (User has one Profile). include se related records fetch hote hain — SQL JOIN equivalent. Nested include bhi possible hai — deep relation tree fetch karo ek query mein."
+          whatIsIt="Prisma relations SQL JOINs ka type-safe version hain. One-to-many (User has many Posts) — User model mein posts Post[] likhdo, Post model mein author User likhdo, Prisma relationship manage kar leta hai. Many-to-many (Post ↔ Tags) — Prisma automatically implicit join table banata hai, aap directly manage nahi karte. include = JOIN execute karo. Nested include = multiple JOINs ek query mein. Under the hood: Prisma smart hai — ek SQL query generate karta hai with all the JOINs, multiple queries nahi fire karta. Relation type safe hai — wrong relation name likhoge toh TypeScript compiler roke ga."
           whenToUse={[
             'Related data saath fetch karna ho — post with author',
             'Many-to-many operations — tags add/remove karna',
             'Nested creates — user create karo with profile in one query',
             'Filtered relations — sirf published posts include karo',
           ]}
-          whyUseIt="Prisma relations type-safe hain — wrong relation name compile error. include automatically JOIN generate karta hai — N+1 prevent karta hai. Nested operations ek transaction mein atomic hain — ya sab create hoga ya kuch nahi. connect/disconnect se many-to-many relations manage karo bina join table manually touch kiye."
+          whyUseIt="Sawaal: post create karte waqt existing tags connect karne hain aur new tags bhi create karni hain — ek atomic operation mein kaise? connect existing records ke saath relation banata hai (join table mein entry). create new record banata hai aur relation bhi. connectOrCreate = upsert for relations — exists toh connect, nahi toh create. Ek operation mein sab, rollback-safe. Ye complexity Prisma handle karta hai — aap sirf intent express karo."
           howToUse={{
             filename: 'prisma-relations.ts',
             language: 'typescript',
@@ -449,9 +449,9 @@ const nodejsAuthors = await prisma.user.findMany({
     }
   }
 })`,
-            explanation: "connect existing records ke saath relation banata hai. create relation ke andar naya record banata hai. connectOrCreate upsert-like behavior — exists toh connect nahi toh create. set: [] se pehle sab disconnect karo phir naya set karo. _count efficient hai — COUNT(*) single query mein. Nested includes type inference maintain karta hai.",
+            explanation: "connect join table mein entry banata hai — records pehle se exist karne chahiye. create naya record banata hai aur automatically relation bhi. connectOrCreate = smart upsert: 'ye tag hai toh connect karo, nahi hai toh create karo aur connect karo' — idempotent operation. set: [] pattern tags replace karne ke liye: pehle sab existing tags disconnect, phir new set connect. _count ek single SQL COUNT(*) hai — separate query nahi, JOIN ke andar hi aggregate hota hai. Nested includes type inference maintain karte hain — har level pe exact type milti hai.",
           }}
-          realWorldScenario="Social platform post creation flow: User post likhta hai, existing tags select karta hai, new tags bhi add karta hai. prisma.post.create mein tags: { connect: existingTagIds, create: newTagNames } — ek atomic operation mein sab ho jaata hai. Agar koi step fail ho toh rollback automatic."
+          realWorldScenario="Social platform post creation: user ne 5 existing tags select kiye, 2 new tags type kiye. Raw SQL mein: pehle new tags INSERT karo, IDs nikalo, phir join table mein 7 entries INSERT karo — 3+ queries, error handling complex. Prisma mein: tags: { connect: existingIds, create: newTagNames } — Prisma internally sab handle karta hai, atomic hai, type-safe hai. Agar kuch bhi fail ho — rollback. Developer ne sirf intent express kiya, complexity Prisma ki zimmedaari."
           commonMistakes={[
             {
               mistake: 'Deeply nested includes without limits',
@@ -464,7 +464,7 @@ const nodejsAuthors = await prisma.user.findMany({
               fix: 'connect/disconnect/set use karo Prisma API se. Agar extra fields join table mein chahiye toh explicit relation table use karo (Post_Tag model with extra fields).',
             },
           ]}
-          proTip="Prisma mein fluent API se relation traverse karo: prisma.user.findUnique({where:{id}}).posts() — lazy loading ki tarah. Chained calls se type-safe navigation milti hai. Complex nested queries ke liye raw SQL se compare karo — sometimes $queryRaw zyada efficient hoti hai."
+          proTip="Relation filters bahut powerful hain — posts: { some: { tags: { some: { name: 'nodejs' } } } } matlab 'woh users jo nodejs-tagged posts likhte hain'. Ye deeply nested where conditions Prisma SQL mein subquery ke saath generate karta hai — aapko SQL likhna nahi padta. Complex filtering jab karni ho, pehle Prisma ki relation filter try karo — zyada cases mein raw SQL ki zaroorat hi nahi padti."
         />
       </div>
 
@@ -473,14 +473,14 @@ const nodejsAuthors = await prisma.user.findMany({
           title="Transactions in Prisma — Atomic Operations"
           emoji="🔒"
           difficulty="advanced"
-          whatIsIt="Database transaction group of operations hai jo atomically execute hoti hain — ya sab succeed ya sab rollback. Prisma $transaction do forms mein: Sequential (array of operations — simple), Interactive (callback with tx client — complex logic with dependencies). $transaction ACID guarantees provide karta hai — partial updates impossible."
+          whatIsIt="Transaction ek promise hai database se — 'ya sab hoga, ya kuch nahi hoga'. Under the hood: PostgreSQL BEGIN statement se transaction start, COMMIT se permanent, ROLLBACK se undo. Prisma $transaction do flavors mein: Sequential — array of operations dete ho, Prisma sab ek saath run karta hai. Interactive — callback ke andar tx client milta hai, previous step ka result next mein use ho sakta hai — conditional logic possible hai. Throw karo andar — automatic rollback. tx client use karo prisma ki jagah — same transaction mein rahega."
           whenToUse={[
             'Money transfers — debit + credit atomic hone chahiye',
             'Order creation — order + inventory decrement + payment record',
             'User signup — user + profile + welcome email log',
             'Any multi-step operation jahan partial success unacceptable ho',
           ]}
-          whyUseIt="Without transactions: agar user create ho gaya lekin profile creation fail ho gayi — incomplete state. Agar payment record ban gaya lekin inventory nahi ghata — inconsistency. Transaction ensure karta hai ya sab ho ya kuch nahi. $transaction([]) simple aur readable hai concurrent operations ke liye."
+          whyUseIt="Sawaal: Transaction isliye slow kyun hota hai? Kyunki database locks hold karta hai, resources reserve karta hai, undo logs likhta hai — ye sab overhead hai. Lekin ye overhead zaroori hai. Bina transaction ke: payment process hua, network cut gaya, order create nahi hua — customer ka paisa gaya. Transaction ke saath: ya dono complete hoga ya dono rollback. Ye guaranteed atomicity hai. Interactive transaction ka ek rule yaad rakho: transaction ke andar sirf DB operations — payment gateway call, email bhejne wala kaam transaction baad mein karo. External APIs transaction rollback pe undo nahi hoti."
           howToUse={{
             filename: 'prisma-transactions.ts',
             language: 'typescript',
@@ -565,9 +565,9 @@ await prisma.$transaction([
     data: { action: 'USER_VERIFIED', userId: targetUserId, timestamp: new Date() }
   })
 ])`,
-            explanation: "Sequential transaction ($transaction([])) parallel run hoti hain — ek array mein sab operations. Interactive transaction ($transaction(async tx => {})) sequential hai — previous step ka result next mein use ho sakta hai. Error throw karna automatic rollback trigger karta hai. tx client use karo prisma ki jagah — same transaction mein rahega.",
+            explanation: "Sequential $transaction([]) — array operations parallel run hoti hain, ek round-trip. Simple cases ke liye perfect. Interactive $transaction(async tx => {}) — sequential, previous step ka result use karo. tx client critical hai — prisma use karo transaction ke andar toh alag connection pe jaayega, same transaction mein nahi rahega. Error throw karo — rollback automatic. timeout option set karo — long-running transactions database lock hold karte hain, doosre queries wait karti hain.",
           }}
-          realWorldScenario="E-commerce checkout: inventory check karo, reserve karo, order create karo, payment process karo, inventory confirm karo — sab ek transaction mein. Payment success + inventory not updated = nightmare. Transaction ensure karta hai ya sab consistent state mein ho ya customer ko error dikhao aur retry karo."
+          realWorldScenario="E-commerce checkout ka woh moment — user ne 'Place Order' dabaya. Stock check karo, stock decrement karo, order create karo, payment record karo — ek transaction mein. Bina transaction ke ek scenario: 2 users ek saath last item buy karte hain, dono stock check karte hain (dono ko 1 stock dikhti hai), dono order create karte hain — oversold! Transaction ke saath: pehla user commit karta hai, doosra stock check karta hai, 0 dikhta hai, error — clean failure. Ye hai transactional integrity."
           commonMistakes={[
             {
               mistake: 'Transaction ke andar external API call karna (payment gateway, email)',
@@ -580,7 +580,7 @@ await prisma.$transaction([
               fix: 'Transactions chhoti rakho — sirf critical atomic operations. Lock order consistent rakho. timeout option set karo.',
             },
           ]}
-          proTip="Prisma mein $transaction ke andar Prisma Pulse (realtime events) ya background jobs trigger karne ke liye — transaction ke andar event record karo (outbox table), transaction baad mein worker event process kare. Ye Outbox Pattern distributed systems mein standard approach hai atomic operations + external effects ke liye."
+          proTip="Outbox Pattern — ye production-grade concept hai. Transaction ke andar payment process mat karo directly. Ek outbox table mein event record karo: { type: 'PAYMENT_REQUESTED', orderId, amount }. Transaction commit hogi, outbox entry bhi commit hogi — atomic. Background worker outbox read karta hai, payment process karta hai. Payment fail ho toh retry, order data safe hai. Ye distributed systems mein standard approach hai — atomicity guarantee + external side effects decoupled."
         />
       </div>
 

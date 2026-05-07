@@ -67,10 +67,13 @@ export default function JSChapter15Content() {
           Design Patterns in JavaScript — Battle-Tested Solutions
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Design patterns common software problems ke tried-and-tested solutions hain. Ye blueprint hain — specific situations ke liye proven approaches. Module, Singleton, Observer, Factory, Strategy — ye sab JavaScript aur Node.js codebases mein daily use hote hain.
+          Design patterns sunne mein bohot fancy lagta hai — actually ye sirf "proven solutions to common problems" hain. Gang of Four ne 1994 mein 23 patterns describe kiye the. Aaj bhi wahi use hote hain! Ye patterns isliye exist karte hain kyunki hazaaron developers ne same problems face kiye — aur best solutions dhundh ke document kiye.
+        </p>
+        <p className="text-[#A1A1AA] leading-relaxed mb-3">
+          Ab sawaal ye aata hai — "Bhai patterns yaad karne padenge kya?" Nahi! Samajhne padenge. Jab tum Module pattern dekhoge toh pehchaan jaoge — "aha, ye toh wahi encapsulation wala trick hai!" React itself internally Observer pattern, Factory pattern use karta hai. Tum pehle se patterns use kar rahe ho — bas naam nahi pata tha.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Patterns seekhne se tum dusre developers ka code better samjhoge — aur apna code better likho. React itself bahut saare patterns use karta hai under the hood.
+          Patterns seekhne se tum dusre developers ka code better samjhoge — aur apna code better likho. Senior developers ki pehchaan hoti hai — woh patterns naam se nahi, problem se pehchante hain.
         </p>
       </div>
 
@@ -79,14 +82,14 @@ export default function JSChapter15Content() {
           title="Module Pattern — Private State"
           emoji="📦"
           difficulty="intermediate"
-          whatIsIt="Module pattern closure use karta hai private state banana ke liye. External code directly private variables access nahi kar sakta — sirf exposed methods se interact kar sakta hai. Revealing Module Pattern variant mein public interface clearly define hota hai. ES Modules (import/export) ise natively support karte hain."
+          whatIsIt="Socho ek ATM machine — tum balance dekhte ho, paise nikalte ho. Lekin machine ke andar ka mechanism — cash cassette, counter, security logic — tumhe kabhi directly touch nahi karta. Yehi Module pattern hai! Closure use karta hai private state banana ke liye. External code directly private variables access nahi kar sakta — sirf exposed methods se interact kar sakta hai. Revealing Module Pattern variant mein public interface clearly define hota hai. ES Modules (import/export) ise natively support karte hain."
           whenToUse={[
             'Private state ke saath utility/service banana ho',
             'Global namespace pollution rokna ho',
             'Public API clearly define karni ho',
             'Third-party code se implementation details hide karni ho',
           ]}
-          whyUseIt="Encapsulation bugs prevent karta hai — baaki code internals mess nahi kar sakta. Public API stable rakha ja sakta hai, private implementation change hoti rahe. Libraries aur SDKs ye pattern extensively use karte hain. ES Modules modern equivalent hain."
+          whyUseIt="Encapsulation bugs prevent karta hai — baaki code internals mess nahi kar sakta. Public API stable rakha ja sakta hai, private implementation change hoti rahe. Socho — agar tumhara counter ka count variable bahar se directly change ho sake, toh koi bhi raat ko count = 9999 kar de! Module pattern ye power deta hai ki tum decide karo kya bahar jaayega, kya nahi. Libraries aur SDKs ye pattern extensively use karte hain. ES Modules modern equivalent hain."
           howToUse={{
             filename: 'module-pattern.js',
             language: 'javascript',
@@ -169,9 +172,9 @@ function createUserService(baseUrl) {
 const userService = createUserService('https://api.example.com')
 await userService.getUser(123)     // Cached on second call
 await userService.updateUser(123, { name: 'New Name' })`,
-            explanation: 'IIFE (Immediately Invoked Function Expression) se closure create hoti hai — private scope. Return object se public API expose hoti hai. Revealing module pattern private variables with _ prefix convention follow karta hai. Factory function version se multiple independent instances banana possible hai.',
+            explanation: 'Under the hood kya ho raha hai: IIFE execute hoti hai — ek closure create hoti hai. Us closure ka scope bahar se invisible hai. Return kiya hua object public API hai — ye sirf usi closure ke andar jhankne ke "windows" hain. counterModule.count karo toh undefined milega — kyunki count variable closure ke andar kabhi return nahi kiya! Revealing module pattern private variables with _ prefix convention follow karta hai. Factory function version se multiple independent instances banana possible hai.',
           }}
-          realWorldScenario="Node.js mein database service: const db = createDbService(connectionString). External code sirf db.query(), db.transaction() access kar sakta hai — connection pool, retry logic sab private. Implementation change karo, API same rahe — callers ka code change nahi hota."
+          realWorldScenario="Node.js mein database service: const db = createDbService(connectionString). External code sirf db.query(), db.transaction() access kar sakta hai — connection pool, retry logic, credentials sab private. Ek baar ye pattern samjha toh production code mein hamesha dikhega — Stripe SDK, Firebase SDK sab isi pattern pe based hain!"
           commonMistakes={[
             {
               mistake: 'Private state return object mein directly expose karna',
@@ -184,8 +187,17 @@ await userService.updateUser(123, { name: 'New Name' })`,
               fix: 'Minimum public API define karo — only what consumers actually need.',
             },
           ]}
-          proTip="ES Modules native module pattern hain — import/export syntax. Private variables file scope mein hain, exported functions public API. TypeScript mein private keyword bhi hai class members ke liye. Modern code mein classes ya ESM prefer karo IIFE pattern se."
+          proTip="Akshay ka pro tip: ES Modules native module pattern hain — import/export syntax. Private variables file scope mein hain, exported functions public API. TypeScript mein private keyword bhi hai class members ke liye. Modern code mein classes ya ESM prefer karo IIFE pattern se. Interview mein agar poochha jaaye 'closure ka practical use batao' — Module pattern best answer hai!"
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.25)' }}
+      >
+        <p className="text-sm text-[#FCD34D] font-medium">
+          💡 Akshay ka insight: Module pattern ke baad ek common sawaal aata hai — "agar mujhe sirf ek hi instance chahiye globally, toh kya karoon?" Yahan Singleton pattern aata hai stage pe!
+        </p>
       </div>
 
       <div id="singleton">
@@ -193,14 +205,14 @@ await userService.updateUser(123, { name: 'New Name' })`,
           title="Singleton — Ek Hi Instance"
           emoji="1️⃣"
           difficulty="intermediate"
-          whatIsIt="Singleton pattern ensure karta hai ki ek class ka sirf ek instance ho — globally accessible. Database connection pool, configuration manager, logger, cache — ye sab singletons common use cases hain. JavaScript mein module system natural singleton hai — same module import karo, same instance milega."
+          whatIsIt="Pehle ye bolo: kitni baar tumne new PrismaClient() kiya tha baar baar? Har function mein new connection banana — ye bahut badi galti hai! Singleton pattern ensure karta hai ki ek class ka sirf ek instance ho — globally accessible. Database connection pool, configuration manager, logger, cache — ye sab singletons common use cases hain. JavaScript mein module system natural singleton hai — same module import karo, same instance milega."
           whenToUse={[
             'Shared resource manage karna — DB connection pool',
             'Global configuration — ek jagah se sab jagah accessible',
             'Event bus — application-wide events',
             'Cache — shared memoization store',
           ]}
-          whyUseIt="Singleton expensive resources ko multiple baar create hone se rokta hai — DB connections, file handles. Global access point se sab modules same state share karte hain. Node.js module caching natural singleton behavior deta hai."
+          whyUseIt="Ek nayi DB connection banana — expensive hai! Handshake hota hai, authentication hoti hai, resources allocate hote hain. Agar har API request pe nayi connection banaao — memory exhaust ho jaayegi, database connection limit hit ho jaayegi. Singleton expensive resources ko multiple baar create hone se rokta hai. Global access point se sab modules same state share karte hain. Node.js module caching natural singleton behavior deta hai."
           howToUse={{
             filename: 'singleton.js',
             language: 'javascript',
@@ -272,9 +284,9 @@ const logger = {
 }
 
 export default logger  // ESM export = singleton`,
-            explanation: 'Node.js ESM module caching automatic singleton deta hai — no need for getInstance pattern. Class singleton #instance static field se instance track karta hai. Constructor existing instance return karta hai. Simple objects as singletons — configuration, logger ke liye yahi sufficient hai.',
+            explanation: 'Under the hood: Node.js module system require() ya import karo pehli baar — module execute hota hai, cache mein store hota hai. Doosri baar same module import karo — cache se wahi object milta hai. Nayi execution nahi! Isliye config.js export karo — sab jagah same config object. Class singleton mein #instance static field check karo — agar exist karta hai toh wahi return karo, naya mat banao.',
           }}
-          realWorldScenario="Prisma ORM se: const prisma = new PrismaClient() — ek baar banao, export karo, sab jagah import karo same instance milti hai. Ek nayi instance har request ke liye banana memory leak aur connection limit exhaust karta hai."
+          realWorldScenario="Prisma ORM se: const prisma = new PrismaClient() — ek baar banao, export karo, sab jagah import karo same instance milti hai. Ye ek baar samajh lo phir poori life yaad rahega: Node.js mein ek baar export kiya object = Singleton by default. Isliye db.ts mein ek baar banao, baaki jagah import karo."
           commonMistakes={[
             {
               mistake: 'Singleton ko test mein reset nahi karna',
@@ -287,8 +299,17 @@ export default logger  // ESM export = singleton`,
               fix: 'Truly shared state ke liye Redis ya database use karo — process-level singletons ki limits samjho.',
             },
           ]}
-          proTip="Singleton testing mushkil banata hai. Dependency injection prefer karo — singleton pass karo functions/constructors ko, globally import nahi karo. Jest mein jest.mock() se singleton mock kar sakte ho. Production code mein singletons careful use karo — global state bugs ka source hai."
+          proTip="Bhai, Singleton ka ek dark side hai — global state! Tests ek doosre pe depend karne lagte hain. Dependency injection prefer karo — singleton inject karo, globally import mat karo. Jest mein jest.mock() se singleton mock kar sakte ho. Rule of thumb: Singleton sirf wahan use karo jahan genuinely ek hi resource chahiye — DB pool, config, logger."
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)' }}
+      >
+        <p className="text-sm text-[#6EE7B7] font-medium">
+          💡 Akshay ka insight: Abhi tak Module aur Singleton se sikhaa ki ek cheez ko manage kaise karo. Ab Observer pattern sikhate hain — alag-alag cheezein aapas mein kaise baat karen bina tightly connected hue! Ye event-driven programming ka dil hai.
+        </p>
       </div>
 
       <div id="observer">
@@ -296,14 +317,14 @@ export default logger  // ESM export = singleton`,
           title="Observer / EventEmitter — Loose Coupling"
           emoji="👁️"
           difficulty="intermediate"
-          whatIsIt="Observer pattern mein ek subject (publisher) multiple observers (subscribers) ko notify karta hai jab state change hoti hai. JavaScript ka addEventListener isi pattern ka implementation hai. Node.js ka EventEmitter bhi same. Pub-Sub variant mein publisher aur subscriber direct connected nahi hote — event bus mediator hota hai."
+          whatIsIt="Socho newspaper subscription — newspaper company ko nahi pata kitne log padhte hain. Jo subscribe karta hai — newspaper milta hai. Jo unsubscribe karta hai — band ho jaata hai. Publisher subscribers ke baare mein kuch nahi jaanta! Observer pattern mein ek subject (publisher) multiple observers (subscribers) ko notify karta hai jab state change hoti hai. JavaScript ka addEventListener isi pattern ka implementation hai — tum daily use karte ho! Node.js ka EventEmitter bhi same. Pub-Sub variant mein publisher aur subscriber direct connected nahi hote — event bus mediator hota hai."
           whenToUse={[
             'Cross-module communication — tight coupling avoid karna',
             'DOM events — click, submit, scroll handlers',
             'Real-time updates — WebSocket messages',
             'Plugin systems — extensible architecture',
           ]}
-          whyUseIt="Observer loose coupling deta hai — publisher subscribers ke baare mein kuch nahi jaanta. New subscribers add karo bina publisher change kiye. Remove karo bina affecting others. Event-driven architecture ka foundation. React, Vue, Angular sab internally Observer use karte hain."
+          whyUseIt="Ab sawaal ye aata hai — bina Observer pattern ke kya hoga? Agar OrderService ko directly EmailService, SMSService, Analytics sab call karne padein — tight coupling! Kal nayi service add karni ho — OrderService ka code change karo. Observer loose coupling deta hai — publisher subscribers ke baare mein kuch nahi jaanta. New subscribers add karo bina publisher change kiye. React, Vue, Angular sab internally Observer use karte hain — ye patterns everywhere hain!"
           howToUse={{
             filename: 'observer.js',
             language: 'javascript',
@@ -395,9 +416,9 @@ document.querySelector('.menu').addEventListener('click', (e) => {
   const action = item.dataset.action
   eventBus.emit(\`menu:\${action}\`, item.dataset)
 })`,
-            explanation: 'EventEmitter Set se listeners store karta hai — same listener multiple baar add nahi hoga. on() unsubscribe function return karta hai — cleanup easy. once() ek baar fire karke automatically remove. Node.js EventEmitter class extend karo service mein — clean API. Event bus modules ko loosely couple karta hai.',
+            explanation: 'Step by step trace karo: on() call hota hai — event ke liye ek Set mein listener store hota hai (Set isliye ki duplicate listeners nahi hote). emit() call hota hai — us event ke Set ke saare listeners forEach se call hote hain. Ek listener remove karo — off() se Set se delete. once() clever trick hai — listener ko ek wrapper mein wrap karo jo fire hone ke baad khud ko remove kar le! Event bus pattern isliye powerful hai — OrderService ko pata hi nahi kaun sun raha hai.',
           }}
-          realWorldScenario="E-commerce mein order creation: OrderService event emit karta hai. EmailService, SMSService, Analytics, Inventory — sab independently listen karte hain. Naya service add karna? EventService.on('order:created', ...) — OrderService code nahi badlata."
+          realWorldScenario="E-commerce mein order creation: OrderService event emit karta hai. EmailService, SMSService, Analytics, Inventory — sab independently listen karte hain. Naya WhatsApp notification service add karna? Sirf ek line: orderService.on('order:created', sendWhatsApp) — OrderService ka ek character bhi nahi badla! Ye hai loose coupling ka jadoo."
           commonMistakes={[
             {
               mistake: 'Event listeners cleanup nahi karna',
@@ -410,8 +431,17 @@ document.querySelector('.menu').addEventListener('click', (e) => {
               fix: 'Events meaningful, coarse-grained rakho. user:updated with diff object. Unnecessary fine-grained events avoid karo.',
             },
           ]}
-          proTip="mitt ya tiny-emitter lightweight EventEmitter libraries hain — 200 bytes! RxJS zyada powerful hai — Observables, operators, backpressure. Signals (Angular 17+, Preact) modern reactive primitive hain — Observer pattern ka evolution. BroadcastChannel API cross-tab communication ke liye."
+          proTip="Yaad rakho ek important baat — event listeners cleanup ZAROOR karo! React useEffect mein return function se remove karo. Nahi kiya toh memory leak — page slow ho jaayega dheere dheere. mitt ya tiny-emitter lightweight EventEmitter libraries hain — 200 bytes! RxJS zyada powerful hai — Observables, operators, backpressure. Signals (Angular 17+, Preact) modern reactive primitive hain — Observer pattern ka evolution."
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.25)' }}
+      >
+        <p className="text-sm text-[#93C5FD] font-medium">
+          💡 Akshay ka insight: Module, Singleton, Observer — teeno patterns samajh aaye. Ab Factory pattern — object banane ka ek clean, powerful tarika. new keyword ko chhupaao, creation logic centralize karo!
+        </p>
       </div>
 
       <div id="factory">
@@ -419,14 +449,14 @@ document.querySelector('.menu').addEventListener('click', (e) => {
           title="Factory Pattern — Object Creation Magic"
           emoji="🏭"
           difficulty="intermediate"
-          whatIsIt="Factory pattern object creation logic centralize karta hai — new keyword hide karta hai, creation complex ho sakti hai. Factory function type decide kar sakti hai runtime pe — polymorphism. Abstract Factory multiple related objects ek saath create karta hai. Builder pattern complex object step-by-step banata hai."
+          whatIsIt="Ek surprising sawaal — Amazon pe payment karo toh kya hota hai andar? Kya Amazon ka code Credit Card ke liye alag, UPI ke liye alag check karta hai har jagah? Nahi! Factory pattern object creation logic centralize karta hai — caller ko sirf bolta hai 'mujhe UPI payment object chahiye' aur factory sab handle karta hai. new keyword hide karta hai, creation complex ho sakti hai. Factory function type decide kar sakti hai runtime pe — polymorphism. Builder pattern complex object step-by-step banata hai."
           whenToUse={[
             'Object type runtime pe decide hota ho — user role se',
             'Complex object creation — validation, defaults, dependencies',
             'new keyword hide karna — nicer API',
             'Testing mein mock objects create karna',
           ]}
-          whyUseIt="Factory centralizes creation logic — ek jagah change karo, sab jagah reflect. Type decide runtime pe — plugin systems, feature flags. Caller ko implementation details nahi jaannni — factory se lo, use karo. Testing mein factory se different types inject karo."
+          whyUseIt="Factory centralizes creation logic — ek jagah change karo, sab jagah reflect. Type decide runtime pe — plugin systems, feature flags. Caller ko implementation details nahi jaannni — factory se lo, use karo. Aur sabse bada fayda? Nayi payment method add karni ho — sirf factory mein ek case add karo. Calling code ek character nahi badlata. Testing mein factory se different types inject karo."
           howToUse={{
             filename: 'factory.js',
             language: 'javascript',
@@ -511,9 +541,9 @@ const query = new QueryBuilder()
   .page(2, 20)
   .build()
 // SELECT * FROM users WHERE active = true AND role = "admin" ORDER BY name ASC LIMIT 20 OFFSET 20`,
-            explanation: 'Simple factory function creation logic centralize karta hai. Polymorphic factory type-based object creation karta hai — same interface, different implementations. Builder pattern method chaining se complex object step-by-step banata hai — readable aur flexible.',
+            explanation: 'Trace karo polymorphic factory: createPaymentMethod("upi", config) call hota hai. methods["upi"] function milta hai. Woh function config se ek object return karta hai jiske andar charge() aur refund() methods hain. Calling code sirf payment.charge(999) call karta hai — uski baat nahi ke andar UPI hai ya Credit Card. Same interface, different implementations — yehi hai polymorphism ka real world use! Builder pattern method chaining se complex object step-by-step banata hai — readable aur flexible.',
           }}
-          realWorldScenario="React component library mein: createButton({ variant: 'primary' | 'secondary', size: 'sm' | 'md' | 'lg' }) — sahi class combinations generate karo. API client factory: createApiClient({ baseUrl, apiKey, timeout }) — configured instance return karo."
+          realWorldScenario="React component library mein: createButton({ variant: 'primary' | 'secondary', size: 'sm' | 'md' | 'lg' }) — sahi class combinations generate karo. API client factory: createApiClient({ baseUrl, apiKey, timeout }) — configured instance return karo. Aur sunno — Axios khud factory pattern use karta hai: axios.create({ baseURL }) — configured instance deta hai!"
           commonMistakes={[
             {
               mistake: 'Factory ke andar too much logic daalna',
@@ -526,8 +556,17 @@ const query = new QueryBuilder()
               fix: 'Chain ke end mein .build() call karo. TypeScript mein return type enforce karo.',
             },
           ]}
-          proTip="Abstract Factory pattern ke liye: ek factory jo factories banaye — DI container ya service locator. Testing mein createTestEnvironment() factory se sab mock services milti hain. Storybook mein createComponent() factory se different states aasani se test hoti hain."
+          proTip="Builder pattern ka method chaining ekdum addictive hai! QueryBuilder mein har method this return karta hai — isliye chain hota hai. Ye pattern Knex.js, Prisma query builder mein use hota hai. Interview mein poochho: 'Factory vs Constructor mein kya fark hai?' — Factory creation logic hide karta hai aur polymorphism enable karta hai. Constructor direct class ke saath tied hota hai."
         />
+      </div>
+
+      <div
+        className="rounded-2xl p-4 my-2"
+        style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)' }}
+      >
+        <p className="text-sm text-[#FCA5A5] font-medium">
+          💡 Akshay ka insight: Ye chapter ka sabse important pattern hai — Strategy! Isko samajh lo toh Dependency Injection (DI) bhi automatically samajh aayega. Aur DI samajhne wala developer — senior develop developer!
+        </p>
       </div>
 
       <div id="strategy">
@@ -535,14 +574,14 @@ const query = new QueryBuilder()
           title="Strategy Pattern — Swappable Algorithms"
           emoji="♟️"
           difficulty="intermediate"
-          whatIsIt="Strategy pattern algorithm ko runtime pe swap karta hai — same interface, different implementations. Sorting strategy, payment strategy, validation strategy — sab runtime configurable. if/else chains replace karta hai. Dependency Injection isi pattern ka application hai — dependencies inject karo, hard-code nahi karo."
+          whatIsIt="Ek bade e-commerce site ka code socho — payment ke liye if/else: if (type === 'credit') { ... } else if (type === 'upi') { ... } else if (type === 'wallet') { ... } — nayi payment type add karo toh ye if/else chain badhti jaati hai. Yahi problem Strategy pattern solve karta hai! Algorithm ko runtime pe swap karo — same interface, different implementations. Sorting strategy, payment strategy, validation strategy — sab runtime configurable. Dependency Injection isi pattern ka direct application hai — dependencies inject karo, hard-code nahi karo."
           whenToUse={[
             'Multiple algorithms — sorting, validation, payment methods',
             'Runtime algorithm selection — user preference, feature flags',
             'if/else chains replace karna',
             'Testing mein real implementation ko mock se replace karna — DI',
           ]}
-          whyUseIt="Strategy open/closed principle follow karta hai — new strategies add karo without existing code change. if/else chains se better — each strategy independently testable. Dependency injection se mocking easy — test mein fake strategy inject karo. Plugin architectures Strategy se build hoti hain."
+          whyUseIt="Open/Closed Principle yaad hai? 'Open for extension, closed for modification.' Strategy isi principle ka implementation hai — naye strategies add karo bina existing code change kiye. Testing mein sabse bada fayda: DI ke saath mockDb, mockEmailService inject karo — real database connect nahi hoti, real emails nahi jaate. Tests fast, isolated, reliable. Plugin architectures Strategy se build hoti hain."
           howToUse={{
             filename: 'strategy.js',
             language: 'javascript',
@@ -639,9 +678,9 @@ const service = new OrderService(
   mockEmailService, // No actual emails sent
   noopLogger,      // Silent
 )`,
-            explanation: 'Strategy same interface maintain karta hai — context ko nahi pata kaun sa implementation use ho raha hai. setStrategy() runtime switch enable karta hai. DI constructor mein dependencies inject karta hai — hard-coded nahi. Testing mein mock inject karo — integration test karo without real DB/email.',
+            explanation: 'Step by step trace karo DI example: OrderService constructor mein db, emailService, logger inject ho rahe hain. createOrder() call hota hai — this.db.insert() call hota hai jo bhi db inject kiya tha. Production mein real MongoDB. Test mein in-memory mockDb. Same code, alag behavior! Ye hai Dependency Injection ki beauty — code decouple ho jaata hai. Strategy mein context sirf strategy.pay() call karta hai — andar kya hoga, usse koi matlab nahi.',
           }}
-          realWorldScenario="Sorting feature mein: user choose kare — by price ascending, by rating descending, by popularity. Har ek alag strategy object. ProductList component sirf currentStrategy.sort(products) call karta hai — implementation details nahi jaanta. New sort option add karna? New strategy object, register karo, done."
+          realWorldScenario="Sorting feature mein: user choose kare — by price ascending, by rating descending, by popularity. Har ek alag strategy object. ProductList component sirf currentStrategy.sort(products) call karta hai — implementation details nahi jaanta. New sort option add karna? New strategy object, register karo, done — ek line bhi ProductList mein nahi badla! Ye baar baar socho jab bhi if/else chain zyada lamba ho raha ho."
           commonMistakes={[
             {
               mistake: 'Strategy mein state store karna',
@@ -654,7 +693,7 @@ const service = new OrderService(
               fix: 'Strategy pattern tab use karo jab 3+ algorithms ho aur runtime switching genuinely needed ho.',
             },
           ]}
-          proTip="JavaScript mein strategies simple objects ya functions ho sakti hain — classes zaroorat nahi. const strategies = { credit_card: creditCardFn, upi: upiFn }. strategies[selectedType](amount, details). DI containers (InversifyJS, TSyringe) large apps mein automatic injection manage karte hain."
+          proTip="Yaad rakho — JavaScript mein strategies simple objects ya functions ho sakti hain — classes zaroorat nahi. const strategies = { credit_card: creditCardFn, upi: upiFn }. strategies[selectedType](amount, details). Object lookup is baar if/else ki jagah! DI containers (InversifyJS, TSyringe) large apps mein automatic injection manage karte hain. NestJS pure DI pe based hai — iska seedha connection Strategy + DI pattern se hai!"
         />
       </div>
 

@@ -67,10 +67,10 @@ export default function JSChapter3Content() {
         style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.2)' }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3">
-          Operators & Control Flow — Code Ka Direction
+          Operators &amp; Control Flow — Code Ka Dimaag
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Bhai, operators woh tools hain jo values ke saath kaam karte hain — add karo, compare karo, combine karo. Aur control flow decide karta hai ki code kaunsi direction mein jaayega. Ye dono milke programming ka basic logic banate hain.
+          <strong className="text-[#F5F5F7]">Ek shocking sawaal</strong> — <code className="text-[#06B6D4]">0.1 + 0.2 === 0.3</code> JavaScript mein kya return karta hai? <strong className="text-[#F59E0B]">false!</strong> Kyunki floating point representation mein 0.1 + 0.2 = 0.30000000000000004 hota hai. Ye woh cheez hai jo sirf JS mein nahi — sab languages mein hota hai IEEE 754 standard ki wajah se. Operators sikhna matlab numbers, comparisons aur logic — sab ki under-the-hood reality samajhna.
         </p>
         <div
           className="rounded-xl p-4 mt-4"
@@ -82,13 +82,24 @@ export default function JSChapter3Content() {
         </div>
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}
+      >
+        <p className="text-sm font-bold text-[#F59E0B] mb-1">Ye Sirf Math Nahi Hai — Ye Logic Hai</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ab sawaal ye aata hai</strong> — <code className="text-[#06B6D4]">let a = 5; console.log(a++)</code> kya print hoga? <strong className="text-[#F5F5F7]">5</strong> — kyunki post-increment pehle value use karta hai, phir badhata hai. Lekin <code className="text-[#06B6D4]">++a</code> hota toh <strong className="text-[#F5F5F7]">6</strong> aata — pehle badhata hai, phir return karta hai. Ye difference loops mein kabhi kabhi matter karta hai!
+        </p>
+      </div>
+
       {/* Card 1: Arithmetic & Assignment */}
       <div id="arithmetic-operators">
         <ConceptCard
-          title="Arithmetic & Assignment Operators"
+          title="Arithmetic &amp; Assignment Operators — Numbers Ka Khel"
           emoji="🔢"
           difficulty="beginner"
-          whatIsIt="Arithmetic operators numbers ke saath math karte hain — +, -, *, /, %, **. Assignment operators variable mein value store karte hain — =, +=, -=, *=, /=, %=, **=. Aur unary operators hain — ++, -- jo value ek se badhate ya ghatate hain."
+          whatIsIt="Arithmetic operators numbers ke saath math karte hain — +, -, *, /, %, **. Assignment operators variable mein value store karte hain — =, +=, -=, *=, /=, %=, **=. Aur unary operators hain — ++, -- jo value ek se badhate ya ghatate hain. Yaar, % (modulo) ka use sirf remainder ke liye nahi — even/odd check aur circular arrays ke liye bhi hota hai!"
           whenToUse={[
             'Math calculations — price compute karna, discount lagana, total nikalna',
             '+= aur -= jab existing value update karni ho bina rewriting ke',
@@ -154,13 +165,24 @@ console.log(++a)  // 7 — pehle increment, phir use`,
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#10B981] mb-1">=== Hamesha — Ek Rule Jo Sab Fix Kar Deta Hai</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ye yaad rakho</strong> — <code className="text-[#06B6D4]">0 == false</code> is <strong className="text-[#F59E0B]">true</strong>. <code className="text-[#06B6D4]">0 === false</code> is <strong className="text-[#F59E0B]">false</strong>. == coercion karta hai, === nahi. Aur <code className="text-[#06B6D4]">null == undefined</code> true hai — ye ek accepted exception hai. Lekin hamesha rule: <strong className="text-[#F5F5F7]">triple equals (===) use karo</strong>. Ek baar yaad ho gaya, life mein type bugs nahi aayenge!
+        </p>
+      </div>
+
       {/* Card 2: Comparison & Logical */}
       <div id="comparison-logical">
         <ConceptCard
-          title="Comparison & Logical Operators"
+          title="Comparison &amp; Logical Operators — Short-Circuit Ka Jadoo"
           emoji="⚖️"
           difficulty="beginner"
-          whatIsIt="Comparison operators values compare karte hain — ==, ===, !=, !==, >, <, >=, <=. Logical operators conditions combine karte hain — && (AND), || (OR), ! (NOT). Ye sab boolean (true/false) return karte hain. Short-circuit evaluation ek powerful feature hai jo performance aur safety dono improve karta hai."
+          whatIsIt="Comparison operators values compare karte hain — ==, ===, !=, !==, >, &lt;, >=, &lt;=. Logical operators conditions combine karte hain — && (AND), || (OR), ! (NOT). Ye sab boolean return karte hain. Short-circuit evaluation ek powerful feature hai — && mein agar pehla false ho, doosra evaluate hi nahi hota. || mein agar pehla true ho, doosra skip. Ye performance aur null safety dono deta hai!"
           whenToUse={[
             'Hamesha === aur !== use karo — kabhi == ya != mat use karo (type coercion bugs aate hain)',
             '&& short-circuit se safely property access karo — user && user.name',
@@ -224,10 +246,10 @@ config.retry &&= 3        // assign only if truthy`,
       {/* Card 3: if/else, ternary, nullish coalescing */}
       <div id="conditionals">
         <ConceptCard
-          title="if/else, Ternary & Nullish Coalescing"
+          title="if/else, Ternary &amp; Nullish Coalescing — Sahi Tool, Sahi Jagah"
           emoji="🔀"
           difficulty="beginner"
-          whatIsIt="if/else code ka flow control karta hai conditionally. Ternary operator (condition ? valueIfTrue : valueIfFalse) ek-liner conditional hai. Nullish coalescing (??) sirf null/undefined par fallback deta hai. Teen alag tools, teen alag use cases — sahi choice code readability dramatically improve karta hai."
+          whatIsIt="if/else code ka flow control karta hai conditionally. Ternary operator (condition ? valueIfTrue : valueIfFalse) ek-liner conditional hai — React JSX mein bade kaam aata hai. Nullish coalescing (??) sirf null/undefined par fallback deta hai — ye || se alag hai! ??: sirf null/undefined replace karta hai. ||: koi bhi falsy replace karta hai. Yahi fark bugs aur no-bugs ka hai!"
           whenToUse={[
             'if/else: complex conditions, multiple branches, side effects (console.log, function calls)',
             'Ternary: simple value selection — ek expression mein return ya assign karna',
@@ -317,13 +339,24 @@ function getLabel(isAdmin, isActive) {
         />
       </div>
 
+      {/* Akshay-style insight box before loops */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#7C3AED] mb-1">for...of vs for...in — Confusion Khatam Karo</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ab sawaal ye aata hai</strong> — array iterate karne ke liye for...in use karo? Nahi bhai! for...in array indices string ke roop mein deta hai — &quot;0&quot;, &quot;1&quot; — aur prototype properties bhi aa sakti hain! for...of arrays, strings, Maps, Sets ke liye hai — actual values deta hai. Rule: <strong className="text-[#F59E0B]">for...of arrays ke liye, for...in objects ke liye</strong>.
+        </p>
+      </div>
+
       {/* Card 4: Loops */}
       <div id="loops">
         <ConceptCard
-          title="Loops — for, while, for...of, for...in"
+          title="Loops — for, while, for...of, for...in — Kaun Kab?"
           emoji="🔁"
           difficulty="beginner"
-          whatIsIt="Loops code ko baar baar repeat karte hain. for loop jab count pata ho. while loop jab condition-based repetition chahiye. for...of arrays, strings, Maps, Sets iterate karta hai — values milti hain. for...in objects iterate karta hai — keys milti hain. Har loop ka apna use case hai — galat loop use karna bugs aur confusion laata hai."
+          whatIsIt="Loops code ko baar baar repeat karte hain. for loop jab exact count pata ho. while loop jab condition-based repetition chahiye. for...of arrays, strings, Maps, Sets iterate karta hai — values milti hain (modern JS ka choice!). for...in objects iterate karta hai — keys milti hain. Har loop ka apna use case hai — galat loop use karna subtle bugs laata hai jo dhundna mushkil hota hai."
           whenToUse={[
             'for loop: jab exact count pata ho — 1 se 100 tak, array ka index chahiye',
             'while: jab condition-based loop chahiye — "jab tak user ne quit na kiya"',
@@ -405,10 +438,10 @@ for (let i = 0; i < 10; i++) {
       {/* Card 5: switch */}
       <div id="switch-statement">
         <ConceptCard
-          title="switch Statement — Multiple Branches"
+          title="switch Statement — Fall-Through Trap Se Bacho"
           emoji="🎛️"
           difficulty="beginner"
-          whatIsIt="switch statement ek value ko multiple possible values ke saath compare karta hai. Jab ek variable ke multiple discrete values pe alag behavior chahiye, switch if/else chain se more readable hota hai. Lekin fall-through behavior, type coercion issues, aur verbosity ke wajah se often object/Map lookup ya if/else better hoti hai."
+          whatIsIt="switch statement ek value ko multiple possible values ke saath compare karta hai — strict === comparison karta hai, magic nahi science hai. Lekin yaar, ek trap hai — bina break ke execution 'fall through' ho jaati hai next case mein! Ye silent bug hai — Ab sawaal ye aata hai ki aaj-kal switch use karein ya nahi? Professionals object lookup ya Map dispatch prefer karte hain — cleaner, testable, no fall-through risk."
           whenToUse={[
             'Ek variable ke 3+ discrete values pe alag action chahiye',
             'String ya number based routing — command parser, menu handler',
@@ -480,9 +513,9 @@ else console.log('Unknown command')`,
       <div id="chapter-quiz">
         <div className="mb-4">
           <h3 className="text-lg font-display font-bold text-[#F5F5F7] mb-1">
-            Chapter 3 Quiz — Operators & Control Flow
+            Chapter 3 Quiz — Operators &amp; Logic Ka Test
           </h3>
-          <p className="text-sm text-[#71717A]">5 questions — 80%+ chahiye clear karne ke liye!</p>
+          <p className="text-sm text-[#71717A]">Ab sawaal ye aata hai — kya tumhara logic solid hai? 5 sawaal, 80%+ chahiye!</p>
         </div>
         <QuizSection questions={quizQuestions} chapterSlug="operators-control-flow" />
       </div>

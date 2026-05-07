@@ -149,16 +149,17 @@ export default function Chapter3Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Module System — Code Ko Organize Karo
+          require() aur import — ye dono same kaam karte hain? GALAT!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
+          Suno — bahut log sochte hain{' '}
           <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">require()</code>{' '}
-          vs{' '}
-          <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">import</code>?{' '}
-          CommonJS vs ESM? Ye confusion hamesha ke liye khatam karo.
+          aur{' '}
+          <code className="text-[#9D5FF0] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded text-sm">import</code>{' '}
+          sirf alag syntax hain — same kaam karte hain. YE GALAT HAI! CommonJS (CJS) synchronous hai, ESM async aur static hai. Ye sirf syntax ka nahi — architecture ka difference hai. CJS runtime par decide karta hai kya load karna hai, ESM compile-time par. Ye difference bundlers ki tree-shaking ability ko affect karta hai, top-level await ko, aur bahut kuch.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Node.js mein do module systems hain — purana CommonJS (CJS) aur naya ES Modules (ESM). Dono ke apne use cases hain. Is chapter mein hum dono samjhenge, unka interop dekhenge, aur tum confident ho jaoge kab kya use karna hai.
+          Bhai, ye confusion hamesha ke liye khatam karo — is chapter ke baad tum confidently decide kar paoge kab require(), kab import, aur kab dono saath.
         </p>
       </div>
 
@@ -168,7 +169,7 @@ export default function Chapter3Content() {
           title="Module Kya Hai?"
           emoji="📦"
           difficulty="beginner"
-          whatIsIt="Module ek isolated JavaScript file hai. Uske andar jo variables, functions, classes declare hain woh by default baaki files ko accessible nahi hain — jab tak tum explicitly export na karo. Ye encapsulation Node.js ka foundation hai. Socho jaise ek dabba — andar kya hai tum choose karte ho ki kya bahar aane do."
+          whatIsIt="Kya aap jaante ho — agar Node.js mein modules na hote, har ek variable globally available hota! Imagine karo — 100 files hain, sab ke variables clash karte hain, koi control nahi. Module ek isolated dabba hai. Jo andar hai woh locked hai jab tak tum explicitly export na karo. Bhai, ye encapsulation sirf organization ke liye nahi — ye security aur predictability ke liye bhi hai. Ek file ka private state doosri file affect nahi kar sakti. Ye Node.js ka foundation hai — sab kuch modules par build hua hai!"
           whenToUse={[
             'Code ko logical units mein organize karna ho — har file ek responsibility',
             'Global scope pollution se bachna ho — variables ek file mein hi rahein',
@@ -176,13 +177,7 @@ export default function Chapter3Content() {
             'Testing aasaan banani ho — isolated modules individually test ho sakte hain',
             'Team mein kaam karte waqt — clear boundaries define karo files ke beech',
           ]}
-          whyUseIt="Bina modules ke, sabka code ek hi file mein hoga ya global variables share honge — spaghetti code ka nightmare. Modules se:
-1. Har file apna scope maintain karti hai
-2. Circular dependencies detect hoti hain
-3. Node.js modules cache karta hai — performance better hoti hai
-4. Code maintainable aur testable rehta hai
-
-Node.js ka poora ecosystem (npm packages) modules par hi based hai."
+          whyUseIt="Modules ke bina kya hota? Sochte hain — ek 50,000 line JavaScript file, sab variables global, koi alag scope nahi. Team ka ek developer ek variable change kare, poori app crash ho jaaye. Ye actually hota tha purane days mein! Modules se: (1) Har file apna scope maintain karti hai — koi collision nahi. (2) Node.js modules cache karta hai — same file baar baar require karo, ek hi instance milega. (3) Circular dependencies detect hoti hain. (4) Testing easy — ek module independently test karo. Aur sab se important: npm ke 2 million packages modules ki wajah se exist karte hain!"
           howToUse={{
             filename: 'math.js',
             language: 'javascript',
@@ -214,7 +209,7 @@ console.log(math.PI)              // 3.14159
 // math ke internal variables bahar nahi jaate`,
             explanation: 'math.js mein PI, add, multiply define hain. Sirf jo module.exports mein daala woh bahar jaata hai. app.js mein require() se import karo — selective access milti hai. Ye encapsulation hai!',
           }}
-          realWorldScenario="Express.js application mein har route alag file mein hoti hai — userRoutes.js, productRoutes.js, authRoutes.js. Har file apna logic manage karti hai. main app.js mein sab routes import hoti hain. Agar modules na hote, ek hi massive file mein sab kuch hota — team ka kaam impossible ho jaata."
+          realWorldScenario="Ek production Express app sochte hain — userRoutes.js, productRoutes.js, authRoutes.js, paymentRoutes.js, each 200-300 lines. Modules ki wajah se: ek developer auth kaam kar raha hai, doosra payment — koi conflict nahi. main app.js sirf routes mount karta hai. Naya developer join kiya? Seedha authRoutes.js padho — context clear hai, 3000 line file nahi padhni. Ye scalable teams ke liye mandatory hai."
           commonMistakes={[
             {
               mistake: 'Circular dependencies banana — A requires B, B requires A',
@@ -227,7 +222,7 @@ console.log(math.PI)              // 3.14159
               fix: 'Hamesha apni files ke end mein verify karo ki sab zaroori cheezein export ki hain. Named exports use karo clarity ke liye.',
             },
           ]}
-          proTip="Module caching: ek baar require() hone ke baad, Node.js module ko cache kar leta hai. Baar baar require('./config') karo — same instance milega, naya nahi. Iska matlab hai ki module-level state shared hoti hai. Isko samjho — singleton pattern free mein milta hai!"
+          proTip="Module caching ek hidden superpower hai — aur hidden gotcha bhi! Ek baar require('./config') karo, Node.js cache karta hai. Baar baar require karo — same instance milega. Matlab module-level state share hoti hai. Singleton pattern free mein! Lekin test mein problem ho sakti hai — agar module state carry kare tests ke beech. Test mein cache clear karo: delete require.cache[require.resolve('./config')]. Ye pattern advanced testing mein kaam aata hai."
         />
       </div>
 
@@ -237,7 +232,7 @@ console.log(math.PI)              // 3.14159
           title="CommonJS — require() aur module.exports"
           emoji="📌"
           difficulty="beginner"
-          whatIsIt="CommonJS Node.js ka original module system hai — 2009 se. require() synchronously module load karta hai — matlab code immediately execute hota hai aur result milta hai. module.exports se export karte hain. Node.js default mein CJS use karta hai (jab tak package.json mein 'type': 'module' na ho). Purana hai lekin powerful hai — poora npm ecosystem iske upar build hua hai."
+          whatIsIt="2009 se hai CommonJS — Node.js ka original system. Aur 2025 mein bhi npm ke 80%+ packages iske upar hain! Ye battle-tested hai. require() synchronously module load karta hai — matlab ye function call return karta hai tab jab module poora load ho jaaye. Koi Promise nahi, koi callback nahi — seedha wahi milta hai jo module.exports mein daala gaya hai. Purana hai, lekin iska matlab weak nahi hai. Production mein lagay aur kaam karta rehega!"
           whenToUse={[
             'Existing Node.js projects jo CJS use kar rahe hain',
             'npm packages jo CJS export karte hain unhe use karte waqt',
@@ -245,7 +240,7 @@ console.log(math.PI)              // 3.14159
             'Legacy codebases jahan migration cost zyada hai',
             '__dirname aur __filename naturally chahiye ho',
           ]}
-          whyUseIt="CJS battle-tested hai — 15+ saal ka ecosystem iske upar hai. npm ke 2 million+ packages mein se majority CJS use karti hain. Synchronous loading development mein predictable hai. require() conditional ya dynamic bhi ho sakta hai — runtime par decide kar sakte ho kya load karna hai."
+          whyUseIt="CJS ka ek killer feature hai jo ESM ke paas nahi — dynamic runtime require! Dekho ye pattern: const env = process.env.NODE_ENV; const config = require('./config.' + env). Runtime par decide karo kya load karna hai! ESM mein ye static import se nahi hota — dynamic import() async hai. CJS mein condition ke hisaab se module load karna natural hai. Plugin systems, feature flags, environment-specific configs — ye sab CJS ke saath bahut easy hain."
           howToUse={{
             filename: 'user-service.js',
             language: 'javascript',
@@ -289,7 +284,7 @@ console.log(__filename)  // /Users/you/project/app.js
 console.log(__dirname)   // /Users/you/project`,
             explanation: 'CJS mein teen export styles hain. Style 1 (module.exports = {}) sabse clear hai. exports shorthand same kaam karta hai lekin module.exports ko reassign karo toh link toot jaata hai. __dirname aur __filename CJS mein globally available hain — ESM mein nahi.',
           }}
-          realWorldScenario="Express.js ke sab router files CJS use karti hain: const router = require('express').Router(). Module caching ki wajah se express ek baar load hota hai, sab files same instance share karti hain. Real production apps mein ye pattern lakhon routes handle karta hai."
+          realWorldScenario="Ek production Node.js app mein config.development.js, config.production.js, config.test.js teen alag files hain. CJS se: const config = require('./config.' + process.env.NODE_ENV) — ek line mein environment-specific config! ESM mein ye dynamic import() await banana padta. CJS ki simplicity real-world apps mein kitni kaam aati hai ye dekho — legacy ya nahi, powerful hai."
           commonMistakes={[
             {
               mistake: "exports.foo = 'bar' ke baad module.exports = {} likhdena",
@@ -302,7 +297,7 @@ console.log(__dirname)   // /Users/you/project`,
               fix: "require('./utils') — clean aur standard. Lekin .ts files ke saath TypeScript projects mein extension rules alag hote hain.",
             },
           ]}
-          proTip="__filename aur __dirname CJS mein available hain natively — ESM mein nahi (alag workaround chahiye). Agar tumhara code heavy file operations karta hai (like reading templates relative to current file), CJS rakhne mein samajhdaari hai sirf is ek reason se bhi."
+          proTip="CJS ka ek underrated gift: __filename aur __dirname free mein milte hain. ESM mein ye nahi hai — import.meta.url se manually banana padta hai. Bhai, ye sirf convenience nahi — agar tumhara code templates, assets, ya files current file ke relative path se load karta hai, CJS mein ye bahut clean hai. ESM mein ye ek extra boilerplate hai. Chhoti cheez, lekin daily development mein bahut fark padta hai!"
         />
 
         {/* DiffBlock inside Chapter content */}
@@ -352,7 +347,7 @@ module.exports = class Logger {
           title="ES Modules — Modern import/export"
           emoji="🆕"
           difficulty="beginner"
-          whatIsIt="ES Modules (ESM) JavaScript ka modern, official module system hai — ECMAScript 2015 (ES6) mein introduce hua. Browsers aur Node.js dono mein kaam karta hai. Static analysis possible hai (bundlers unused code remove kar sakte hain — tree shaking). Async loading support karta hai. Cleaner syntax. Node.js mein ESM use karne ke liye ya .mjs extension use karo ya package.json mein 'type': 'module' set karo."
+          whatIsIt="ESM JavaScript ka official, future-proof module system hai — 2015 mein spec mein aaya, Node.js mein stable support 2020 mein aaya. Ye CJS se fundamentally alag hai — imports static hote hain, compile-time par resolve hote hain. Matlab bundler (Vite, Webpack) file padhne se pehle hi jaanta hai kaunse imports hain. Isliye tree-shaking possible hai — jo use nahi ho raha woh bundle mein nahi jaata. Aur ESM browser mein bhi natively kaam karta hai — same file server aur browser mein share kar sakte ho. Ye future hai!"
           whenToUse={[
             'Naye projects — ESM future hai, CJS legacy',
             'Frontend-backend code sharing — same file browser aur Node mein',
@@ -360,7 +355,7 @@ module.exports = class Logger {
             'Top-level await chahiye ho — ESM mein directly possible hai',
             'TypeScript projects — ESM naturally fit karta hai',
           ]}
-          whyUseIt="ESM ke fayde: Static imports top-level hote hain — bundlers statically analyze karke unused exports remove kar sakte hain (tree shaking). Top-level await support — kisi async wrapper mein wrap karna nahi padta. Better error messages. Browser compatibility. import.meta se file-level metadata milta hai."
+          whyUseIt="ESM ka sab se bada superpower — top-level await! CJS mein async function banana padta tha sab kuch await karne ke liye. ESM mein seedha: const data = await fetch(url) — module level par! Database connections, API calls, startup configuration — sab module level par async ho sakta hai. Aur tree-shaking: lodash ka sirf cloneDeep use karo, sirf wahi bundle mein jaayega — baaki 100KB waste nahi hogi. Production bundle size 30-50% kam ho sakti hai sirf ESM switch karne se!"
           howToUse={{
             filename: 'math.mjs',
             language: 'javascript',
@@ -406,7 +401,7 @@ console.log(import.meta.url)       // file:///Users/you/project/app.mjs
 console.log(import.meta.dirname)   // Node 21.2+ mein available`,
             explanation: 'ESM mein named exports aur default export alag concepts hain. Named: import { add } from. Default: import config from. Re-exports se barrel pattern bana sakte ho — ek file se sab export karo. Top-level await ESM ka superpower hai.',
           }}
-          realWorldScenario="Next.js, Remix, aur modern React apps sab ESM use karte hain. Vite (superfast dev server) ESM par based hai — native browser ESM use karta hai development mein. Production build mein tree shaking se bundle size drastically kam hoti hai — unused functions automatically remove hoti hain."
+          realWorldScenario="Vite — ye duniya ka fastest dev server — seedha browser ESM use karta hai development mein. Koi bundling nahi, native import statements. Ye isliye possible hai kyunki ESM static hai — browser khud imports resolve kar sakta hai. CJS ke saath ye nahi hota tha. Ye Next.js, Remix, SvelteKit — sab modern frameworks ESM par build hain. Naya project shuru karo? ESM. Koi sawaal nahi."
           commonMistakes={[
             {
               mistake: "import { readFile } from 'fs' — extension chhod dena local files mein",
@@ -419,7 +414,7 @@ console.log(import.meta.dirname)   // Node 21.2+ mein available`,
               fix: "import use karo. Agar kisi CJS module ko dynamically load karna hai, createRequire use karo: import { createRequire } from 'module'; const require = createRequire(import.meta.url)",
             },
           ]}
-          proTip="package.json mein 'type': 'module' set karo toh .js files ESM ban jaati hain. Ya .mjs extension use karo specific files ke liye — ye bina package.json change ke kaam karta hai. Mixed projects mein: .mjs = ESM, .cjs = CJS, chahe package.json kuch bhi kahe."
+          proTip="ESM mein ek trap hai jo sabko milta hai — local imports mein .js extension mandatory hai! import { foo } from './utils' kaam nahi karega — import { foo } from './utils.js' chahiye. CJS mein extension optional tha. Node.js strict hai is baare mein. Aur ek aur — .mjs extension hamesha ESM, .cjs extension hamesha CJS — chahe package.json mein kuch bhi likha ho. Extension > package.json. Ye yaad karo!"
         />
 
         <div className="mt-6">
@@ -475,7 +470,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))`,
           title="CJS vs ESM — Decision Guide"
           emoji="⚖️"
           difficulty="intermediate"
-          whatIsIt="CJS aur ESM dono powerful hain — lekin alag use cases ke liye. Naya project shuru kar rahe ho? ESM. Purana Express app maintain kar rahe ho? CJS. npm package publish kar raha hai? Dual CJS+ESM support karo. Ye guide confusion hamesha ke liye khatam karega."
+          whatIsIt="Ab ek baar mein poora decision clear karte hain! Ye ek common question hai: 'CJS use karoon ya ESM?' Galat sawaal hai — sahi sawaal hai: 'Mere project ki context kya hai?' Naya project = ESM, koi doubt nahi. Purana project = CJS mein raho jab tak pain nahi ho. npm package = dono support karo (dual exports). TypeScript project = ESM naturally fit karta hai. Aur ek warning: CJS project mein pure-ESM npm packages (sindresorhus ke sab packages) use karna pain deta hai — dynamic import() banana padta hai. Ye 'ESM Hell' hai!"
           whenToUse={[
             'CJS: Existing Node.js projects, legacy codebases, pure server-side apps',
             'ESM: Naye projects, TypeScript, Vite/Next.js/Remix, browser+Node shared code',
@@ -483,7 +478,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))`,
             'ESM: Jab top-level await chahiye (database connections at startup)',
             'CJS: Jab dynamic require() runtime mein chahiye without dynamic import()',
           ]}
-          whyUseIt="Decision simple karo: Agar naya project hai — ESM. Agar existing CJS project hai — migrate karna optional hai, force mat karo. npm package publish karna hai — dual exports set karo (conditional exports in package.json). Interop dono directions mein possible hai lekin tricky hai."
+          whyUseIt="Dual package setup samjho: package.json ke exports field mein 'import' (ESM users ke liye) aur 'require' (CJS users ke liye) dono entries daalo. ESM wala .mjs file, CJS wala .cjs file. Koi bhi package install kare — automatically sahi version milega. CJS project mein ESM module load karna hai? require() nahi chalega! async function ke andar dynamic import() use karo. ESM se CJS import? Mostly seedha kaam karta hai — default export milta hai."
           howToUse={{
             filename: 'interop-examples.js',
             language: 'javascript',
@@ -522,7 +517,7 @@ import { readFileSync } from 'fs'        // Node built-in CJS, ESM mein kaam kar
 import { cloneDeep } from 'lodash'       // May work or may not — depends on package`,
             explanation: 'Dual package setup se CJS aur ESM dono users support hote hain. CJS se pure ESM package load karne ke liye async import() use karo. ESM se CJS packages usually directly import ho jaate hain.',
           }}
-          realWorldScenario="sindresorhus ke packages (chalk, got, etc.) pure ESM hain — agar tumhara project CJS hai toh dynamic import() use karna padega. Isko 'ESM Hell' kaha jaata hai. Lesson: naye projects ESM mein shuru karo taaki future-proof raho."
+          realWorldScenario="Sindre Sorhus — chalk, got, execa, ora — 200+ popular packages ke creator — ne declare kiya ki sab packages pure ESM honge. CJS projects mein ye packages require() se nahi aa sakte. 'ESM Hell' shuru hua — developers ek ek package ke liye dynamic import() wrappers likhne lage. Lesson: Naya project hamesha ESM se shuru karo. Future-proof rahoge aur ye pain kabhi nahi milega."
           commonMistakes={[
             {
               mistake: 'CJS project mein .mjs file mein require() use karna',
@@ -535,7 +530,7 @@ import { cloneDeep } from 'lodash'       // May work or may not — depends on p
               fix: 'Node 21.2+ mein: import.meta.dirname. Older: const __dirname = dirname(fileURLToPath(import.meta.url)) — path aur url modules se.',
             },
           ]}
-          proTip="Ek quick decision tree: New project? → ESM. Existing CJS project? → CJS raho, migrate optional. Publishing npm package? → Conditional exports use karo — dono support karo. TypeScript project? → ESM natively better fits. Full-stack Next.js/Remix? → Already ESM configured hai."
+          proTip="Decision tree ek baar aur — laminate karwa lo: New project? ESM. Old project pain deta hai? CJS raho. npm package publish? Dual exports. TypeScript? ESM. Next.js/Remix/Vite? Already ESM configured, kuch karna nahi. Aur agar CJS project mein pure-ESM package aaye? wrapper function banao: async function loadEsm() { const mod = await import('pkg'); return mod.default; } — ek hi jagah fix karo, sab jagah use karo."
         />
       </div>
 
@@ -545,14 +540,14 @@ import { cloneDeep } from 'lodash'       // May work or may not — depends on p
           title="Module Resolution Algorithm"
           emoji="🔍"
           difficulty="intermediate"
-          whatIsIt="Jab tum require('lodash') likhte ho, Node.js ek specific order mein dekhta hai: pehle core modules check karta hai, phir relative paths (./ ya ../) resolve karta hai, phir node_modules directory mein current folder se upar tak jaata hai. Ye algorithm samjho — import errors aur 'MODULE_NOT_FOUND' debugging mein kaam aayega."
+          whatIsIt="Kabhi socha hai — jab require('lodash') likhte ho, Node.js kaisa jaanta hai ki lodash kahan se laaye? Ye magic nahi — ek specific algorithm hai! Step 1: Core modules check karo — 'fs', 'path', 'http' — ye instantly milte hain. Step 2: './' ya '../' se shuru ho? Relative path resolve karo. Step 3: Kuch nahi? node_modules mein current folder se shuru karo, phir parent, phir parent ka parent — root tak jaate raho. Pehle milega woh use hoga. Ye samajhna 'MODULE_NOT_FOUND' errors ko instantly debug karne mein kaam aata hai!"
           whenToUse={[
             'MODULE_NOT_FOUND errors debug karte waqt',
             'Kyon ek particular version of package load ho rahi hai ye samjhna ho',
             'Monorepo setup mein package resolution issues fix karte waqt',
             'Custom module paths configure karte waqt (NODE_PATH, tsconfig paths)',
           ]}
-          whyUseIt="Resolution algorithm samjhne se tum confidently keh sako ge ki kaunsi file actually load ho rahi hai. Nested dependencies mein alag versions resolve hoti hain — ye by design hai. node_modules hoisting samjhna npm link aur monorepo debugging ke liye essential hai."
+          whyUseIt="Ek secret — require.resolve() ek underrated tool hai! Bina module actually load kiye, exact file path milta hai. Debugging mein gold hai ye: require.resolve('lodash') se pata chalta hai exactly kaunsi lodash file load ho rahi hai. Monorepo mein multiple versions hain? require.resolve se seedha pata chalega kaunsi version kahan se aa rahi hai. MODULE_NOT_FOUND error aaye toh seedha require.resolve() se diagnose karo — typo, wrong path, ya missing package — turant pata chalega!"
           howToUse={{
             filename: 'resolution-demo.js',
             language: 'javascript',
@@ -599,7 +594,7 @@ try {
 }`,
             explanation: "require.resolve() se actual file path pata chalta hai without loading the module. Bahut useful for debugging MODULE_NOT_FOUND errors. Core modules hamesha jeet te hain — agar 'fs' naam ka npm package bhi ho, built-in fs hi load hoga.",
           }}
-          realWorldScenario="Monorepo mein (nx, turborepo) ek package dusre ko use karta hai. npm install ne sab node_modules mein alag jagah rakha. Agar lodash ka v4 aur v5 dono installed hain (different packages ke dependencies), dono coexist kar sakte hain — Node.js nearest node_modules se load karta hai. Ye dependency hell se bachata hai."
+          realWorldScenario="Turborepo monorepo mein ek bug tha — package-a mein lodash v4 tha, package-b mein v5. Dono coexist kar rahe the — Node.js ne dono ko different node_modules se load kiya. Koi crash nahi! Ye resolution algorithm ka design hai — nearest node_modules wins. Debugging karna tha? require.resolve('lodash') ne exactly bataya kaunsi version kahan se aa rahi hai. Algorithm samjha toh problem 5 minutes mein solve hua."
           commonMistakes={[
             {
               mistake: "require('utils') — relative path ke bina",
@@ -612,7 +607,7 @@ try {
               fix: "require('./config') ya require('./config.json') — dono kaam karte hain JSON files ke liye.",
             },
           ]}
-          proTip="require.resolve() tumhara best friend hai debugging mein — bina module actually load kiye exact file path milta hai. Module Resolution Visualizer feature aane wala hai is platform par jahan tum visually dekh sako ge resolution steps. Tab tak require.resolve() use karo!"
+          proTip="require.resolve() daily debugging tool banana chahiye! Error hotspot 1: require('utils') — ./ chhod diya, Node.js node_modules mein dekhega, local file nahi milegi. Fix: require('./utils'). Error hotspot 2: Core module ka naam npm package ke naam se clash — require('fs') hamesha built-in milega, npm 'fs' package kabhi nahi. Core modules hamesha jeet te hain. Ye dono common gotchas hain jo 90% developers ek baar zaroor milte hain!"
         />
       </div>
 

@@ -146,10 +146,10 @@ export default function ReactChapter19Content() {
           Redux Toolkit — Production-Grade State Management
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Redux ek predictable state container hai — poori app ka state ek jagah, changes sirf actions se. Redux Toolkit (RTK) ne boilerplate drastically kam kar diya — ab Redux likhna actually enjoyable hai.
+          Redux — ye naam sunke log darte kyun hain? Kyunki unhone Redux boilerplate wala purana version dekha tha. Action types constants, action creators, switch-case reducers, combineReducers — 200 lines likho ek feature ke liye. Redux Toolkit ke saath Redux ab actually enjoyable hai — aaj prove karenge!
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum RTK ka modern approach sikhenge — <code className="text-[#7C3AED]">configureStore</code>, <code className="text-[#7C3AED]">createSlice</code>, async thunks, RTK Query, aur Redux DevTools.
+          RTK ne sab boilerplate khatam kar diya — <code className="text-[#7C3AED]">createSlice</code> se actions automatic generate hoti hain, <code className="text-[#7C3AED]">configureStore</code> se DevTools automatic on, Immer se mutations safe. Aur RTK Query? TanStack Query jaisi caching, bina extra library ke. Is chapter mein RTK ka poora modern arsenal seekhenge.
         </p>
       </div>
 
@@ -158,14 +158,14 @@ export default function ReactChapter19Content() {
           title="Kyun Redux? — Zustand vs Redux Decision"
           emoji="🤔"
           difficulty="intermediate"
-          whatIsIt="Redux ek flux-inspired state management pattern hai — single source of truth, unidirectional data flow, time-travel debugging. RTK Redux ka modern, opinionated version hai."
+          whatIsIt="Redux ka core idea padhne mein simple lagta hai — poori app ka state ek jagah. Action dispatch karo — state change hoti hai. Koi aur rasta nahi. Ye predictability ka fayda kya hai? Kal bug aaya — Redux DevTools kholo, exact actions replay karo, exact state pe jaao. Bug reproduce karna 5 minutes. Bina Redux ke? 'Kaunsa component ne state change kiya?' — detective work ghanton ka. RTK ye sab modern syntax mein — kam code, same power."
           whenToUse={[
             'Large teams jahan predictability important hai',
             'Complex async flows (multiple dependent API calls)',
             'Time-travel debugging production bugs ke liye',
             'Enterprise apps jahan strict data flow enforce karna ho',
           ]}
-          whyUseIt="Redux DevTools se har action track hoti hai — bug reproduce karna easy. Large teams mein state changes predictable hoti hain. RTK Query se API caching automatic ho jaati hai."
+          whyUseIt="Zustand vs Redux — sach bolun toh dono acche hain. Zustand: 8KB, minimal setup, small-medium apps perfect. Redux: 50KB, more concepts, lekin time-travel debugging ka koi jawab nahi. Large teams mein Redux ka unidirectional flow enforce karta hai — koi bhi kisi bhi component se koi bhi state secretly change nahi kar sakta. Sab actions logged. Ye auditability enterprise apps ke liye invaluable hai. Tool sahi problem ke liye choose karo."
           howToUse={{
             code: `# Installation
 npm install @reduxjs/toolkit react-redux
@@ -188,14 +188,14 @@ src/
 # Zustand: Small team, simple global state, minimal boilerplate
 # Context: Rarely changing data (theme, auth user)`,
             language: 'bash',
-            explanation: 'Feature-based folder structure recommended hai — har feature ka apna slice. RTK install karo, plain redux nahi — RTK official recommended way hai.',
+            explanation: 'Plain redux install mat karo — ye 2015 ka approach tha. RTK official recommended way hai Redux team ka. npm install @reduxjs/toolkit react-redux — dono chahiye. Folder structure: feature-based rakho — /features/auth mein authSlice.ts, /features/posts mein postsApi.ts. Sab related code ek jagah. New slice add karna? New folder banao, store mein reducer add karo — done.',
             filename: 'setup.sh',
           }}
-          realWorldScenario="Flipkart, Swiggy jaise large apps mein Redux — hundreds of developers ek codebase pe. State flow predictable rehti hai, onboarding easy hoti hai. Side projects ke liye Zustand prefer karo."
+          realWorldScenario="Large Indian tech companies — Flipkart, Swiggy, Zepto — inke scale pe Redux ka unidirectional flow ensure karta hai ki 100 developers ek saath kaam kar rahe hain, koi bhi unexpectedly state corrupt nahi kar sakta. New engineer join kiya — DevTools khola, actions dekhe, sab samajh aaya. Side projects mein? Zustand — 5 minute setup, minimal overhead, chill. Context samjho, phir decide karo."
           commonMistakes={[
             { mistake: 'Har cheez Redux mein daalna', why: 'Server state (API data) → RTK Query. Local UI state (modal open/close) → useState', fix: 'Redux mein sirf truly global, shared state rakho — form state, UI state local rakhna better hai' },
           ]}
-          proTip="Rule of thumb: agar sirf ek component use karta hai — useState. Kuch components share karte hain — Context ya Zustand. Complex flows, large team — Redux Toolkit."
+          proTip="Decision rule easy hai — ek component use karta hai? useState. Few components share? Context ya Zustand. Complex async flows, large team, time-travel debugging zaroori? Redux Toolkit. Ye rule 95% decisions cover karta hai. Baaki 5% mein? Document karo kyun normal rule fit nahi hua — future you ko thanks milega."
         />
       </div>
 
@@ -206,12 +206,12 @@ src/
           title="configureStore — Store Setup"
           emoji="🗄️"
           difficulty="intermediate"
-          whatIsIt="configureStore Redux DevTools aur thunk middleware automatically setup karta hai. Saari slices yahan combine hoti hain."
+          whatIsIt="configureStore — ek function, sab kuch setup. Plain Redux mein kya karna padta tha? combineReducers manually, createStore, applyMiddleware, DevTools enhancer manually connect karo — 30 lines boilerplate. RTK mein? configureStore ek object — reducer key mein apni slices dalo. DevTools automatically on. Thunk middleware automatically on. Serializability checks automatically on. Ek function call — poora Redux ready."
           whenToUse={[
             'App ka root level — ek baar setup',
             'New slices add karne ke liye reducer mein',
           ]}
-          whyUseIt="Plain Redux combineReducers + createStore se zyada convenient. DevTools, thunk, serializability checks automatically on hote hain."
+          whyUseIt="TypeScript users ke liye RootState aur AppDispatch types — ye two lines critical hain. RootState = store ka poora type. AppDispatch = dispatch function ka type — thunk aware. useAppSelector aur useAppDispatch typed hooks banao ek baar — poori app mein yahi use karo. Koi bhi selector likhoge toh state ka type automatically milega. Type errors at compile time, not runtime. Safety net free mein."
           howToUse={{
             code: `// store/index.ts
 import { configureStore } from '@reduxjs/toolkit'
@@ -251,14 +251,14 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   </Provider>
 )`,
             language: 'typescript',
-            explanation: 'configureStore ek object leta hai reducer key ke saath. RootState aur AppDispatch automatically derived. useAppSelector aur useAppDispatch typed hooks banao — poori app mein yahi use karo.',
+            explanation: 'Step by step trace — configureStore call hota hai, internally DevTools setup hota hai, thunk middleware add hota hai. reducer key mein jo objects diye — woh combine hote hain. counter: counterReducer matlab state.counter se counterSlice ka state milega. RootState kya hai? ReturnType<typeof store.getState> — TypeScript se automatically derive karo, manually likhne ki zaroorat nahi. AppDispatch similarly derived. useAppSelector typed hook — state argument ka type automatically RootState hoga, intellisense sab selectors mein milega.',
             filename: 'store/index.ts',
           }}
-          realWorldScenario="Store file ek baar setup karo — baad mein sirf naye slices ka reducer add karte jaao. TypeScript types automatically update hoti hain — extra effort zero."
+          realWorldScenario="Project start karo — store ek baar setup karo. Kal naya feature banao, naya slice banao — store mein ek line add karo reducer mein. RootState automatically update ho jaata hai, naye slice ki state accessible ho jaati hai poori app mein. TypeScript sab catch karta hai. Team mein koi bhi naya slice add kare — store setup change nahi hota, bas reducer key add hoti hai. Ye scalability hai."
           commonMistakes={[
             { mistake: 'useSelector directly use karna bina typed hook ke', why: 'TypeScript type inference kaam nahi karta properly', fix: 'useAppSelector hook banao: export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector' },
           ]}
-          proTip="Redux Persist ke saath localStorage sync: redux-persist + persistReducer + persistStore. App reload pe state restore hoti hai automatically."
+          proTip="User ka cart browser close karne ke baad bhi yaad rakhni hai? redux-persist library install karo. persistReducer + persistStore — 10 lines. App reload karo — cart wapas aa jaata hai localStorage se. Selective persistence bhi possible — sirf cart persist karo, UI state nahi. Ye small detail hai jo UX dramatically improve karta hai — user ki mehnat kabhi nahi jaati."
         />
       </div>
 
@@ -267,13 +267,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           title="createSlice — Reducer + Actions Ek Saath"
           emoji="🍕"
           difficulty="intermediate"
-          whatIsIt="createSlice ek function hai jo slice name, initial state, aur reducers leke automatically actions aur reducer generate karta hai."
+          whatIsIt="createSlice — yaar ye ek revolution tha Redux ke liye. Pehle kya hota tha? Ek feature ke liye — actionTypes.ts (constants), actionCreators.ts (functions), reducer.ts (switch-case) — teen files, 100+ lines. createSlice se? Ek file, ek function call — actions automatic generate hoti hain, reducer automatic ban jaata hai. Immer included — state.value++ likh sako directly. Ye boilerplate ka end tha."
           whenToUse={[
             'Har feature ke liye ek slice banao',
             'Synchronous state updates ke liye',
             'Loading/error states track karne ke liye',
           ]}
-          whyUseIt="Plain Redux mein action types constants, action creators, switch-case reducer — alag-alag files mein. createSlice sab ek jagah — much cleaner."
+          whyUseIt="Immer magic samjho — state.value += 1 kaise safe hai? Immer tumhare reducer ko proxy wrap karta hai. Tumhara mutation detect karta hai. Internally immutable update generate karta hai. Redux store actually immutable rehta hai — Immer ne convert kar diya. Tum sirf natural JavaScript likh rahe ho — baaki Immer ka kaam. Ye developer experience tha jo Redux mein miss tha — RTK ne fix kar diya."
           howToUse={{
             code: `// features/counter/counterSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -335,14 +335,14 @@ function Counter() {
   )
 }`,
             language: 'typescript',
-            explanation: 'createSlice se actions automatically export hoti hain. state.value += 1 — Immer se mutation safe hai. Selectors slice file mein define karo — co-location better hai.',
+            explanation: 'Deep dive — createSlice internally kya karta hai? name + reducers key se action types generate karta hai: counter/increment, counter/decrement. Action creators bhi generate karta hai: increment() call karo — { type: "counter/increment" } milta hai. Ye sab counterSlice.actions mein available hain. counterSlice.reducer ek standard Redux reducer hai — switch-case internally generate hua, tum nahi likha. Component mein dispatch(increment()) — clean, no string action types, no boilerplate. Selectors co-locate karo — selectCount wahan define karo jahan state define hai.',
             filename: 'features/counter/counterSlice.ts',
           }}
-          realWorldScenario="Auth slice: login, logout, setUser actions. Cart slice: addItem, removeItem, updateQuantity, clearCart. Har feature isolated — testing aur maintenance easy."
+          realWorldScenario="Auth slice mein — login, logout, setUser, setToken actions. Har action ek reducer function — clean, testable. Cart slice mein — addItem, removeItem, updateQuantity, clearCart. Ek feature ka kaam? Apni slice mein. Bug? Sirf us slice mein dhundho. New developer? Slice padhega — poora feature samajh jaayega. Isolation ka ye fayda sirf code organization nahi, mental clarity bhi hai."
           commonMistakes={[
             { mistake: 'Slice ke bahar state directly mutate karna', why: 'Redux state immutable hona chahiye — direct mutation bugs create karta hai', fix: 'Sirf reducer functions ke andar Immer magic kaam karta hai — bahar spread operator use karo' },
           ]}
-          proTip="Selectors slice file mein co-locate karo — export const selectCartTotal = (state: RootState) => state.cart.items.reduce(...)). Component thin rehta hai, logic testable rehta hai."
+          proTip="Selector co-location pattern — selectCartTotal, selectUserName, selectIsAuthenticated — sab slice file mein define karo. Component mein? useAppSelector(selectCartTotal) — ek line. Component bilkul dumb rehta hai — sirf render karta hai. Logic selector mein — testable, reusable, co-located. Kal cart logic change karo — sirf cartSlice.ts mein jaao. Component touch nahi karna. Separation of concerns ka real-world benefit."
         />
       </div>
 
@@ -351,13 +351,13 @@ function Counter() {
           title="createAsyncThunk — Async Operations"
           emoji="⚡"
           difficulty="advanced"
-          whatIsIt="createAsyncThunk async operations ke liye — API calls, file uploads, etc. Automatically pending, fulfilled, rejected actions generate karta hai."
+          whatIsIt="Async operation Redux mein kaise? Reducer synchronous hai — async nahi ho sakta. Solution: thunk — ek function jo dispatch receive karta hai, async operation karta hai, phir actions dispatch karta hai. createAsyncThunk ye pattern formalize karta hai. Automatic pending, fulfilled, rejected actions milti hain — loading state, success state, error state — sab trackable hain Redux DevTools mein. Koi magic nahi — sirf structured pattern."
           whenToUse={[
             'API calls jinka result store mein save karna ho',
             'Complex async flows (multiple API calls chain)',
             'Loading/error states Redux mein track karne ke liye',
           ]}
-          whyUseIt="Async logic ko component se bahar nikalo — slice mein rakho. Loading state automatic — component sirf state se read karta hai."
+          whyUseIt="Component mein async logic rakhne ka problem kya hai? Ek component mein fetch hai, loading state hai, error handling hai, navigation hai — ek component 100+ lines ka ho jaata hai. createAsyncThunk se? Async logic slice mein — component sirf loading/error/data state read karta hai. Component thin, logic testable, Redux DevTools mein har step visible. Ek aur benefit — agar multiple components same data chahte hain, ek dispatch, sab update."
           howToUse={{
             code: `// features/auth/authSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
@@ -439,14 +439,14 @@ function LoginForm() {
   )
 }`,
             language: 'typescript',
-            explanation: 'createAsyncThunk first arg: action type string. Second: async function. rejectWithValue se custom error. extraReducers mein pending/fulfilled/rejected handle karo. Component sirf loading/error state read karta hai.',
+            explanation: 'Under the hood — dispatch(loginUser(credentials)) call karte ho. createAsyncThunk pehle auth/loginUser/pending dispatch karta hai — extraReducers mein loading = true. Async function run hoti hai. Success? auth/loginUser/fulfilled dispatch — user = action.payload. Fail? rejectWithValue call karo — auth/loginUser/rejected dispatch — error = message. Ye teen actions automatically DevTools mein dikhti hain — debugging mein clear visibility milti hai kya hua. Component mein loginUser.fulfilled.match(result) — dispatch ka return value check karo — navigation conditionally karo.',
             filename: 'features/auth/authSlice.ts',
           }}
-          realWorldScenario="E-commerce checkout flow: validateCart → processPayment → updateInventory — teen API calls chain. Redux mein saari loading states track hoti hain — UI responsive rehti hai har step pe."
+          realWorldScenario="Checkout flow — teen async steps chain karo. validateCart thunk — pending (checking...), fulfilled (valid), rejected (out of stock). processPayment thunk — pending (processing payment...), fulfilled (charged), rejected (card declined). updateInventory thunk — backend update. DevTools mein sab steps visible — kahan fail hua? Exactly dikh jaata hai. UI har step pe user ko feedback deta hai — loading state, error state, success. No confusion, no blank screen."
           commonMistakes={[
             { mistake: 'try/catch ke andar throw karna reject karne ke liye', why: 'thunk mein throw se rejected nahi milta — createAsyncThunk internally catch karta hai', fix: 'rejectWithValue() use karo explicitly: return rejectWithValue(errorMessage)' },
           ]}
-          proTip="unwrap() se thunk result directly await karo: const user = await dispatch(loginUser(creds)).unwrap() — rejected ho toh throw karta hai, directly try/catch mein handle karo."
+          proTip="unwrap() — ye RTK ka hidden gem hai. dispatch(loginUser(creds)).unwrap() — rejected ho toh throw karta hai, fulfilled ho toh data return karta hai. try/catch mein wrap karo — clean async/await pattern. Bina unwrap() ke rejected action silently fail ho jaata hai, error component mein manually check karna padta hai. unwrap() se promise-style error handling milti hai — modern async code jaisa feel."
         />
       </div>
 
@@ -455,13 +455,13 @@ function LoginForm() {
           title="RTK Query — API Calls Ke Liye Best Tool"
           emoji="🚀"
           difficulty="advanced"
-          whatIsIt="RTK Query Redux Toolkit mein built-in data fetching aur caching solution hai — TanStack Query jaisa lekin Redux store ke andar. Automatic caching, refetching, loading states."
+          whatIsIt="RTK Query — ye woh moment hai jab Redux ne kaha 'TanStack Query ka challenge accept hai.' Automatic caching, automatic refetching, loading states, cache invalidation — sab built-in. Aur ye Redux store mein hai — client state aur server state ek jagah. TanStack Query se zyada opinionated lekin agar already Redux use kar rahe ho toh extra library nahi chahiye. createApi ek baar likhlo — hooks automatically generate ho jaate hain. Ye magic hai."
           whenToUse={[
             'REST API calls jahan caching important ho',
             'Automatic cache invalidation chahiye (create → list auto-refetch)',
             'Server state aur client state dono Redux mein chahiye',
           ]}
-          whyUseIt="Manual loading/error state, API calls, cache — sab automatically handle hote hain. createAsyncThunk se zyada opinionated lekin much less code."
+          whyUseIt="createAsyncThunk se 50 lines likhte ho — API call, loading state, error state, caching manually. RTK Query se? createApi mein endpoint define karo — 5 lines. Hook automatically milta hai — useGetPostsQuery(). Loading? isLoading. Error? isError. Data? data. Refetch? refetch(). Cache hit? Automatic, zero code. Post create karo, getPosts invalidate karo — automatic refetch. Ye sab zero extra code mein. Design decision: REST API ke liye RTK Query, complex custom async logic ke liye createAsyncThunk."
           howToUse={{
             code: `// features/posts/postsApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
@@ -540,14 +540,14 @@ function PostsList() {
   )
 }`,
             language: 'typescript',
-            explanation: 'createApi se endpoints define karo. providesTags/invalidatesTags se cache invalidation automatic — createPost ke baad getPosts refetch ho jaata hai. Hooks automatically generated hote hain.',
+            explanation: 'Tagging system samjho — ye RTK Query ka brain hai. providesTags: ["Post"] matlab getPosts cached data "Post" tag se label hai. createPost mein invalidatesTags: ["Post"] — ye tag wala sab cache stale ho jaata hai. Next useGetPostsQuery run hota hai — fresh fetch. Ye automatic cache invalidation hai bina koi manual refetch call kiye. prepareHeaders se auth token har request mein automatically add hota hai — koi baar baar headers set karne ka kaam nahi. Hooks useGetPostsQuery, useCreatePostMutation — ye automatically generate hoti hain endpoint names se.',
             filename: 'features/posts/postsApi.ts',
           }}
-          realWorldScenario="Product listing + add to cart: useGetProductsQuery se products fetch, useAddToCartMutation se cart update, invalidatesTags se cart count automatically refresh — zero manual refetch code."
+          realWorldScenario="E-commerce listings page — useGetProductsQuery se products automatic fetch, cached hain, component re-mount pe re-fetch nahi hota. useAddToCartMutation se cart add karo — invalidatesTags: ['Cart'] — cart count badge automatically update. useGetCartQuery — fresh cart data. Zero manual refetch kala. Ek page pe 3 API calls hain, sab cached, sab synchronized through tags. Ye production-grade API management hai."
           commonMistakes={[
             { mistake: 'RTK Query reducerPath store mein add karna bhool jaana', why: 'Cache work nahi karega — RTK Query ka state nowhere to live', fix: 'configureStore reducer mein [postsApi.reducerPath]: postsApi.reducer aur middleware mein postsApi.middleware' },
           ]}
-          proTip="polling: useGetPostsQuery(undefined, { pollingInterval: 30000 }) — har 30s pe automatically refetch. WebSocket alternatives ke liye background data sync easily implement hoti hai."
+          proTip="Real-time data bina WebSocket ke? pollingInterval option — useGetPostsQuery(undefined, { pollingInterval: 30000 }) — har 30 seconds pe background mein refetch. Tab focus hone par bhi refetch — refetchOnFocus: true. Network reconnect pe — refetchOnReconnect: true. Ye options stock prices, notifications, live dashboards ke liye perfect hain — simple polling, zero complexity."
         />
       </div>
 
@@ -558,13 +558,13 @@ function PostsList() {
           title="Redux DevTools — Time Travel Debugging"
           emoji="🕰️"
           difficulty="intermediate"
-          whatIsIt="Redux DevTools browser extension se har dispatched action aur resulting state changes visually inspect kar sakte ho. Time travel: past states mein navigate karo."
+          whatIsIt="Redux DevTools — ye feature akele Redux ko justify karta hai large apps ke liye. Chrome extension install karo — Redux DevTools. Ab har action log hoti hai. Action ka payload kya tha? Before/after state diff kya tha? Timeline pe slider drag karo — past state mein jaao. Ek bug hai — user ek specific set of actions karta hai toh crash hota hai. DevTools mein exact sequence replay karo — bug reproduce, debug, fix. Ye time-travel debugging hai aur ye genuinely useful hai production debugging mein."
           whenToUse={[
             'Production bugs reproduce karne ke liye',
             'State changes track karne ke liye development mein',
             'Team ko explain karne ke liye ki app state kaise change hoti hai',
           ]}
-          whyUseIt="Console.log se debugging primitive hai. DevTools se action ka exact payload, before/after state diff, aur undo/redo sab milta hai — bugs minutes mein fix hote hain."
+          whyUseIt="Console.log debugging — state print karo, action print karo, manually trace karo. Time: 30 minutes. DevTools mein — actions list dekho, state diff dekho, specific action pe click karo, woh state recreate ho jaata hai. Time: 3 minutes. 10x faster debugging. Aur createSelector se expensive derived state memoize karo — cartItems ya products change na hoon toh selectCartTotal recalculate nahi hoga. Har render pe heavy computation nahi — performance free mein."
           howToUse={{
             code: `// Redux DevTools automatically enabled hai RTK mein development mode mein
 // Browser extension: "Redux DevTools" install karo Chrome/Firefox mein
@@ -611,14 +611,14 @@ export const selectCartTotal = createSelector(
 )
 // selectCartTotal tab hi recalculate hoga jab cartItems ya products change ho`,
             language: 'typescript',
-            explanation: 'DevTools RTK mein automatically on hai development mein. createSelector se expensive derived state memoize karo — sirf relevant state change pe recalculate. Production mein DevTools off karo.',
+            explanation: 'DevTools automatically on hai development mein — koi setup nahi. Production mein devTools: process.env.NODE_ENV !== "production" — security ke liye off karo. createSelector — Reselect library ka part, RTK mein built-in. Input selectors — ye check karte hain kya inputs change hue. Nahi hue? Cached result return. Hue? Recalculate. selectCartTotal har render pe reduce() nahi chalega — sirf jab cartItems ya products actually change ho. React.memo jaisa, but for derived state.',
             filename: 'store/index.ts',
           }}
-          realWorldScenario="Customer ne bug report kiya — cart total wrong tha. DevTools se state export karo, teammate ko bhejo — exact state mein time travel karke bug reproduce karo. 5 minutes mein fix."
+          realWorldScenario="Customer ne bug report kiya — Mumbai se call aaya, cart total wrong aa raha hai. Bina DevTools ke: reproduce karna, manually same actions karna, state track karna — 2 ghante. DevTools ke saath: customer ka session state export karo (DevTools mein Import/Export button hai), teammate ko share karo, exact state import karo, replay karo — bug milgaya, 5 minutes mein fixed. Ye DevTools ka real production value hai."
           commonMistakes={[
             { mistake: 'Production mein Redux DevTools on rakhna', why: 'Sensitive state data browser extension mein visible hoti hai — security risk', fix: 'devTools: process.env.NODE_ENV !== "production" — always conditional enable karo' },
           ]}
-          proTip={'Redux DevTools mein "Dispatcher" tab se manually actions dispatch kar sakte ho UI ke bina — rapid prototyping aur edge case testing ke liye.'}
+          proTip="Redux DevTools mein 'Dispatcher' tab explore karo — manually actions dispatch karo bina UI touch kiye. addItem action dispatch karo cart empty state se — UI kaise behave karta hai test karo instantly. Yahi hai rapid prototyping. Edge cases test karo — 50 items cart mein, negative quantity, special characters in names. UI banana ke baad nahi — state directly manipulate karo pehle. Development speed 2x."
         />
       </div>
 

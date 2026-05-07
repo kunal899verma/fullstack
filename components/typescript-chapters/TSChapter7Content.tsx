@@ -64,13 +64,13 @@ export default function TSChapter7Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Advanced Types — TypeScript Ka Power Level Badhao
+          Advanced Types — TypeScript Ka Type-Level Programming
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Basic types seekh liye? Ab advanced types ki bari — conditional types, mapped types, template literal types aur discriminated unions. Ye features TypeScript ko ek powerful meta-programming tool banate hain. Types se types generate karo, object shapes transform karo, aur string patterns type-safely describe karo.
+          TypeScript mein types sirf labels nahi hain — ye ek complete PROGRAMMING LANGUAGE hai! Conditional types, mapped types, template literals — ye sab TypeScript ka "type-level code" hai jo compile time pe run hota hai. Matlab tumhara program run hone se pehle hi TypeScript ek alag program chala raha hota hai — types ke upar.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter ke baad aap samjhoge ki Partial&lt;T&gt;, Readonly&lt;T&gt;, ReturnType&lt;T&gt; jaise utility types andar se kaise kaam karte hain — aur apne custom utility types bhi bana sakoge.
+          Ab sawaal ye aata hai — Partial&lt;T&gt;, Readonly&lt;T&gt;, ReturnType&lt;T&gt; ye utility types TypeScript ne kaise banaye? Koi jaadu nahi hai — ye sab conditional types aur mapped types se bane hain. Is chapter ke baad tum khud same tarah ke utility types bana sakoge. Aur tab samjhoge ki TypeScript type system kitna powerful hai.
         </p>
       </div>
 
@@ -79,14 +79,14 @@ export default function TSChapter7Content() {
           title="Conditional Types — Type-Level If-Else"
           emoji="🔀"
           difficulty="advanced"
-          whatIsIt="Conditional types TypeScript mein type-level ternary operator hain: T extends U ? X : Y. Agar T, U ko satisfy karta hai toh type X hoga, warna Y. infer keyword conditional types ke saath type extract karne ke liye use hota hai — jaise ReturnType<T> aur Awaited<T> built-in types isi pattern se bane hain."
+          whatIsIt="Conditional types TypeScript ka if-else hai type level pe — T extends U ? X : Y. Ye code nahi hai, ye ek type-level ternary hai. Compiler dekhta hai: kya T, U ko satisfy karta hai? Haan toh type X, nahi toh type Y. infer keyword toh aur bhi powerful hai — ye conditional type ke andar pattern match karke ek naya type capture kar leta hai. ReturnType, Awaited, Parameters — ye sab TypeScript built-in utilities isi magic se bane hain."
           whenToUse={[
             'Type ko condition ke basis pe transform karna — NonNullable, Extract, Exclude',
             'Generic function se type extract karna — ReturnType, Parameters',
             'Distributive behavior — union types pe ek ek apply karna',
             'infer se nested types extract karna — Promise ke andar ka type',
           ]}
-          whyUseIt="Conditional types se complex type transformations possible hain jo otherwise impossible hote. infer keyword se TypeScript compiler se types extract kar sakte ho — function ka return type, Promise ka resolved type, array ka element type. Built-in utility types ka foundation yahi hai. Bina conditional types ke TypeScript ki expressiveness aadhi reh jaati."
+          whyUseIt="Socho — tumhara ek function hai jo string return karta hai kabhi, number kabhi. Caller ko kaise pata chalega? Bina conditional types ke — any likhna padega ya overloads. Conditional types se TypeScript khud deduce karta hai exact return type based on input. infer ke saath toh aur bhi — Promise ke andar kya hai, function ka return type kya hai — sab compile time pe extract ho jaata hai. Ye TypeScript ki real superpower hai jo zyataar log kabhi nahi seekhte."
           howToUse={{
             filename: 'conditional-types.ts',
             language: 'typescript',
@@ -137,9 +137,9 @@ type OnlyStrings = StringsOnly<Mixed>  // string
 // Distributive avoid karna — wrap in tuple
 type NonDistributive<T> = [T] extends [string] ? true : false
 type F = NonDistributive<string | number>  // false (not distributed)`,
-            explanation: 'T extends U ? X : Y type-level ternary hai. infer R pattern matching karta hai aur type capture karta hai. Union types pe conditional types automatically distribute hote hain — har member pe alag alag apply. Tuple mein wrap karo ([T] extends [U]) agar distribution rokna ho.',
+            explanation: 'Ab sawaal ye aata hai — infer R kahan se aaya? Ye ek placeholder hai jo TypeScript compile time pe fill karta hai. Jab T matches hota hai (...args: any[]) => infer R ke saath, TypeScript R ko function ka actual return type se replace kar deta hai. Union types pe ek aur twist hai — conditional types automatically distribute hote hain. [T] extends [U] se distribution rok sakte ho. Ye sab compile time pe hota hai — runtime mein zero cost.',
           }}
-          realWorldScenario="API client banana: type ApiReturn<T extends string> = T extends 'user' ? User : T extends 'product' ? Product : never. Ek generic function likho fetchApi<T extends 'user' | 'product'>(endpoint: T): Promise<ApiReturn<T>> — caller ko manual casting ki zaroorat nahi, TypeScript automatically correct return type deta hai."
+          realWorldScenario="Real API client mein socho — fetchApi('user') call karo toh User milna chahiye, fetchApi('product') call karo toh Product. Ek hi function, different return types. type ApiReturn&lt;T extends string&gt; = T extends 'user' ? User : T extends 'product' ? Product : never likhdo — TypeScript caller ko exactly sahi type deta hai. No casting, no any, zero runtime overhead. Ye conditional types ka real power hai."
           commonMistakes={[
             {
               mistake: 'infer ko conditional type ke bahar use karna',
@@ -152,7 +152,7 @@ type F = NonDistributive<string | number>  // false (not distributed)`,
               fix: 'Agar distribution nahi chahiye toh [T] extends [string] ? true : false — tuple mein wrap karo.',
             },
           ]}
-          proTip="Conditional types recursive bhi ho sakte hain — DeepReadonly<T>: type DeepReadonly<T> = T extends object ? { readonly [K in keyof T]: DeepReadonly<T[K]> } : T. Nested objects sab readonly ho jaate hain. TypeScript 4.1 se tail-recursive conditional types support hain — infinite loops avoid karo depth limit se."
+          proTip="Conditional types recursive bhi ho sakti hain — DeepReadonly&lt;T&gt;: type DeepReadonly&lt;T&gt; = T extends object ? { readonly [K in keyof T]: DeepReadonly&lt;T[K]&gt; } : T. TypeScript 4.1 se tail-recursive conditional types support hain. Lekin ek warning — bahut deep recursion se TypeScript slow ya crash ho sakta hai. Practical limit rakhna — usually 5-6 levels kaafi hai real world mein."
         />
       </div>
 
@@ -161,14 +161,14 @@ type F = NonDistributive<string | number>  // false (not distributed)`,
           title="Mapped Types — Object Ko Transform Karo"
           emoji="🗺️"
           difficulty="advanced"
-          whatIsIt="Mapped types existing type ke har property pe iterate karke naya type banate hain: { [K in keyof T]: NewType }. Modifiers add ya remove kar sakte ho — readonly, optional (?). as clause se key rename bhi ho sakta hai (key remapping). Built-in Partial, Required, Readonly, Record sab mapped types hain."
+          whatIsIt="Mapped types TypeScript ka for-loop hai types ke liye. { [K in keyof T]: NewType } — ye har property pe iterate karta hai aur naya type banata hai. Ye nahi samjha? Simple karo — Partial&lt;T&gt; likh dete ho, saari properties optional ho jaati hain. Readonly&lt;T&gt; likh dete ho, saari immutable. Ye magic nahi — internally ek mapped type hai jo keyof T se loop karta hai aur ? ya readonly modifier lagata hai. as clause se toh key rename bhi ho jaata hai!"
           whenToUse={[
             'Har property optional banani ho — Partial<T>',
             'Har property readonly banani ho — Readonly<T>',
             'Har property ka type transform karna ho',
             'Key names change karne ho — as clause se remapping',
           ]}
-          whyUseIt="Mapped types DRY principle types ke liye implement karte hain. Ek base type se multiple derived types banao — manually duplicate karne ki zaroorat nahi. Object shape transform karo without boilerplate. Key remapping se event handler types automatically generate kar sakte ho base type se."
+          whyUseIt="Ab sawaal ye aata hai — agar User interface mein 10 fields hain aur mujhe UpdateUserDto banana hai jahan sab optional hain, kya main manually likhun? Nahi! type UpdateUserDto = Partial&lt;User&gt; — ek line. Naya field User mein add karo, automatically UpdateUserDto mein bhi aa jaayega. DRY principle types ke liye. Aur as clause ke saath key remapping — User type se automatically getters generate karo, event handlers generate karo. Ek type se kai derived types, zero duplication."
           howToUse={{
             filename: 'mapped-types.ts',
             language: 'typescript',
@@ -246,9 +246,9 @@ type StringProperties<T> = {
 
 type UserStrings = StringProperties<User>
 // { id: string; name: string; email: string } — age (number) filter out`,
-            explanation: '[K in keyof T] sab keys pe iterate karta hai. ? optional banata hai, readonly immutable. -? aur -readonly se modifiers hatate hain. as clause key rename karta hai — template literal types ke saath powerful combination. never se keys filter ho jaate hain.',
+            explanation: 'Dekho — [K in keyof T] TypeScript compiler ko bol raha hai: "ek ek key lo is type ki." -? matlab remove optional modifier — Required&lt;T&gt; aise hi bana hai. as clause mein template literal likhdo aur key ka naam badal jaata hai automatically. never se filter — agar key ka type string nahi hai toh us key ko include mat karo. Sab kuch compile time pe, runtime pe kuch nahi.',
           }}
-          realWorldScenario="Form validation library banao: type ValidationRules<T> = { [K in keyof T]?: (value: T[K]) => string | null }. Har field ke liye optional validator — field ka exact type correctly typed. Form type se automatically validation type derive hoti hai — alag alag define karne ki zaroorat nahi."
+          realWorldScenario="Socho ek form validation library banani hai. type ValidationRules&lt;T&gt; = { [K in keyof T]?: (value: T[K]) => string | null }. Har field ke liye optional validator function — aur field ka type automatically sahi hai! name validator ko string milega, age validator ko number. Form type badla — validation type automatically badle. Alag maintain nahi karna. Ye real-world mapped types ka power hai."
           commonMistakes={[
             {
               mistake: 'keyof T ki jagah string use karna',
@@ -261,7 +261,7 @@ type UserStrings = StringProperties<User>
               fix: 'string & K use karo taaki string type ensure ho: as `get${Capitalize<string & K>}`.',
             },
           ]}
-          proTip="Mapped types conditional types ke saath combine karo: type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] }. Ye recursively nested objects ke sab properties optional banata hai — sirf top-level nahi. Nested form update karne ke liye perfect."
+          proTip="Mapped types aur conditional types ka combination — ye TypeScript ka most powerful feature hai. type DeepPartial&lt;T&gt; = { [K in keyof T]?: T[K] extends object ? DeepPartial&lt;T[K]&gt; : T[K] }. Ye recursive mapped type hai — nested objects bhi sab optional ho jaate hain. Partial sirf top-level karta hai, DeepPartial poora nested tree. Nested forms update karne ke liye ek game changer."
         />
       </div>
 
@@ -270,14 +270,14 @@ type UserStrings = StringProperties<User>
           title="Template Literal Types — String Types Construct Karo"
           emoji="📝"
           difficulty="advanced"
-          whatIsIt="Template literal types TypeScript 4.1 mein aaye — string literal types ko template syntax se combine karo. \`\${string}Id\` — koi bhi string jo 'Id' se end ho. Union types ke saath powerful: \`\${HttpMethod}\${Endpoint}\` se sab valid combinations generate ho jaate hain automatically."
+          whatIsIt="Template literal types — ye TypeScript ka woh feature hai jo dekh ke pehle reaction hota hai 'ye kya hai?' TypeScript 4.1 mein aaya. Tum string pattern likh sakte ho type mein — \`user_\${string}\` matlab koi bhi string jo 'user_' se start ho. Aur union ke saath? Cartesian product! 'margin' | 'padding' aur 'top' | 'left' | 'right' | 'bottom' dono combine karo — 8 valid CSS properties automatically generate ho jaati hain. Manually likhne ki zaroorat nahi."
           whenToUse={[
             'Event names type karne ke liye — "click", "mousedown", etc.',
             'CSS property names — margin-top, padding-left',
             'API endpoint patterns — /api/users/:id',
             'Getter/setter method names generate karna',
           ]}
-          whyUseIt="Template literal types string patterns ko type-safe banate hain. Magic strings ki jagah — precise types. IDE autocomplete string values bhi deta hai. Typos compile time pe pakde jaate hain. Mapped types ke saath — automatic method/handler name generation possible."
+          whyUseIt="'onClick' likhna tha, 'onClik' likh diya — runtime error. Template literal type hota toh 'onClik' pe compile error aata. Magic strings TypeScript ki dushman hain — template literal types unhe type-safe banate hain. Aur ek baat — IDE autocomplete bhi milta hai string values ke liye! 'on' likhao toh 'onClick', 'onFocus', 'onBlur' sab suggest ho jaate hain. Ye developer experience ka next level hai."
           howToUse={{
             filename: 'template-literal-types.ts',
             language: 'typescript',
@@ -339,9 +339,9 @@ type SortableField = 'name' | 'createdAt' | 'price'
 type SortOrder = 'asc' | 'desc'
 type SortParam = \`\${SortableField}_\${SortOrder}\`
 // 'name_asc' | 'name_desc' | 'createdAt_asc' | 'createdAt_desc' | 'price_asc' | 'price_desc'`,
-            explanation: 'Template literal types backtick syntax use karte hain — bilkul template literals jaisa. Union types ke saath cartesian product generate hota hai. Capitalize, Uppercase jaise intrinsic types string manipulation karte hain. Mapped types ke saath combine karo automatic type generation ke liye.',
+            explanation: 'Ye sab compile time pe hota hai — runtime pe koi string nahi bana. TypeScript compiler ye types generate karta hai aur checking karta hai. Capitalize, Uppercase jaise intrinsic string manipulation types bhi hain — TypeScript compiler internally handle karta hai. Sabse powerful use: mapped types ke saath combine karo — ek type se automatically getter/setter/handler names generate karo.',
           }}
-          realWorldScenario="Typed CSS-in-JS library: type SpacingValue = 0 | 4 | 8 | 16 | 24 | 32. type SpacingProp = `${Property}-${Direction}`. const styles: Partial<Record<SpacingProp, SpacingValue>> = { 'margin-top': 16 }. Typo karo 'mrgn-top' — compile error. Wrong value do 5 — compile error. Full type safety."
+          realWorldScenario="CSS-in-JS library banao — type SpacingProp = \`\${Property}-\${Direction}\`. Ab styles object mein 'mrgn-top': 16 likhoge toh TypeScript bol dega 'mrgn-top' valid nahi. '5' value doge toh bol dega ye SpacingValue nahi. Design system tokens bhi aise type-safe banao — brand mein yellow-500 hai ya yellow-600? Type mein define karo, typo pe compile error. Production mein CSS bugs zero."
           commonMistakes={[
             {
               mistake: 'Template literal type mein number directly use karna',
@@ -354,7 +354,7 @@ type SortParam = \`\${SortableField}_\${SortOrder}\`
               fix: 'Small unions ke saath use karo. Large combinations ke liye string + runtime validation better hai.',
             },
           ]}
-          proTip="Template literal types infer ke saath combine karo parsing ke liye: type ParseRoute<T extends string> = T extends \`/\${infer Segment}/\${infer Rest}\` ? { segment: Segment } & ParseRoute<\`/\${Rest}\`> : T extends \`/\${infer Last}\` ? { segment: Last } : {}. Route string se automatically typed params extract kar sakte ho!"
+          proTip="Template literal types aur infer ka combination — ekdum advanced territory. type ParseRoute&lt;T extends string&gt; = T extends \`/\${infer Segment}/\${infer Rest}\` ? ... — route string '/users/:id/posts' se compile time pe params nikaal sakte ho. tRPC aur Next.js internally similar patterns use karte hain. Ye dekh ke bahut log shock ho jaate hain — TypeScript mein string parsing? Haan, compile time pe!"
         />
       </div>
 
@@ -363,14 +363,14 @@ type SortParam = \`\${SortableField}_\${SortOrder}\`
           title="Discriminated Unions — Type-Safe Switches"
           emoji="🔱"
           difficulty="advanced"
-          whatIsIt="Discriminated union ek pattern hai jahan union ke sab members mein ek common literal type property hoti hai — discriminant. TypeScript is property ki value se automatically type narrow karta hai. Jaise kind: 'circle' check karo toh TypeScript jaanta hai radius available hai. Index signatures se arbitrary key-value pairs describe karte hain."
+          whatIsIt="Discriminated union ek design pattern hai — union ke har member mein ek special 'discriminant' property hoti hai jo literal type ka hoti hai. Jaise kind: 'circle' | kind: 'square'. Jab tum switch mein kind check karo toh TypeScript automatically jaanta hai — circle case mein radius milega, square mein side. Koi as casting nahi, koi optional chaining nahi. TypeScript control flow analysis karta hai aur type narrow ho jaata hai. Index signatures is pattern ke saath complement karte hain arbitrary properties ke liye."
           whenToUse={[
             'Multiple shapes/variants ka ek type — Shape, Action, Event',
             'Redux actions type karne ke liye',
             'API response variants — success ya error',
             'State machine states — loading, success, error',
           ]}
-          whyUseIt="Discriminated unions type-safe switch statements enable karte hain — koi casting nahi, koi as. Each case mein correct properties automatically available hain. TypeScript exhaustiveness check bhi karta hai never ke saath — naya variant add karo aur bhool jaao handle karna toh compile error aata hai."
+          whyUseIt="Ab sawaal ye aata hai — ek aisa union type kaise banayein jahan har variant ka structure alag ho? ApiResponse success mein data hoga, failure mein error hoga. Bina discriminant ke — har jagah optional checks likhne padenge. Discriminated union se switch likhne pe TypeScript khud samjhta hai — yahan data hai, yahan error. Type casting zero. Aur naya variant add karo union mein? Compiler immediately batata hai kahan handle karna hai — never type ke through exhaustiveness check. Ye ek complete safety net hai."
           howToUse={{
             filename: 'discriminated-unions.ts',
             language: 'typescript',
@@ -460,9 +460,9 @@ const config: Config = {
   debug: true,     // Extra — allowed
   logLevel: 'info' // Extra — allowed
 }`,
-            explanation: 'Discriminant property literal type honi chahiye — string, number, boolean literal. Switch statement pe TypeScript automatically narrow karta hai. never type exhaustiveness check ke liye — naya case miss nahi hoga. Index signatures arbitrary properties allow karte hain lekin type safety thodi kam hoti hai.',
+            explanation: 'Key insight: discriminant property hamesha literal type honi chahiye — "circle" nahi toh string, "square" nahi toh string. Literal type se hi TypeScript narrow kar sakta hai. const _exhaustive: never = shape — ye line TypeScript ko force karti hai ki switch exhaustive ho. Agar naya shape add kiya aur case nahi likha, toh TypeScript bolega "Type Shape is not assignable to never". Index signatures ke saath careful raho — type safety thodi loose hoti hai.',
           }}
-          realWorldScenario="Redux-style state management: type Action = | { type: 'USER_LOGIN'; payload: User } | { type: 'USER_LOGOUT' } | { type: 'SET_LOADING'; loading: boolean }. Reducer mein switch(action.type) — har case mein payload correctly typed. action.type === 'USER_LOGIN' ke baad action.payload automatically User type ka hai."
+          realWorldScenario="Redux reducer likhte waqt discriminated unions ka real power dikhta hai. type Action = | { type: 'USER_LOGIN'; payload: User } | { type: 'USER_LOGOUT' } | { type: 'SET_LOADING'; loading: boolean }. switch(action.type) — case 'USER_LOGIN' mein action.payload automatically User hai. Naya action type add karo union mein, bhool gaye reducer mein? Compiler compile hi nahi karega. Production bugs zero — TypeScript ne pakad liya."
           commonMistakes={[
             {
               mistake: 'Discriminant property optional rakhna',
@@ -475,7 +475,7 @@ const config: Config = {
               fix: 'Index signature ka type sab known property types include kare: [key: string]: string | number | boolean.',
             },
           ]}
-          proTip="Discriminated unions ke saath utility functions: type DiscriminantValue<T> = T extends { kind: infer K } ? K : never. type ExtractByKind<T, K extends DiscriminantValue<T>> = T extends { kind: K } ? T : never. type CircleOnly = ExtractByKind<Shape, 'circle'>. Specific variant type extract karna easy ho jaata hai!"
+          proTip="Discriminated unions ke saath ek useful utility — type ExtractByKind&lt;T, K extends string&gt; = T extends { kind: K } ? T : never. type CircleOnly = ExtractByKind&lt;Shape, 'circle'&gt; — sirf Circle type milega. Ye conditional types aur discriminated unions ka combination hai. Large codebases mein specific variant nikaalte waqt bahut useful hai — as casting se zyada safe."
         />
       </div>
 

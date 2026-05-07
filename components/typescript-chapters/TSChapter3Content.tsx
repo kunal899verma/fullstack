@@ -55,13 +55,13 @@ export default function TSChapter3Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Functions in TypeScript — Type-Safe Function Likhna Seekho
+          Functions in TypeScript — Function Signature = Contract
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Functions TypeScript mein bahut powerful ho jaate hain jab aap types properly annotate karo. Parameter types guarantee karte hain caller sahi arguments pass kare. Return types caller ko batate hain kya expect karna hai. Optional params, default values, rest params — sab TypeScript mein type-safe hai.
+          Functions TypeScript mein ek CONTRACT ban jaate hain — parameter types guarantee karte hain caller sahi arguments pass kare, return type guarantee karta hai caller ko kya milega. Socho function signature ek legal document hai: tum ye do, main woh dunga. Galat diya — TypeScript court mein complaint kar deta hai (compile error).
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Advanced topic mein function overloads bhi cover karenge — ek function jo alag inputs pe alag output types return kare. Ye real-world APIs design karne mein bahut kaam aata hai.
+          Is chapter mein ek interesting pattern bhi seekhenge — function overloads. Ek function, multiple signatures. TypeScript samajhta hai input ke hisaab se kya return type aayega. Ye real-world library design mein bahut kaam aata hai — aur samajhne ke baad bahut elegant lagta hai.
         </p>
       </div>
 
@@ -70,14 +70,14 @@ export default function TSChapter3Content() {
           title="Typed Parameters & Return — Function Contract"
           emoji="📝"
           difficulty="beginner"
-          whatIsIt="TypeScript mein function parameters ke baad : type likho — jaise function add(a: number, b: number). Return type function signature ke baad likhte hain — function add(a: number, b: number): number. Agar return type specify na karo toh TypeScript infer karta hai. Arrow functions ka bhi same syntax hai."
+          whatIsIt="TypeScript mein function parameters ke baad : type likho — function add(a: number, b: number). Return type function signature ke baad aata hai — function add(a: number, b: number): number. Compiler ka perspective samajhte hain: jab tum ye function call karo aur wrong type pass karo, TypeScript compilation roka deta hai — JavaScript generate hi nahi hoti jab tak error fix na ho. Ye enforcement mechanism hai, document nahi."
           whenToUse={[
             'Sab public functions — parameter aur return types annotate karo',
             'Complex return types — inference se readability kam ho',
             'Callbacks — caller ko pata ho kya pass karna hai',
             'Higher-order functions — function types explicitly define karo',
           ]}
-          whyUseIt="Parameter types se caller ko pata hai exactly kya pass karna hai — galti compile error. Return type se caller ko pata hai kya milega — undefined surprise nahi. Function signature documentation hai jo outdated nahi hoti — code hi spec hai. IDE mein function call karo toh parameter hints automatically dikhte hain."
+          whyUseIt="Ek real scenario: 6 mahine pehle tumne function likha, aaj koi aur use kar raha hai. JavaScript mein: wrong arguments pass karo — runtime crash. TypeScript mein: IDE mein function call karo, parameter names aur types automatically dikhte hain. Docs padhne ki zaroorat nahi, function signature khud bol raha hai. Ye 'living documentation' hai — code ke saath update hoti hai, README ki tarah outdated nahi hoti."
           howToUse={{
             filename: 'typed-functions.ts',
             language: 'typescript',
@@ -159,9 +159,9 @@ function createUser(options: CreateUserOptions): CreateUserOptions & { id: strin
 
 const newUser = createUser({ name: 'Rahul', email: 'r@test.com', age: 25 })
 // newUser.id: string — TypeScript knows id exists!`,
-            explanation: 'Return type explicit likhna good practice hai — especially void aur complex types ke liye. Arrow functions type inference bahut acchi hai — simple functions mein annotation optional. Function type aliases se reuse possible hai — callbacks consistently type karo.',
+            explanation: 'Ek pattern note karo: MathOperation type alias se applyOperation function mein op parameter typed hai. Galat function pass karo — compile error. Ye callback type safety hai — higher order functions mein bahut zaroori. createMultiplier closure return karta hai — return type (n: number) => number explicitly likha hai, ambiguity zero.',
           }}
-          realWorldScenario="Express route handler type karo: function getUserHandler(req: Request, res: Response): void. TypeScript se guarantee hai handler void return karta hai — accidental return statement nahi. Middleware chain type karo: (req: AuthRequest, res: Response, next: NextFunction) => void — sab args correctly typed."
+          realWorldScenario="Express middleware likhte hain — (req: Request, res: Response, next: NextFunction): void. TypeScript guarantee karta hai ye function koi value return nahi karta — agar accidentally kuch return kiya toh compile error. Real benefit: next() call karna bhool jao, TypeScript nahi pakad sakta — but wrong argument type dena immediately pakad jaata hai. Safety net real hai."
           commonMistakes={[
             {
               mistake: 'Return type annotate karna bhool jana complex functions mein',
@@ -174,7 +174,7 @@ const newUser = createUser({ name: 'Rahul', email: 'r@test.com', age: 25 })
               fix: 'Type mein arrow (=>) syntax. Implementation mein regular function syntax. Dono type-compatible hone chahiye.',
             },
           ]}
-          proTip="ThisParameterType<T> aur OmitThisParameter<T> utility types hain — function ka this parameter type extract karo ya remove karo. Useful jab methods object se detach ho jaate hain. const boundFn = fn.bind(context) — TypeScript this type automatically update karta hai."
+          proTip="Ek advanced pattern — this parameter type: function greet(this: User): string. Caller galat context pe call kare toh compile error. Ye JavaScript ka this problem TypeScript mein type-safe banata hai. Utility type OmitThisParameter se this remove kar sakte ho — method ko detached function ke roop mein use karo safely."
         />
       </div>
 
@@ -183,14 +183,14 @@ const newUser = createUser({ name: 'Rahul', email: 'r@test.com', age: 25 })
           title="Optional & Default Params — Flexible Functions"
           emoji="🎛️"
           difficulty="beginner"
-          whatIsIt="Optional parameters (?) se caller ko choice milti hai — pass karo ya mat karo. Default parameters (= value) se function ke andar fallback value define karo. Both make functions more flexible. Rule: optional/default params hamesha required params ke baad aane chahiye. Optional param type automatically undefined include karta hai."
+          whatIsIt="Optional (?) aur default (=) — dono parameters ko optional banate hain lekin dono ka use case alag hai. Optional (?) matlab: caller pass kare ya na kare, agar nahi kiya toh value undefined hogi — aur tum function ke andar check karo. Default (= value) matlab: caller pass na kare toh fallback value use ho. Ek important rule jo bahut log miss karte hain — optional/default params HAMESHA required params ke BAAD aane chahiye."
           whenToUse={[
             'Optional: Kuch settings rarely change — user define kar sake par default bhi kaam kare',
             'Default: Sensible fallback values hain — explicitly pass karna optional ho',
             'APIs jahan backward compatibility maintain karni ho — naye params optional karo',
             'Configuration objects mein most fields optional hote hain',
           ]}
-          whyUseIt="Optional params se function overloading ki zaroorat kam hoti hai. Default params se function body cleaner rehti hai — manual null checks nahi. Caller less verbose code likhta hai — sirf required args pass karo. Optional params strongly typed hain — undefined hoga ya specified type."
+          whyUseIt="Real code mein APIs design karte waqt — backward compatibility ek common concern hai. Nayi functionality add karni hai? New optional parameter add karo — purani calls kaam karti rehti hain. Koi breaking change nahi. Aur default params se function body clean rehti hai — andar if (!param) check likhna nahi padta, function signature mein hi default define hai. Clean aur readable."
           howToUse={{
             filename: 'optional-default-params.ts',
             language: 'typescript',
@@ -260,9 +260,9 @@ function setupUser({ name, age = 18, role = 'user' }: UserOptions): string {
 
 setupUser({ name: 'Rahul' })                           // "Rahul (age: 18, role: user)"
 setupUser({ name: 'Admin', age: 30, role: 'admin' })   // "Admin (age: 30, role: admin)"`,
-            explanation: 'Optional (?) aur default (=) dono parameter optional banate hain. Fark: default pe value milti hai, optional pe undefined. Destructuring mein defaults bahut common pattern hai — configuration objects ke liye perfect. Optional chaining (?.) aur nullish coalescing (??) ke saath use karo.',
+            explanation: 'sendEmail function dekho — required params pehle (to, subject), phir defaults (body = ""), phir optional (cc?). Ye ordering rule follow karo. Destructuring mein defaults: { name, age = 18, role = "user" } — caller sirf name de, baaki defaults se aa jaate hain. Ye configuration objects ke liye perfect pattern hai.',
           }}
-          realWorldScenario="Pagination API: function getUsers(page: number = 1, limit: number = 20, search?: string). Caller seedha getUsers() call kare — default pagination. Ya getUsers(2, 50, 'rahul') — custom. TypeScript ensure karta hai page aur limit numbers hain, search string ya undefined."
+          realWorldScenario="Pagination API design karo: function getUsers(page: number = 1, limit: number = 20, search?: string). Frontend wala getUsers() call kare — first page, 20 results. Admin wala getUsers(3, 100, 'rahul') — custom pagination with search. Same function, multiple use cases, TypeScript sab ensure karta hai. Backward compatible by default."
           commonMistakes={[
             {
               mistake: 'Required params ke pehle optional params rakhna',
@@ -275,7 +275,7 @@ setupUser({ name: 'Admin', age: 30, role: 'admin' })   // "Admin (age: 30, role:
               fix: 'if (title) check karo, ya optional chaining use karo: title?.toUpperCase(). Strict null checks ensure karenge ye.',
             },
           ]}
-          proTip="Parameter properties pattern class constructors mein bahut useful hai: class User { constructor(public name: string, private age: number = 0) {} }. public/private/protected constructor params automatically class properties ban jaate hain — boilerplate zero. Chapter 5 mein detail mein!"
+          proTip="Classes mein ek next-level trick hai — constructor parameter properties: class User { constructor(public name: string, private age: number = 0) {} }. Constructor params pe public/private lagao — automatically class properties ban jaate hain, this.name = name alag se likhna nahi padta. Boilerplate drastically kam hoti hai. Chapter 5 mein detail mein dekhenge!"
         />
       </div>
 
@@ -284,14 +284,14 @@ setupUser({ name: 'Admin', age: 30, role: 'admin' })   // "Admin (age: 30, role:
           title="Function Overloads — Ek Function, Multiple Signatures"
           emoji="🔀"
           difficulty="advanced"
-          whatIsIt="Function overloads se ek function ke multiple type signatures define kar sakte ho. Caller different inputs de sake aur TypeScript sahi return type figure out kare. Overload signatures (pehle likhte hain) aur implementation signature (actually runs) alag hoti hain. Implementation signature overload signatures se zyada permissive honi chahiye."
+          whatIsIt="Overloads ek interesting concept hai — ek function ke multiple type signatures. Jab tum string doge toh string milega, number doge toh number milega. TypeScript automatically infer karta hai kaunsi signature match ho rahi hai. Key baat: overload signatures (no body, pehle likhte hain) aur implementation signature (body hai, last mein) alag hote hain. Caller sirf overload signatures dekhta hai — implementation hidden rehti hai."
           whenToUse={[
             'Function jo string input pe string return kare, number pe number — type safe',
             'Optional params based pe alag return type',
             'Library functions jahan caller experience polish karna ho',
             'jQuery jaisi APIs — $(selector) string ya element accept kare',
           ]}
-          whyUseIt="Union types se sometimes over-permissive signatures ban jaati hain — input A se output X, input B se output Y — union se ye relationship express nahi hota clearly. Overloads se caller ko precise types milte hain based on what they pass. Better autocomplete aur type safety."
+          whyUseIt="Problem samajhte hain: agar string | number return likhdo toh caller ko pata nahi kya expect karna hai. String diya — string | number milega? Ya guaranteed string? Overloads ye ambiguity khatam karte hain — 'string diya toh string milega, number diya toh number milega' — perfect precision. IDE mein bhi exact return type dikhta hai based on what you pass."
           howToUse={{
             filename: 'function-overloads.ts',
             language: 'typescript',
@@ -366,9 +366,9 @@ function combine(a: string | number, b: string | number): string | number {
 
 const strResult = combine('Hello, ', 'World')  // string: 'Hello, World'
 const numResult = combine(10, 20)              // number: 30`,
-            explanation: 'Overload signatures pehle likhte hain (no body). Implementation signature last mein (has body). Implementation signature union types use karta hai — overloads se zyada permissive. Caller sirf overload signatures se interact karta hai — implementation nahi dikhta.',
+            explanation: "formatDate example dekho — timestamp format doge toh number milega, date format doge toh string. Caller ke liye exact types, no ambiguity. Implementation mein union types hain — flexible. Lekin caller ke perspective se: clean, precise. createElement('a') pe HTMLAnchorElement milta hai — .href property available immediately. Yahi overloads ka power hai.",
           }}
-          realWorldScenario="Data fetcher library: fetch(url: string): Promise<Response> aur fetch(url: string, options: RequestInit): Promise<Response>. Ya type-safe version: fetchJson<T>(url: string): Promise<T>. Overloads se caller ko perfect types milte hain har calling pattern ke liye."
+          realWorldScenario="jQuery $ function sochte hain — $('div') DOM element return karta hai, $(function) ready callback ke roop mein use hota hai. Dono same $ function, alag input pe alag behavior. Overloads se ye precisely type kiya ja sakta hai — TypeScript input type dekh ke exact return type jaanta hai. Real library design yahi karta hai."
           commonMistakes={[
             {
               mistake: 'Implementation signature direct call karna',
@@ -381,7 +381,7 @@ const numResult = combine(10, 20)              // number: 30`,
               fix: 'Sirf overloads use karo jab input type se output type mapped ho. Simple cases mein union types zyada clean hain.',
             },
           ]}
-          proTip="Method overloads class mein bhi kaam karte hain. Abstract class ya interface mein overload signatures define karo — implementing class automatically correct signatures follow kare. Builder pattern mein overloads se fluent APIs banate hain — different return types different method calls pe."
+          proTip="Ek rule yaad rakho: overloads sirf jab zaroorat ho. Agar simple union type kaam karta hai — use karo, overloads avoid karo. Overloads jab input type se output type mapped ho aur ye relationship precisely express karna ho. Zyada overloads = zyada complexity = zyada maintenance. Simplicity always wins."
         />
       </div>
 

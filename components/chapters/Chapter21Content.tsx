@@ -59,13 +59,13 @@ export default function Chapter21Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Microservices — Ek Badi App Ko Chhote Pieces Mein Todo
+          Microservices — Cool Lagta Hai, Lekin Kab Sahi Hai?
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Microservices architecture mein ek badi application chhote, independent services mein split hoti hai — har service apna kaam karta hai, alag deploy hota hai, alag scale hota hai. <strong className="text-[#F5F5F7]">Lekin ye silver bullet nahi hai</strong> — complexity badhti hai.
+          Microservices sunne mein cool lagta hai. Netflix microservices use karta hai, Amazon microservices use karta hai, toh tumhe bhi pehle din se microservices banana chahiye? <strong className="text-[#F5F5F7]">Lekin Netflix bhi monolith se shuru hua tha. Amazon bhi monolith tha 2001 mein.</strong> Toh kab split karo? Ye sabse important question hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein monolith vs microservices trade-offs, communication patterns, BullMQ job queues, API Gateway, aur service discovery cover karenge — realistic Node.js examples ke saath.
+          Microservices ek badi app ko chhote, independent pieces mein todna hai — har piece alag deploy hota hai, alag scale hota hai, alag team own karti hai. Lekin is power ke saath aata hai distributed system complexity — network failures, distributed transactions, service discovery, operational overhead. Is chapter mein trade-offs samjhenge, communication patterns dekhenge, BullMQ se async queues banayenge, aur API Gateway architecture samjhenge.
         </p>
       </div>
 
@@ -75,14 +75,14 @@ export default function Chapter21Content() {
           title="Microservices vs Monolith"
           emoji="🏗️"
           difficulty="advanced"
-          whatIsIt="Monolith ek single deployable unit hai — sab kuch ek codebase mein. Microservices mein separate services hain — user service, order service, payment service. Conway's Law: 'Organizations design systems that mirror their communication structure.'"
+          whatIsIt="Monolith socho ek badi factory ki tarah — sab kuch ek chhatt ke neeche, ek codebase, ek deployment, ek database. Microservices socho ek industrial zone ki tarah — alag-alag factories (services), har ek apna kaam, apna godown (database), apni team. Conway's Law kehta hai: 'Organizations design systems that mirror their communication structure.' Matlab — agar 3 alag teams hain, naturally 3 services ban jaati hain."
           whenToUse={[
-            'Monolith se shuru karo — premature microservices avoid karo',
-            'Team 15-20+ ho gayi — alag team alag service own kare',
-            'Specific parts ko alag scale karna ho — payment service 10x traffic',
-            'Different technologies different services mein use karni hon',
+            'Shuru karo monolith se — premature microservices ek guaranteed failure recipe hai',
+            'Team 15-20+ ho gayi aur ek codebase mein conflicts roz ho rahe hain — tab split karo',
+            'Specific component ko 10x scale karna ho — payment service peak traffic par — tab isolate karo',
+            'Different teams ko different technology stack chahiye — Python ML service, Node.js API — tab separate karo',
           ]}
-          whyUseIt="Microservices ke fayde: independent deployment, independent scaling, technology flexibility, fault isolation. Nuksan: distributed system complexity, network latency, distributed transactions, operational overhead. Amazon, Netflix ne monolith se migrate kiya kyunki teams itni badi ho gayi thin ki ek codebase mein kaam karna mushkil tha."
+          whyUseIt="Microservices ke genuine fayde: independent deployment (payment team deploy kare bina user team ke), independent scaling (search service 50x scale karo, auth service chhod do), fault isolation (ek service crash kare toh baaki alive rehein). Nuksan: network latency, distributed transactions (nightmare!), service discovery, 3x operational complexity. Rule of thumb: monolith pehle, microservices jab genuinely needed ho."
           howToUse={{
             filename: 'architecture-decision.md',
             language: 'markdown',
@@ -116,9 +116,9 @@ export default function Chapter21Content() {
 ## Martin Fowler: "Monolith First"
 Pehle monolith banao. Domain boundaries samjho.
 Phir extract karo microservices jab genuinely needed ho.`,
-            explanation: 'Sam Newman (Building Microservices author) kehte hain: "Microservices are not a free lunch." Pehle clear domain boundaries samjho, phir split karo. Wrong boundaries se distributed monolith banta hai — worst of both worlds.',
+            explanation: 'Sam Newman, Building Microservices ke author, kehte hain: "Microservices are not a free lunch." Pehle domain boundaries crystal clear honi chahiye — wrong boundary pe split karo toh "distributed monolith" banta hai — microservices ki complexity + monolith ki coupling. Worst of both worlds! Modular monolith ek achha middle ground hai — ek codebase, lekin well-separated modules. Agar kabhi split karna ho toh modules already clean hain.',
           }}
-          realWorldScenario="StackOverflow 2023 tak monolith chal raha tha — 60M+ users serve karta tha. Amazon 2001 mein monolith tha, 2006 mein microservices adopt kiye jab teams large ho gayi aur deployment conflicts roz hote the. Dono right decision kiye right time par."
+          realWorldScenario="StackOverflow 2023 tak monolith tha — 60 million+ users serve karta tha, billions of page views, confidently. Amazon 2001 mein full monolith tha, 2006 mein microservices adopt kiye — kyunki teams 10,000+ developers ho gayi thi, deployment conflicts daily. Dono companies ne right decision liya right time par. Lesson: technology choice context pe depend karta hai, hype pe nahi."
           commonMistakes={[
             {
               mistake: 'Day 1 se microservices — premature optimization',
@@ -131,8 +131,19 @@ Phir extract karo microservices jab genuinely needed ho.`,
               fix: 'Har service ka apna database hona chahiye — "database per service" pattern. Data share karne ke liye events use karo.',
             },
           ]}
-          proTip="Team topology matter karta hai: Conway's Law reverse engineering use karo — pehle team structure decide karo, phir service boundaries. Stream-aligned teams aur platform teams organize karo. Team Topologies book padho."
+          proTip="Inverse Conway Maneuver — ye concept powerful hai. Pehle decide karo teams kaise organize hongi, phir services naturally wahi shape lenge. Agar teen product teams hain, teen services bano. 'Team Topologies' book padho — ye software architecture nahi, organizational design hai. Architecture aur team structure ek doosre ko drive karte hain."
         />
+      </div>
+
+      {/* Akshay-style Q&A interlude */}
+      <div
+        className="rounded-2xl p-5"
+        style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}
+      >
+        <p className="text-[#F5F5F7] font-semibold mb-2">Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          "Theek hai services split kar li — ab ek service doosri se kaise baat kare?" Ye microservices ki sab se interesting challenge hai. Ek phone call ki tarah REST — synchronous, tum wait karte ho reply ka. Ya ek message box ki tarah queue — tum message chhod do, woh apne time par process kare. Dono ke use cases alag hain. Galat choose karna cascading failures ki recipe hai.
+        </p>
       </div>
 
       {/* ConceptCard 2: Communication Patterns */}
@@ -141,14 +152,14 @@ Phir extract karo microservices jab genuinely needed ho.`,
           title="Communication Patterns"
           emoji="📡"
           difficulty="advanced"
-          whatIsIt="Microservices mein services ek dusre se communicate karte hain — synchronously (REST, gRPC) ya asynchronously (message queues, events). Sahi pattern choose karna performance aur reliability ke liye critical hai."
+          whatIsIt="Services ke beech communication do tarah ki hoti hai. Synchronous — ek phone call ki tarah, ek service doosri ko call karta hai aur wait karta hai response ka (REST, gRPC). Asynchronous — ek letter box ki tarah, service message chhod ke chali jaati hai, doosri service apni marzi se process karti hai (BullMQ, RabbitMQ, Kafka). REST simple hai, gRPC internal calls ke liye 5-7x faster hai, message queues loosely coupled systems ke liye perfect hain."
           whenToUse={[
-            'REST — public APIs, browser clients, simple CRUD',
-            'gRPC — internal service-to-service, high performance, streaming',
-            'Message queue (BullMQ, RabbitMQ) — async tasks, email, notifications',
-            'Event-driven (Kafka) — event sourcing, audit logs, real-time feeds',
+            'REST — browser clients, public APIs, simple CRUD — wide tooling support',
+            'gRPC — internal service-to-service, streaming needed, latency critical — binary, fast',
+            'Message queue (BullMQ) — async tasks, email, notifications, retry logic needed',
+            'Event streaming (Kafka) — audit logs, event sourcing, real-time analytics, high volume',
           ]}
-          whyUseIt="Synchronous communication chain failure ka risk rakhti hai — ek service down, sab fail. Async messaging loose coupling deta hai — services independent hote hain. gRPC REST se 5-7x faster internal communication deta hai protobuf binary encoding ke saath."
+          whyUseIt="Synchronous chaining ka khatra — A REST call karta hai B, B REST call karta hai C, C REST call karta hai D. D slow hai? Sab slow. D down hai? Sab fail. Cascading failure! Async events se — A event publish karta hai 'order.created', B aur C independently subscribe karte hain. B down hai? C still works. A ko pata bhi nahi chalta. Loose coupling = resilience. Ye microservices architecture ka core insight hai."
           howToUse={{
             filename: 'communication-patterns.ts',
             language: 'typescript',
@@ -207,9 +218,9 @@ await redis.subscribe('order:created', (message) => {
   const order = JSON.parse(message)
   sendOrderConfirmationEmail(order)
 })`,
-            explanation: 'Timeouts hamesha set karo REST calls mein. Circuit breaker pattern add karo — downstream service fail ho toh fallback karo. Event-driven loosely coupled hai — publisher ko pata nahi consumers kaun hain.',
+            explanation: 'Critical rule: REST calls mein hamesha timeout set karo — timeout: 5000. Bina timeout ke ek slow downstream service poori chain indefinitely hang kar sakti hai. Circuit breaker pattern (opossum library) use karo — agar inventory service 5 consecutive failures de, circuit "open" ho jaata hai, fallback function call hota hai. 30 second baad "half-open" — phir try karo. Ye pattern real electrical circuit breaker ki tarah kaam karta hai.',
           }}
-          realWorldScenario="Payment service REST se inventory service ko stock check karta tha. Inventory service slow hone par payment checkout hang hone laga — cascading failure. Solution: inventory service async event consume karta hai, stock data cache mein rakhta hai. Payment service cache se stock check karta hai — fast aur resilient."
+          realWorldScenario="Payment service inventory service ko synchronous REST se stock check karta tha. Inventory service ek din slow ho gayi — DB maintenance. Payment service hang hone laga, users checkout nahi kar paaye. Business loss! Solution: inventory data async event se cache mein rakha — 'inventory.updated' event aata hai, Redis cache update hota hai. Payment service ab cache se check karta hai — milliseconds mein, inventory service chahe down bhi ho. Ek architecture change ne cascading failure eliminate ki."
           commonMistakes={[
             {
               mistake: 'Synchronous chained calls across multiple services',
@@ -222,7 +233,7 @@ await redis.subscribe('order:created', (message) => {
               fix: 'Events versioned rakho — v1/order:created, v2/order:created. Backward compatible changes prefer karo.',
             },
           ]}
-          proTip="Saga pattern use karo distributed transactions ke liye — choreography (events) ya orchestration (central coordinator). Compensating transactions define karo — agar order fail hoga toh inventory rollback karo. Eventual consistency accept karo."
+          proTip="Distributed transactions — ye microservices ka hardest problem hai. ACID transactions ek service boundary ke andar kaam karte hain — across services nahi. Saga pattern use karo: har step ek local transaction hai, failure pe compensating transaction (rollback equivalent) trigger hota hai. 'Order placed → Inventory reserve → Payment charge → Confirm' — agar Payment fail toh 'Inventory release' compensating transaction. Eventual consistency accept karo, it's a trade-off."
         />
       </div>
 
@@ -232,14 +243,14 @@ await redis.subscribe('order:created', (message) => {
           title="BullMQ — Job Queues"
           emoji="🐂"
           difficulty="advanced"
-          whatIsIt="BullMQ Redis-backed job queue library hai Node.js ke liye. Producers jobs add karte hain, workers jobs process karte hain — async, reliable, with retry logic. Email sending, image processing, report generation ke liye perfect."
+          whatIsIt="BullMQ ek job queue hai jisme tum kaam daalo aur workers utha ke karte hain — apni speed se, retry ke saath, fail hone par dobara try karte hain. Redis iska backbone hai — jobs persist rehti hain server restart ke baad bhi. Producer (kaam daalne wala) aur Worker (kaam karne wala) alag-alag processes mein ho sakte hain. Order place hone par 5 background jobs — confirmation email, inventory update, analytics, invoice PDF, warehouse notify — sab parallel, sab retry-safe."
           whenToUse={[
-            'Email/SMS sending — async, retry on failure',
-            'Image/video processing — CPU-intensive, background mein',
-            'Report generation — user ko block mat karo',
-            'Rate-limited API calls — queue se control karo throughput',
+            'Email/SMS sending — user ko block mat karo, queue mein daalo, async bhejo',
+            'Image/video processing — CPU-intensive kaam background mein bhejo',
+            'Report generation — Excel, PDF generation — polling endpoint do user ko',
+            'Rate-limited API calls — AI APIs, payment gateways — queue se controlled throughput',
           ]}
-          whyUseIt="BullMQ retry, priority, delay, concurrency, aur job scheduling deta hai built-in. Redis persistence se server restart par jobs lose nahi hote. Bull Board UI se jobs monitor karo real-time. Webhooks aur scheduled jobs bhi support karta hai."
+          whyUseIt="Sochte ho ek simple question: order place hone par email kyon user wait kare? Email server temporarily down hai toh order fail ho jaaye? BullMQ se: order place hone par job queue mein daalo, user ko instant success response do, background mein email send karo — fail hone par 3 baar retry karo (1s, 2s, 4s exponential). User happy, email reliable. Redis persistence se server restart par bhi jobs nahi jaati. Ye production-grade async processing hai."
           howToUse={{
             filename: 'bullmq-setup.ts',
             language: 'typescript',
@@ -314,9 +325,9 @@ await emailQueue.add(
     jobId: 'daily-digest-cron', // Unique ID for deduplication
   }
 )`,
-            explanation: 'BullMQ Bull (v3) ka successor hai — TypeScript-first, better reliability. Redis connection pooling automatically karta hai. Bull Board (@bull-board/api) se UI monitor setup karo. Failed jobs queue mein rehte hain — debug karke manually retry kar sakte ho.',
+            explanation: 'Trace karo: emailQueue.add() — job Redis mein store hoti hai. Worker independently running hai — job milti hai, process karta hai. Fail? attempts: 3, backoff: exponential — 1s baad retry, 2s baad, 4s baad. Teen baar fail? failed state mein jaati hai — Bull Board UI mein dikhai deti hai, manually retry kar sakte ho. Job data Redis mein hai — server restart ke baad bhi wahan milegi. Ye reliability hai jo simple setInterval kabhi de nahi sakta.',
           }}
-          realWorldScenario="E-commerce order processing: order place hone par 5 jobs queue mein jaate hain — confirmation email, inventory update, warehouse notification, analytics event, invoice PDF. Sab parallel process hote hain, sab retry support karte hain. Order processing time 200ms se kam — user blocked nahi hota."
+          realWorldScenario="E-commerce order processing: order place hone par ek baar 200ms mein user ko success. Background mein 5 jobs parallel: confirmation email (priority 1), inventory update, warehouse notification, analytics event, invoice PDF generation. Sab retry ke saath, sab independent. Email server down? Email job retry karta hai — baaki 4 jobs normally complete. User ko kya pata chala? Kuch nahi — seamless experience. Ye mature engineering hai."
           commonMistakes={[
             {
               mistake: 'Worker mein unhandled errors throw karna bina try-catch ke',
@@ -329,7 +340,7 @@ await emailQueue.add(
               fix: 'Job data mein sirf IDs store karo — worker DB se fetch kare. Large payloads ke liye S3/GCS reference store karo.',
             },
           ]}
-          proTip="Idempotent workers banao — agar job twice run ho (network glitch se) toh side effects duplicate nahi hone chahiye. Job ID uniqueness use karo deduplication ke liye. Stalled jobs timeout set karo — lockDuration: 30000 (30 seconds)."
+          proTip="Idempotency — ye word yaad karo. Agar job twice run ho (network glitch, crash) toh kya hoga? Email twice jaayega? Payment twice charge hoga? Idempotent worker matlab — same job twice run karo, same result. Order confirmation email ke liye: pehle check karo email already bheja tha? Nahi bheja toh bhejna. Ye safeguard production mein bahut important hai — lockDuration: 30000 se stalled jobs bhi handle hote hain."
         />
       </div>
 
@@ -339,14 +350,14 @@ await emailQueue.add(
           title="API Gateway Pattern"
           emoji="🚪"
           difficulty="advanced"
-          whatIsIt="API Gateway microservices ka single entry point hai. Clients ek hi URL se baat karte hain — Gateway internally sahi service par route karta hai. Authentication, rate limiting, logging, SSL termination sab Gateway par hota hai."
+          whatIsIt="API Gateway ek mall ka main entrance hai. Mall mein 50 shops hain (microservices) — lekin customer ko har shop ka address yaad nahi rakhna padta. Entrance pe security check hoti hai (auth), rules hain (rate limiting), aur signs hain (routing). Gateway single entry point hai — clients ek URL se baat karte hain, Gateway andar route karta hai sahi service par. Authentication, logging, SSL — sab yahan hota hai, har service mein duplicate nahi."
           whenToUse={[
-            'Multiple microservices ko ek URL se expose karna ho',
-            'Centralized auth — har service mein duplicate mat karo',
-            'Rate limiting aur request throttling',
-            'API versioning manage karna — /v1/, /v2/',
+            'Multiple microservices ko ek clean URL /api/v1/* se expose karna ho',
+            'Centralized auth — har service mein JWT verification duplicate mat karo',
+            'Rate limiting aur request throttling — ek jagah, applies to all',
+            'API versioning — /v1/ aur /v2/ simultaneously serve karna',
           ]}
-          whyUseIt="Bina Gateway ke clients ko har service ka URL jaanna padta hai. Security concerns (auth, rate limiting) sab services mein duplicate karne padte hain. Gateway single point of control deta hai — change once, applies everywhere. NGINX, Kong, AWS API Gateway, ya custom Node.js Gateway use kar sakte hain."
+          whyUseIt="Bina Gateway ke: mobile app ko 8 service URLs yaad rakhne padte hain, har ek change pe app update karo. Security concerns — auth, rate limiting — har service mein implement karo. Ek service ka IP change karo — client code update karo. Gateway se: single URL, everything behind it is opaque. Cross-cutting concerns (auth, logging, rate limit) ek jagah change karo — sab services ko milta hai. This is the power of indirection."
           howToUse={{
             filename: 'api-gateway.ts',
             language: 'typescript',
@@ -410,9 +421,9 @@ app.use('/api/v1/health', (req, res) => {
 })
 
 app.listen(3000, () => console.log('API Gateway running on :3000'))`,
-            explanation: 'http-proxy-middleware se simple proxy setup hota hai. Auth Gateway par karo — services pe trust karo x-user-id header. Service discovery ke liye Consul ya Kubernetes service names use karo hardcoded URLs ki jagah.',
+            explanation: 'Architecture trace karo: client request /api/v1/users/123 → Gateway → authenticate() middleware → JWT verify → x-user-id header set → http-proxy-middleware → user-service:3001/users/123. User service ko JWT verify nahi karna — sirf x-user-id header trust karo (internal network mein safe). Gateway thin rakho — routing, auth, rate limit. Business logic services mein.',
           }}
-          realWorldScenario="Fintech app mein 8 microservices the — alag alag ports par. Frontend team ko sabke URLs manage karne padte the. API Gateway add kiya — sab /api/v1/* prefix ke peeche hide ho gaye. Auth, rate limiting, logging ek jagah. Mobile app ka code 40% reduce hua."
+          realWorldScenario="Fintech app mein 8 microservices alag-alag ports par chal rahe the. Mobile app codebase mein 8 different URLs, 8 separate auth implementations, 8 rate limiters. API Gateway add kiya — sab kuch /api/v1/* ke peeche. Auth ek jagah, logging ek jagah, rate limiting ek jagah. Mobile app ka network code 40% reduce hua. New service add karna? Sirf Gateway config mein ek line — koi client update nahi."
           commonMistakes={[
             {
               mistake: 'Business logic Gateway mein dalna',
@@ -425,7 +436,7 @@ app.listen(3000, () => console.log('API Gateway running on :3000'))`,
               fix: 'Multiple Gateway instances chalao load balancer ke peeche. Health checks aur auto-restart configure karo. Kubernetes deployment with replicas: 3.',
             },
           ]}
-          proTip="NGINX ya Traefik production mein better performance deta hai custom Node.js Gateway se routing ke liye. Node.js Gateway tab use karo jab complex business logic gateway par honi ho. Kong ya AWS API Gateway managed solutions hain — zero operational overhead."
+          proTip="High traffic ke liye NGINX ya Traefik better performance deta hai — C mein written, battle-tested. Node.js Gateway tab banao jab complex business logic chahiye. AWS API Gateway ya Kong managed solutions hain — zero servers manage karo, buss configure karo. Startup ho? Kong Community Edition free hai aur production-grade hai."
         />
       </div>
 
@@ -435,14 +446,14 @@ app.listen(3000, () => console.log('API Gateway running on :3000'))`,
           title="Service Discovery & Health Checks"
           emoji="🔎"
           difficulty="advanced"
-          whatIsIt="Service discovery matlab services runtime par ek dusre ko dhundh sakti hain — hardcoded IPs nahi. Docker Compose mein service names work karte hain. Kubernetes mein DNS-based discovery built-in hai. Health checks se traffic sirf healthy instances ko milti hai."
+          whatIsIt="Tumhara order-service ko user-service ka address chahiye. Hardcode karo? '192.168.1.45:3001'? Container restart hone par IP change ho jaayega. Service discovery iska solution hai — DNS-based ya registry-based. Docker Compose mein service names automatically resolve hote hain (user-service hostname directly kaam karta hai). Kubernetes mein built-in DNS service hai — user-service.default.svc.cluster.local. Health checks ensure karte hain sirf healthy instances traffic receive karein."
           whenToUse={[
-            'Multiple service instances chalao — load balancing ke liye',
-            'Services dynamically scale hoti hain — containers add/remove',
-            'Zero-downtime deployment — unhealthy pod ka traffic route mat karo',
-            'Docker Compose development environment',
+            'Multiple instances of ek service chalao — load balancing chahiye',
+            'Kubernetes ya ECS mein deploy karo — IPs dynamically change hote hain',
+            'Zero-downtime deployment — naya pod ready ho tab tak traffic na bhejo',
+            'Docker Compose local development — sab services ek network mein',
           ]}
-          whyUseIt="Dynamic environments mein (Kubernetes, ECS) service IPs change hote hain. Service discovery se hardcoded IPs ki zaroorat nahi — service name se communicate karo. Health checks ensure karte hain ki broken instances traffic nahi receive karte."
+          whyUseIt="Imagine karo — 5 instances of user-service chal rahi hain. Ek crash karti hai, naya container start hota hai — naya IP milta hai. Hardcoded IP? Broken. Service name 'user-service'? Docker/Kubernetes automatically route karta hai healthy instances pe. Ye dynamic infrastructure ki fundamental requirement hai. Health checks ke saath — broken containers traffic nahi lete, users ko unhealthy service nahi milti."
           howToUse={{
             filename: 'docker-compose.yml',
             language: 'yaml',
@@ -495,9 +506,9 @@ services:
 
 volumes:
   pgdata:`,
-            explanation: 'Docker Compose mein service names automatically DNS resolve hote hain — user-service hostname directly use karo. healthcheck se depends_on wait karta hai healthy state ke liye. Production mein Kubernetes service DNS: user-service.production.svc.cluster.local.',
+            explanation: 'Docker Compose magic trace karo: USER_SERVICE_URL=http://user-service:3001. "user-service" — ye sirf ek naam hai, koi IP nahi. Docker Compose internally DNS server chalata hai — "user-service" resolve hota hai us container ke IP par. healthcheck ke saath depends_on condition: service_healthy — db container health check pass kare tab tak api-gateway start nahi hoga. Ye startup race conditions eliminate karta hai.',
           }}
-          realWorldScenario="Startup ke microservices Kubernetes mein deploy hain. Order service ko user service dhundni thi. Consul ki jagah Kubernetes native DNS use kiya — user-service.default.svc.cluster.local. Auto-scaling ke saath bhi DNS automatically update hota hai — koi hardcoded IP nahi. Zero DevOps effort."
+          realWorldScenario="Startup ke microservices Kubernetes mein the. Order service ne user service ka IP hardcode kiya tha. Container restart, IP changed, order service broken. Kubernetes service DNS use kiya — user-service.default.svc.cluster.local. Ab chahe 10 instances ho ya 1, chahe IPs change hon — ye DNS name always resolves to healthy pods. Zero code change, zero downtime, zero IP management. Kubernetes DNS — zero DevOps overhead ke saath service discovery."
           commonMistakes={[
             {
               mistake: 'Health check endpoint complex banana — DB query karta hai',
@@ -510,7 +521,7 @@ volumes:
               fix: 'depends_on mein condition: service_healthy use karo — healthcheck pass hone tak wait karo.',
             },
           ]}
-          proTip="Kubernetes mein liveness probe aur readiness probe alag karo. Liveness: process alive hai (restart karo agar fail). Readiness: traffic le sakti hai (route mat karo agar fail). Startup probe bhi add karo slow-starting apps ke liye — crash loop avoid hota hai."
+          proTip="Kubernetes mein teen alag probes samjho: Liveness probe — 'process zinda hai?' (fail toh restart). Readiness probe — 'traffic le sakta hai?' (fail toh load balancer se remove, restart nahi). Startup probe — 'slow app ko time do startup ka' (liveness probe ko hold rakho jab tak startup complete na ho). Teen probes, teen alag responsibilities — sab configure karo, production mature ho jaayegi."
         />
       </div>
 

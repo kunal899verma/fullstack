@@ -64,13 +64,16 @@ export default function ReactChapter9Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Context API — Prop Drilling Ka Solution
+          Context API — Prop Drilling Ki Maut
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Prop drilling — data 5-6 levels deep pass karna — painful hai. Context API React ka built-in solution hai — global-like state without props. Auth, theme, language, notifications — sab Context ke ideal use cases hain.
+          Socho ek scenario — user ka naam App mein hai. Header chahiye, Navbar chahiye, NavLinks chahiye, AdminMenu chahiye. Ye sab 5 levels deep hain. Kya karte ho? Har level pe user pass karte jaate ho? Ye Layout, NavLinks — inhe user ki zaroorat nahi hai, phir bhi ye "postman" bante hain. Ye hi prop drilling hai — aur ye React developers ka pehla major pain point hai.
+        </p>
+        <p className="text-[#A1A1AA] leading-relaxed mb-3">
+          Context API React ka built-in solution hai. Ek Provider rakho tree ke upar, koi bhi Consumer seedha value lo — beech ke postman components ko kuch nahi pata. Auth, theme, language — ye sab Context ke perfect use cases hain.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum Context setup, optimization, multiple contexts, aur Context vs Zustand vs Redux comparison cover karenge.
+          Lekin Context bhi perfect nahi hai — unnecessary re-renders ka trap hai. Is chapter mein setup se le kar optimization tak sab samjhenge.
         </p>
       </div>
 
@@ -79,14 +82,14 @@ export default function ReactChapter9Content() {
           title="Prop Drilling Problem — Kyun Painful Hai"
           emoji="😰"
           difficulty="intermediate"
-          whatIsIt="Prop drilling — data ko component tree mein 3+ levels deep pass karna props se. Middle components 'postman' ban jaate hain — unke koi kaam ka nahi data carry karte. Ek type change karo — sab intermediate components update karne padte hain. Maintainability nightmare."
+          whatIsIt="Prop drilling ek silent killer hai. Pehle ek level, phir do, phir teen. Ek din tum dekhte ho ki Layout component user prop receive kar raha hai jo use karta hi nahi — sirf Navbar ko pass karne ke liye. Navbar bhi usi tarah NavLinks ko pass karta hai. Ye 'postman' components hain — unka kaam sirf data forward karna hai. Problem tab aati hai jab user interface mein ek field add karna ho — sab intermediate components ke types update karne padte hain. Ek change, 10 files."
           whenToUse={[
-            'Problem identify karna — 3+ level prop passing',
+            'Problem identify karo — 3+ levels mein same prop pass ho raha hai',
             'Intermediate components unnecessarily aware hain data ke',
-            'Type changes cascade karte hain multiple files mein',
+            'Type/interface change karne pe cascade effect hota hai',
             'Same data multiple unrelated components mein chahiye',
           ]}
-          whyUseIt="Prop drilling samajhna zarooori hai — kab Context use karna hai decide karne ke liye. 1-2 levels prop passing fine hai. 3+ levels — Context consider karo. Data type change — sab files update — sign of prop drilling problem."
+          whyUseIt="Prop drilling samajhna zaroori hai — tabhi tum decide kar paoge kab fix karna hai. 1-2 levels? Fine, props use karo, Context overkill hai. 3+ levels ya genuinely global data? Context consider karo. Rule of thumb: agar intermediate component ko data ka naam pata hai lekin use nahi karta — wo postman hai, fix karo."
           howToUse={{
             filename: 'PropDrillingProblem.tsx',
             language: 'tsx',
@@ -153,9 +156,9 @@ function AdminMenu({ user }: { user: User }) {
 // AuthContext.Provider wraps App
 // AdminMenu: const { user } = useAuth() — direct access!
 // No intermediate prop passing needed`,
-            explanation: 'Prop drilling: data har level se pass karo. Middle components unnecessarily aware. Type change = many files. Context solution: provider wraps tree, consumers directly access. Components se "postman" responsibility hata do.',
+            explanation: 'Code trace karo — App mein user hai. Layout ko pass kiya, Layout ne Navbar ko, Navbar ne NavLinks ko, NavLinks ne AdminMenu ko. AdminMenu finally use karta hai. Lekin Layout, Navbar, NavLinks — teeno sirf postman the. Ek user.email field add karo — teeno files update. Context se: App mein Provider, AdminMenu mein useContext — teeno postman retire ho jaate hain.',
           }}
-          realWorldScenario="Multi-tenant SaaS mein: tenantId, theme, language, user permissions — sab 6-7 levels deep chahiye. Prop drilling se 200+ component files mein changes. Context se: ek provider, consumers directly access. Maintenance 10x easier."
+          realWorldScenario="Multi-tenant SaaS application — tenantId, theme, language, user permissions, feature flags — ye sab 6-7 levels deep chahiye hain. Prop drilling mein 200+ component files mein changes. Ek naya permission add karo — cascade of updates. Context se: ek AuthProvider, ek ThemeProvider — consumers seedha access. Maintenance 10x easier, team productivity 5x better."
           commonMistakes={[
             {
               mistake: 'Har prop drilling ko Context se fix karna',
@@ -168,7 +171,7 @@ function AdminMenu({ user }: { user: User }) {
               fix: 'Children prop pattern — intermediate component data nahi jaanta: <Layout>{children}</Layout>.',
             },
           ]}
-          proTip="Component composition prop drilling alternative hai. Bina Context: <App><Layout><Page user={user} /></Layout></App> — user sirf Page ko chahiye, Layout nahi jaanta. Children/slots pattern se deep nesting bina prop drilling. React docs mein ye pattern highlighted hai."
+          proTip="Context se pehle ek aur option try karo — Component Composition! Bina Context: &lt;Layout&gt;&lt;Page user={user} /&gt;&lt;/Layout&gt; — user seedha Page ko diya, Layout beech mein nahi aaya. children prop pattern se Layout ko user ka pata hi nahi chala. Shallow tree, zero prop drilling. React docs mein ye pattern pehle recommend hota hai Context se. Simple cases mein ye bahut clean solution hai."
         />
       </div>
 
@@ -177,14 +180,14 @@ function AdminMenu({ user }: { user: User }) {
           title="createContext + useContext — Complete Setup"
           emoji="🔧"
           difficulty="intermediate"
-          whatIsIt="createContext se context object banao. Provider component mein value prop se data provide karo. useContext hook se value consume karo. TypeScript ke saath: context type define karo, default value set karo. Custom hook wrap karo useContext ko — better DX, validation."
+          whatIsIt="Step by step samjhte hain Context ka flow. createContext() — ek context object banata hai. Context.Provider — value prop se data broadcast karta hai — is Provider ke neeche poora subtree. useContext() — nearest ancestor Provider se value leta hai. React internally Observer pattern use karta hai — Provider value change karta hai, sab useContext consumers re-render hote hain. Isliye optimization important hai. Custom hook pattern — useAuth() ek clean API deta hai aur outside-provider use pe meaningful error throw karta hai."
           whenToUse={[
             'Auth state — user, token, login/logout functions',
-            'Theme — dark/light mode',
-            'Language/Locale — i18n',
+            'Theme — dark/light mode toggle',
+            'Language/Locale — i18n translations',
             'Global notifications — toast system',
           ]}
-          whyUseIt="Context API built-in hai — no extra library. TypeScript ke saath fully type-safe. Custom hook pattern — useAuth() clean API deta hai, implementation details hide karta hai. Agar context outside provider mein use hoa — custom hook warning throw kar sakta hai."
+          whyUseIt="Suno — Context API built-in hai, koi library install nahi karni. TypeScript ke saath fully type-safe. Lekin sabse important: custom hook pattern! useAuth() likho — direct useContext nahi. Kyun? Agar koi component Provider ke baahir use kare — meaningful error milta hai: 'useAuth must be within AuthProvider.' Direct useContext use karo toh undefined milta hai — crash confusing hota hai."
           howToUse={{
             filename: 'AuthContext.tsx',
             language: 'tsx',
@@ -305,9 +308,9 @@ function AdminPanel() {
 
   return <div>Admin dashboard for {user.name}</div>
 }`,
-            explanation: 'createContext → Provider → useContext pattern. TypeScript: context type define karo, undefined default. Custom hook useAuth() — validation + clean API. useMemo value — stable reference. Provider app root mein wrap karo. Consumers direct access karte hain — no prop drilling.',
+            explanation: 'Flow trace karo — createContext undefined default se (TypeScript ke liye). AuthProvider component — state manage karta hai, useCallback se stable functions, useMemo se stable value object. App root mein wrap karo. Koi bhi child: useAuth() call karo — nearest AuthProvider ki value milti hai. Custom hook context undefined check karta hai — warna confusing crash hoga.',
           }}
-          realWorldScenario="Next.js app mein: AuthProvider app/layout.tsx mein wrap karo — har page accessible. Protected routes mein: const { isAuthenticated } = useAuth(); if (!isAuthenticated) redirect('/login'). Admin pages: const { user } = useAuth(); if (user.role !== 'admin') notFound()."
+          realWorldScenario="Next.js app mein — app/layout.tsx mein AuthProvider root pe wrap karo. Protected route: const { isAuthenticated } = useAuth(); if (!isAuthenticated) redirect('/login'). Admin panel: const { user } = useAuth(); if (user?.role !== 'admin') notFound(). Clean, readable, type-safe — koi prop drilling nahi."
           commonMistakes={[
             {
               mistake: 'Context value mein object directly daalna bina useMemo ke',
@@ -320,7 +323,7 @@ function AdminPanel() {
               fix: 'Custom hook mein validate karo: if (!context) throw new Error("useXxx must be within XxxProvider").',
             },
           ]}
-          proTip="Context testing: render component within provider in tests: render(<AuthProvider><ComponentToTest /></AuthProvider>). Ya test utilities: const renderWithAuth = (ui) => render(<AuthProvider>{ui}</AuthProvider>). Mock user inject karo: <AuthProvider initialUser={testUser}>."
+          proTip="Testing mein Context ke saath ek clean pattern hai — renderWithAuth helper banao: const renderWithAuth = (ui, user) =&gt; render(&lt;AuthProvider initialUser={user}&gt;{ui}&lt;/AuthProvider&gt;). Test mein: renderWithAuth(&lt;AdminPanel /&gt;, adminUser). No mocking, real Provider, real behavior. Tests zyada reliable hote hain jab real Provider use karo mock ke jagah."
         />
       </div>
 
@@ -329,14 +332,14 @@ function AdminPanel() {
           title="Context Optimization — Unnecessary Re-renders Avoid"
           emoji="⚡"
           difficulty="intermediate"
-          whatIsIt="Context value change pe sab consumers re-render karte hain — ek bhi value change = sab update. useMemo se value stabilize karo. Context split karo — auth aur theme alag. Selector pattern — sirf specific slice select karo. use-context-selector library se surgical updates."
+          whatIsIt="Yahan ek trap hai. Context value change hoti hai — sab useContext consumers re-render hote hain. Sab! Matlab agar ek Context mein theme aur user dono hain, aur sirf theme change hui — user consumers bhi re-render honge! Ye React ka design hai. Solution? Pehla — useMemo se value object stabilize karo (warna har parent render pe naya object, sab consumers re-render). Doosra — contexts split karo. Theme alag, auth alag. Ab theme change hone pe sirf theme consumers re-render."
           whenToUse={[
-            'Context consumers bahut hain — optimization zaroori',
-            'Context value frequently update hota hai',
-            'Consumers sirf ek slice chahiye — poora nahi',
-            'Performance profile mein context consumers slow dikhe',
+            'Context consumers bahut hain — optimization seriously zaroori',
+            'Context value frequently update hoti hai',
+            'Consumers sirf ek slice use karte hain poori value nahi',
+            'Profiler mein context consumers unnecessary re-renders dikhaaye',
           ]}
-          whyUseIt="Unoptimized context — theme change pe auth consumers re-render. Over-rendering se jank. useMemo aur split contexts se consumer specific data pe re-render hote hain. Production apps mein ye optimization dramatic improvement de sakta hai."
+          whyUseIt="Ek real example socho — Shopping app mein ek AppContext mein user + cart + theme sab hain. User apna cart update karta hai — theme consumers bhi re-render hote hain. Kyun? Same context. Split karo — CartContext, UserContext, ThemeContext. Ab cart update pe sirf cart consumers re-render. User aur theme ko koi fark nahi padta. Performance dramatically better."
           howToUse={{
             filename: 'ContextOptimization.tsx',
             language: 'tsx',
@@ -456,9 +459,9 @@ function useDispatch() {
   if (!ctx) throw new Error('useDispatch must be in StateProvider')
   return ctx
 }`,
-            explanation: 'Split contexts — different update frequencies alag. useMemo value — stable. useReducer + Context — dispatch never changes (great for actions). Selector libraries (use-context-selector) granular subscriptions. Profile before optimize — measure actual problem.',
+            explanation: 'Key insight — UserContext aur UIContext split kiye. User rarely change hota hai — login/logout pe. UI frequently — har theme toggle, language change. Agar ek saath hote toh theme toggle pe UserAvatar bhi re-render hoti (unnecessary!). Split se: theme change — sirf UIContext consumers. User change — sirf UserContext consumers. Surgical updates.',
           }}
-          realWorldScenario="Shopping app: CartContext (frequent updates — add/remove items) + UserContext (rare — login) + ThemeContext (user preference) — split. Cart consumers re-render sirf cart change pe. User ko theme change se koi fark nahi. Better performance, cleaner code."
+          realWorldScenario="E-commerce shopping app — CartContext (har item add/remove pe update), UserContext (login ke baad stable), ThemeContext (user preference, kabhi kabhi). Teen alag contexts. Cart mein 50 items add karo — sirf CartDrawer, CartBadge re-render hote hain. Header ka UserMenu? Undisturbed. Theme toggle? Sirf theme consumers. Clean separation = clean performance."
           commonMistakes={[
             {
               mistake: 'Bahut zyada contexts banana — god context ki jagah fragmented contexts',
@@ -471,7 +474,7 @@ function useDispatch() {
               fix: 'Context simple cases ke liye. Complex — Zustand, Jotai consider karo.',
             },
           ]}
-          proTip="React Compiler (upcoming) automatic memoization karega — Context optimization manual nahi karna padega. Abhi Zustand/Jotai consider karo complex global state ke liye — built-in selector support, no boilerplate, atomic updates."
+          proTip="Zustand aur Jotai mein built-in selector support hai — useStore(state =&gt; state.theme) sirf theme change pe re-render karta hai. Context mein ye natively nahi hai (use-context-selector library se possible hai). Agar bahut granular control chahiye — Zustand seedha zyada suitable hai Context se. Lekin auth aur theme ke liye Context + useMemo + split approach perfectly kaafi hai."
         />
       </div>
 
@@ -480,14 +483,14 @@ function useDispatch() {
           title="Multiple Contexts — Auth, Theme, Language"
           emoji="🎛️"
           difficulty="intermediate"
-          whatIsIt="Real apps mein multiple contexts: AuthContext, ThemeContext, LanguageContext, NotificationContext — har ek alag concern handle karta hai. Provider nesting ke saath — compose karo. Custom hooks se clean API. Each context independent — update frequency alag, consumers alag."
+          whatIsIt="Production app mein ek Context se kaam nahi chalta. Socho — ThemeContext, AuthContext, LanguageContext, NotificationContext — char alag concerns, char alag update frequencies. Theme user toggle karta hai. Auth sirf login/logout pe. Language rarely. Notifications har 30 seconds. Sab ek context mein? Performance disaster. Alag alag contexts — separation of concerns + performance optimization dono ek saath milte hain."
           whenToUse={[
-            'Auth — user, permissions, login state',
-            'Theme — dark/light, color scheme',
-            'Language — locale, translations',
-            'Notifications — toast, banners',
+            'Auth — user object, permissions, login/logout functions',
+            'Theme — dark/light mode, color scheme, typography scale',
+            'Language — locale, translation function t()',
+            'Notifications — toast queue, addNotification, removeNotification',
           ]}
-          whyUseIt="Separation of concerns — each context ek responsibility. Theme change karo — auth consumers unaffected. Auth logout karo — theme same rahti hai. Testing easier — sirf relevant context mock karo. Team different contexts parallel develop kar sakti hai."
+          whyUseIt="Multiple contexts ka beauty — independent evolution. ThemeProvider change karo — AuthProvider ko kuch pata nahi. AuthProvider mein bug fix karo — LanguageProvider untouched. Testing mein? Sirf relevant context mock karo — poora app setup nahi karna. Team ke alag members alag contexts own kar sakte hain. Ye real engineering hai."
           howToUse={{
             filename: 'MultipleContexts.tsx',
             language: 'tsx',
@@ -645,9 +648,9 @@ function Header() {
     </header>
   )
 }`,
-            explanation: 'Each context alag concern. Provider compose karo — nesting. Custom hooks clean API. AppProviders component se provider composition centralize karo. Notifications bhi context mein — any component se toast trigger karo. useMemo har value stabilize karta hai.',
+            explanation: 'Har context apna ek concern handle karta hai. AppProviders composite component — ek jagah sab providers nest karo, baaki app clean dikhti hai. useMemo har value mein — stable references ensure karo. Custom hooks — useTheme, useLanguage, useNotification — consumers ka implementation hide hota hai. Kisi bhi component se addNotification() call karo — toast poore app mein dikhta hai.',
           }}
-          realWorldScenario="Production SaaS: AuthProvider (user, permissions) + TenantProvider (tenant config, branding) + ThemeProvider (dark/light) + LanguageProvider (i18n) + NotificationProvider (toasts). Hierarchy: tenant → auth → theme → lang → notif → app. Cleanly layered."
+          realWorldScenario="Production SaaS app — TenantProvider (tenant config, branding) wraps AuthProvider wraps ThemeProvider wraps LanguageProvider wraps NotificationProvider. Hierarchy: outer se inner. Tenant-level settings sab ke baad available. Notifications har jagah accessible. Clean layering — every concern in its place."
           commonMistakes={[
             {
               mistake: 'Provider order galat rakhna — inner context outer pe depend kare',
@@ -660,7 +663,7 @@ function Header() {
               fix: 'AppProviders composite component mein wrap karo — ek component, cleaner tree.',
             },
           ]}
-          proTip="react-wrap-providers library ya custom compose helper: function compose(...providers) { return ({ children }) => providers.reduceRight((acc, Provider) => <Provider>{acc}</Provider>, children) }. Clean single component instead of nesting."
+          proTip="Context hell — 10 providers nesting — painful dikhta hai. Clean solution: compose helper banao. function compose(...Providers) { return ({ children }) =&gt; Providers.reduceRight((acc, P) =&gt; &lt;P&gt;{acc}&lt;/P&gt;, children) }. Use: const AppProviders = compose(ThemeProvider, AuthProvider, LanguageProvider). Ab ek line mein sab wrap. Ya react-wrap-providers npm package directly use karo — same pattern, zero boilerplate."
         />
       </div>
 
@@ -669,14 +672,14 @@ function Header() {
           title="Context vs Zustand vs Redux — Kab Kaunsa?"
           emoji="⚖️"
           difficulty="intermediate"
-          whatIsIt="Context: built-in, simple shared state, best for low-frequency updates (auth, theme). Zustand: minimal library, excellent performance, selective subscriptions, no providers. Redux: enterprise, time-travel debugging, middleware, complex patterns. Jotai/Recoil: atomic state — fine-grained reactivity."
+          whatIsIt="Seedha punchline — Context, Zustand, Redux teeno alag problems solve karte hain. Context best hai low-frequency global values ke liye (auth, theme) — built-in, no install. Zustand best hai frequent client state ke liye (cart, UI state) — selective subscriptions, no providers. Redux best hai large enterprise apps ke liye — time-travel debugging, strict patterns, middleware. Aur server state (API data) ke liye? Inmen se koi nahi — TanStack Query."
           whenToUse={[
-            'Context: auth, theme, locale — simple, rarely changing',
-            'Zustand: shopping cart, UI state, frequent updates',
-            'Redux: large teams, complex state, time-travel debugging zaroori',
-            'React Query: server state — async data, caching, sync',
+            'Context: auth, theme, locale — rarely changing shared values',
+            'Zustand: shopping cart, filters, UI state — frequent updates',
+            'Redux Toolkit: large teams, time-travel debugging, strict patterns zaroori',
+            'TanStack Query: server state — async data, caching, background sync',
           ]}
-          whyUseIt="Right tool right job. Context simple setup, no dependencies. Zustand excellent DX, minimal code, no provider needed. Redux powerful lekin verbose. React Query async state ke liye — manual useEffect fetch replace karo. Most apps: Context + React Query kaafi hai."
+          whyUseIt="Practical decision guide: App 1000 lines se chhoti? useState + Context. 1000-10000 lines? Zustand add karo. 10000+ lines, badi team? Redux Toolkit. API data? Hamesha TanStack Query — koi bhi state tool nahi. Ye matrix yaad rakho — wrong tool choose karne ka cost bahut bada hota hai refactoring mein."
           howToUse={{
             filename: 'StateManagement.tsx',
             language: 'typescript',
@@ -774,9 +777,9 @@ function Products() {
   if (error) return <Error />
   return <ProductList products={products} />
 }`,
-            explanation: 'Context: simple, built-in, low-frequency. Zustand: excellent for client state, selective subscriptions, no boilerplate. Redux: enterprise, middleware, time-travel. React Query: server state — async data management. Most apps need Context + React Query, sometimes Zustand. Redux rarely needed today.',
+            explanation: 'Comparison clear karo — Context mein koi bhi change sab consumers re-render karta hai. Zustand mein selector se sirf specific slice pe subscribe karo — surgical updates. Redux mein middleware, immer, devtools — enterprise-grade. React Query mein server state ke saath staleTime, caching, background refetch — specialized server state management.',
           }}
-          realWorldScenario="E-commerce: Auth → Context (user login, rarely changes). Product catalog → React Query (server data, cache). Cart → Zustand (frequent updates, selective subscriptions). Theme → Context (user preference). Zero Redux. Clean separation, right tool right job."
+          realWorldScenario="Real e-commerce architecture — Auth state: Context (user login, rarely changes — perfect fit). Product catalog: TanStack Query (server data, 5 minute cache, background refresh). Cart: Zustand (frequent updates — add/remove items — selective subscriptions). Theme: Context (user preference, simple). Zero Redux. Zero prop drilling. Clean separation, happy developers."
           commonMistakes={[
             {
               mistake: 'Redux for everything — even simple local state',
@@ -789,7 +792,7 @@ function Products() {
               fix: 'React Query, SWR, RTK Query — server state tools. Client state (UI state, user preferences) sirf client state tools mein.',
             },
           ]}
-          proTip="2024 recommendation: useState + useReducer for local state. Context for simple shared state (auth, theme). React Query/TanStack Query for server state. Zustand for complex client-side shared state. Redux sirf large enterprise apps ya already existing codebases mein. Jotai/Recoil — fine-grained reactivity ke liye."
+          proTip="2025 ka practical recommendation — useState aur useReducer local state ke liye. Context auth aur theme ke liye (simple, stable). TanStack Query server state ke liye (ye game changer hai — ek baar use karo, manual useEffect fetch kabhi nahi karoge). Zustand complex client state ke liye (cart, filters). Redux sirf bade existing codebases ya very specific needs ke liye. Ye four tools mein 99% apps kaafi hain."
         />
       </div>
 

@@ -55,10 +55,10 @@ export default function DBChapter1Content() {
           Databases Ka Overview — SQL se NoSQL Tak
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Database har serious application ka core hota hai — data store karna, retrieve karna, update karna. Sahi database choose karna ek critical decision hai jo baad mein change karna bahut expensive hai. PostgreSQL, MySQL, MongoDB, Redis — har ek ke apne strengths aur weaknesses hain.
+          Database choose karna — ye decision ek baar galat ho gayi toh production mein migrate karna BAHUT costly hai. Netflix ne MySQL se CockroachDB migrate kiya — 2 saal lage! Pehle sahi choose karo. PostgreSQL, MySQL, MongoDB, Redis — har ek ke apne strengths hain, aur ye strengths tab kaam aate hain jab aap unhe sahi jagah use karo.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum samjhenge ki SQL vs NoSQL ka real difference kya hai, ACID properties kyun zaroori hain, relational model kaise kaam karta hai, aur aapke use case ke liye kaunsa database sahi choice hoga.
+          Sawaal ye nahi ki "kaunsa database best hai" — sawaal ye hai ki "mere use case ke liye kaunsa sahi hai?" Is chapter mein hum SQL vs NoSQL ka real difference samjhenge, ACID properties kyun zaroori hain — ek bank transfer example se, relational model ka math samjhenge, aur ye decide karna seekhenge ki aapke project ke liye kaunsa database choose karo.
         </p>
       </div>
 
@@ -67,7 +67,7 @@ export default function DBChapter1Content() {
           title="SQL vs NoSQL — Kab Kya?"
           emoji="⚖️"
           difficulty="beginner"
-          whatIsIt="SQL databases (PostgreSQL, MySQL) tables mein data store karte hain — rows aur columns, fixed schema, relationships, ACID transactions. NoSQL databases (MongoDB, Redis, Cassandra) flexible structure use karte hain — documents, key-value, graphs. SQL: structured data ke liye. NoSQL: scale, flexibility, speed ke liye specific use cases mein."
+          whatIsIt="Sawaal: SQL aur NoSQL mein real difference kya hai? SQL databases (PostgreSQL, MySQL) data ko tables mein store karte hain — rows, columns, fixed schema, relationships, ACID transactions. Ye set theory aur relational algebra pe based hai — pure maths! NoSQL databases (MongoDB, Redis, Cassandra) flexible structure use karte hain — documents, key-value, graphs. Rule simple hai: SQL structured relational data ke liye, NoSQL specific scale ya flexibility problems ke liye."
           whenToUse={[
             'SQL: Structured data jahan relationships important ho — users, orders, products',
             'SQL: Financial data — ACID transactions mandatory hain',
@@ -76,7 +76,7 @@ export default function DBChapter1Content() {
             'NoSQL (Redis): Caching, sessions, real-time leaderboards — in-memory speed',
             'NoSQL (Cassandra/DynamoDB): Massive scale, high write throughput — IoT, logs',
           ]}
-          whyUseIt="Wrong database choice migration cost bahut zyada hoti hai — terabytes data migrate karna months ka kaam hai. SQL schema enforcement bugs early pakadta hai — invalid data save nahi hoti. NoSQL horizontal scaling easy hai — commodity servers add karte jao. Each database is a tool — ek hi project mein dono use karna (polyglot persistence) common hai."
+          whyUseIt="Ye decision production mein bahut costly hoti hai agar galat ho — isliye pehle samjho. Wrong database choice ka matlab hai: terabytes data migrate karna, months ka kaam, aur production downtime ka risk. SQL ka schema enforcement ek guard ki tarah kaam karta hai — invalid data save hi nahi hogi, bug early pakda jaayega. NoSQL horizontal scaling easy deta hai — commodity servers add karo, scale badhao. Lekin sabse powerful approach hai polyglot persistence — ek hi app mein PostgreSQL + Redis dono use karo, har ek apna kaam kare."
           howToUse={{
             filename: 'sql-vs-nosql-comparison.md',
             language: 'bash',
@@ -126,9 +126,9 @@ Use: Caching, sessions, rate limiting, leaderboards, queues
   → Need sub-millisecond response
   → Caching expensive DB queries
   → Session storage, rate limiting`,
-            explanation: "PostgreSQL zyada cases mein best choice hai — SQL + JSONB flexibility deta hai. MongoDB sirf specific use cases mein shine karta hai. Redis almost hamesha secondary database hai — caching layer. Ek app mein PostgreSQL + Redis combination bahut common hai.",
+            explanation: "PostgreSQL zyada cases mein best choice hai — SQL ki power aur JSONB ki flexibility ek jagah milti hai. MongoDB sirf specific use cases mein shine karta hai — genuinely document-oriented data. Redis almost hamesha secondary database hai, caching layer ki tarah. Ek app mein PostgreSQL + Redis combination = industry ka most battle-tested pattern.",
           }}
-          realWorldScenario="Ek food delivery app mein: Users, restaurants, orders, payments — PostgreSQL (relationships, transactions). Restaurant menus (varying items, attributes) — MongoDB (flexible schema). Active sessions, OTP codes — Redis (fast, auto-expiry TTL). Teen databases, teen different jobs."
+          realWorldScenario="Ek food delivery app ka real architecture socho: Users, restaurants, orders, payments — PostgreSQL kyunki yahan relationships hain aur transactions zaroori hain. Restaurant menus (dishes vary karte hain — pizza ke toppings, biryani ke variants) — MongoDB kyunki schema flexible chahiye. Active sessions, OTP codes — Redis kyunki millisecond latency chahiye aur auto-expiry TTL free mein milti hai. Teen problems, teen databases, teen different tools."
           commonMistakes={[
             {
               mistake: 'MongoDB choose karna sirf isliye ki "flexible hai"',
@@ -141,7 +141,7 @@ Use: Caching, sessions, rate limiting, leaderboards, queues
               fix: 'Redis ko caching layer ki tarah use karo. Primary data PostgreSQL/MongoDB mein rakho, frequently accessed data Redis mein cache karo.',
             },
           ]}
-          proTip="PostgreSQL JSONB column support karta hai — structured + flexible dono ek database mein. Users table mein proper columns rakho (id, email, name), aur ek metadata JSONB column add karo flexible attributes ke liye. 90% cases mein PostgreSQL kaafi hai — NoSQL ki zaroorat justify karo pehle."
+          proTip="Pro tip jo 90% devs miss karte hain: PostgreSQL JSONB column support karta hai — structured + flexible dono ek hi database mein! Users table mein proper columns rakho (id, email, name), aur ek metadata JSONB column add karo flexible attributes ke liye. Matlab na MongoDB chahiye, na schema migration — best of both worlds. 90% projects ke liye PostgreSQL alone kaafi hai — NoSQL ki zaroorat pehle justify karo, phir add karo."
         />
       </div>
 
@@ -150,7 +150,7 @@ Use: Caching, sessions, rate limiting, leaderboards, queues
           title="ACID Properties — Transaction Ka Backbone"
           emoji="🔒"
           difficulty="intermediate"
-          whatIsIt="ACID — Atomicity, Consistency, Isolation, Durability — ye char properties ensure karti hain ki database transactions reliable hain. ACID ke bina bank transfer mein ek account se paise deduct ho sakte hain aur doosre mein credit nahi ho — data corrupt. PostgreSQL full ACID hai. MongoDB 4.0+ mein multi-document transactions hain — lekin complex aur slow."
+          whatIsIt="ACID — Atomicity, Consistency, Isolation, Durability. Ye char properties database transactions ko bulletproof banati hain. Ek second ke liye socho: bank transfer mein ek account se Rs 5000 deduct ho gaye, phir exactly us moment server crash ho gaya — doosre account mein credit nahi hua. Bina ACID ke yahi hoga. Atomicity ensure karta hai: ya poora transaction hoga, ya bilkul nahi. PostgreSQL full ACID hai. MongoDB 4.0+ mein multi-document transactions aaye — lekin complex hain aur overhead hai."
           whenToUse={[
             'Financial transactions — paise transfer, payments, billing',
             'Inventory management — stock levels accurate hone chahiye',
@@ -158,7 +158,7 @@ Use: Caching, sessions, rate limiting, leaderboards, queues
             'Order processing — order create + inventory decrement atomic hona chahiye',
             'Any operation jahan partial failure data corrupt kar de',
           ]}
-          whyUseIt="ACID ke bina concurrent transactions race conditions create karte hain — do users ek hi seat book kar lete hain, bank balance negative ho jaata hai. Isolation levels control karte hain ki concurrent transactions ek doosre ko kitna affect karte hain — stricter isolation = more consistent data = slower performance. Tradeoff samjho."
+          whyUseIt="ACID ke bina concurrent transactions race conditions create karte hain — aur ye bugs production mein sirf tab dikhte hain jab traffic zyada hoti hai! Do users ek hi seat book kar lete hain, bank balance negative ho jaata hai — sab real production disasters hain. Isolation levels ek dial ki tarah hain: stricter isolation = more consistent data = slower performance. Ye tradeoff samajhna engineer ka kaam hai — blindly highest isolation mat lagao."
           howToUse={{
             filename: 'acid-demo.sql',
             language: 'sql',
@@ -217,9 +217,9 @@ BEGIN
     WHERE id = to_account;
 END;
 $$ LANGUAGE plpgsql;`,
-            explanation: "BEGIN...COMMIT transaction block hai. Error aane par ROLLBACK se sab undo hota hai. Isolation levels concurrency vs consistency tradeoff hain — default READ COMMITTED zyada cases ke liye kaafi hai. SERIALIZABLE highest isolation hai lekin performance impact hota hai — financial systems mein use karo.",
+            explanation: "BEGIN...COMMIT transaction block hai — engine ke liye signal hai 'ye sab ek unit hai.' Error aane par ROLLBACK se sab kuch undo hota hai, jaise kuch hua hi nahi. Isolation levels engine ke under chhupe knobs hain — default READ COMMITTED 90% cases ke liye kaafi hai. SERIALIZABLE highest isolation hai, performance impact hota hai — sirf financial systems jaise critical places pe use karo.",
           }}
-          realWorldScenario="Ek flight booking system mein: 100 log ek hi last seat book karne ki koshish kar rahe hain. Bina ACID ke — sab 100 ko confirmation milega! ACID + SERIALIZABLE isolation se sirf ek ko seat milti hai, baaki sab ko 'seat unavailable' message. Ye database level pe handle hota hai — application code mein race condition solve nahi karna padta."
+          realWorldScenario="Socho BookMyShow pe last ticket — 100 log ek saath book karne ki koshish kar rahe hain. Bina ACID ke sab 100 ko confirmation milega, aur phir physical seat kahan se aayegi? ACID + SERIALIZABLE isolation se database ensure karta hai sirf ek successful booking hogi, baaki sab ko 'seat unavailable' — ye sab database engine handle karta hai, tum application code mein manually race condition solve nahi karte. Ye ACID ki real power hai."
           commonMistakes={[
             {
               mistake: 'Long-running transactions open chhodna',
@@ -232,7 +232,7 @@ $$ LANGUAGE plpgsql;`,
               fix: 'Try-catch-finally pattern: try { BEGIN; /* operations */; COMMIT; } catch { ROLLBACK; } pattern hamesha follow karo.',
             },
           ]}
-          proTip="PostgreSQL mein SAVEPOINT use karo partial rollback ke liye — puri transaction rollback karne ki zaroorat nahi. SAVEPOINT sp1; UPDATE...; ROLLBACK TO sp1; — sirf sp1 ke baad ka kaam undo hota hai. Complex transactions mein ye bahut useful hai."
+          proTip="Underrated feature: PostgreSQL mein SAVEPOINT se partial rollback possible hai — poori transaction rollback nahi karni. SAVEPOINT sp1; kuch kaam karo; ROLLBACK TO sp1; — sirf sp1 ke baad ka kaam undo hoga, baaki transaction intact rahegi. Complex multi-step transactions mein ye game changer hai — galti pe puri mehnat waste nahi hoti."
         />
       </div>
 
@@ -241,7 +241,7 @@ $$ LANGUAGE plpgsql;`,
           title="Relational Model — Tables, Rows, Columns"
           emoji="📊"
           difficulty="beginner"
-          whatIsIt="Relational model data tables (relations) mein organize karta hai. Table = ek entity type (users, products). Row = ek record (ek user). Column = ek attribute (name, email). Primary key har row ko uniquely identify karta hai. Foreign key doosri table se relationship establish karta hai. Schema = database ka structure — tables + columns + constraints + relationships."
+          whatIsIt="SQL sirf ek query language nahi — ye ek MATH hai! Relational Algebra pe based hai. Relational model data ko tables (relations) mein organize karta hai — aur ye 1970 mein Edgar Codd ne define kiya, aaj bhi dominant hai. Table = ek entity type (users, products). Row = ek record. Column = ek attribute. Primary key har row ko uniquely identify karta hai. Foreign key doosri table se relationship banata hai. Schema = database ka blueprint — structure, constraints, relationships sab define karo ek baar."
           whenToUse={[
             'Jab data clearly entities mein organize ho sakta ho',
             'Entities ke beech relationships ho — user has many orders',
@@ -249,7 +249,7 @@ $$ LANGUAGE plpgsql;`,
             'Complex queries aur reporting chahiye',
             'Multiple teams ek database share karein — well-defined structure needed',
           ]}
-          whyUseIt="Relational model 50+ saal purana hai lekin aaj bhi dominant hai kyunki maths pe based hai — set theory. SQL ek declarative language hai — kya chahiye batao, kaise nikalna database decide karta hai. Normalization se data duplication eliminate hoti hai. Constraints data integrity ensure karte hain application se independent."
+          whyUseIt="Relational model 50+ saal purana hai lekin aaj bhi dominant kyunki — maths jhootha nahi hota. SQL declarative hai — tum sirf batao 'kya chahiye,' database engine khud decide karta hai 'kaise laana hai.' Query planner ke andar ek optimizer hota hai jo best execution plan choose karta hai — tum index lagao, wo automatically use karega. Normalization se data duplication khatam hoti hai. Constraints application se independent data validation dete hain — database pe directly koi galat data daale toh bhi fail hoga."
           howToUse={{
             filename: 'relational-schema.sql',
             language: 'sql',
@@ -314,9 +314,9 @@ WHERE oi.order_id = 100;
 -- DATE, TIME, TIMESTAMP — date/time
 -- UUID — globally unique identifier
 -- JSONB — flexible JSON storage`,
-            explanation: "PRIMARY KEY uniquely identify karta hai har row. FOREIGN KEY REFERENCES doosri table se link karta hai. ON DELETE CASCADE — parent delete ho toh children bhi delete. ON DELETE SET NULL — parent delete ho toh FK null ho jaaye. CHECK constraints application se independent data validation dete hain. SERIAL auto-increment integer hai — PostgreSQL mein.",
+            explanation: "PRIMARY KEY = database ka police officer — duplicate allowed nahi. FOREIGN KEY REFERENCES doosri table ka ID link karta hai — relational model ki jaan. ON DELETE CASCADE matlab parent delete ho toh children bhi automatically delete. ON DELETE SET NULL matlab parent delete ho toh FK null ho jaaye — orphan records nahi bante. CHECK constraints application bypass karke bhi data corrupt nahi kar sakta. SERIAL PostgreSQL ka auto-increment magic hai.",
           }}
-          realWorldScenario="Ek e-commerce app ka schema design: Users (id, email, name), Products (id, name, price, stock, category_id), Orders (id, user_id, total, status), OrderItems (order_id, product_id, quantity, unit_price). Ye 4 tables se puri shopping application ka data model ban jaata hai. Relationships clear hain, queries predictable hain."
+          realWorldScenario="Flipkart jaisi e-commerce app ka core schema sirf 4 tables mein fit hota hai: Users (id, email, name), Products (id, name, price, stock, category_id), Orders (id, user_id, total, status), OrderItems (order_id, product_id, quantity, unit_price). Relationships foreign keys se clear hain — user_id, category_id, product_id. Queries predictable hain, data consistent hai. Ye relational model ki simplicity aur power hai — 4 tables, puri duniya."
           commonMistakes={[
             {
               mistake: 'Sab kuch ek table mein rakhna (flat structure)',
@@ -329,7 +329,7 @@ WHERE oi.order_id = 100;
               fix: 'UUID use karo public-facing IDs ke liye — gen_random_uuid(). Internal tables ke liye SERIAL theek hai.',
             },
           ]}
-          proTip={'PostgreSQL mein UUID primary keys ke liye uuid-ossp extension use karo: CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; phir id UUID PRIMARY KEY DEFAULT uuid_generate_v4(). Ya PostgreSQL 13+ mein gen_random_uuid() built-in hai — extension ki zaroorat nahi.'}
+          proTip={'Auto-increment integer IDs expose mat karo public-facing APIs mein — user /users/1, /users/2 dekh ke total user count estimate kar sakta hai (competitor intelligence!). UUID use karo: PostgreSQL 13+ mein gen_random_uuid() built-in hai — CREATE EXTENSION bhi nahi chahiye. id UUID PRIMARY KEY DEFAULT gen_random_uuid(). Internal tables ke liye SERIAL theek hai — public URLs mein UUID.'}
         />
       </div>
 
@@ -338,7 +338,7 @@ WHERE oi.order_id = 100;
           title="Popular Databases Comparison"
           emoji="🗄️"
           difficulty="beginner"
-          whatIsIt="Market mein hazaron databases hain lekin top choices limited hain. PostgreSQL — feature-rich SQL. MySQL — simple, widely hosted. MongoDB — document store. Redis — in-memory cache/queue. SQLite — embedded, no server. Cassandra — massive scale write-heavy. Elasticsearch — full-text search. Har database ek specific problem ke liye optimize hai."
+          whatIsIt="Market mein hazaron databases hain — DynamoDB, CockroachDB, EdgeDB, TiDB — infinite options. Lekin real-world mein 4-5 choices se 95% problems solve hoti hain. PostgreSQL — feature-rich SQL, default best choice. MySQL — simple, widely hosted, legacy systems. MongoDB — document store, flexible schema. Redis — in-memory speed, caching aur queues. SQLite — embedded, no server needed. Har database ek specific problem ke liye optimize hai — tool choose karo problem dekh ke, hype dekh ke nahi."
           whenToUse={[
             'PostgreSQL: Default choice for new projects — most versatile',
             'MySQL: Existing team familiar hai, hosting par available hai',
@@ -347,7 +347,7 @@ WHERE oi.order_id = 100;
             'SQLite: Mobile apps, development/testing, embedded applications',
             'Elasticsearch: Full-text search, log analytics (ELK stack)',
           ]}
-          whyUseIt="Right tool for right job — ek database sab kuch nahi kar sakta optimally. PostgreSQL versatile hai lekin Redis se fast cache nahi dega. Elasticsearch search ke liye PostgreSQL se better hai. Production system design mein multiple databases ka combination common hai — polyglot persistence."
+          whyUseIt="Ek carpenter ke paas sirf hammer nahi hota — screwdriver, drill, saw sab hote hain. Database bhi aisi hi tool belt hai. PostgreSQL versatile hai lekin Redis ki microsecond latency nahi de sakta. Elasticsearch full-text search ke liye PostgreSQL se 10x better hai. Production system mein multiple databases ka combination — polyglot persistence — ye beginners ko complex lagta hai, lekin experienced engineers ka default approach hai. Har database apna kaam, apni jagah."
           howToUse={{
             filename: 'databases-comparison-table.md',
             language: 'bash',
@@ -378,9 +378,9 @@ WHERE oi.order_id = 100;
 # MongoDB:    MongoDB Atlas (free 512MB), AWS DocumentDB
 # Redis:      Upstash (serverless, free tier), AWS ElastiCache
 # SQLite:     Turso (distributed SQLite), Cloudflare D1`,
-            explanation: "Managed services use karo — database administration complex hai. Supabase PostgreSQL ke liye excellent free tier deta hai. MongoDB Atlas free tier small projects ke liye kaafi hai. Upstash Redis serverless applications ke liye best hai — per-request pricing.",
+            explanation: "Managed services use karo — database administration ek poora career hai, usmein mat ghuso jab tak zaroorat na ho. Supabase PostgreSQL ke liye excellent free tier deta hai — sath mein Auth, Storage, aur Edge Functions free mein. MongoDB Atlas free 512MB project start karne ke liye kaafi hai. Upstash Redis serverless apps ke liye best — per-request pricing, zero ops.",
           }}
-          realWorldScenario="WhatsApp ka architecture: Messages — Erlang + Mnesia (custom). User data — MySQL. Media — separate storage. Notifications — Redis. Analytics — custom. Ek billion users ke liye ek database kaafi nahi. Lekin aapke startup ke liye PostgreSQL + Redis = probably enough for first million users."
+          realWorldScenario="WhatsApp ka architecture dekho: Messages — Erlang + Mnesia (custom built). User data — MySQL. Media — separate object storage. Notifications — Redis. Analytics — custom pipeline. Ek billion users ke liye ek database nahi chalta. Lekin ye mat socho tum bhi pehle din se itna complex banao — aapke startup ke liye PostgreSQL + Redis = probably enough for first million users. Premature optimization is the root of all evil."
           commonMistakes={[
             {
               mistake: 'FOMO se latest database choose karna',
@@ -393,7 +393,7 @@ WHERE oi.order_id = 100;
               fix: 'Development mein bhi PostgreSQL use karo. Docker Compose se local PostgreSQL run karo — free aur easy hai.',
             },
           ]}
-          proTip="Supabase free tier use karo local development ke alawa bhi — PostgreSQL + Auth + Storage + Edge Functions ek saath milte hain. New project start karne ke liye perfect hai. Neon serverless PostgreSQL hai — development ke liye unlimited free databases, production ke liye scale karo."
+          proTip="Supabase free tier sirf local development tak mat rakhna — ye PostgreSQL + Auth + Storage + Edge Functions ek saath deta hai, kisi bhi SaaS se better deal hai. New project start karne ke liye hands down best choice. Neon serverless PostgreSQL try karo — development ke liye unlimited free databases, production ke liye scale karo, cold start bhi nahi hota. Dono free hain, dono production-ready hain."
         />
       </div>
 

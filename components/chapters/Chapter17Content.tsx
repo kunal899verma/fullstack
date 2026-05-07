@@ -14,10 +14,10 @@ export default function Chapter17Content() {
           Worker Threads & Clustering — True Parallelism
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Node.js single-threaded hai — ek CPU core use karta hai. Modern servers 64+ cores hain. Multi-core power use karne ke liye: Worker Threads (threads within process) aur Cluster module (multiple processes). PM2 production mein process management karta hai.
+          Kya aap jaante ho ki ek simple for loop Node.js server ko completely freeze kar sakti hai? Sirf ek heavy computation — ek fibonacci(50), ek large JSON parse — aur tumhara pura server 500ms tak kisi aur request ka jawab nahi deta. Single-threaded hone ki ye cost hai. Aur agar server 64-core machine pe run ho — 63 cores idle hain!
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Ye sab CPU-bound tasks ke liye hai — image processing, encryption, ML inference. I/O-bound tasks ke liye ye zaroori nahi — libuv already concurrent handle karta hai.
+          Worker Threads aur Cluster module is problem ka solution hain. Lekin samajhna zaroori hai — ye sirf CPU-bound tasks ke liye hai. I/O-bound tasks (DB queries, API calls, file reads) ke liye ye zaroorat hi nahi — libuv pehle se concurrent handle karta hai. Galat jagah apply karo to overhead add hoga, benefit nahi.
         </p>
       </div>
 
@@ -26,14 +26,14 @@ export default function Chapter17Content() {
           title="CPU-bound vs I/O-bound — Event Loop Blocking"
           emoji="⚖️"
           difficulty="advanced"
-          whatIsIt="I/O-bound: File read, DB query, API call — mostly waiting. Node.js excellent hai — libuv async handling. CPU-bound: Image resize, encryption, JSON parsing of huge files, ML inference — actual computation. Main thread block ho jaata hai — other requests wait karte hain. 1 slow CPU task = server unresponsive."
+          whatIsIt="Surprise output pehle: server pe 100 concurrent requests aaye. 99 requests DB query kar rahe hain (I/O-bound, fast). 1 request fibonacci(45) calculate kar raha hai (CPU-bound, 500ms). Result: sab 100 requests 500ms delay hongi — woh 1 CPU task ne poora event loop hold kar liya. I/O-bound tasks libuv thread pool pe jaate hain — event loop free rehta hai. CPU-bound tasks main thread pe run karte hain — event loop block hota hai. 1 bure task ka punishment sab bhogti hain."
           whenToUse={[
             'CPU-bound identify karo: profiler se, ya task 100ms+ CPU use kare',
             'Worker Threads: CPU-bound computation alag thread mein',
             'Cluster: HTTP server har core par replicate karo',
             'I/O-bound? Kuch nahi karo — libuv handles it',
           ]}
-          whyUseIt="Event loop ek single thread par run karta hai. CPU-bound task us thread ko block karta hai — koi aur callback execute nahi hota — server appears frozen to other users. Worker threads alag threads mein run karte hain — main event loop unblocked rehta hai."
+          whyUseIt="Ab sawaal ye aata hai — kaise pata chalega ki event loop block ho raha hai? setInterval trick: ek interval 1 second pe set karo. Agar ye late fire hota hai (100ms+), event loop blocked hai. Clinic.js tool professionally ye diagnose karta hai — flame graphs, blocking events visualize karta hai. Pehle diagnose karo, phir Worker Threads ya Cluster decide karo. Problem bina diagnosis ke solve karna — andhere mein kaam karna hai."
           howToUse={{
             filename: 'cpu-vs-io.js',
             language: 'javascript',
@@ -74,9 +74,9 @@ function detectBlock() {
 // - Complex regex on large strings
 // - ML inference (TensorFlow.js CPU mode)
 // - Fibonacci(50) aur similar pure compute`,
-            explanation: "Event loop monitoring — setInterval agar late fire hota hai toh event loop blocked hai. Delay 50ms+ = problem. Production monitoring tools (Clinic.js) visually dikhate hain blocking events. libuv thread pool CPU-bound tasks ke liye nahi hai — sirf file I/O, DNS, crypto ke liye.",
+            explanation: "Under the hood: Event loop monitoring — setInterval expected 1000ms pe fire ho, actual 1500ms pe fire hua = 500ms block. Ye real measurement hai. Delay 50ms+ = significant problem. libuv thread pool (default 4 threads) CPU-bound tasks ke liye nahi hai — sirf fs, dns, crypto ke liye. Worker threads alag V8 isolates hain — alag heap, alag event loop. Main thread se completely independent.",
           }}
-          realWorldScenario="Image upload API — Sharp se resize karo. Sharp internally worker threads use karta hai — main thread unblocked. Lekin agar khud Buffer manipulation ya custom image processing karo main thread par — 100 concurrent uploads = 100 users wait karte hain. Worker Thread solution."
+          realWorldScenario="Image upload API: 100 concurrent uploads. Option A — main thread pe resize karo: 1 resize at a time, 99 requests wait karte hain = queue backup. Option B — Sharp library (internally worker threads use karti hai): concurrent resizes, main thread free. Option C — custom image processing main thread pe: same problem as A. Lesson: jo libraries CPU-bound kaam karte hain unke internals dekho — usually already worker threads use karte hain."
           commonMistakes={[
             {
               mistake: 'Sab tasks Worker Threads mein daalna',
@@ -89,7 +89,7 @@ function detectBlock() {
               fix: 'Hamesha async versions: crypto.pbkdf2() (callback), util.promisify(crypto.pbkdf2) — libuv thread pool par run hota hai.',
             },
           ]}
-          proTip="Clinic.js install karo: npm install -g clinic. clinic doctor -- node server.js se production-grade analysis milti hai — flame graphs, event loop lag, I/O patterns. Jab app slow ho toh pehle diagnose karo, phir Worker Threads/Cluster decide karo."
+          proTip="Clinic.js ek free tool hai jo Node.js performance diagnosis ke liye hai — npm install -g clinic. clinic doctor -- node server.js run karo aur HTTP requests bhejo — flame graphs, event loop lag, I/O patterns visualize hote hain. Kabhi bhi guess mat karo ki problem CPU-bound hai ya I/O-bound — measure karo. Clinic.js sach bol deta hai. Phir decide karo Worker Threads ya Cluster — ya dono zaroori hain."
         />
       </div>
 
@@ -98,14 +98,14 @@ function detectBlock() {
           title="Worker Threads — True Parallel Computation"
           emoji="🧵"
           difficulty="advanced"
-          whatIsIt="Worker Threads (worker_threads module) actual OS threads hain — alag V8 instance, alag event loop, alag memory. Main thread aur workers message passing se communicate karte hain (MessageChannel, parentPort). SharedArrayBuffer se shared memory possible hai — zero-copy operations."
+          whatIsIt="Worker Threads socho alag brain cells ki tarah — main brain (main thread) ek cell se kaam karta hai. Worker Thread ek naya brain cell hai — alag V8 instance, alag event loop, alag memory. Dono coordinate karte hain message passing se — ek dum messages telephone ki tarah. SharedArrayBuffer se dono cells ek shared whiteboard use kar sakte hain — zero-copy, fast. Under the hood: actual OS threads hain — CPU scheduler inhe different cores pe run kar sakta hai."
           whenToUse={[
             'CPU-bound computation — image processing, video encoding, ML',
             'Large data transformation — parsing huge JSON, CSV processing',
             'Cryptographic operations — mining, heavy hashing',
             'WASM modules jo CPU intensive hain',
           ]}
-          whyUseIt="Worker Threads true parallelism dete hain — multiple CPU cores simultaneously use hote hain. Main thread event loop unblocked rehta hai. Child processes (cluster) se lighter hai — shared memory possible hai. V8 isolates mein run karte hain — crash isolation bhi hota hai."
+          whyUseIt="Ab sawaal ye aata hai — har task ke liye naya Worker Thread banao? Overhead hai: thread creation, V8 startup, initial compilation — ~50-100ms. Worker Pool pattern ye solve karta hai — N threads pehle se ready rakho, task aaya to available thread use karo, done hone par wapas pool mein. Pool size = CPU core count (CPU-bound tasks ke liye). Thread creation baar baar karna mana hai — pool always reuse karo."
           howToUse={{
             filename: 'worker.ts',
             language: 'typescript',
@@ -182,9 +182,9 @@ class WorkerPool {
     worker.postMessage(task.data)
   }
 }`,
-            explanation: "Worker Pool pattern — N workers maintain karo, task aane par available worker use karo. Har task ke liye new worker create karna expensive hai — pooling reuse karta hai. workerData initial data pass karta hai. MessageChannel do workers ke beech direct communication deta hai.",
+            explanation: "Under the hood: Worker Pool step-by-step: 1) N workers startup pe create karo. 2) Task aaya — availableWorkers se pop karo. 3) Worker ko postMessage karo (structured clone algorithm se data serialize/copy). 4) Worker process kare, result postMessage se main thread ko bheje. 5) Main thread result receive kare, worker wapas available pool mein. Queue: agar koi worker available nahi — task queue mein push karo, worker free hone par pick karo.",
           }}
-          realWorldScenario="Image upload service — har upload ke liye: thumbnail generate karo (200x200), webp convert karo, blur hash calculate karo. Teen Worker Threads pool mein — teen CPUs parallel kaam karte hain. 10,000 uploads per hour efficiently handled without blocking API."
+          realWorldScenario="Image upload service on 8-core server: 8 Worker Thread pool. Upload request aaya — thumbnail (200x200), WebP convert, blur hash calculate — teen CPU operations. Worker Thread pool se 3 workers parallel run karte hain — 3 CPU cores simultaneously kaam karte hain. Main thread: API requests handle karta rehta hai — unblocked. 10,000 uploads per hour — efficiently handled without main thread ever freezing."
           commonMistakes={[
             {
               mistake: 'Non-serializable data workers mein pass karna',
@@ -197,8 +197,18 @@ class WorkerPool {
               fix: "Pool mein workers jab pool teardown ho tabb terminate karo: worker.terminate(). Exit events listen karo. graceful shutdown implement karo.",
             },
           ]}
-          proTip="workerpool npm package Worker Pool professionally implement karta hai — manual pool mein bahut edge cases hain. Piscina bhi excellent choice hai — fastest Node.js worker pool library. Production mein battle-tested library use karo, khud Pool implement karne ki koshish mat karo pehli baar."
+          proTip="Khud Worker Pool mat likho — Piscina library use karo (fastest Node.js worker pool). Manual pool implementation mein bahut edge cases hain: worker crash handling, queue backpressure, idle worker timeout, graceful shutdown. Piscina ye sab professionally handle karta hai. npm install piscina — ek import, simple API. Production mein battle-tested code use karo, khud invent mat karo."
         />
+      </div>
+
+      <div
+        className="rounded-xl p-5"
+        style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.2)' }}
+      >
+        <p className="text-[#A78BFA] font-semibold mb-2">🤔 Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          Worker Threads CPU-bound kaam alag thread mein karte hain — same process ke andar. Lekin agar HTTP server khud scale karna ho? 8-core server pe ek Node.js process sirf 1 core use karta hai — baaki 7 idle. Cluster module ye problem solve karta hai — multiple processes, same port, OS load balance karta hai. Worker Threads aur Cluster alag problems solve karte hain — dono ek saath use ho sakte hain.
+        </p>
       </div>
 
       <div id="cluster-module">
@@ -206,14 +216,14 @@ class WorkerPool {
           title="Cluster Module — Multi-Process Scaling"
           emoji="🌐"
           difficulty="advanced"
-          whatIsIt="Node.js cluster module master process + N worker processes banata hai. Master network connections accept karta hai aur workers mein distribute karta hai. Har worker alag Node.js process hai — crash isolation, separate memory. CPU cores full use hoti hain. Worker threads se alag — separate processes, no shared memory."
+          whatIsIt="Cluster socho ek franchise ki tarah — ek brand (master process), multiple outlets (worker processes). Har outlet alag building mein hai — crash isolation. Ek outlet aag lage (crash), baaki chal te rehte hain. Master traffic route karta hai — OS round-robin load balancing. Har worker completely alag process hai — alag memory, alag V8 — Worker Threads se fundamental difference: no shared memory, more isolation."
           whenToUse={[
             'HTTP server jisko multiple CPU cores use karna ho',
             'Worker processes alag memory space mein isolate karna ho (crash safety)',
             'Zero-downtime deployment — rolling restart of workers',
             'Production servers jahan PM2 nahi hai',
           ]}
-          whyUseIt="Single process Node.js ek CPU core use karta hai. 8-core server mein 7 cores waste. Cluster se 8 workers = 8 cores fully utilized. Crash isolation: ek worker crash kare toh master notice karta hai aur naya spawn karta hai — app available rehti hai. PM2 isse aur better manage karta hai."
+          whyUseIt="Ab sawaal ye aata hai — Worker Threads bhi CPU use karte hain, Cluster bhi — kab kaunsa? Worker Threads: same process, shared memory, CPU-bound tasks offload karna. Cluster: multiple processes, HTTP server scale karna, full CPU utilization, crash isolation. Real production use case: Cluster se N HTTP servers (N = CPU cores), aur agar CPU-bound work hai toh har worker process ke andar Worker Thread pool bhi. Dono ek saath use kar sakte hain."
           howToUse={{
             filename: 'cluster.ts',
             language: 'typescript',
@@ -274,9 +284,9 @@ if (cluster.isPrimary) {
     server.close(() => process.exit(0))
   })
 }`,
-            explanation: "Primary process (master) sirf fork aur IPC karta hai — no direct request handling. Workers HTTP requests handle karte hain. OS round-robin load balancing karta hai workers mein (usually). IPC (Inter-Process Communication) — process.send() aur process.on('message') se master-worker communication. Shared state master mein rakho.",
+            explanation: "Under the hood: Primary process (master) HTTP request handle nahi karta — sirf fork, restart aur IPC. Workers sab HTTP handle karte hain. OS round-robin load balance karta hai (Linux SO_REUSEPORT). IPC (Inter-Process Communication): process.send() aur process.on('message') — serialize karna padta hai (structured clone). Shared state problem: Worker A mein counter 5, Worker B mein 0 — alag memory. Solution: Redis shared state ke liye ya master mein centralize karo aur IPC se broadcast karo.",
           }}
-          realWorldScenario="8-core production server — bina cluster: 1 core use, 7 idle. Cluster se 8 workers — sab cores busy. Throughput theoretically 8x better. Real-world 5-7x improvement hoti hai overhead ke baad. PM2 ise aur better manage karta hai production mein."
+          realWorldScenario="8-core production server benchmark: Without cluster — 1,000 req/sec (1 core). With 8 workers cluster — 6,500 req/sec (overhead ke baad 6.5x improvement, theoretically 8x). Real-world aisa hi hota hai — overhead hai IPC, OS scheduling. Ek worker crash kare — master immediately naya spawn kare — downtime sirf us ek worker ka briefly (milliseconds). PM2 ye sab aur better manage karta hai."
           commonMistakes={[
             {
               mistake: 'Workers mein shared in-memory state rakhna',
@@ -289,7 +299,7 @@ if (cluster.isPrimary) {
               fix: 'Development mein single process use karo. Production mein cluster ya PM2 use karo. NODE_ENV check karo: if (process.env.NODE_ENV === "production") { cluster... }.',
             },
           ]}
-          proTip={'throng npm package cluster setup simplify karta hai: const throng = require("throng"); throng({ start: startServer, workers: os.cpus().length }). One-liner cluster setup. PM2 se bhi aur simpler hai development-friendly tool ke roop mein.'}
+          proTip={'Manual cluster code likhne ki jagah PM2 use karo — ye sab automatically manage karta hai. Ya agar container environment hai (Docker/Kubernetes) toh Cluster nahi chahiye — containers replicate karo, ek process per container pattern better hai. Kubernetes pe horizontal pod autoscaling Cluster se zyada flexible hai. Bare metal ya single VPS pe — PM2 cluster mode perfect choice.'}
         />
       </div>
 
@@ -298,14 +308,14 @@ if (cluster.isPrimary) {
           title="PM2 — Production Process Manager"
           emoji="🔧"
           difficulty="advanced"
-          whatIsIt="PM2 (Process Manager 2) Node.js apps ke liye production process manager hai. Cluster mode automatically — ek command se multi-core. Auto-restart on crash. Zero-downtime reload (rolling restart). Log management. Monitoring dashboard. Startup scripts (systemd/upstart). Production Node.js app ke liye standard tool."
+          whatIsIt="node server.js production mein run karna aise hai jaise bina seat belt ke drive karna — crash hoga, koi nahi bachayega. PM2 seat belt + airbag + crash detection + auto-restart sab ek saath hai. Crash hone par automatically restart, zero-downtime rolling reload for new deployments, log management, startup script (server reboot pe app auto-start), real-time monitoring dashboard — ye sab PM2 deta hai. Production Node.js apps ke liye de facto standard tool."
           whenToUse={[
             'Production Node.js deployment — hamesha PM2 ya similar',
             'Zero-downtime deployment — new code deploy bina downtime ke',
             'Crash recovery — app crash kare toh automatically restart',
             'Multi-app management — multiple Node.js services ek machine par',
           ]}
-          whyUseIt="node server.js production mein run karna — crash hone par app down. PM2 restart karta hai automatically. Cluster mode ek line se: pm2 start app.js -i max. Log rotation. Process monitoring. Startup integration — server reboot hone par app automatic start hota hai."
+          whyUseIt="Ab sawaal ye aata hai — Docker/Kubernetes use karte hain toh PM2 zaroori nahi kya? Correct — containers replicate karte hain at infrastructure level. Lekin bare metal VPS pe ya traditional deployment pe PM2 essential hai. pm2 reload zero-downtime deployment karta hai — ek ek worker restart karta hai, traffic baaki serve karte hain. pm2 monit real-time CPU/memory graph deta hai. Production mein visibility bahut important hai."
           howToUse={{
             filename: 'ecosystem.config.cjs',
             language: 'javascript',
@@ -353,9 +363,9 @@ module.exports = {
 // Startup — system reboot par auto-start
 // pm2 startup                  — startup command generate
 // pm2 save                     — current process list save`,
-            explanation: "instances: 'max' = CPU cores count workers. exec_mode: 'cluster' = cluster mode. max_memory_restart memory leak se protect karta hai — process restart karo. wait_ready: true ke saath app ko process.send('ready') call karna padega jab fully started ho — readiness signal. pm2 reload zero-downtime rolling restart karta hai.",
+            explanation: "Under the hood: instances: 'max' = os.cpus().length workers. exec_mode: 'cluster' = Node.js cluster module internally use karta hai. max_memory_restart memory leak se protect karta hai — process 500MB pe automatically restart hoga. wait_ready: true ke saath PM2 process.send('ready') ka wait karta hai — app fully initialized hone ke baad hi traffic milta hai (graceful startup). pm2 reload: old worker stop (existing connections khatam hone tak wait) → new worker start → repeat per worker = zero downtime.",
           }}
-          realWorldScenario="Startup API server 4-core VPS par: PM2 cluster mode se 4 workers. 1 worker crash kare — PM2 immediately restart kare. New code deploy: npm run build → pm2 reload — zero downtime, users unaffected. Production standard practice worldwide."
+          realWorldScenario="4-core VPS pe startup API: PM2 cluster mode — 4 workers. 2 AM pe memory leak se ek worker crash kare — PM2 immediately detect kare aur restart kare — users ko pata nahi chala. 10 AM pe naya code deploy karna — npm run build → pm2 reload — 4 workers ek ek restart hote hain, traffic seamless serve hoti hai. Ye zero-downtime deployment free mein milti hai PM2 se."
           commonMistakes={[
             {
               mistake: 'pm2 save bhoolna startup script ke baad',
@@ -368,7 +378,7 @@ module.exports = {
               fix: 'watch: false production mein hamesha. Development mein watch useful hai. Production code changes deploy ke through happen karo (pm2 reload).',
             },
           ]}
-          proTip="PM2 Plus (cloud dashboard) se remote monitoring karo. Ya open-source alternative: Keymetrics. Production mein hamesha pm2 logs --lines 100 se recent logs check karo. pm2 monit real-time CPU/Memory graph deta hai har worker ke liye — performance monitoring basic hai."
+          proTip="PM2 sequence yaad rakho — ye critical hai: pm2 startup (systemd unit create karo) → pm2 start ecosystem.config.cjs --env production → pm2 save (current process list save karo). Ye sequence miss karo — server reboot hone par PM2 empty startup karta hai. pm2 logs --lines 200 se recent logs immediately check karo kuch bhi diagnose karne se pehle. pm2 monit — real-time CPU/memory har worker ke liye — production debugging ka pehla tool."
         />
       </div>
 
@@ -377,14 +387,14 @@ module.exports = {
           title="SharedArrayBuffer — Shared Memory"
           emoji="🔗"
           difficulty="advanced"
-          whatIsIt="SharedArrayBuffer multiple Worker Threads ke beech shared memory deta hai — zero-copy data sharing. Normal postMessage data serialize (copy) karta hai — large data expensive. SharedArrayBuffer same memory block share karta hai — no copying. Atomics API concurrent access ke liye atomic operations provide karta hai — race conditions prevent."
+          whatIsIt="Kya aap jaante ho ki 1GB image buffer Worker Thread ko bhejne mein regular postMessage se 1 second+ lag sakta hai? Reason: structured clone algorithm poora buffer copy karta hai — main thread → worker thread ek complete copy. SharedArrayBuffer ek shared whiteboard hai — dono threads same memory block access karte hain, koi copying nahi. Atomics API concurrent access safe banati hai — race conditions prevent. Zero-copy = dramatically faster for large data."
           whenToUse={[
             'Large data share karna workers mein — copy overhead avoid karo',
             'High-frequency updates between workers — gaming, simulations',
             'Lock-free concurrent algorithms — Atomics with wait/notify',
             'Image/video processing pipelines — large buffers share karo',
           ]}
-          whyUseIt="1GB image buffer har worker ko copy karna impractical hai. SharedArrayBuffer se ek allocation, sab workers access karte hain. Atomics ensure karte hain ke concurrent reads/writes safe hain. WASM modules ke saath especially useful — shared memory WASM heap."
+          whyUseIt="Ab sawaal ye aata hai — agar SharedArrayBuffer itna fast hai toh hamesha use karein? Complexity: Atomics ka sahih use karna advanced hai — deadlocks, live locks possible hain. Regular postMessage zyada cases mein kaafi hai. SharedArrayBuffer sirf jab: large data (10MB+) share karna ho, high-frequency updates (gaming, simulations) ho, ya WASM integration ho. Premature optimization avoid karo — pehle simple approach, phir profile, phir optimize."
           howToUse={{
             filename: 'shared-memory.ts',
             language: 'typescript',
@@ -438,9 +448,9 @@ if (isMainThread) {
 const buffer = new ArrayBuffer(1024 * 1024)  // 1MB
 worker.postMessage({ buffer }, [buffer])  // Transfer ownership
 // Main thread mein buffer ab inaccessible hai`,
-            explanation: "Atomics.add() atomic hai — concurrent workers same location par add karte hain bina race condition ke. Compare-and-swap (CAS) lock-free algorithms ke liye: Atomics.compareExchange(). wait/notify mutex implement karne ke liye. Transferable objects (ArrayBuffer) ownership transfer karte hain — zero-copy lekin source inaccessible ho jaata hai.",
+            explanation: "Under the hood: Atomics.add() CPU-level atomic instruction use karta hai — lock-free. Concurrent workers same address par add karte hain, koi race condition nahi — CPU guarantee karta hai. Atomics.compareExchange() CAS (Compare-and-Swap) implement karta hai — lock-free algorithms ka building block. Atomics.wait() thread ko block karta hai condition ke liye. Transferable objects (ArrayBuffer) ownership transfer karte hain — source inaccessible ho jaata hai (detached). Zero-copy is used for ownership transfer, SharedArrayBuffer for concurrent access.",
           }}
-          realWorldScenario="Game server — 1000 entities ki position update karna har tick. SharedArrayBuffer mein positions store karo — worker threads parallel physics calculations karte hain shared buffer par. Final state main thread read karta hai — sab workers se sync hota hai Atomics se. High-frequency, low-latency update pipeline."
+          realWorldScenario="Game server 60fps tick (16ms): 1000 entities — position, velocity, collision update. Regular postMessage: 1000 entities serialize karo → worker bhejo → worker deserialize → calculate → serialize → main thread → deserialize = 5+ copy operations per tick. SharedArrayBuffer: positions Float64Array mein shared memory pe. Workers directly read/write karte hain Atomics se. Main thread direct read karta hai — zero copying. 60fps smooth gameplay possible."
           commonMistakes={[
             {
               mistake: 'SharedArrayBuffer mein non-atomic reads/writes mix karna',
@@ -453,7 +463,7 @@ worker.postMessage({ buffer }, [buffer])  // Transfer ownership
               fix: "Server se headers bhejo: Cross-Origin-Opener-Policy: same-origin aur Cross-Origin-Embedder-Policy: require-corp. Node.js mein ye restriction nahi hai.",
             },
           ]}
-          proTip="Comlink library (from Surma, Google) Worker Threads ke liye RPC-like API deta hai — complex message passing hide karta hai. const worker = wrap(new Worker(...)). Worker ke functions async functions ki tarah use karo. Complex Worker communication dramatically simpler ho jaati hai."
+          proTip="Comlink library (by Surma, Google) Worker Threads communication dramatically simple banata hai — postMessage/onmessage ki bajaye RPC-style API. const result = await wrap(new Worker(...)).heavyFunction(data). Ye generator aur Proxy use karta hai internally — worker functions async functions ki tarah feel karte hain. Complex message passing completely hidden. Learning ke liye raw API samjho, production mein Comlink ya Piscina use karo."
         />
       </div>
     </div>

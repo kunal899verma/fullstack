@@ -61,7 +61,7 @@ export default function DBChapter5Content() {
           PostgreSQL Deep Dive — Advanced Features
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          PostgreSQL most feature-rich open-source relational database hai — CTEs, window functions, JSONB, full-text search, advanced indexing. Ye features complex problems elegantly solve karte hain.
+          PostgreSQL sirf ek database nahi — ye ek engineering marvel hai. CTEs, window functions, JSONB, full-text search, advanced indexing, extensions, row-level security — ye sab ek open-source database mein free milta hai. Lekin in features ka real power tab aata hai jab tum samjho ye under the hood kaise kaam karte hain. Index ek phone book hai database ka — naam se number dhundna O(1), poori book padhna O(n). Ye chapter PostgreSQL ke advanced tools sikhaata hai — aur ye bhi sikhaata hai ki EXPLAIN ANALYZE se kaise verify karo ki query sach mein fast hai.
         </p>
       </div>
 
@@ -70,13 +70,13 @@ export default function DBChapter5Content() {
           title="CTEs — WITH Clause — Readable Complex Queries"
           emoji="📝"
           difficulty="intermediate"
-          whatIsIt="CTE (Common Table Expression) ek named temporary result set hai jo query ke andar define hoti hai — WITH keyword se. Complex queries ko readable named parts mein divide karta hai."
+          whatIsIt="CTE (Common Table Expression) — WITH keyword se ek named temporary result set banao. Complex queries ko readable named parts mein divide karo — jaise code mein functions hote hain. Ek CTE ek query mein multiple baar reference kar sakte ho. Recursive CTEs tree structures traverse karte hain — organizational hierarchy, category trees, menu items sab ek query mein. Under the hood: PostgreSQL CTE ko optimization fence ki tarah use karta tha (older versions) — newer versions mein optimizer inline kar sakta hai."
           whenToUse={[
             'Complex multi-step queries readable banane ke liye',
             'Same subquery ek query mein multiple baar use karne ke liye',
             'Recursive queries ke liye (organizational hierarchy, trees)',
           ]}
-          whyUseIt="Nested subqueries hard to read hoti hain. CTEs se ek step ke result ko naam dete hain — next step use karta hai. SQL code documentation ki tarah readable hoti hai."
+          whyUseIt="Code mein nested functions padhna mushkil hota hai — same problem SQL nested subqueries ke saath. CTE ek step ka result name deta hai — next step us naam se use karta hai. SQL documentation ki tarah readable ban jaati hai: 'high_value_orders', 'user_details' — naam se samajh aata hai kya ho raha hai. Team mein kisi aur ko ye query maintain karni padegi — readable SQL ek professional skill hai."
           howToUse={{
             code: `-- Basic CTE
 WITH high_value_orders AS (
@@ -116,14 +116,14 @@ WITH RECURSIVE org_tree AS (
 )
 SELECT level, name FROM org_tree ORDER BY level, name;`,
             language: 'sql',
-            explanation: 'High_value_orders aur user_details alag CTEs hain — main query dono use karta hai. Recursive CTE org hierarchy traverse karta hai — base case + recursive case.',
+            explanation: 'High_value_orders pehle compute hota hai, user_details alag — main query dono join karta hai. Har CTE ek step hai, readable chain. Recursive CTE = base case (managers without managers) + recursive case (employees with managers) — tree ko level by level traverse karta hai. UNION ALL — same structure, recursive step.',
             filename: 'ctes.sql',
           }}
-          realWorldScenario="Analytics query: monthly cohort analysis, user retention — 5 CTEs chain karo har step ke liye. Query readable documentation ki tarah ban jaati hai."
+          realWorldScenario="User retention analysis: users ka signup month nikalo (CTE 1), har user ki first order month nikalo (CTE 2), cohort assign karo (CTE 3), month-wise retention calculate karo (CTE 4), percentage nikalo (CTE 5). Ye 5 CTEs chain karo — poori cohort analysis ek query mein. Ye wahi query hai jise companies hire karte waqt data engineering rounds mein poochhti hain."
           commonMistakes={[
             { mistake: 'CTEs ko performance silver bullet samajhna', why: 'PostgreSQL ke older versions mein CTEs optimization fence tha — newer versions mein better', fix: 'Recursive CTEs performance test karo — LATERAL JOIN alternative ho sakta hai' },
           ]}
-          proTip="Recursive CTEs se tree structures (categories, org charts, menu items) ko single query mein traverse kar sakte ho — application code mein multiple queries nahi karne padte."
+          proTip="Recursive CTE se category tree ek query mein — koi application-side recursion nahi. Depth limit lagao infinite loops se bachne ke liye: WHERE level < 10. Aur CTE ko MATERIALIZED hint de sakte ho (PostgreSQL 12+) agar optimizer wrong plan choose kar raha ho: WITH MATERIALIZED cte_name AS (...) — ye CTE ko optimization fence banata hai, baaki query independent se optimize hoti hai."
         />
       </div>
 
@@ -132,14 +132,14 @@ SELECT level, name FROM org_tree ORDER BY level, name;`,
           title="Window Functions — Rows Preserve Karo + Aggregation"
           emoji="🪟"
           difficulty="intermediate"
-          whatIsIt={'Window functions aggregate operations perform karte hain lekin individual rows erase nahi hoti — GROUP BY ki tarah. OVER() clause se "window" define hoti hai.'}
+          whatIsIt={'Window functions — ye GROUP BY aur aggregate ka hybrid hai. GROUP BY rows collapse karta hai ek group mein. Window functions har row apni jagah rakhti hain lekin saath mein aggregate value bhi dete hain. OVER() clause se "window" define hoti hai — kaunsi rows consider karo is aggregate mein. PARTITION BY se group banao window ke andar. Ye ek powerful concept hai jo complex analytics queries ko dramatically simple banata hai.'}
           whenToUse={[
             'Running totals (cumulative sum)',
             'Ranking (rank within category)',
             'Previous/next row compare karna (LAG/LEAD)',
             'Moving averages',
           ]}
-          whyUseIt="Sales mein running total ya rank within category — GROUP BY se ek row per group hota hai. Window function mein har row apni jagah rehti hai aur aggregate value bhi milti hai."
+          whyUseIt="Rank within a category — GROUP BY se ye nahi hoga kyunki GROUP BY rows collapse karta hai. Running total — GROUP BY se har row ka cumulative sum nahi milega. Previous row se compare karna (month-over-month growth) — GROUP BY se impossible. Window functions se ye sab possible hai har row preserve karke. Ye business analytics ka superpower hai — complex reports ek query mein."
           howToUse={{
             code: `-- ROW_NUMBER, RANK, DENSE_RANK
 SELECT
@@ -184,14 +184,14 @@ SELECT
   ) AS top_earner_in_dept
 FROM employees;`,
             language: 'sql',
-            explanation: 'PARTITION BY se group ke andar window define hoti hai. ORDER BY window ke andar sorting. ROW_NUMBER unique, RANK ties mein same number, DENSE_RANK no gaps. LAG previous row value deta hai.',
+            explanation: 'PARTITION BY = GROUP BY jaisa lekin rows erase nahi hoti. ORDER BY window ke andar rows ko sort karta hai aggregate ke liye. ROW_NUMBER unique number (ties mein arbitrary), RANK ties pe same number + gap (1,1,3), DENSE_RANK ties pe same number + no gap (1,1,2). LAG = previous row ka value, LEAD = next row ka value — time-series analysis ke liye essential.',
             filename: 'window-functions.sql',
           }}
-          realWorldScenario="Leaderboard: rank players by score within each game category — RANK() OVER (PARTITION BY category ORDER BY score DESC). Monthly growth report — LAG se previous month revenue comparison."
+          realWorldScenario="Gaming leaderboard: top 3 players har game category mein — RANK() OVER (PARTITION BY category ORDER BY score DESC), phir outer query mein WHERE rank <= 3. Monthly growth report: LAG(revenue, 1) se previous month, current - previous = absolute growth, percentage calculate karo — yahi financial dashboards mein dikhta hai. Dono ek window function se."
           commonMistakes={[
             { mistake: 'Window function WHERE clause mein use karna', why: 'Window functions GROUP BY ke baad execute hoti hain — WHERE ke baad', fix: 'CTE ya subquery mein window function use karo, outer query mein filter karo' },
           ]}
-          proTip="ROWS BETWEEN clause se custom windows define karo: ROWS BETWEEN 6 PRECEDING AND CURRENT ROW se 7-day moving average. Powerful analytics without any application code."
+          proTip="ROWS BETWEEN custom windows ke liye — 7-day moving average: SUM(revenue) OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) / 7.0. Ye stock price moving average, sales trend smoothing — sab ek clause se. UNBOUNDED PRECEDING = beginning of partition se. UNBOUNDED FOLLOWING = end tak. Application code mein koi sliding window loop nahi — pure SQL."
         />
       </div>
 
@@ -200,13 +200,13 @@ FROM employees;`,
           title="JSONB — PostgreSQL Ka JSON Superpower"
           emoji="🗄️"
           difficulty="intermediate"
-          whatIsIt="JSONB PostgreSQL ka binary JSON column type hai — regular JSON se faster queries, GIN indexing support, aur powerful operators."
+          whatIsIt="JSONB — PostgreSQL ka superpower jo MongoDB ko irrelevant banata hai 90% cases mein. Binary JSON column type hai — regular JSON column se alag: JSONB binary format mein store hota hai, GIN index support karta hai, fast queries deta hai. JSON plain text store karta hai — key order preserve hoti hai, lekin koi indexing nahi, slow queries. Hamesha JSONB choose karo JSON ke upar. Ye ek structured SQL schema + flexible document storage ka best combination hai."
           whenToUse={[
             'Flexible/variable schema data store karne ke liye',
             'User preferences, settings, metadata',
             'Semi-structured data (product attributes vary by category)',
           ]}
-          whyUseIt="Product attributes — phones mein RAM/storage, shirts mein size/color — JSONB mein flexible store hote hain bina alter table ke. Complex filtering bhi fast hoti hai."
+          whyUseIt="E-commerce ka real problem: phones mein RAM/storage/battery attributes, shirts mein size/color, books mein ISBN/author — sab different. Ek SQL table mein sab fit nahi hota bina NULL columns ke. JSONB mein har product apne attributes freely store karta hai — ALTER TABLE nahi karna padta har naye attribute pe. Aur GIN index ke saath JSONB queries bhi fast hoti hain — full table scan nahi. Ye flexibility + performance ka combination hai jo JSONB ko special banata hai."
           howToUse={{
             code: `-- Table with JSONB column
 CREATE TABLE products (
@@ -253,14 +253,14 @@ UPDATE products
 SET attrs = attrs - 'old_field'  -- remove key
 WHERE id = 1;`,
             language: 'sql',
-            explanation: '-> JSON object/array return karta hai. ->> text string return karta hai. @> contains operator fast filtering ke liye. GIN index JSONB queries dramatically fast karta hai.',
+            explanation: '-> JSON type return karta hai (object/array). ->> text string return karta hai (type cast ke liye). @> contains operator — GIN indexed, blazing fast. GIN index JSONB queries ke liye mandatory hai production mein — bina index Seq Scan hogi, 10x slow. Merge (||) aur remove (-) JSONB update ke liye clean operators hain.',
             filename: 'jsonb.sql',
           }}
-          realWorldScenario="E-commerce product attributes: saari categories ek table mein — phones mein specs, clothes mein sizing, books mein authors — JSONB mein flexible store karo, filter bhi fast karo."
+          realWorldScenario="Ek real e-commerce decision: har product category ke liye alag table banao ya ek products table with JSONB attrs? Alag tables = schema migration nightmare har naye attribute pe. JSONB = ek table, flexible attributes, GIN indexed filtering. Brands = 'Apple' filter karo on millions of products — @> operator + GIN index = milliseconds mein result. Ye wahi reason hai Shopify jaise platforms flexible product schema ke liye similar approach use karte hain."
           commonMistakes={[
             { mistake: 'GIN index add karna bhool jaana', why: 'Bina index ke JSONB queries Seq Scan karte hain — slow on large tables', fix: 'USING GIN (attrs) index add karo JSONB column pe' },
           ]}
-          proTip="JSONB jsonb_agg() se rows ko JSON array mein aggregate kar sakte hain. jsonb_each() se JSONB ko rows mein expand — powerful data transformation queries banati hain."
+          proTip="jsonb_agg() se rows ko JSON array mein aggregate karo — ek query mein nested objects banao jo directly API response mein fit ho. jsonb_each() se JSONB ko rows mein expand karo — EAV pattern queries possible. Partial index on JSONB: CREATE INDEX ON products ((attrs->>'brand')) WHERE attrs->>'brand' IS NOT NULL — sirf brand wale products index mein, efficient aur small index."
         />
       </div>
 
@@ -269,13 +269,13 @@ WHERE id = 1;`,
           title="EXPLAIN ANALYZE — Query Plan Padhna"
           emoji="🔍"
           difficulty="advanced"
-          whatIsIt="EXPLAIN ANALYZE actual execution plan show karta hai — rows count, execution time, index usage, join strategies. Slow queries diagnose karne ka primary tool."
+          whatIsIt="EXPLAIN ANALYZE — database engine ka X-ray machine. Query optimizer ka actual plan dikhata hai: kaunsa index use hua, kitne rows scan hue, kitna time laga, kaunsa join algorithm choose hua. EXPLAIN sirf estimated plan, EXPLAIN ANALYZE actually execute karta hai aur real numbers deta hai. Slow query hai? EXPLAIN ANALYZE pehla tool hai — bina ye dekhe optimize karna andhere mein kaam karna hai."
           whenToUse={[
             'Slow query optimize karte waqt',
             'Index effective hai ya nahi check karne ke liye',
             'Large table queries profile karne ke liye',
           ]}
-          whyUseIt="Bina execution plan dekhe query optimize karna andhere mein teer chalana hai. EXPLAIN se actual bottleneck dikhai deta hai."
+          whyUseIt="Production mein slow API endpoint hai — kya index miss hai? Kya join wrong order mein hai? Kya table statistics stale hain? Ye sab EXPLAIN ANALYZE ke output mein visible hai. Seq Scan dikhna = index missing ya not used. Estimated rows vs actual rows bahut alag = statistics stale, ANALYZE karo. Cost numbers high = bottleneck wahan. Ye tool seekhna ek superpower hai — slow queries fix karna guess work se nahi, data se hoga."
           howToUse={{
             code: `-- Basic EXPLAIN
 EXPLAIN SELECT * FROM orders WHERE user_id = 42;
@@ -315,14 +315,14 @@ CREATE INDEX idx_orders_user_id ON orders(user_id);
 EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 42;
 -- Ab Index Scan dikhega instead of Seq Scan!`,
             language: 'sql',
-            explanation: 'EXPLAIN output mein Seq Scan slow hota hai large tables pe. Index Scan fast. cost= estimated work, actual time= real ms. rows= estimate vs actual rows fark hoga toh statistics stale hain (ANALYZE run karo).',
+            explanation: 'Seq Scan = full table read — large tables pe warning sign. Index Scan = index use ho raha hai, fast. cost=start..total: start cost = first row milne ka kaam, total = poora kaam. actual time=start..end ms: real execution time. rows estimate vs actual bahut alag = ANALYZE table run karo — statistics stale hain. BUFFERS: shared hit = cache se, read = disk se — disk reads expensive hain.',
             filename: 'explain-analyze.sql',
           }}
-          realWorldScenario="Production mein slow API endpoint — EXPLAIN ANALYZE se pata chalta hai ki 50,000 rows scan ho rahi hain. user_id index add karne se 10ms se 0.2ms — 50x speedup."
+          realWorldScenario="Real production story: /api/orders endpoint 800ms le raha tha. EXPLAIN ANALYZE chalaya — Seq Scan on orders table, 50,000 rows scan. user_id column pe index missing tha. CREATE INDEX idx_orders_user_id ON orders(user_id); — ek command. Next request: 15ms. 53x speedup, ek index se. Ye EXPLAIN ANALYZE ki power hai — problem visible ho gayi, solution obvious tha."
           commonMistakes={[
             { mistake: 'EXPLAIN bina ANALYZE ke production pe — sirf estimated plan', why: 'Estimated plan real plan se alag ho sakta hai — statistics stale hain', fix: 'Development/staging pe EXPLAIN ANALYZE run karo, ANALYZE table regularly' },
           ]}
-          proTip="explain.dalibo.com ya pganalyze pe EXPLAIN output paste karo — visual plan milta hai jo much easier to understand hota hai than plain text."
+          proTip="Plain text EXPLAIN output padhna mushkil lagta hai? explain.dalibo.com pe paste karo — visual tree milta hai, bottlenecks highlight hote hain, recommendations milte hain. pganalyze production monitoring ke liye use karo — slow queries automatically track hote hain. Aur CREATE INDEX CONCURRENTLY use karo production pe — regular CREATE INDEX table lock karta hai, CONCURRENTLY background mein banata hai, zero downtime."
         />
       </div>
 

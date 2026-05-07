@@ -64,13 +64,13 @@ export default function JSChapter14Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Functional Programming — Code Ka Philosophy
+          Functional Programming — JavaScript Ko Differently Sochna Seekho
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Functional Programming (FP) ek coding style hai jahan functions data transform karte hain — state mutate nahi karte. React, Redux, RxJS sab FP principles par built hain. Pure functions, immutability, higher-order functions — ye sab aapko predictable, testable code likhne dete hain.
+          Functional Programming ek mindset hai — data ko mutate mat karo, transform karo. State ko modify mat karo, naya state banao. Ye ek paradigm shift hai Object-Oriented Programming se. Aur JavaScript mein ye particularly powerful hai kyunki functions first-class citizens hain — variables mein store karo, arguments mein pass karo, return karo.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum FP ke core concepts cover karenge — practical examples ke saath jo aap real projects mein use kar sako.
+          Sawaal: React kyun FP principles follow karta hai? Jawab: kyunki pure functions predictable hain — same props → same output. Immutability se change detection easy hai — reference compare karo. Redux reducers pure functions hain — isliye time-travel debugging possible hai! FP sirf theoretical philosophy nahi — production mein rozan use hoti hai.
         </p>
       </div>
 
@@ -79,7 +79,7 @@ export default function JSChapter14Content() {
           title="Pure Functions — Predictability Ka Raaz"
           emoji="💎"
           difficulty="intermediate"
-          whatIsIt="Pure function do properties follow karti hai: (1) Same input → hamesha same output. (2) No side effects — external state change nahi karti. Side effects hain: DOM manipulation, API calls, console.log, global variable change, random numbers, current time. Pure functions predictable, testable aur cacheable hain."
+          whatIsIt="Pure function — ek bahut simple definition lekin bahut powerful concept. Do rules: (1) Same input doge — hamesha same output milega. (2) Koi side effects nahi — function ke bahar kuch change nahi hoga. Side effects ki list: DOM change, API calls, console.log, global variables, Math.random(), new Date(). Sawaal: kya console.log wali function pure hai? Jawab: NAHI! Console ek external system hai — ye side effect hai. Ye technically impure hai. Practical mein: pure core logic likho (business rules, calculations), impure shell likho (logging, API calls). Ye 'functional core, imperative shell' pattern hai — testing ka favourite approach."
           whenToUse={[
             'Data transformation — objects/arrays ko convert karna',
             'Calculations — price compute karna, tax calculate karna',
@@ -173,7 +173,7 @@ expensiveCalc(100)  // From cache — instant!`,
           title="Immutability — Data Protect Karo"
           emoji="🔒"
           difficulty="intermediate"
-          whatIsIt="Immutability ka matlab — existing data modify mat karo. Naya data create karo. Spread operator, map, filter, reduce — ye sab new values return karte hain. Object.freeze() shallow immutability. Immer.js deep immutable updates easy banata hai. React state immutable rakhna mandatory hai."
+          whatIsIt="Immutability — existing data modify mat karo, naya banao. Ye rule simple lagta hai lekin impact bada hai. Sawaal: const se declare karna immutability guarantee karta hai? Jawab: NAHI! const object ko reassign nahi kar sakta, mutate kar sakta hai. const arr = []; arr.push(1) valid hai — arr same reference hai, lekin content changed. Ye React ka sabse common bug hai — state mutate kar diya, React ko pata nahi chala kyunki reference same tha, re-render nahi hua! Immutability ke liye hamesha new values banao — spread, map, filter. Object.freeze() shallow protection deta hai — nested objects mutable rehte hain. Immer.js deep immutability easy banata hai production mein."
           whenToUse={[
             'React state updates — never mutate, always new object/array',
             'Redux reducers — immutable state transitions',
@@ -282,7 +282,7 @@ deepObj.nested.value = 999  // Works! Object.freeze shallow hai`,
           title="Higher-Order Functions — Reduce Se Sab Kuch"
           emoji="🔧"
           difficulty="intermediate"
-          whatIsIt="Higher-order functions (HOF) wo functions hain jo functions accept karte hain ya return karte hain. map, filter, reduce, every, some, find — sab HOFs hain. reduce sabse powerful hai — map aur filter dono reduce se implement ho sakte hain. Custom HOFs likhna — decorators, middleware, memoization."
+          whatIsIt="Higher-order functions — functions jo functions accept karte hain ya return karte hain. map, filter, reduce, every, some, find — ye sab HOFs hain — callbacks accept karte hain. Sabse powerful: reduce. Ye ek universally powerful tool hai — sab kuch reduce se implement ho sakta hai, map bhi, filter bhi, groupBy bhi. Sawaal: reduce ka initial value bhoolne se kya hota hai? Jawab: empty array pe TypeError, ek element pe pehla element return hota hai bina callback ke — silent bug! Hamesha initial value do. Custom HOFs likhna aur bhi powerful hai — withRetry, memoize, debounce — ye sab HOFs hain jo behavior wrap karte hain bina original function change kiye."
           whenToUse={[
             'Array transform karna — map',
             'Array filter karna — filter',
@@ -380,7 +380,7 @@ const data = await fetchWithRetry('/api/data')  // Auto-retry on failure`,
           title="Function Composition & Pipe"
           emoji="🔗"
           difficulty="intermediate"
-          whatIsIt="Function composition — do ya zyada functions ko chain karo taaki ek ka output doosre ka input ho. compose(f, g)(x) === f(g(x)) — right to left. pipe(f, g)(x) === g(f(x)) — left to right (more readable). Complex operations simple pure functions se build karo."
+          whatIsIt="Function composition — Unix pipe concept ka JavaScript mein implementation. Ek function ka output doosre ka input. Compose (right to left): compose(square, increment, double)(3) — pehle double, phir increment, phir square. Pipe (left to right): pipe(double, increment, square)(3) — pehle double, phir increment, phir square — same result, zyada readable! Ye Unix command line ki tarah hai: cat file | grep 'error' | sort | uniq. Har step ek pure function, ek transformation. Complex operations ko simple small functions ke combination se build karo — ye FP ka heart hai. Sawaal: compose aur pipe mein sirf order ka fark hai? Jawab: bilkul! Mathematically same, readability ke liye pipe prefer karo."
           whenToUse={[
             'Data pipeline — steps clearly define karne ho',
             'Multiple transformations ek ke baad ek apply karne ho',
@@ -488,7 +488,7 @@ const getUserNamesPF = mapName(users)`,
           title="Currying — Partial Application Ka Magic"
           emoji="🍛"
           difficulty="intermediate"
-          whatIsIt="Currying ek multi-argument function ko single-argument functions ki chain mein convert karta hai. add(2, 3) se add(2)(3). Partial application — kuch arguments pehle fix karo, baaki baad mein. Reusable, specialized functions banao. JavaScript mein manually ya Ramda/lodash se auto-curry."
+          whatIsIt="Currying — multi-argument function ko single-argument functions ki chain mein convert karna. add(2, 3) → add(2)(3). Shocking lag sakta hai pehli baar. Lekin ye partial application ko enable karta hai — kuch arguments pehle fix karo, function baad mein reuse karo. Real example: log('error')('Database failed') — level pehle fix kiya, message baad mein. ab error = log('error') — ek specialized logger! Ye React event handlers mein bhi common hai: onClick={handleDelete(item.id)} — handleDelete curried function hai, id pehle fix hoti hai, actual event baad mein. Sawaal: currying aur partial application mein kya fark hai? Jawab: currying strictly ek argument at a time. Partial application kuch arguments fix karke baaki ke liye function return karna — ek ya zyada arguments pehle."
           whenToUse={[
             'Partially apply karna — kuch args fix karo, function reuse karo',
             'Point-free style mein — composition ke saath',

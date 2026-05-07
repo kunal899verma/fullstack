@@ -64,13 +64,16 @@ export default function ReactChapter8Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          useRef, useMemo, useCallback — Performance Tools
+          useRef, useMemo, useCallback — React Ka Performance Toolkit
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          React performance optimization ke teen hooks — useRef (mutable values without re-render), useMemo (expensive computation cache), useCallback (function reference stability). Plus React.memo (component memoization). Lekin remember: profile first, optimize second.
+          Ek second ruko. useRef ka naam sunta hai toh log kehte hain — "haan DOM reference ke liye hai." Galat! useRef ek mutable box hai — renders ke across value preserve karta hai bina re-render kiye. Ye React ka escape hatch hai DOM se bhi aur render cycle se bhi. Isko sirf input.focus() ke liye mat waste karo.
+        </p>
+        <p className="text-[#A1A1AA] leading-relaxed mb-3">
+          Aur useMemo? Log hamesha poochhte hain — "bhai sab kuch memoize kar doon?" Nahi! "Premature optimization is the root of all evil — but in React, no optimization is the root of slow apps." Balance dhundna padega.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum ye teeno hooks cover karenge — kab use karo, kab nahi use karo, aur common anti-patterns.
+          Is chapter mein hum teeno hooks ko andar se samjhenge — kab use karo, kab bilkul mat karo, aur kya hota hai hood ke neeche jab React in hooks ko execute karta hai.
         </p>
       </div>
 
@@ -79,14 +82,14 @@ export default function ReactChapter8Content() {
           title="useRef — Mutable Values Without Re-render"
           emoji="📌"
           difficulty="intermediate"
-          whatIsIt="useRef ek mutable container hai — .current property se access karo. DOM elements directly access karne ke liye. Mutable values jo re-render trigger nahi karte — previous values, timers, instance variables. Ref change hone pe component re-render nahi karta — useState se ye fundamental difference hai."
+          whatIsIt="Suno dhyan se — useRef ka naam 'reference' se hai, lekin ye sirf DOM reference ke liye nahi! Ye ek mutable box hai jisme .current property hoti hai. Ye box renders ke across apni value preserve karta hai — aur sabse important baat: is box ki value change karne se component RE-RENDER NAHI HOTA. Ye useState se iska fundamental fark hai. React Fiber ke andar, useRef ek plain JavaScript object hai jo fiber node se attached rehta hai. Har render pe same object reference milti hai — naya object nahi banta."
           whenToUse={[
-            'DOM element directly access karna — focus, scroll, measurements',
-            'Previous state value store karna',
-            'Timer/interval IDs store karna',
-            'Mutable values jo UI affect nahi karte',
+            'DOM element directly access karna — focus, scroll, video.play(), canvas',
+            'Previous state value store karna bina re-render kiye',
+            'Timer/interval IDs store karna — cleanup ke liye',
+            'Mutable values jo UI affect nahi karte — render count, flag variables',
           ]}
-          whyUseIt="useRef se woh values store karo jo render cycle se independent hain. Focus management — input focus on mount. Previous value comparison — animation triggers. Timer IDs — cleanup ke liye. Re-render trigger nahi karta — performance better."
+          whyUseIt="Sochte hain — bhai useState se hi ho jaata? Nahi! Agar timer ID useState mein rakhoge toh har timer update pe re-render hoga — poora component dobara chalega sirf ek timer ID ke liye. Ye waste hai. useRef se woh values store karo jo render cycle se bilkul independent hain. DOM access, timer cleanup, previous value tracking — sab useRef ka kaam hai."
           howToUse={{
             filename: 'UseRef.tsx',
             language: 'tsx',
@@ -200,9 +203,9 @@ function ComponentWithInstanceVar() {
     </div>
   )
 }`,
-            explanation: 'useRef DOM nodes ke liye — ref prop se. Mutable values ke liye — .current directly assign karo. Re-render trigger nahi karta — pure mutable container. Previous value pattern — render ke baad update. Timer IDs store karo — cleanup ke liye.',
+            explanation: 'Step by step sochte hain — useRef ek box hai (plain object). React is box ko fiber tree mein store karta hai. Har render pe same box milta hai. .current change karo — React ko pata nahi chalta, re-render nahi hota. DOM ref ke liye React khud .current assign karta hai mount aur unmount pe. Timer IDs store karo — warna garbage collector utha le jaata hai reference ko.',
           }}
-          realWorldScenario="Video player component: const videoRef = useRef<HTMLVideoElement>(null). play() button: videoRef.current?.play(). pause() button: videoRef.current?.pause(). seekTo(time): videoRef.current!.currentTime = time. Direct DOM API — React state nahi."
+          realWorldScenario="Real duniya example — YouTube jaisi video player. videoRef.current?.play() — direct DOM API call. videoRef.current?.pause() — koi state update nahi, koi re-render nahi, bas DOM pe directly command. seekTo(time): videoRef.current!.currentTime = time — instant! Ye sab useState se impossible tha."
           commonMistakes={[
             {
               mistake: 'useRef change karna aur UI update expect karna',
@@ -215,7 +218,7 @@ function ComponentWithInstanceVar() {
               fix: 'ref.current event handlers aur useEffect mein safely read karo.',
             },
           ]}
-          proTip="forwardRef parent ko child DOM access deta hai: const Input = forwardRef<HTMLInputElement, Props>((props, ref) => <input ref={ref} {...props} />). Parent: const inputRef = useRef<HTMLInputElement>(null); <Input ref={inputRef} />. Library components often forwardRef expose karte hain."
+          proTip="Ek aur hidden gem — forwardRef! Parent component apna ref child ke DOM tak pohoncha sakta hai: const Input = forwardRef&lt;HTMLInputElement, Props&gt;((props, ref) =&gt; &lt;input ref={ref} {...props} /&gt;). Ab parent: const inputRef = useRef&lt;HTMLInputElement&gt;(null); phir &lt;Input ref={inputRef} /&gt; — parent seedha child ke input pe focus, blur, select kar sakta hai. Design system components mein ye pattern bahut use hota hai."
         />
       </div>
 
@@ -224,14 +227,14 @@ function ComponentWithInstanceVar() {
           title="useMemo — Expensive Computation Cache"
           emoji="🧮"
           difficulty="intermediate"
-          whatIsIt="useMemo computation result memoize karta hai — dependencies change hone pe hi recompute. Referential equality maintain karta hai — same object/array reference agar value same hai. Overuse se overhead — memoization ka cost computation cost se kam hona chahiye. Profile karo pehle!"
+          whatIsIt="Ab samjho useMemo ke andar kya hota hai. Jab component render hota hai, React dekhta hai — kya useMemo ki dependencies change hui? Nahi? Toh cached result return karo, computation mat chalao. Haan? Toh naya computation chalao, result cache karo. Simple! Lekin ye caching free nahi hai — React ko dependencies compare karni padti hain, result store karna padta hai. Isliye simple calculations ke liye useMemo overhead add karta hai, benefit nahi deta."
           whenToUse={[
-            'Genuinely expensive computation — sorting 10k items, complex filtering',
-            'Referential stability — useMemo result useEffect ya memo child pe dep hai',
+            'Genuinely expensive computation — 10k+ items sort, complex filtering, heavy math',
+            'Referential stability chahiye — jab useMemo result kisi useEffect ya memo child pe dep ho',
             'Derived state — multiple state values se complex object banana',
-            'Kabhi nahi — unless actual performance problem measured ho',
+            'Sirf tab jab actual performance problem measure ho — guess mat karo!',
           ]}
-          whyUseIt="useMemo re-renders pe unnecessary recomputation prevent karta hai. Referential stability — child components memo ke saath unnecessary re-renders avoid karte hain. Complex derived data — filter + sort + group ek saath memoize karo. But: simple calculations memoize mat karo — overhead zyada hoga."
+          whyUseIt="Bhai, ek sawal — filter + sort 5000 items ka har render pe chale ya sirf jab products ya filters change hon? Obviously sirf jab zaroorat ho. useMemo ye guarantee deta hai. Plus referential equality — const config = { theme, lang } — ye naya object har render pe banta hai, child component React.memo se protect hai toh bhi re-render hoga! useMemo se same deps pe same reference milta hai."
           howToUse={{
             filename: 'UseMemo.tsx',
             language: 'tsx',
@@ -306,9 +309,9 @@ function SimpleComponent({ items }: { items: string[] }) {
 
   return <div>{count2} items: {title2}</div>
 }`,
-            explanation: 'useMemo deps change pe recompute, warna cached return. Referential stability — same deps → same object reference → child memo works. Expensive: 1000+ items sort/filter. NOT expensive: simple arithmetic, string concat, < 100 items. Profile first — guess mat karo.',
+            explanation: 'Step by step trace karo — useMemo pehli baar chalta hai, result cache hota hai. Parent re-render? React deps check karta hai — changed? No? Cached value return. Yes? Recompute. Expensive: 1000+ items sort/filter — useMemo se dramatic improvement. Cheap: items.length, string concat — useMemo se overhead. Rule: measure first, then decide.',
           }}
-          realWorldScenario="Data table: 5000 rows, multiple column filters, sort — useMemo se filter + sort result cache karo. Filter changes — recompute. Theme change — no recompute (products same). Bina useMemo: har parent re-render pe 5000 items re-filter — visible jank."
+          realWorldScenario="Real scenario — aapka data table 5000 rows, multiple filters, sorting. Har parent re-render pe (tab switch, theme change, kuch bhi) 5000 items re-filter ho rahe the — visible lag! useMemo lagaya — sirf filter/sort deps change hone pe recompute. Theme change karo — no recompute, cached data. Ye fark user immediately feel karta hai."
           commonMistakes={[
             {
               mistake: 'useMemo hamesha use karna "just in case"',
@@ -321,7 +324,7 @@ function SimpleComponent({ items }: { items: string[] }) {
               fix: 'Side effects useEffect mein. useMemo pure transformation — input → output, no external changes.',
             },
           ]}
-          proTip="useMemo aur useCallback React.memo ke saath synergy hai. Bina React.memo — memoization useless hai (component re-renders anyway). Trio: React.memo component, useMemo object props, useCallback function props — properly implemented se dramatic performance gains. Profile, measure, then optimize."
+          proTip="Ek important insight — useMemo aur React.memo ka deep connection hai. Akele useMemo kuch nahi karta agar child component memo nahi hai — woh re-render hoga anyway! Trio sochte hain: React.memo se component protect karo, useMemo se object props stable banao, useCallback se function props stable banao. Teeno ek saath — tab asli optimization milti hai. Lekin pehle profile karo — React DevTools Profiler kholo, record karo, actual slow components dhundo."
         />
       </div>
 
@@ -330,14 +333,14 @@ function SimpleComponent({ items }: { items: string[] }) {
           title="useCallback — Function Reference Stability"
           emoji="🔒"
           difficulty="intermediate"
-          whatIsIt="useCallback function memoize karta hai — same reference return karta hai agar deps same hain. Function props ke liye React.memo child ke saath zaroori hai. useEffect dependency ke liye. Bina useCallback — every render pe naya function reference → memo benefit lost ya effect loop."
+          whatIsIt="Seedha question — JavaScript mein () =&gt; {} === () =&gt; {} kya hoga? FALSE! Do alag function objects hain. Har render pe React naya function banata hai — naya reference. React.memo child ko bhejo — shallow compare karta hai — 'function changed!' — re-render. Infinite loop ka dar! useCallback ka kaam simple hai: 'bhai is function ko memoize karo — deps same hain toh same reference do.' Internally, useCallback(fn, deps) is useMemo(() =&gt; fn, deps) ke barabar hai. Yahi yaad rakho!"
           whenToUse={[
-            'Memo wrapped child component ke liye function prop',
-            'useEffect dependency mein function',
-            'Heavy computation karne wali functions (rare)',
-            'Context value mein functions',
+            'Memo wrapped child component ke liye function prop — stable reference zaroori',
+            'useEffect dependency array mein function — warna infinite loop!',
+            'Context value mein functions — consumers ko stable reference do',
+            'Jab function reference change karna side effect cause kare',
           ]}
-          whyUseIt="Functions JavaScript mein reference types hain — () => {} === () => {} is false. Har render pe naya function reference. React.memo shallow comparison karta hai — function prop changed → child re-render. useCallback stable reference deta hai — memo works, effects stable."
+          whyUseIt="Practical samajhte hain — ParentBad mein handleDelete har render pe naya function banta hai. Typing karo search mein — parent re-render — naya handleDelete — ExpensiveList ka memo check karta hai — 'function changed!' — re-render. 1000 rows. Lag. useCallback se handleDelete stable rehta hai — typing karo — parent re-render — same handleDelete reference — memo check — 'same!' — skip. Zero lag."
           howToUse={{
             filename: 'UseCallback.tsx',
             language: 'tsx',
@@ -428,9 +431,9 @@ function SimpleList({ items }: { items: string[] }) {
     </ul>
   )
 }`,
-            explanation: 'useCallback stable function reference deta hai. React.memo ke saath synergy — function prop stable → child no unnecessary re-render. useEffect dep mein function → useCallback zaroori. Without React.memo — useCallback useless (component re-renders anyway). Both together — optimization.',
+            explanation: 'Step by step — React render hota hai, useCallback check karta hai: deps changed? No — same function reference return. Yes — new function create, cache update. Function prop memo child ko jaata hai — same reference hai — no re-render. useEffect mein function dep hai — stable reference hai — effect baar baar nahi chalta. Magic? Nahi — simple reference equality.',
           }}
-          realWorldScenario="Large table mein row actions — edit, delete, view. ParentTable har filter change pe re-render. Bina useCallback — sab 1000 rows re-render. useCallback stable handlers + React.memo rows — sirf changed rows re-render. Visible performance improvement."
+          realWorldScenario="Production mein 1000-row data table. Row actions: edit, delete, view. Filter change karo — parent re-render. Bina useCallback: teeno handlers naye reference — teeno memo children re-render — 1000 rows re-render — 3 seconds lag. useCallback ke saath: handlers stable — memo check pass — sirf actual changed rows re-render — instant response. Ye real difference hai."
           commonMistakes={[
             {
               mistake: 'useCallback use karna without React.memo child',
@@ -443,7 +446,7 @@ function SimpleList({ items }: { items: string[] }) {
               fix: 'Deps honest rakho. Agar state update zaroorat hai — functional update use karo: setState(prev => ...) — dep nahi chahiye.',
             },
           ]}
-          proTip="useCallback implementation internally useMemo hai: useCallback(fn, deps) === useMemo(() => fn, deps). Yaad rakhna easy ho jaata hai. React Compiler (upcoming) automatically memoize karta hai — manual useCallback/useMemo deprecated ho jaayenge eventually. Abhi ke liye ye patterns zaroori hain."
+          proTip="Ek gem — React Compiler aa raha hai jo automatically memoize karega. Matlab future mein useCallback/useMemo manually likhna zaroorat nahi hogi! Lekin abhi 2025 mein manually likhna padta hai. Aur ek practical tip — functional updates se dep list chhoti rakho: setState(prev =&gt; prev + 1) mein setState dep nahi chahiye — ye always stable hoti hai. Clean deps = cleaner memoization."
         />
       </div>
 
@@ -452,14 +455,14 @@ function SimpleList({ items }: { items: string[] }) {
           title="React.memo — Component Memoization"
           emoji="🛡️"
           difficulty="intermediate"
-          whatIsIt="React.memo HOC hai jo component ke props shallow compare karta hai — agar same hain toh re-render skip. Parent re-renders se protect karta hai child ko. Custom comparison function de sakte ho — deep comparison ya specific fields. Overuse se counterproductive — comparison cost."
+          whatIsIt="React.memo ko samjho ek bodyguard ki tarah — parent ke har re-render pe child ko rokta hai aur poochhta hai: 'props badli kya?' Shallow compare karta hai — strings, numbers primitive hai toh direct compare, objects/functions reference compare. Same? 'Andar mat jao, pehle wala output use karo.' Alag? 'Theek hai, render karo.' Custom comparator bhi de sakte ho — second argument mein function pass karo jo return kare true (skip) ya false (render). HOC hai internally — component ko wrap karta hai aur memoized version return karta hai."
           whenToUse={[
-            'Expensive render wale child components',
+            'Expensive render wale child components — chart, complex UI, 100+ DOM nodes',
             'Parent frequently re-renders but child props rarely change',
-            'Large lists ke items — rows, cards',
-            'Sidebar, header — global state changes pe re-render avoid',
+            'Large lists ke items — rows, cards, table cells',
+            'Sidebar, header — global state changes se protect karo',
           ]}
-          whyUseIt="React.memo parent re-renders se protect karta hai. Same props → no re-render. useCallback aur useMemo ke saath synergy — function/object props stable bano toh memo benefit milta hai. Heavy components — charts, complex UIs — memo ke saath fast feel."
+          whyUseIt="Default React behavior — parent re-render karo, sab children re-render. Chahe props change na hui ho. ProductCard 50 baar render hota hai sirf isliye ki parent ke search input mein user type kar raha hai. React.memo bodyguard lagao — sirf product ya onAddToCart change hone par render karo. Baaki sab renders? Ignore."
           howToUse={{
             filename: 'ReactMemo.tsx',
             language: 'tsx',
@@ -537,9 +540,9 @@ const Clock = memo(() => <p>{new Date().toISOString()}</p>)
 // ── PERFORMANCE CHECK ─────────────────────────────────────────────
 // Chrome DevTools → Profiler tab → Record → Interact → Stop
 // See render flame graph — which components slow, which re-render unnecessarily`,
-            explanation: 'React.memo props shallow compare karta hai. Custom comparator — false = re-render, true = skip. useCallback + React.memo together zaroori. Simple components memoize mat karo — overhead > benefit. Profiler se actual slow components dhundo, then memo add karo.',
+            explanation: 'React.memo ke andar kya hota hai: prevProps aur nextProps leke shallow compare. Primitives: === operator. Objects/Arrays: reference comparison — naya object = always different! Isliye useCallback aur useMemo partners hain. Custom comparator mein: return true matlab "same hai, skip render." return false matlab "different hai, render karo." Opposite of equality — confusing hai, dhyan rakho.',
           }}
-          realWorldScenario="Dashboard mein Sidebar, Header, Chart, DataTable. State changes frequently (live data). Sidebar aur Header — no data dep — memo karo. Chart — data dep — memo with custom compare (deep data check). DataTable rows — memo karo individual rows."
+          realWorldScenario="Live analytics dashboard — har 5 seconds mein data update hota hai. Sidebar, Header ko ye data chahiye nahi — memo lagao, unhe peace do. Chart — data update hone par re-render zaroori — memo with custom deep compare (sirf data values changed?). DataTable rows — individual row memo — sirf changed row re-render hogi. Clean architecture."
           commonMistakes={[
             {
               mistake: 'React.memo bina useCallback ke function props ke saath',
@@ -552,7 +555,7 @@ const Clock = memo(() => <p>{new Date().toISOString()}</p>)
               fix: 'Comparator only comparison kare — props read karo, true/false return karo. No setState, no logging.',
             },
           ]}
-          proTip="React DevTools Profiler tab → Record interaction → Flame graph. Gray components — re-rendered but fast. Orange/red — slow. Click component — props diff dekho what changed. 'Why did this render' option enable karo. Actual data se optimize karo — guessing mat karo."
+          proTip="Chrome React DevTools mein Profiler tab open karo — Record button dabao, interact karo app se, stop karo. Flame graph mein gray = fast re-render (okay hai), orange/red = slow (investigate karo). Kisi component pe click karo — 'Why did this render?' option hai — exact props/state jo change hui dikhaata hai. Ye goldmine hai optimization ke liye. Andaaze se nahi, data se optimize karo."
         />
       </div>
 
@@ -561,14 +564,14 @@ const Clock = memo(() => <p>{new Date().toISOString()}</p>)
           title="Performance Anti-Patterns — Kya Avoid Karo"
           emoji="⚠️"
           difficulty="intermediate"
-          whatIsIt="Common React performance mistakes: inline object creation (new reference every render), anonymous functions in render (memo defeats), state updates in render loop, missing keys, over-memoization, premature optimization. Profiler se measure karo — phir specific fix apply karo."
+          whatIsIt="Ab seedha baat karte hain — kya kya galat karte hain log. Anti-pattern #1: JSX mein seedha object likho — &lt;Card style={{ color: 'red' }} /&gt; — ye naya object hai har render pe, memo ka koi fayda nahi. Anti-pattern #2: anonymous function memo child ko — &lt;MemoList onClick={(item) =&gt; ...} /&gt; — naya function, memo fail. Anti-pattern #3: render mein state update — infinite loop guaranteed. Anti-pattern #4: ek bada Context mein sab — har consumer har change pe re-render. Ye patterns code mein dhundna sikho."
           whenToUse={[
-            'Code review mein — in patterns dhundo',
-            'Performance complaint aane pe — profile first, then fix',
-            'Large lists mein — keys aur memo check karo',
-            'Context overuse — unnecessary re-renders',
+            'Code review mein — in patterns actively search karo',
+            'Performance complaint aane pe — profile karo, pattern identify karo, fix karo',
+            'Large lists mein — keys, memo, aur inline objects check karo',
+            'Context overuse — split karo concerns',
           ]}
-          whyUseIt="Anti-patterns dhundna aur fix karna performance dramatically improve kar sakta hai. Inline objects har render pe new reference — memo useless. Missing keys — unnecessary DOM operations. Over-rendering — unnecessary computation. Profile-first approach ensures sahi jagah fix."
+          whyUseIt="Anti-patterns dhundna aur fix karna kabhi kabhi dramatic improvement deta hai — bina extra library, bina architecture change. Inline object fix: constant bahar move karo — ek line change, 1000 re-renders gone. Ye cheezein profile se clearly dikhti hain — isliye profile-first approach essential hai."
           howToUse={{
             filename: 'AntiPatterns.tsx',
             language: 'tsx',
@@ -662,9 +665,9 @@ function GoodContextProvider({ children }: { children: React.ReactNode }) {
 // 4. Identify slow/unnecessary renders
 // 5. Apply targeted fix (memo, useCallback, useMemo)
 // 6. Record again — verify improvement`,
-            explanation: 'Anti-patterns: inline objects (new ref), anonymous fns (new ref), state in render (loop), context without split (all consumers re-render). Fix: constants, useMemo, useCallback, split contexts. Profile first — do not guess which is slow.',
+            explanation: 'Ek ek step trace karo — BadParent render hota hai, style={{ color: "red" }} — naya object banta hai memory mein, naya reference. MemoChild ko milta hai naya prop — shallow compare: different! Re-render. Ek simple const STYLE = {} bahar move karo — problem solve! GoodParent render hota hai, STYLE same reference hai — memo check: same! Skip. Zero re-render.',
           }}
-          realWorldScenario="Form mein 20 fields — har keystroke pe sab re-render. Profiler: SubmitButton, PreviewPanel har change pe re-render. Fix: memo them, useCallback handler. After: sirf changed field re-render. Typing instant — no jank."
+          realWorldScenario="20-field form — har keystroke pe SubmitButton, PreviewPanel, SummaryPanel — sab re-render ho rahe the. Profiler khola — inline objects everywhere, anonymous handlers. Three fixes: 1) handlers useCallback mein, 2) config objects useMemo mein, 3) memo lagaya critical components pe. Typing instant ho gaya — real user ne notice kiya."
           commonMistakes={[
             {
               mistake: 'Optimization se pehle profile nahi karna',
@@ -677,7 +680,7 @@ function GoodContextProvider({ children }: { children: React.ReactNode }) {
               fix: 'Memo sirf jab actual performance problem identified ho. Profile, identify, fix specific components.',
             },
           ]}
-          proTip="why-did-you-render library install karo development mein — automatic detection karti hai unnecessary re-renders. Console mein detailed logs — 'ParentComponent re-rendered MemoChild with same props — check useCallback!'. Production se remove karo. Essential debugging tool."
+          proTip="Ek secret weapon — why-did-you-render library. npm install karo dev dependency mein, Component.whyDidYouRender = true set karo — console mein seedha aayega: 'ParentComponent re-rendered MemoChild with same props! Check useCallback on handleDelete.' Ye library tumhara optimization coach hai. Profiler se slow component dhundo, why-did-you-render se exact cause samjho, phir fix karo. Ye trio unbeatable hai."
         />
       </div>
 

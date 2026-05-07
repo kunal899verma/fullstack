@@ -146,7 +146,7 @@ export default function ReactChapter3Content() {
           Components &amp; Props 🧱
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          React ka pura system components par based hai. Components ko data pass karne ka tarika props hai. Props + TypeScript = type-safe, self-documenting code. Ye chapter React ka foundation hai.
+          Ab real React ki duniya mein aao — components aur props. Suno ek cheez pehle: component ek JavaScript function hai. Bas. Koi magic nahi. Ye function JSX return karta hai, aur React usse render karta hai. Props? Wo sirf function ke arguments hain. Jab ye simple truth samajh aata hai, toh React bahut less mysterious lagta hai.
         </p>
         <div
           className="rounded-xl p-4 mb-8"
@@ -156,7 +156,7 @@ export default function ReactChapter3Content() {
           }}
         >
           <p className="text-[#C4B5FD] text-sm">
-            &ldquo;Ek component ek kaam kare, props ke through data receive kare, aur callbacks ke through parent se baat kare.&rdquo; — React ka golden rule.
+            &ldquo;Ek component ek kaam kare, props ke through data receive kare, aur callbacks ke through parent se baat kare.&rdquo; — ye teen rules yaad karo, components sahi banoge.
           </p>
         </div>
       </div>
@@ -167,7 +167,7 @@ export default function ReactChapter3Content() {
           title="Component Kya Hai?"
           emoji="🏗️"
           difficulty="beginner"
-          whatIsIt="Component ek JavaScript function hai jo JSX return karta hai. Name capital letter se start hona chahiye (Button nahi button). Ek component ek UI piece represent karta hai — reusable, composable, isolated. Poori React app components ka tree hai — chhote se bade tak."
+          whatIsIt="Component = JavaScript function that returns JSX. Itna simple hai definition. PascalCase naam zaroori hai — Button nahi button. React lowercase names ko HTML native elements samajhta hai: <button> HTML hai, <Button> tumhara component hai. Har component ek isolated UI piece hai — apna logic, apna state, apna output. Poori React app? Components ka ek tree."
           whenToUse={[
             'Har UI element jo repeat hota ho — Button, Card, Avatar, Badge',
             'Har major UI section — Header, Sidebar, Footer, Modal',
@@ -175,7 +175,7 @@ export default function ReactChapter3Content() {
             'Jab koi UI piece test karna ho independently',
             'Team mein parallel development ke liye — alag log alag components',
           ]}
-          whyUseIt="Components = reusability + isolation. Ek bug Button mein hai — sirf Button.tsx dekho. Feature add karna hai — naya component, existing mein plug karo. Same Button ka UI change karna hai — ek jagah change, poori app mein reflect. Ye maintainability ka real meaning hai."
+          whyUseIt="Components ki asli value reusability aur isolation mein hai. Bug Button mein hai? Sirf Button.tsx mein jaao. Feature add karna hai? Naya component banao, existing mein compose karo. Design update karna hai? Ek component update — poori app reflect. Team mein kaam kar rahe ho? Alag log alag components pe parallel kaam kar sakte hain. Ye sab composability ki wajah se possible hai."
           howToUse={{
             filename: 'UserCard.tsx',
             language: 'tsx',
@@ -214,9 +214,9 @@ function App() {
 function userCard() {  // ← WRONG
   return <div>Card</div>
 }`,
-            explanation: 'PascalCase hamesha — Button, UserCard, LoginForm. Function body mein logic likhte hain. JSX return karte hain. Arrow function ya function keyword — dono valid hain. Components compose karo — chhote se bade banao.',
+            explanation: 'PascalCase rule koi optional convention nahi — React ka requirement hai. function button() likhoge toh React <button> ko HTML tag samjhega. Function keyword ya arrow function — dono equally valid hain. Components compose karo Lego blocks ki tarah — chhote pieces se bada structure.',
           }}
-          realWorldScenario="Zomato app mein RestaurantCard ek component hai — name, rating, delivery time, cuisine type sab props se aata hai. Same card search results mein, favorites mein, nearby section mein reuse hota hai. Ek UI change — sirf RestaurantCard.tsx update karo, poori app reflect hogi."
+          realWorldScenario="Zomato app dekhte ho — RestaurantCard component ek baar bana. Search results mein dikhta hai, Favorites mein dikhta hai, Nearby section mein dikhta hai. Teen jagah, ek component. Agar restaurant card ka design update karna ho — sirf RestaurantCard.tsx update karo — teeno jagah automatically update. Ye real-world component reusability hai."
           commonMistakes={[
             {
               mistake: 'Component name lowercase — function button() ya const card = ...',
@@ -229,7 +229,7 @@ function userCard() {  // ← WRONG
               fix: 'Components ko file ke top level par define karo, function ke andar nahi. Agar data share karna hai toh props use karo.',
             },
           ]}
-          proTip="Component file naming convention: component ke naam se hi file ka naam rakho — Button.tsx, UserCard.tsx, LoginForm.tsx. Phir import seedha samajh mein aata hai. Large projects mein index.ts barrel exports use karo — import { Button, UserCard } from '@/components' — clean aur maintainable."
+          proTip="Ek anti-pattern bahut common hai — component ke andar component define karna. Ye kabhi mat karo! Har render pe inner component re-create hoti hai, React ise naya component type samjhta hai, pura unmount/remount cycle hota hai — state lost, performance bad. Components hamesha top-level pe define karo, kabhi function ke andar nahi."
         />
       </div>
 
@@ -239,14 +239,14 @@ function userCard() {  // ← WRONG
           title="Props — Parent Se Child Ko Data"
           emoji="📦"
           difficulty="beginner"
-          whatIsIt="Props (properties) parent component se child component ko data pass karne ka tarika hai. Props read-only hain — child unhe change nahi kar sakta. Ye React ka unidirectional data flow hai — upar se neeche. Props ke through component reusable aur configurable banta hai."
+          whatIsIt="Props ka real matlab kya hai? Props sirf function arguments hain. Jab tum <Button label='Save' onClick={fn} /> likhte ho, React behind the scenes Button({label: 'Save', onClick: fn}) call karta hai. Ye sirf ek function call hai! Props read-only hain — child component unhe change nahi kar sakta — kyunki ye parent ka data hai, child ka nahi. Ye React ka unidirectional data flow hai."
           whenToUse={[
             'Parent se child ko koi bhi data pass karna ho — text, numbers, objects, functions',
             'Component ko configurable banana — different variants, sizes, colors',
             'Event handlers pass karna — onClick, onChange callbacks',
             'Child component ko control dena parent ke state se',
           ]}
-          whyUseIt="Props ke bina components hardcoded data ke saath kaam karte — reusability zero. Props se ek Button component hazaar alag styles mein, hazaar alag callbacks ke saath use ho sakta hai. Props = component ka public API — clearly batata hai component kya data chahta hai."
+          whyUseIt="Props ke bina components static aur hardcoded hote — reuse karne ka koi tarika nahi. Props se ek Button component infinite variations mein use ho sakta hai — primary, secondary, danger, small, large, disabled, loading — sab props se control hota hai. Props = component ka public API. Interface define karo, users (other developers) samjhenge component kya accept karta hai."
           howToUse={{
             filename: 'props-patterns.tsx',
             language: 'tsx',
@@ -294,9 +294,9 @@ function UserAvatar({ user }: { user: User }) {
 // ── Pattern 4: Spread props ──────────────────────────────
 const buttonProps = { label: 'Submit', variant: 'primary' as const }
 <Button onClick={handleSubmit} {...buttonProps} />`,
-            explanation: 'Destructuring se props directly unpack karo — clean aur readable. Default values parameter mein hi do. Object props ke liye interface define karo. Spread operator se props object pass kar sakte ho.',
+            explanation: 'Destructuring se props directly unpack karo — clean aur readable. Default values function parameter mein hi define karo — props drilling avoid. Object props ke liye separate interface banao — self-documenting API. Spread operator {...buttonProps} se existing objects pass karo.',
           }}
-          realWorldScenario="Design system mein Button component — variant (primary/secondary/danger), size (sm/md/lg), disabled, loading, icon — sab props hain. Marketing site mein ek Button, admin panel mein alag Button — same component, alag props. Ye reusability ka power hai."
+          realWorldScenario="Company ka design system sochte ho — Button component variant (primary/secondary/danger), size (sm/md/lg), disabled, isLoading, leftIcon — sab props hain. Marketing page mein, admin panel mein, mobile app mein — same Button component, sirf props alag. Ek component, poori company use kare. Ye design system ki power hai."
           commonMistakes={[
             {
               mistake: 'Props mutate karna — props.name = "New Name" ya props.user.age = 25',
@@ -309,7 +309,7 @@ const buttonProps = { label: 'Submit', variant: 'primary' as const }
               fix: 'Props ko ek config object mein group karo. Ya component ko chhote components mein tod do. "Prop drilling" badh raha ho toh Context ya state management consider karo.',
             },
           ]}
-          proTip="Callback props ke naming convention: event handler props ko 'on' se shuru karo — onClick, onChange, onSubmit, onClose. Aur component ke andar function ka naam 'handle' se shuru karo — handleClick, handleChange. Pattern: onSomething={handleSomething}. Poora React ecosystem ye convention follow karta hai."
+          proTip="Props mutate karna — kabhi mat karo. props.name = 'New Value' likhna literally React ka data flow tod deta hai. Parent state update nahi hoti, React ka virtual DOM sync break hota hai, bugs produce hote hain jo dhundna nightmare hai. Props read karo, kabhi write mat karo. Change chahiye? Parent ko callback ke through batao."
           demo={
             <DiffBlock
               language="tsx"
@@ -362,14 +362,14 @@ function UserCard({
           title="TypeScript Se Props Type Karo"
           emoji="🔷"
           difficulty="beginner"
-          whatIsIt="TypeScript interfaces ya types use karke component props ko explicitly type karo. Isse compile-time errors milte hain (runtime se pehle), autocomplete aata hai editor mein, aur component ka API self-documenting ho jaata hai. React + TypeScript industry standard hai."
+          whatIsIt="TypeScript ke bina React kya hoga? Runtime mein errors — user screen pe crash dekhta hai. TypeScript ke saath? Wrong props pass karo — editor mein red underline, compile time pe catch. Ye shift runtime se compile time — development mein time bachata hai, production mein bugs bachata hai. React + TypeScript 2025 mein industry standard hai — TypeScript skip karna apne aap ko nuksaan pahunchana hai."
           whenToUse={[
             'Hamesha — TypeScript use karna hai toh interfaces define karo',
             'Reusable components ke liye — clear API documentation',
             'Team projects mein — dusre devs samjhein component kya accept karta hai',
             'Complex prop types ke liye — unions, generics, callbacks',
           ]}
-          whyUseIt="Bina TypeScript ke: wrong props pass karo, runtime error aata hai (user screen par), debug karo, fix karo. TypeScript ke saath: wrong props pass karo, editor mein red underline (compile time), immediately fix karo. No runtime surprises. Yahi TypeScript ki value hai."
+          whyUseIt="TypeScript ka value proposition simple hai: compile time errors > runtime errors. Wrong prop pass karo — editor immediately batata hai, production code mein jaata hi nahi. Autocomplete — editor jaanta hai component kaunse props accept karta hai, sab suggest karta hai. Self-documenting API — interface padhke samajh aata hai component kaise use karna hai, README update karne ki zaroorat nahi."
           howToUse={{
             filename: 'Button.tsx',
             language: 'tsx',
@@ -419,9 +419,9 @@ function Button({
 <Button label="Delete" onClick={handleDelete} variant="danger" /> // ✅
 // <Button onClick={handleSave} />   ← ❌ label missing — TS error
 // <Button label="X" variant="invalid" onClick={fn} /> ← ❌ TS error`,
-            explanation: 'Interface mein ? = optional prop. Union types (\'primary\' | \'secondary\') limit karte hain allowed values ko. React.ReactNode kisi bhi renderable React content ke liye. Inline types bhi kaam karte hain lekin interface zyada readable aur reusable hai.',
+            explanation: 'Interface mein ? matlab optional prop — nahi diya toh TypeScript error nahi aayega. Union types (\'primary\' | \'secondary\' | \'danger\') exact allowed values define karte hain — typo hone pe immediately error. React.ReactNode icons ke liye — sab kuch accept karta hai jo React render kar sakta hai. Interface inline type se better hai — reusable aur readable.',
           }}
-          realWorldScenario="Design system mein component library — Button, Input, Modal, Card — sab TypeScript interfaces ke saath. Jab koi dev Button use karta hai, editor automatically sab available props suggest karta hai with their types. Required vs optional clearly dikhta hai. Ye documentation automatically up-to-date rehti hai code ke saath — no stale README."
+          realWorldScenario="Kisi bhi production React codebase mein jaao — Button.tsx ke paas ButtonProps interface hoga. Koi naya developer join karta hai, Button use karta hai — editor automatically sab props suggest karta hai, required aur optional dono. Koi README padhne ki zaroorat nahi, koi documentation update karne ki zaroorat nahi. TypeScript itself documentation hai — living, always up-to-date."
           commonMistakes={[
             {
               mistake: "any type use karna — props: any ya value: any",
@@ -434,7 +434,7 @@ function Button({
               fix: "Convention follow karo: ComponentNameProps — ButtonProps, UserCardProps, ModalProps. Ya type alias use karo: type ButtonProps = {...}. Dono valid hain.",
             },
           ]}
-          proTip="Type alias (type) vs interface — dono use kar sakte ho component props ke liye. Interface extend ho sakta hai (interface AdminProps extends UserProps), type intersect ho sakta hai (type AdminProps = UserProps & { adminLevel: number }). Component props ke liye dono work karte hain — consistency ke liye project mein ek choose karo aur stick karo."
+          proTip="any type use karna TypeScript ka sabse bura use hai. any matlab type checking completely off — wrong types pass karo, koi error nahi. Type safety ka koi fayda nahi. Agar type pata nahi, unknown use karo — phir narrow karo. Prop type pata nahi? Bas sochte raho kya accept karna chahiye — API design karo, any mat daalo."
         />
       </div>
 
@@ -444,7 +444,7 @@ function Button({
           title="children — Nested Content"
           emoji="🪆"
           difficulty="beginner"
-          whatIsIt="children ek special React prop hai jo component ke opening aur closing tags ke beech jo bhi ho usse represent karta hai. <Card><p>Hello</p></Card> mein <p>Hello</p> children hai. Ye composition pattern enable karta hai — container components banao jo kuch bhi wrap kar sakein."
+          whatIsIt="children prop ke baare mein ek interesting cheez — ye automatically available hoti hai. <Card><p>Hello</p></Card> mein opening aur closing tag ke beech jo bhi likha, woh children prop mein aata hai. Koi explicitly pass nahi karna — React khud handle karta hai. React.ReactNode type use karo — ye sab kuch accept karta hai: string, JSX elements, arrays, null. Ye composition pattern enable karta hai — container component banao jo kuch bhi wrap kare."
           whenToUse={[
             'Container components — Card, Modal, Section, Layout wrappers',
             'Styled wrappers — consistent padding/border/bg ke saath',
@@ -452,7 +452,7 @@ function Button({
             'Generic slots — jahan content flexible rakhna ho',
             'Compound components — Tab, TabPanel, Accordion patterns',
           ]}
-          whyUseIt="children prop ke bina har container component ko specifically pata hona chahiye ki andar kya render hoga — inflexible. children se container apni styling/behavior handle karta hai, content parent decide karta hai. Ye separation of concerns hai — container ka kaam wrap karna hai, content ka kaam display karna hai."
+          whyUseIt="children ke bina container component rigid hota hai — hardcoded content. children se container apni styling aur behavior handle karta hai, kya dikhana hai ye parent decide karta hai. Ye separation of concerns hai — Card component ko nahi pata kya content aayega, sirf jaanta hai kaise wrap karna hai. Content flexibility parent ke haath mein. Ye flexibility composition ko powerful banati hai."
           howToUse={{
             filename: 'composition.tsx',
             language: 'tsx',
@@ -532,9 +532,9 @@ function Modal({ header, footer, children }: ModalProps) {
 >
   <p>Kya aap sure hain? Ye action undo nahi hoga.</p>
 </Modal>`,
-            explanation: 'React.ReactNode type use karo children ke liye — ye sab kuch accept karta hai jo React render kar sakta hai. Named slots (header, footer props) se zyada structured composition milti hai. children ek magic prop hai — component ke beech jo bhi likho wahan aa jaata hai.',
+            explanation: 'React.ReactNode = sab kuch jo React render kar sakta hai (string, number, JSX, null, array). Ye most flexible type hai children ke liye. Named slots (header, footer props) se structured composition banati hai — Modal example mein teen distinct areas hain, each independently composable.',
           }}
-          realWorldScenario="Dashboard mein PageLayout component — sidebar, header, aur main content area. Har page PageLayout use karta hai, sirf main content change hota hai. <PageLayout><DashboardHome /></PageLayout>, <PageLayout><Settings /></PageLayout>. Layout ek baar likha — sab pages ko consistent structure milti hai."
+          realWorldScenario="Admin dashboard sochte ho — PageLayout component ek baar banao: sidebar, header, main content area. Har page same layout use karta hai, sirf content alag hota hai. DashboardPage, SettingsPage, UsersPage — sab <PageLayout> ke andar. Layout code ek jagah — consistent structure guarantee hai. Navigation color change? Sirf PageLayout.tsx update karo."
           commonMistakes={[
             {
               mistake: 'children ka type string ya JSX.Element define karna',
@@ -547,7 +547,7 @@ function Modal({ header, footer, children }: ModalProps) {
               fix: '<Card><p>Hello</p></Card> use karo — yahi idiomatic React hai. children prop explicitly pass karna confusing convention hai.',
             },
           ]}
-          proTip="React.PropsWithChildren utility type ek shortcut hai: type CardProps = React.PropsWithChildren<{ title?: string }> — ye automatically children: React.ReactNode add kar deta hai. Lekin explicit interface zyada clear hoti hai — prefer karo React.PropsWithChildren sirf simple wrappers ke liye jahan children hi main prop ho."
+          proTip="children ka type string ya JSX.Element kabhi mat likho. string sirf text children accept karta hai — component children fail honge. JSX.Element sirf single React element — null ya string fail honge. Hamesha React.ReactNode — ye most inclusive type hai. Ye ek common mistake hai jo TypeScript error deta hai bina obvious reason ke."
         />
       </div>
 
@@ -557,7 +557,7 @@ function Modal({ header, footer, children }: ModalProps) {
           title="Composition — Lego Blocks Build Karo"
           emoji="🏰"
           difficulty="beginner"
-          whatIsIt="Composition = chhote, focused components combine karke complex UIs banana. React mein inheritance nahi use karte — composition prefer karte hain. Ek Button + ek Icon + ek Tooltip = IconButton. Ek Card + ek Avatar + ek Stats = ProfileCard. Ye React ka core design principle hai."
+          whatIsIt="Composition React ka core design principle hai — inheritance nahi. Object-oriented programming mein inheritance hoti thi, React mein nahi. Kyun? Composition zyada flexible hai. Chhote, focused components banao, unhe combine karo. Button + Icon = IconButton. Card + Avatar + Stats = ProfileCard. Ye Lego approach hai — basic blocks se kuch bhi banao. Har block independently testable, replaceable, reusable."
           whenToUse={[
             'Complex UI jo multiple smaller pieces se bani ho',
             'Jab code repetition dikh raha ho — pattern extract karo ek component mein',
@@ -565,7 +565,7 @@ function Modal({ header, footer, children }: ModalProps) {
             'Shared layout patterns — consistent spacing, borders, shadows',
             'Feature-specific components — UserProfile = Avatar + UserInfo + UserActions',
           ]}
-          whyUseIt="Composition ke bina large components hote hain jo sab kuch karte hain — testing mushkil, debugging aur mushkil, reuse impossible. Composition se: Button easily test hota hai. ProductCard mein Button use hota hai. ProductPage mein ProductCard use hoti hai. Har level independent aur reusable."
+          whyUseIt="Composition ke bina God components bante hain — 500 line ka ek file, sab kuch ek jagah. Test karna impossible, modify karna risky, team kaam nahi kar sakti. Composition se pyramid banata hai — atomic components base pe, complex UI upar. Button test karo independently. ProductCard test karo — Button mock karo. ProductPage test karo — ProductCard mock karo. Har level isolated, testable, changeable."
           howToUse={{
             filename: 'ProductCard.tsx',
             language: 'tsx',
@@ -648,9 +648,9 @@ function ProductGrid({ products }: { products: ProductCardProps[] }) {
     </div>
   )
 }`,
-            explanation: 'Badge, PriceTag — atomic pieces. ProductCard — atomic pieces compose karta hai. ProductGrid — ProductCard ko compose karta hai. Har level independently testable aur changeable hai. Ek level change karo, upar wale automatically benefit lete hain.',
+            explanation: 'Teen levels dekho — atomic (Badge, PriceTag), composed (ProductCard), page-level (ProductGrid). Har level apna kaam karta hai. Badge ka design change karna ho? Sirf Badge.tsx. Price format change karna ho? Sirf PriceTag.tsx. ProductCard UI update? Sirf ProductCard.tsx. Ye isolation composition ki gift hai.',
           }}
-          realWorldScenario="Flipkart product listing — Badge (discount %), PriceTag (original + discounted), RatingStars, AddToCartButton — sab alag components hain jo ProductCard mein compose hote hain. Sale aane par sirf Badge aur PriceTag components update karo — poora site reflect karta hai. Ye composition ka business value hai."
+          realWorldScenario="Flipkart product listing ka dissection karo — Badge (discount %), PriceTag (original + discounted), RatingStars, AddToCartButton — sab alag components hain jo ProductCard mein compose hote hain. Big Sale aane pe? Sirf Badge aur PriceTag components update karo — poora site automatically reflect karta hai. Ek junior developer Badge fix kar sakta hai bina ProductCard ya ProductGrid ko touch kiye."
           commonMistakes={[
             {
               mistake: 'God components — ek component mein sab kuch: state, API calls, UI, business logic',
@@ -663,7 +663,7 @@ function ProductGrid({ products }: { products: ProductCardProps[] }) {
               fix: 'Pehle specific likho, jab repetition dikh toh abstract karo. YAGNI principle: You Ain\'t Gonna Need It.',
             },
           ]}
-          proTip="Component folder structure: feature-based organize karo, not type-based. Matt karo components/buttons/, components/cards/ — karo components/ProductCard/ (ProductCard.tsx, ProductCard.test.tsx, index.ts). Sab related files ek jagah. Bada project mein features/products/components/ProductCard/ — feature level isolation."
+          proTip="Premature abstraction avoid karo — Rule of Three follow karo. Ek jagah use hoga? Specific likho. Doosri jagah use hoga? Copy karo. Teesri jagah use hoga? Tab generalize karo. Pehli use se generic component banana frequently wrong abstraction hoti hai — baad mein change karna mushkil. YAGNI — You Ain't Gonna Need It. Pehle specific, repetition dikhne par abstract."
           demo={
             <DiffBlock
               language="tsx"

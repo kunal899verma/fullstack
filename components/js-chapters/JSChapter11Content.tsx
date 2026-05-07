@@ -69,13 +69,13 @@ export default function JSChapter11Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          DOM Manipulation — Browser Ka DNA
+          DOM Manipulation — JavaScript Browser Se Kaise Baat Karta Hai
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          DOM (Document Object Model) ek tree structure hai jo browser HTML ko represent karta hai. JavaScript isse manipulate kar sakti hai — elements dhundh sakte ho, content badal sakte ho, events sun sakte ho. Yahi JavaScript ko &ldquo;interactive&rdquo; banata hai.
+          Bhai, ek important baat samjho: JavaScript language ko browser ke baare mein kuch pata nahi. DOM API browser ka diya hua interface hai — window object, document object — ye sab browser ne expose kiye. JavaScript engine ke paas koi built-in DOM nahi. Ye separation samajhna zaroori hai — Node.js mein DOM nahi hota kyunki Node.js browser nahi hai!
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum DOM ka complete mastery karenge — selecting, modifying, creating, removing elements aur events — sab kuch production-ready patterns ke saath.
+          DOM ek tree hai — document → html → body → sab elements. Har HTML tag ek node hai. JavaScript is tree ko read aur modify kar sakti hai — real time mein, bina page reload ke. Yahi web apps ka foundation hai. React, Vue, Angular — sab internally DOM manipulate karte hain. Direct DOM samajhna zaroori hai inhe truly samajhne ke liye.
         </p>
       </div>
 
@@ -85,7 +85,7 @@ export default function JSChapter11Content() {
           title="DOM Kya Hai?"
           emoji="🌳"
           difficulty="intermediate"
-          whatIsIt="DOM (Document Object Model) ek tree hai jismein har HTML element ek node hota hai. Browser HTML parse karke ye tree banata hai — JavaScript isse read aur modify kar sakti hai. Root node document hai, phir html, body, aur baaki elements."
+          whatIsIt="DOM — Document Object Model — browser ka wo representation hai jo HTML ko ek tree structure mein rakhta hai. Browser HTML file parse karta hai, ye tree banata hai, phir JavaScript ko access deta hai is tree ka. Root document hai, uska child html, uske children head aur body, aur phir sab elements. Sawaal: document aur window mein kya fark hai? Jawab: window global object hai — browser tab represent karta hai. document window ka property hai — current HTML document represent karta hai. window.document === document true hai. Har element ek node hai — text bhi node hai, comments bhi. Ye samajhna essential hai DOM APIs use karne ke liye."
           whenToUse={[
             'Web page ka content dynamically change karna ho',
             'User interactions pe response dena ho',
@@ -130,20 +130,20 @@ console.log(div.childNodes)     // NodeList — includes text nodes!
 console.log(div.children)       // HTMLCollection — only element nodes`,
             explanation: 'DOM tree mein har HTML tag ek Element node hai. document se shuru karke kisi bhi element tak pahunch sakte ho. children sirf element nodes deta hai, childNodes sab kuch (text nodes bhi) deta hai.',
           }}
-          realWorldScenario="Jab tum kisi e-commerce site par product filter karte ho — price range, category — JavaScript DOM manipulate karta hai: product cards hide/show karta hai, counter update karta hai, URL params change karta hai. Ye sab DOM manipulation hai bina page reload ke."
+          realWorldScenario="E-commerce product filter: price range change karo — JavaScript DOM manipulate karta hai, product cards hide/show karta hai, counter update karta hai, URL params change karta hai — sab bina page reload. SPAs (Gmail, Twitter, Instagram) poora app ek HTML page hai — JavaScript DOM continuously update karta rehta hai as user navigates."
           commonMistakes={[
             {
-              mistake: 'Script head mein daalna bina defer/async ke',
-              why: 'HTML parse hone se pehle script run hoti hai — DOM elements exist nahi karte, querySelector null return karta hai.',
-              fix: 'Script ko body ke end mein rakho, ya <script defer> use karo, ya DOMContentLoaded event wait karo.',
+              mistake: 'Script head mein daalna bina defer ya async ke',
+              why: 'HTML parse hone se pehle script run hoti hai — DOM elements exist nahi karte, querySelector null return karta hai. Classic bug!',
+              fix: 'Script body ke end mein rakho. Ya <script defer> — HTML parse hone ke baad, DOMContentLoaded se pehle run hoti hai. Ya DOMContentLoaded event listen karo.',
             },
             {
               mistake: 'childNodes aur children ko confuse karna',
-              why: 'childNodes mein text nodes bhi hote hain (whitespace bhi!), children sirf element nodes deta hai.',
-              fix: 'Element nodes ke liye hamesha children, firstElementChild, nextElementSibling use karo.',
+              why: 'childNodes mein text nodes bhi hote hain — har whitespace aur newline bhi node hai! children sirf element nodes deta hai.',
+              fix: 'Element nodes ke liye hamesha children, firstElementChild, lastElementChild, nextElementSibling use karo — text nodes se safe.',
             },
           ]}
-          proTip="Browser DevTools Console mein $() shorthand querySelector ka hai aur $$() querySelectorAll ka. DOM debugging ke liye bahut useful hain. $0 last selected element ko reference karta hai Elements panel mein."
+          proTip="Chrome DevTools Console mein $() shorthand querySelector ka hai, $$() querySelectorAll ka, $0 last selected element ka. Ye debugging ke liye bahut useful hain. Elements panel mein element click karo — $0 console mein us element ko point karega. dir($0) se ek element ki sab properties dekho — DOM exploration ka fastest tarika!"
         />
       </div>
 
@@ -153,7 +153,7 @@ console.log(div.children)       // HTMLCollection — only element nodes`,
           title="Elements Select Karna"
           emoji="🎯"
           difficulty="intermediate"
-          whatIsIt="DOM mein elements dhundne ke liye multiple methods hain. querySelector aur querySelectorAll modern CSS selectors support karte hain. getElementById, getElementsByClassName, getElementsByTagName older methods hain lekin abhi bhi fast hain specific cases mein."
+          whatIsIt="DOM mein elements dhundhne ke liye multiple methods hain — lekin sab equal nahi. querySelector aur querySelectorAll modern CSS selectors support karte hain — flexible aur powerful. getElementById fastest hai ID ke liye. Ek important distinction: querySelectorAll STATIC NodeList return karta hai — snapshot liya, DOM change ho toh reflect nahi hoga. getElementsByClassName LIVE HTMLCollection return karta hai — DOM change ho toh automatically update hoti hai. Sawaal: live collection aur static collection mein kya risk hai? Jawab: live collection loop mein modify karo — collection shrink hoti hai, loop elements skip karta hai — classic bug!"
           whenToUse={[
             'Single element chahiye — querySelector ya getElementById',
             'Multiple elements chahiye — querySelectorAll ya getElementsByClassName',
@@ -365,7 +365,7 @@ list.appendChild(clone)`,
           title="Events — Interactivity Ka Dil"
           emoji="⚡"
           difficulty="intermediate"
-          whatIsIt="Events user interactions hain — click, keypress, submit, scroll, resize. addEventListener se inhe sun sakte ho. Event object mein information hoti hai — kya hua, kahan hua, kab hua. Event bubbling se parent elements bhi events receive karte hain — event delegation isi par based hai."
+          whatIsIt="Events browser ka tarika hai JavaScript ko batane ka — user ne kuch kiya! Click, keypress, submit, scroll, resize — sab events hain. addEventListener — ye sunne ka proper tarika hai. Ek element pe multiple listeners laga sakte ho, aur removeEventListener se cleanup kar sakte ho. Ab event bubbling: jab tum ek button click karte ho, event sirf button pe nahi ruka — DOM tree mein upar jaata hai — button → div → section → body → html → document — har ancestor element ko event milti hai. Yahi bubbling hai. Aur event delegation isi pe based hai — ek single parent listener se sab children handle karo! Sawaal: stopPropagation() se kya hota hai? Jawab: bubbling rokta hai — parent elements ko event nahi milti."
           whenToUse={[
             'User click, hover, keyboard input handle karna ho',
             'Form submit karna aur validate karna ho',
@@ -449,7 +449,7 @@ document.addEventListener('itemAdded', (e) => {
               fix: 'Hamesha form submit handler mein e.preventDefault() pehli line mein likho.',
             },
           ]}
-          proTip="AbortController se event listeners elegantly cleanup karo: const controller = new AbortController(); btn.addEventListener('click', handler, { signal: controller.signal }); baad mein controller.abort() — sab listeners ek saath remove! React useEffect cleanup mein ye pattern perfect hai."
+          proTip="AbortController se multiple event listeners ek saath cleanly remove karo: const controller = new AbortController(); btn.addEventListener('click', handler, { signal: controller.signal }); form.addEventListener('submit', submitHandler, { signal: controller.signal }); — baad mein controller.abort() ek call se dono remove! React useEffect cleanup function mein ye pattern perfect hai — memory leak prevent karta hai. Ye modern approach hai removeEventListener pe sabse clean alternative."
         />
       </div>
 

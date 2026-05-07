@@ -141,13 +141,13 @@ export default function GenAIChapter2Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Neural Networks — Brain Ki Copy
+          Neural Networks — Brain Ki Copy? Nahi Bhai, Math Hai!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Neural networks human brain se inspired hain — lekin mathematical abstraction hain. Neurons, weights, activations, backpropagation — ye sab concepts milke AI models banate hain. GPT-4, DALL-E, Claude — sab neural networks hain.
+          Shocking opener: GPT-4 mein 1.8 trillion parameters hain. Har parameter ek weight hai — ek number. Literally numbers ka ek bahut bada collection hai — aur usse intelligent conversation aata hai. Jaadu? Nahi — mathematics. Neural networks brain se loosely inspired hain, lekin fundamentally ye sirf weighted sums aur non-linear functions hain. Billions of them. Is chapter mein perceptron se shuru karke deep networks tak samjhenge — koi magic nahi, pure science.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum basic perceptron se shuru karke deep networks tak samjhenge — intuitive examples aur interactive demos ke saath.
+          GPT-4, DALL-E, Claude — sab neural networks hain. Inke andar kya hota hai — aaj demystify karte hain.
         </p>
       </div>
 
@@ -157,14 +157,14 @@ export default function GenAIChapter2Content() {
           title="Perceptron — Ek Neuron Ka Model"
           emoji="🧬"
           difficulty="beginner"
-          whatIsIt="Perceptron sabse simple neural unit hai — biological neuron ka mathematical abstraction. Inputs leta hai, weights se multiply karta hai, bias add karta hai, phir activation function se output decide karta hai. Yahi basic building block hai sab neural networks ka."
+          whatIsIt="Ek perceptron = ek neuron. Ye GPT-4 ka sabse chhota building block hai. Kaam kya karta hai? Inputs lो, weights se multiply karo, sab add karo, bias add karo, phir activation function lagao — aur output do. Bas itna. Yahi basic building block hai sab neural networks ka. Billions of ye simple units milke extraordinary cheezein karte hain. Ye samajh aaya toh pura neural network samajh aayega."
           whenToUse={[
             'Neural networks ke fundamentals samajhne ke liye',
             'Simple binary classification problems ke liye',
             'Logistic regression se connection samajhne ke liye',
             'Deep learning journey ka starting point',
           ]}
-          whyUseIt="Perceptron samajhne se pura deep learning clearer ho jaata hai. Billions of perceptrons milke GPT jaisi models banti hain. Weights = importance of each input. Bias = threshold adjustment. Activation = non-linearity inject karna."
+          whyUseIt="Kyun samajhna zaroori hai? Kyunki perceptron = foundation. Billions of perceptrons milke GPT jaisi models banti hain. Ek ek concept clear karo: Weights = importance of each input (training mein learn hoti hai). Bias = threshold shift karna. Activation = non-linearity — bina iske network sirf ek straight line draw kar sakta tha, kuch nahi. Ye concepts chain karke poora deep learning samajh aayega."
           howToUse={{
             filename: 'perceptron.ts',
             language: 'typescript',
@@ -194,9 +194,9 @@ const bias = -0.3
 const output = perceptron(inputs, weights, bias)
 console.log('Spam probability:', sigmoid(output).toFixed(3))
 // 0 = not spam, 1 = spam`,
-            explanation: 'Ye single neuron hai — spam detect karne ke liye. weights[-0.5 for known_sender] negative hai — known sender spam nahi hota. Training process weights adjust karta hai jab tak predictions sahi na hon.',
+            explanation: 'Under the hood: ye single neuron spam detect karta hai. Weight[-0.5 for known_sender] negative hai — known sender hoga toh spam probability kam hogi. Training mein gradient descent ye weights adjust karta hai automatically jab tak predictions sahi na hon. Tu manually kuch nahi likhta — model khud seekhta hai.',
           }}
-          realWorldScenario="Human brain mein ~86 billion neurons hain, har ek thousands of connections ke saath. GPT-4 mein approximately 1.8 trillion parameters hain (weights + biases) — ye sab mathematical neurons ka simulation hai. Ek single perceptron useless, billions of them extraordinary intelligence."
+          realWorldScenario="Sawaal: brain aur neural network mein kya fark hai? Human brain mein ~86 billion neurons hain, har ek thousands of connections ke saath. GPT-4 mein approximately 1.8 trillion parameters hain — ye sab mathematical weights ka collection hai, actual neurons nahi. Ek single perceptron: useless. Billions of them, properly trained: extraordinary pattern matching jo intelligence jaisa lagta hai. Magic nahi — scale hai."
           commonMistakes={[
             {
               mistake: 'Perceptron ko "actual brain" samajhna',
@@ -209,7 +209,7 @@ console.log('Spam probability:', sigmoid(output).toFixed(3))
               fix: 'Bias ek additional learnable parameter hai — threshold shift karta hai. Hamesha include karo.',
             },
           ]}
-          proTip="Perceptron linear classifier hai — XOR problem solve nahi kar sakta (famously). Is limitation ne 1960s mein 'AI winter' laaya. Multi-layer perceptrons (MLP) ne ye fix kiya — non-linear decision boundaries possible hue."
+          proTip="Historical fun fact: perceptron linear classifier hai — XOR problem solve nahi kar sakta. Is ek limitation ne 1960s mein 'AI winter' laaya — researchers ne fund pull kar liya. Phir 1980s mein multi-layer perceptrons (MLP) aaye aur fix kiya — non-linear decision boundaries possible hue. Ek mathematical limitation ne decades ki progress rok di. Tab se hum seekhte hain: hamesha limitations samjho."
           demo={<NeuronDemo />}
         />
       </div>
@@ -220,14 +220,14 @@ console.log('Spam probability:', sigmoid(output).toFixed(3))
           title="Neural Network Layers"
           emoji="🏗️"
           difficulty="beginner"
-          whatIsIt="Neural network mein layers hoti hain — input layer (data receive karta hai), hidden layers (patterns learn karte hain), aur output layer (prediction deta hai). Feedforward pass mein data left se right flow karta hai."
+          whatIsIt="Ek single perceptron limited hai — milao inhe, magic hoti hai. Neural network mein teen types ki layers hain: Input layer (raw data aata hai), Hidden layers (yahan magic hoti hai — patterns learn hote hain), Output layer (final prediction). Feedforward pass mein data left se right flow karta hai, layer by layer. Har layer pehli layer ke upar build karti hai — pehle simple patterns, phir complex. Ye hierarchical learning hi deep learning ko powerful banata hai."
           whenToUse={[
             'Classification problems — image kya hai, sentiment positive ya negative',
             'Regression — house price predict karna',
             'Pattern recognition — handwriting recognition',
             'Feature extraction — images se features nikalna',
           ]}
-          whyUseIt="Hidden layers abstraction create karte hain — raw pixels se faces samajhna. Pehli layer edges detect karta hai, dusra shapes, teesra faces. Depth = more abstract representations. Ye hierarchical learning deep networks ko powerful banata hai."
+          whyUseIt="Hidden layers kyun powerful hain? Ye abstraction create karte hain — raw pixels se faces samajhna directly impossible hai. Lekin layers mein: Layer 1 edges detect karta hai (simple). Layer 2 shapes — aankhein, naak, muh. Layer 3 faces. Layer 4 specific identities. Ye hierarchy AUTOMATICALLY training mein aati hai — tune manually nahi likhna. Ye hi 'deep' learning ka magic hai. Depth = more abstract, more powerful representations."
           howToUse={{
             filename: 'neural-network.ts',
             language: 'typescript',
@@ -270,9 +270,9 @@ const network: Layer[] = [
   { weights: Array(64).fill(Array(128).fill(0.01)), biases: Array(64).fill(0) },
   { weights: Array(10).fill(Array(64).fill(0.01)), biases: Array(10).fill(0) },
 ]`,
-            explanation: 'Ye simplified forward pass hai — real frameworks (TensorFlow, PyTorch) matrix multiplication GPU par karte hain. 784→128→64→10 architecture ek image ko 10-class probability vector mein map karta hai.',
+            explanation: 'Under the hood: ye simplified forward pass hai — real frameworks (TensorFlow, PyTorch) matrix multiplication GPU par karte hain, thousands of times faster. 784→128→64→10 architecture ek digit image ko 10-class probability vector mein map karta hai. Output: [0.01, ..., 0.95, ...] — highest probability wala digit answer hai.',
           }}
-          realWorldScenario="Face recognition apps mein: Input layer raw pixels (millions). Early hidden layers: edges, corners detect karte hain. Middle layers: eyes, nose, mouth shapes. Deep layers: specific faces. Output layer: person ki identity. Ye hierarchy automatically learn hoti hai training se."
+          realWorldScenario="Sawaal: Google Photos faces kaise pehchanta hai? Input layer raw pixels (millions). Early hidden layers: edges, corners detect karte hain. Middle layers: aankhein, naak, muh shapes. Deep layers: specific faces. Output layer: person ki identity. Ye hierarchy automatically learn hoti hai training se — tune manually describe nahi karna 'aankhein aisi hoti hain'."
           commonMistakes={[
             {
               mistake: 'Too many hidden layers bina data ke — deep network shallow se worse ho sakta hai',
@@ -285,7 +285,7 @@ const network: Layer[] = [
               fix: 'Task ke hisaab se activation choose karo: binary = sigmoid, multi-class = softmax, regression = none (linear).',
             },
           ]}
-          proTip="Universal Approximation Theorem: ek sufficient neurons wali single hidden layer koi bhi continuous function approximate kar sakti hai. Depth (more layers) different benefits deta hai — more efficient representation, hierarchical features. Width vs depth trade-off important hai."
+          proTip="Pro tip: Universal Approximation Theorem kahta hai — ek single hidden layer (enough neurons ke saath) koi bhi function approximate kar sakti hai. Toh phir depth kyun? Depth se same approximation zyada efficiently hoti hai, hierarchical features learn hoti hain, aur generalization better hoti hai. Width vs depth trade-off — practical mein: deep thin networks > shallow wide networks. Modern LLMs 96+ layers deep hain!"
         />
       </div>
 
@@ -295,14 +295,14 @@ const network: Layer[] = [
           title="Activation Functions — Non-Linearity"
           emoji="⚡"
           difficulty="beginner"
-          whatIsIt="Activation functions non-linearity inject karti hain network mein. Bina activation function ke, kitni bhi layers ka neural network sirf linear function hai. ReLU, Sigmoid, Tanh — sab alag purposes ke liye use hote hain."
+          whatIsIt="Shocking fact: bina activation function ke, 100 layers ka neural network bhi sirf ek straight line draw kar sakta hai. Ek bhi line! Kisi bhi complex problem ko solve karne ke liye non-linearity chahiye — aur activation functions wahi dete hain. ReLU sabse popular hai hidden layers ke liye: max(0, x) — negative values zero ho jaate hain, positive waise hi rahte hain. Simple? Haan. Powerful? Bilkul. Sigmoid output 0-1 ke beech rakhta hai — probabilities ke liye. Softmax multiple class probabilities ke liye."
           whenToUse={[
             'ReLU — default choice, hidden layers ke liye',
             'Sigmoid — binary output (0-1 probability)',
             'Softmax — multi-class output (probabilities sum to 1)',
             'Tanh — -1 to 1 range chahiye ho (RNN mein)',
           ]}
-          whyUseIt="Non-linearity se complex patterns learn hote hain. ReLU vanishing gradient problem solve karta hai sigmoid se better. Modern networks GELU (Gaussian Error Linear Unit) use karte hain — GPT bhi. Activation choice training stability aur performance dono affect karti hai."
+          whyUseIt="Bhai, activation choice matter karta hai — seriously. Hidden layers mein sigmoid use kiya toh training hi fail ho sakti hai (vanishing gradients). ReLU ne ye problem solve kiya. GPT-4 GELU use karta hai — ReLU se smoother, better performance language tasks mein. Tujhe ML scientist nahi banna — lekin basic intuition samajhna zaroori hai: ReLU = default choice hidden layers ke liye. Baaki sab specific cases ke liye."
           howToUse={{
             filename: 'activations.ts',
             language: 'typescript',
@@ -343,7 +343,7 @@ const probs = softmax(logits)
 console.log('Probabilities:', probs.map(p => p.toFixed(3)))`,
             explanation: 'Hidden layers mein ReLU use karo (ya GELU for Transformers). Binary classification output: sigmoid. Multi-class: softmax. Regression output: no activation (linear). Ye rules of thumb hain — empirically test karo.',
           }}
-          realWorldScenario="GPT-4 GELU activation use karta hai hidden layers mein — smoother than ReLU, better performance on language tasks. Sigmoid sirf output layer mein specific cases ke liye. Ye choice model performance par measurable impact dalti hai."
+          realWorldScenario="Sawaal: GPT-4 konsa activation use karta hai? GELU — Gaussian Error Linear Unit. ReLU se smoother, language tasks mein better performance. BERT bhi GELU use karta hai. Sigmoid aur Tanh hidden layers mein? Avoid karo — 2024 mein ye 1990s practice hai. Output layer mein: binary = sigmoid, multi-class = softmax, regression = kuch nahi (linear). Ye rules yaad rakh."
           commonMistakes={[
             {
               mistake: 'Sigmoid hidden layers mein use karna',
@@ -356,7 +356,7 @@ console.log('Probabilities:', probs.map(p => p.toFixed(3)))`,
               fix: 'Binary: sigmoid. Multi-class: softmax. Regression: no activation. Ye mistakes training loss mein weird behavior cause karte hain.',
             },
           ]}
-          proTip="Dying ReLU problem: neuron permanently 0 output deta hai (stuck). Fix: Leaky ReLU, ELU, ya He initialization use karo. Batch Normalization se training stable hoti hai aur ReLU issues kam hote hain. Modern large models mostly GELU prefer karte hain."
+          proTip="'Dying ReLU' problem: ek neuron permanently 0 output dene lagta hai — stuck! Fix: Leaky ReLU (0.01x for negative values, zero nahi) ya He initialization. Batch Normalization se training stable hoti hai aur ye issues kam hote hain. Pro rule: hidden layers = ReLU (ya GELU for transformers). Output layer = task ke hisaab se (sigmoid/softmax/linear). Ye combination 90% cases mein kaam karta hai."
         />
       </div>
 
@@ -366,14 +366,14 @@ console.log('Probabilities:', probs.map(p => p.toFixed(3)))`,
           title="Backpropagation — Kaise Seekhte Hain Networks?"
           emoji="🔄"
           difficulty="beginner"
-          whatIsIt="Backpropagation neural network training ka core algorithm hai. Network prediction karta hai (forward pass), error calculate hota hai, phir error backwards propagate hota hai weights update karne ke liye. Gradient descent ke saath milke networks learn karte hain."
+          whatIsIt="Backpropagation — ye wo algorithm hai jisne neural networks ko actually trainable banaya. Bina backprop ke, no deep learning, no ChatGPT, no kuch nahi. Kaam kaise karta hai? Forward pass mein network prediction karta hai. Phir error calculate hota hai (kitna galat tha?). Phir backprop error backwards propagate karta hai — har weight ka contribution error mein calculate karta hai (chain rule se). Gradient descent phir weights update karta hai — thoda thoda improve karte raho. Ye loop lakho baar repeat hota hai — training."
           whenToUse={[
             'Neural network training — hamesha yahi use hota hai',
             'Gradient understanding ke liye — kaunsa weight kitna responsible hai error mein',
             'Custom loss functions design karte waqt — differentiable honi chahiye',
             'Optimization algorithms understand karne ke liye — Adam, SGD',
           ]}
-          whyUseIt="Backprop ke bina neural networks learn nahi kar sakte. Chain rule use karta hai — composite functions ka derivative nikalna. Mathematically elegant: ek formula se kisi bhi size ke network ke weights update hote hain. PyTorch/TensorFlow automatically backprop compute karte hain — autograd."
+          whyUseIt="Backprop kyun samajhna zaroori hai? Kyunki agar tujhe pata nahi ki network kaise seekhta hai, toh jab training fail ho toh tu blind hoga. Learning rate bahut high — gradients explode. Too low — bahut slow learning. Loss curve dekh ke diagnose karna aata hai. PyTorch/TensorFlow automatically backprop compute karte hain (autograd) — loss.backward() ek call mein sab gradients calculate. Tu sirf architecture design kar aur data de."
           howToUse={{
             filename: 'backprop-intuition.ts',
             language: 'typescript',
@@ -437,9 +437,9 @@ for (let epoch = 0; epoch < 100; epoch++) {
   b = result.b
   if (epoch % 10 === 0) console.log(\`Epoch \${epoch}: loss=\${result.loss.toFixed(4)}\`)
 }`,
-            explanation: 'Ye simplified single-neuron example hai. Real networks mein thousands of layers, millions of weights — same principle, matrix operations. PyTorch ya TensorFlow mein: loss.backward() ek call se sab gradients compute ho jaate hain — autograd magic.',
+            explanation: 'Under the hood: ye simplified single-neuron example hai. Real networks mein thousands of layers, millions of weights — same chain rule, matrix operations. PyTorch mein: loss.backward() ek call se sab gradients compute ho jaate hain (autograd magic). Tu sirf loss define kar — backprop automatically hota hai.',
           }}
-          realWorldScenario="ChatGPT training mein backprop: model response predict karta hai → human rater score deta hai → reward model train hota hai → backprop se policy weights update hote hain (RLHF). Billions of weight updates — gradient descent slowly model ko better banata hai. Weeks of training on thousands of GPUs."
+          realWorldScenario="ChatGPT training mein backprop kaise kaam kiya? Model response generate karta tha → human rater ne score diya → reward model train hui → backprop se policy weights update hue (RLHF). Ye loop billions of baar repeat hua — thousands of GPUs par weeks tak. Gradient descent slowly, steadily model ko better banata gaya. Tab jaake ChatGPT bana jo humne December 2022 mein dekha."
           commonMistakes={[
             {
               mistake: 'Learning rate bahut high rakhna',
@@ -452,7 +452,7 @@ for (let epoch = 0; epoch < 100; epoch++) {
               fix: 'Differentiable approximations use karo. PyTorch/TensorFlow built-in operations hamesha differentiable hain — custom ops carefully banao.',
             },
           ]}
-          proTip="Gradient clipping use karo training mein — if gradient > threshold: scale down. Exploding gradients se training crash hota hai. clip_grad_norm_ (PyTorch) se prevent karo. Vanishing gradients ke liye: residual connections, batch normalization, careful initialization (He/Xavier)."
+          proTip="Practical tips: Gradient clipping use karo — if gradient > threshold, scale down. Exploding gradients se training crash hoti hai. clip_grad_norm_ (PyTorch) must use karo. Vanishing gradients ke liye: residual connections (ResNet style), batch normalization, He/Xavier initialization. Adam optimizer use karo by default — ye LR automatically adapt karta hai, manually tune nahi karna padta."
         />
       </div>
 
@@ -462,14 +462,14 @@ for (let epoch = 0; epoch < 100; epoch++) {
           title="Universal Approximation — Kyun Depth Matters?"
           emoji="∞"
           difficulty="beginner"
-          whatIsIt="Universal Approximation Theorem: ek sufficient neurons wali neural network koi bhi continuous function approximate kar sakti hai. Depth (more layers) se same approximation zyada efficiently achieve hoti hai — fewer neurons, better generalization."
+          whatIsIt="Shocking theorem: mathematically prove kiya gaya hai ki ek single hidden layer (enough neurons ke saath) koi bhi continuous function approximate kar sakti hai. Toh deep networks (many layers) kyun? Kyunki same approximation depth se much more efficiently hoti hai — zyada chhote network mein, better generalization ke saath. GPT-4 ne 96+ layers isliye nahi banaye ki koi fancy tha — ye mathematically optimal choice hai complex language modeling ke liye."
           whenToUse={[
             'Network architecture choose karte waqt — width vs depth',
             'Why deep learning works samajhne ke liye',
             'Capacity vs generalization trade-off analyze karne ke liye',
             'Transfer learning ka foundation samajhne ke liye',
           ]}
-          whyUseIt="Ye theorem batata hai ki neural networks fundamentally powerful hain — koi bhi function approximate kar sakte hain. Depth prefer karo width over — deep thin networks shallow wide networks se better generalize karte hain generally. Hierarchical features = better representations."
+          whyUseIt="Ye samajhna kyun zaroori hai? Agar tujhe pata hai ki deep networks theoretically powerful hain, toh architecture design karte time better decisions lega. Width vs depth: deep thin networks shallow wide networks se better generalize karte hain. Ye intuition se kaafi important hai — bahut zyada wide shallow network overfitting ke liye prone hoti hai. Hierarchical features = better representations = better generalization."
           howToUse={{
             filename: 'depth-vs-width.md',
             language: 'markdown',
@@ -509,9 +509,9 @@ Each layer builds on previous:
 3. Add regularization (dropout) if overfitting
 4. Batch normalization between layers
 5. Skip connections (ResNet) for very deep networks (>10 layers)`,
-            explanation: 'VGG (16 layers), ResNet (152 layers), GPT-4 (estimated 96+ transformer blocks) — depth ne AI revolution kiya. Par depth ke saath training challenges aate hain — residual connections, normalization, careful initialization ne solve kiya.',
+            explanation: 'Under the hood: VGG (16 layers), ResNet (152 layers), GPT-4 (96+ transformer blocks) — depth ne AI revolution kiya. Par depth ke saath training challenges aate hain — vanishing gradients, training instability. Residual connections, batch normalization, careful initialization ne ye sab solve kiya. Aaj ye techniques standard practice hain.',
           }}
-          realWorldScenario="ResNet (2015) ne 152-layer network train kiya — pehli baar itna deep koi bhi network kaam karta tha. Secret: residual (skip) connections — gradient seedha deep layers tak pohuncha. Is breakthrough ne modern deep learning ka door khola."
+          realWorldScenario="2015 mein Microsoft ke researchers ne ResNet banaya — 152 layers ka network. Pehle itna deep koi bhi train nahi kar paya tha. Secret kya tha? Residual (skip) connections — gradient directly deep layers tak pohunch sakta tha, bina vanish hue. Ye ek simple idea tha: x + F(x). Is ek idea ne modern deep learning ka darwaza khola. Simple ideas, revolutionary impact."
           commonMistakes={[
             {
               mistake: 'Network itna deep banana ki training fail ho jaaye',
@@ -524,7 +524,7 @@ Each layer builds on previous:
               fix: 'Architecture + data quality + training recipe sab matter karte hain. Theorem theoretical bound hai, practical guide nahi.',
             },
           ]}
-          proTip="Transfer learning use karo — pre-trained deep networks (BERT, ResNet) fine-tune karo apne task ke liye. Ye depth ki power practically use karta hai bina training se scratch ke. ImageNet par trained ResNet feature extractor aapke custom image classifier ke liye bhi kaam karta hai."
+          proTip="Sabse important pro tip: scratch se train mat karo! Transfer learning use karo — pre-trained deep networks (BERT, ResNet) fine-tune karo apne task ke liye. ImageNet par trained ResNet tere custom image classifier ke liye bhi kaam karega — because hierarchical features universal hain. Ek developer ke roop mein, ye depth ki power practically use karne ka sabse smart tarika hai bina billions of parameters train kiye."
         />
       </div>
 

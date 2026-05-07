@@ -133,13 +133,13 @@ export default function GenAIChapter4Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Transformer Architecture — The Revolution
+          Transformer Architecture — 8 Google Researchers Ne Duniya Badal Di!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          2017 mein &ldquo;Attention is All You Need&rdquo; paper ne AI change kar diya. Transformers ne RNNs replace kiye aur GPT, BERT, Claude jaisi models possible banayi. Is chapter mein attention mechanism, multi-head attention, positional encoding, aur BERT vs GPT samjhenge.
+          Shocking fact: 2017 mein Google ke 8 researchers ne ek 15-page paper publish kiya — "Attention Is All You Need". Us paper ka ek core idea tha: Attention mechanism. Sirf ek idea. Aur us ek idea ne ChatGPT, Claude, Gemini, GitHub Copilot — sab possible bana diya. Ye GenAI course ka sabse important chapter hai. Samjho isko, aur baaki sab automatically clearer ho jaayega.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Ye shayad GenAI course ka sabse important chapter hai — sab large language models yahi foundation use karte hain.
+          Attention mechanism, multi-head attention, positional encoding, BERT vs GPT — aaj ye sab demystify karte hain.
         </p>
       </div>
 
@@ -149,14 +149,14 @@ export default function GenAIChapter4Content() {
           title="RNN Ki Problem — Kyun Transformers Chahiye?"
           emoji="🔗"
           difficulty="intermediate"
-          whatIsIt="RNNs (Recurrent Neural Networks) sequential tha — ek token process karo, phir dusra. Long sequences mein vanishing gradients — early tokens ki information 'bhool' jaate the. Parallel training impossible tha — slow. Transformers ne ye sab fix kiya."
+          whatIsIt="Pehle baat karte hain RNNs ki — kyunki Transformers ko samajhne ke liye, pehle ye samajhna zaroori hai ki RNNs kyun fail hue. RNN sequential tha: ek token process karo, phir dusra, phir teesra. Paragraph 100 words ka hai toh 1st word ki information 100 steps travel karni padti thi — signal bahut weak ho jaata tha (vanishing gradients). Aur sequential processing ka matlab tha GPU efficiently use nahi ho sakta tha — slow training. Transformers ne solve kiya: har token directly har dusre token se attend karta hai — O(1) distance. Parallel processing possible — GPUs khush!"
           whenToUse={[
             'RNN limitations samajhne ke liye — historical context',
             'Transformer advantages justify karne ke liye',
             'Sequence modeling decisions — kab RNN, kab Transformer',
             'Time series mein architectural choices',
           ]}
-          whyUseIt="RNN mein: paragraph 100 words ka hai, 1st word ka context 100 steps travel karna padta hai — signal weak hota jaata hai. Transformer mein: har token directly har dusre token se attend kar sakta hai — O(1) distance. Parallel training possible — GPUs efficiently use hote hain."
+          whyUseIt="Ye history isliye samajhna zaroori hai kyunki Transformer ki design choices clearly justify hoti hain RNN ki failures ke context mein. Attention mechanism = har token, har dusre token se directly communicate kare — koi information bottleneck nahi. Parallel training = GPUs sab tokens simultaneously process kar sakti hain — weeks ki training, days mein possible. Scale karna easy — ye sab RNN se possible nahi tha."
           howToUse={{
             filename: 'rnn-vs-transformer.md',
             language: 'markdown',
@@ -189,7 +189,7 @@ export default function GenAIChapter4Content() {
                Distance = 1 (constant!)`,
             explanation: 'LSTM ne vanishing gradient partially fix kiya — gating mechanism se. Lekin sequential processing bottleneck raha. Transformers ne parallelism enable kiya — ye hi GPU revolution ke saath AI boom ka cause bana.',
           }}
-          realWorldScenario="Google Translate 2016 mein RNN use karta tha — translations OK the. 2017 mein Transformer-based BERT: quality dramatically better. 2019 mein GPT-2: coherent paragraphs. Ye jump RNN → Transformer switch se aaya. Same idea, different architecture — revolutionary difference."
+          realWorldScenario="Timeline: Google Translate 2016 mein RNN use karta tha — translations OK the, kuch galat. 2017 mein Transformer paper aaya. 2018 mein BERT: NLP benchmarks dramatically better. 2019 mein GPT-2: coherent paragraphs. 2022 mein ChatGPT: 100M users 2 mahine mein. Ye poora jump ek architectural switch — RNN se Transformer — se aaya. Same data, better architecture = revolutionary results."
           commonMistakes={[
             {
               mistake: 'RNNs completely dead samajhna — ye galat hai',
@@ -202,7 +202,7 @@ export default function GenAIChapter4Content() {
               fix: 'Attention long-range dependencies capture karna zyada effectively karta hai — ye primary advantage hai, speed secondary.',
             },
           ]}
-          proTip="State Space Models (SSM) — Mamba, S4 — new wave hain. RNN efficiency ke saath Transformer quality. Research area rapidly evolving hai. 2024-25 mein hybrid architectures emerge ho rahe hain — Transformer + SSM. AI field bahut fast move karta hai."
+          proTip="2024-25 update: RNNs completely dead nahi hain. State Space Models (SSM) — Mamba, S4 — new wave hain. RNN ki efficiency (linear compute) ke saath Transformer quality. Hybrid architectures emerge ho rahe hain. AI field bahut fast move karta hai — today's best might not be tomorrow's. Isliye fundamentals samajhna important hai — architectures change honge, core concepts nahi."
         />
       </div>
 
@@ -212,14 +212,14 @@ export default function GenAIChapter4Content() {
           title="Attention Mechanism — Email Inbox Analogy"
           emoji="👁️"
           difficulty="intermediate"
-          whatIsIt="Attention mechanism: current token (Query) dusre tokens (Keys) se compare karta hai, similarity calculate karta hai, aur weighted sum of Values nikalta hai. Har token decide karta hai ki dusre tokens kitne relevant hain. 'Soft' lookup — differentiable aur learnable."
+          whatIsIt="Attention mechanism ko samajhne ke liye ek analogy: email inbox. Tu dhundh raha hai 'meeting' ke baare mein (Query). Inbox mein har email ka subject line hai (Keys). Jab 'meeting' match karta hai subject se, tu wo email padhta hai (Value). Attention exactly ye karta hai — Query ko Keys se compare karo, similarity scores nikalo (softmax se probabilities), phir relevant Values ka weighted sum lo. 'Soft' lookup isliye kehte hain kyunki sab Values contribute karti hain — sirf ek nahi, proportional to similarity. Differentiable aur learnable — training mein automatically improve hota hai."
           whenToUse={[
             'Long-range dependencies capture karna — sentence ke pehle aur aakhiri word ka connection',
             'Context-dependent word meanings — bank (river vs financial)',
             'Cross-attention — encoder output se attend karna decoder mein',
             'Vision Transformers — image patches pe attention',
           ]}
-          whyUseIt="Attention mathematically elegant hai — ek formula se sab languages, modalities, tasks. Email inbox analogy: Query = 'meeting' ke baare mein dhundh raha hun. Keys = subject lines. Values = email bodies. Match hone par relevant emails read karo — context se word meaning decide hota hai."
+          whyUseIt="Attention kyun revolutionary hai? Ek formula — aur sab languages, modalities, tasks. Text, images, audio, video — sab mein attention kaam karta hai. Context-dependent meanings handle karta hai naturally: 'bank' ka matlab river bank ya financial bank — surrounding context se attention automatically resolve karta hai. RNN mein ye 100 steps ka sfar tha, attention mein direct connection. Ye hi LLMs ko coherent paragraphs generate karne deta hai."
           howToUse={{
             filename: 'attention.ts',
             language: 'typescript',
@@ -266,9 +266,9 @@ function maskedAttention(Q: number[][], K: number[][], V: number[][]) {
   const attnWeights = masked.map(row => softmax(row))
   return matMul(attnWeights, V)
 }`,
-            explanation: 'Scaling by sqrt(dk) zaroori hai — large dk se dot products large ho jaate hain, softmax extreme ho jaati hai, gradients disappear. Real implementations matrix multiplication GPU par efficiently karte hain — Flash Attention memory-efficient implementation hai.',
+            explanation: 'Under the hood: sqrt(dk) se scale karna zaroori hai — bina iske large dk se dot products bahut large hote hain, softmax extreme (near 0 ya 1) ho jaati hai, gradients disappear. Real implementations GPU par matrix multiplication efficiently karte hain. Flash Attention (2022) memory-efficient implementation hai — 2-4x faster, longer sequences possible. Same math, better implementation.',
           }}
-          realWorldScenario="'The animal didn't cross the street because it was too tired' — 'it' kya refer karta hai? Human: clearly 'animal'. RNN: uncertain. Attention: 'it' → 'animal' strong connection, 'street' weak — correct reference resolution. Coreference resolution natural hoti hai attention se."
+          realWorldScenario="Classic example: 'The animal didn't cross the street because it was too tired.' 'it' kya refer karta hai? Human: obviously 'animal'. RNN: uncertain — too many steps. Attention: 'it' → 'animal' strong connection (semantically similar context), 'street' weak — correct! Coreference resolution automatically hoti hai. Ye type of long-range dependency samajhna hi LLMs ko coherent aur meaningful banata hai."
           commonMistakes={[
             {
               mistake: 'Attention = alignment sirf, not information aggregation',
@@ -281,7 +281,7 @@ function maskedAttention(Q: number[][], K: number[][], V: number[][]) {
               fix: 'Interpretability research show karta hai attention heads different patterns learn karte hain — kuch interpretable, kuch nahi.',
             },
           ]}
-          proTip="Flash Attention (2022, 2023) memory-efficient attention implementation hai — I/O aware algorithm. Training 2-4x faster, longer sequences possible. All major frameworks ne adopt kiya. Ye implementation detail hai — concept same hai."
+          proTip="Flash Attention (2022, 2023) — ek implementation trick ne LLMs ki training 2-4x faster kar di aur 100K+ token contexts possible banaaye. Standford ka Tri Dao ne likha, sab ne adopt kiya. Concept same hai — I/O aware algorithm sirf memory bandwidth better use karta hai. Ye lesson yaad rakh: core math samjho, implementation optimize hoti rehti hai."
           demo={<AttentionDemo />}
         />
       </div>
@@ -292,14 +292,14 @@ function maskedAttention(Q: number[][], K: number[][], V: number[][]) {
           title="Multi-Head Attention"
           emoji="🎯"
           difficulty="intermediate"
-          whatIsIt="Multi-head attention mein h parallel attention heads hote hain — har head alag projection space mein operate karta hai. Sab heads ke outputs concatenate hokar final output milta hai. Alag heads alag types ke relationships learn karte hain."
+          whatIsIt="Ek attention head ek perspective se dekhta hai. Multi-head attention = h parallel attention heads — sab ek saath alag alag perspectives se dekhte hain. Har head alag projection space mein operate karta hai — different aspects of context. Outputs concatenate hokar final answer milta hai. Head 1: subject-verb agreement. Head 2: coreference (pronoun → noun). Head 3: positional patterns. Head 4: semantic similarity. Ye diversity = rich representations. Aur computational cost? Same as single head — elegant design!"
           whenToUse={[
             'Standard practice hai — always use multi-head over single-head',
             'Head count adjust karo — d_model ke multiple mein rahna chahiye',
             'Interpretability analysis — kaunsa head kya learn karta hai',
             'Pruning — unimportant heads remove karo efficiency ke liye',
           ]}
-          whyUseIt="Single attention head ek perspective se dekhta hai. Multiple heads: Head 1 subject-verb relations, Head 2 pronouns → nouns, Head 3 positional patterns, Head 4 semantic similarity. Diverse perspectives se rich representations banate hain. GPT-4 reportedly 96 heads hai."
+          whyUseIt="Sochna: agar ek head hi achha tha toh multiple kyun? Kyunki language complex hai — ek sentence mein grammar, semantics, pragmatics, coreference — sab ek saath hain. Ek perspective se ye sab capture nahi hota. Multi-head diversity deta hai — alag heads alag cheezein specialize mein learn karte hain, automatically. GPT-4 reportedly 96 heads hai. Ye explicitly design nahi kiya — training mein emerge kiya."
           howToUse={{
             filename: 'multi-head-attention.ts',
             language: 'typescript',
@@ -350,9 +350,9 @@ const bertBaseConfig: MultiHeadAttention = {
   modelDim: 768,          // d_model = 768
   headDim: 64,            // 768 / 12 = 64 per head
 }`,
-            explanation: 'h heads mein d_model split hota hai — total computation same rehti hai single head ke barabar. Computational cost multiply nahi hoti — ye elegant design hai. GPT-3: 96 attention heads, d_model=12288. Cada head 128 dimensions.',
+            explanation: 'Under the hood: h heads mein d_model split hota hai — total computation single head ke barabar hi rehti hai! ye elegant design hai. GPT-3: 96 attention heads, d_model=12288, har head = 128 dimensions. Ye heads alag alag patterns learn karte hain — explicitly programmed nahi, training se emerge kiya.',
           }}
-          realWorldScenario="Research (Clark et al., 2019) ne BERT ke attention heads analyze kiye — Head 1 coreference links dhundta tha (pronouns → entities), Head 3 syntactic dependencies follow karta tha, Head 8 BOS/EOS tokens pe focus karta tha. Emergent behavior — explicitly program nahi kiya gaya."
+          realWorldScenario="Fascinating research: Clark et al. (2019) ne BERT ke attention heads analyze kiye. Result? Head 1 coreference links dhundta tha (pronouns → entities automatically). Head 3 syntactic dependencies follow karta tha. Head 8 BOS/EOS tokens par focus karta tha. Koi bhi ye explicitly program nahi kiya — training mein emerge kiya. Model ne khud ye structure discover kiya. Ye 'emergence' AI mein bahut exciting phenomenon hai."
           commonMistakes={[
             {
               mistake: 'Heads independent functions assign karna manually',
@@ -365,7 +365,7 @@ const bertBaseConfig: MultiHeadAttention = {
               fix: 'Standard configs follow karo: d_model=512, heads=8 (head_dim=64). d_model=768, heads=12 (head_dim=64).',
             },
           ]}
-          proTip="Attention head pruning — unimportant heads remove karo inference ke liye. Research shows 20-40% heads prunable bina significant quality loss ke. Smaller, faster model milta hai. 'Are Sixteen Heads Really Better than One?' (Michel et al., 2019) — interesting read."
+          proTip="Fun research fact: 'Are Sixteen Heads Really Better than One?' (Michel et al., 2019) — BERT se 20-40% heads prune kiye bina significant quality loss ke. Smaller, faster model. Matlab: not all heads equally important. Attention head pruning inference optimization ke liye useful technique hai — production deployment mein lagta hai."
         />
       </div>
 
@@ -375,14 +375,14 @@ const bertBaseConfig: MultiHeadAttention = {
           title="Positional Encoding — Order Matters"
           emoji="📍"
           difficulty="intermediate"
-          whatIsIt="Self-attention position-agnostic hai — bina extra information ke 'cat sat' aur 'sat cat' same lagenge. Positional encoding sequence mein position ki information inject karta hai — sinusoidal ya learned embeddings through."
+          whatIsIt="Ajeeb problem: self-attention position-agnostic hai — bina extra information ke 'Dog bites man' aur 'Man bites dog' same lag sakte hain model ko. Word order hai hi nahi attention mein naturally. Fix? Positional encoding: har token ke embedding mein position ki information add karo explicitly. Original paper: sinusoidal functions (sin/cos) different frequencies par. Modern models: learned embeddings ya RoPE (Rotary Position Embedding). Simple idea, critical importance."
           whenToUse={[
             'Har transformer mein — mandatory hai',
             'Long sequences ke liye — RoPE, ALiBi better scale karte hain',
             'Variable length inputs ke liye — learned positions fixed seq len hain',
             'Relative positions important hon — relative positional encoding',
           ]}
-          whyUseIt="Language order-dependent hai — 'dog bites man' vs 'man bites dog'. Vision mein spatial position important hai. Positional encoding se model position samajhta hai. Sinusoidal encoding fixed mathematical function hai — koi training nahi chahiye. Learned position embeddings better performance dete hain often."
+          whyUseIt="Position kyun matter karta hai? Kyunki 'I love you' aur 'You love I' bilkul different meanings hain — word order = grammar. Bina positional encoding ke model ye fark nahi samjhega. Sinusoidal encoding clever hai — different frequencies se positions uniquely identify hoti hain, aur model relative positions compute kar sakta hai (mathematical property). Learned embeddings often better — directly training mein optimize hote hain. RoPE (LLaMA, Mistral) aur ALiBi modern sota hain."
           howToUse={{
             filename: 'positional-encoding.ts',
             language: 'typescript',
@@ -428,7 +428,7 @@ function addPositionalEncoding(
 // Implementation: rotate Q and K vectors by position angle`,
             explanation: 'Sinusoidal encoding clever hai — different frequencies se positions uniquely identify hote hain. Model relative positions compute kar sakta hai (geometric property). Modern models mostly learned embeddings ya RoPE prefer karte hain.',
           }}
-          realWorldScenario="GPT extrapolation problem: 1024 token context par train kiya, phir 2048 tokens input diye — positional encoding out-of-range. Performance drop. ALiBi (Attention with Linear Biases) positional bias attention scores par directly add karta hai — better length generalization. LLaMA RoPE use karta hai — 100K+ tokens possible."
+          realWorldScenario="GPT-2 extrapolation problem: 1024 token context par train kiya, 2048 tokens input diye toh — positional encoding out of range, performance dramatically drop. Users frustrated. Fix: RoPE (LLaMA use karta hai) aur ALiBi — better length generalization, 100K+ tokens possible. Sawaal: Claude 200K context kaise possible hai? RoPE + Flash Attention + architectural improvements. Ek engineering breakthrough pe khade hain hum."
           commonMistakes={[
             {
               mistake: 'Positional encoding skip karna small models mein',
@@ -441,7 +441,7 @@ function addPositionalEncoding(
               fix: 'max_len zyada set karo: 2x expected max sequence length. Ya learned positions ki jagah RoPE ya ALiBi use karo — better extrapolation.',
             },
           ]}
-          proTip="RoPE (Rotary Position Embedding) current sota hai — LLaMA, Mistral, Qwen sab use karte hain. Relative positions naturally handle hote hain. ALiBi explicit positional encoding skip karta hai — attention scores mein linear bias add karta hai. Ye topics LLM fine-tuning ke liye relevant hain."
+          proTip="2024 state-of-the-art: RoPE (Rotary Position Embedding) — LLaMA, Mistral, Qwen, Falcon sab use karte hain. Relative positions naturally handle hote hain, aur longer contexts pe better extrapolate karta hai. ALiBi alternative hai — no explicit positional encoding, sirf attention scores mein linear bias. Fine-tuning karte waqt ye choices matter karti hain — use ahi model ka config check karo."
         />
       </div>
 
@@ -451,14 +451,14 @@ function addPositionalEncoding(
           title="Encoder vs Decoder — BERT vs GPT"
           emoji="🔀"
           difficulty="intermediate"
-          whatIsIt="Transformer mein Encoder (BERT-style) aur Decoder (GPT-style) components hain. Encoder bidirectional — pura context dekhta hai. Decoder causal/autoregressive — sirf left context (past tokens). T5 encoder-decoder architecture use karta hai. Task se decide hota hai kaunsa architecture."
+          whatIsIt="Transformer mein do types ke architectures hain — aur ye samajhna practical hai. Encoder-only (BERT): puri sentence ek saath dekhta hai — bidirectional, context se word meaning samajhne ke liye best. Decoder-only (GPT, Claude): sirf left context dekhta hai — next token predict karne ke liye natural fit, text generation ke liye. Encoder-Decoder (T5, BART): input process karo (encoder), output generate karo (decoder) — translation, summarization ke liye. 2024 trend: decoder-only dominate karta hai — GPT-4, Claude, LLaMA sab decoder-only hain."
           whenToUse={[
             'Classification, NER, sentence similarity — BERT (encoder)',
             'Text generation, completion, chat — GPT (decoder)',
             'Translation, summarization — T5/BART (encoder-decoder)',
             'Most LLMs today — decoder-only (GPT, Claude, LLaMA)',
           ]}
-          whyUseIt="Decoder-only models (GPT, Claude, LLaMA) text generation ke liye natural hain — next token predict karo, repeat. Encoder models classification ke liye efficient. Decoder-only trend hai recent models mein — simpler architecture, scales better, versatile."
+          whyUseIt="Ye practical decision hai — teri use case ke liye kaunsa architecture? Text generation, chatbot, code assistant = decoder-only (API call karo OpenAI/Anthropic). Sentence embeddings, text classification = encoder-only (BERT, sentence-transformers). Translation, summarization = encoder-decoder (T5). Ek developer ke roop mein tujhe ye choose karna padega — ChatGPT ya BERT kab use karein? Is understanding se informed decision lega."
           howToUse={{
             filename: 'encoder-vs-decoder.md',
             language: 'markdown',
@@ -503,7 +503,7 @@ Decoder-only dominates:
 - Instruction tuning + RLHF se classification bhi karo`,
             explanation: 'BERT 2018 mein revolution tha — fine-tuning se NLP benchmarks dominate kiye. GPT-3 2020 mein few-shot learning. GPT-4, Claude — decoder-only at scale ne BERT se better performance achieve ki even classification mein fine-tuning se.',
           }}
-          realWorldScenario="2018-2020: BERT ne every NLP benchmark dominate kiya. 2020+: GPT-3 showed decoder-only can do classification too with few-shot. 2022+: ChatGPT, Claude — decoder-only aur instruction tuning ne BERT obsolete kar diya most tasks ke liye. Architecture wars: BERT won 2018-2021, GPT-style winning 2022+."
+          realWorldScenario="Architecture wars ka timeline: 2018-2020 — BERT ne every NLP benchmark dominate kiya, encoder-only king tha. 2020 — GPT-3 ne dikhaaya decoder-only few-shot se classification bhi kar sakta hai. 2022 — ChatGPT, Claude — decoder-only + instruction tuning ne BERT obsolete kar diya most tasks ke liye. Winner: decoder-only. Lesson: architecture + scale + alignment = winning combination."
           commonMistakes={[
             {
               mistake: 'BERT se text generate karna',
@@ -516,7 +516,7 @@ Decoder-only dominates:
               fix: 'Modern LLMs instruction-following se classification, summarization, extraction — sab karte hain. Few-shot ya fine-tuning se.',
             },
           ]}
-          proTip="Sentence-transformers library (BERT-based) excellent embeddings deta hai semantic search ke liye. GPT-style API calls text generation ke liye. Hybrid: GPT generate kare, BERT embedding se retrieve karo (RAG pattern). Each architecture ka optimal use case hai."
+          proTip="Practical guide: Text generation/chat = GPT/Claude/LLaMA (decoder-only API). Semantic embeddings = sentence-transformers (BERT-based, Hugging Face par free). RAG pattern = BERT embeddings se retrieve + GPT se generate — hybrid best of both worlds. Each architecture ka optimal use case samajhna developer ki superpower hai — wrong tool = poor results."
         />
       </div>
 

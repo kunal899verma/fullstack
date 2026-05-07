@@ -59,13 +59,13 @@ export default function Chapter19Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Performance — Fast App Kaise Banate Hain?
+          Performance — Measure Pehle, Optimize Baad Mein!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Node.js fast hai, lekin galat code likho toh bottlenecks create ho jaate hain. <strong className="text-[#F5F5F7]">Measure first, optimize second</strong> — ye rule kabhi mat bhulo. Bina data ke optimization premature hai aur often wrong place mein hoti hai.
+          Production mein app slow hai. Kya karo? <strong className="text-[#F5F5F7]">95% developers guess karte hain — "shayad database slow hai", "shayad RAM kam hai"</strong>. Aur phir ghante optimize karte hain wrong jagah. Akshay Saini style — measure first, optimize second! Bina data ke optimization andhere mein teer chalana hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein profiling, memory leak detection, event loop optimization, database performance, aur caching strategies cover karenge — practical tools ke saath.
+          Socho ek baar — tumhara Node.js process ek box hai. Us box ke andar kya ho raha hai? Kaunsa function zyada time kha raha hai? Kahan memory leak ho rahi hai? Is chapter mein hum profiling ka X-ray machine use karenge, memory leaks ke ghost pakdenge, event loop ko breathe karne dengey, aur caching se app ko rocket banana seekhenge.
         </p>
       </div>
 
@@ -75,14 +75,14 @@ export default function Chapter19Content() {
           title="Node.js Profiling"
           emoji="🔍"
           difficulty="advanced"
-          whatIsIt="Profiling matlab pata karna ki code kahan time spend kar raha hai. node --prof flag CPU profile generate karta hai. Clinic.js aur 0x flamegraph tools se visually samajh sakte ho ki kaunsa function bottleneck hai."
+          whatIsIt="Profiling matlab Node.js ke CPU ka CCTV footage lena — exactly pata karna ki code ka kaunsa hissa kitna time kha raha hai. node --prof flag ek isolate file banata hai, Clinic.js doctor ki tarah diagnose karta hai, aur 0x ek flamegraph banata hai — jisme wide (horizontal) bars wale functions wo darogas hain jo sab time waste kar rahe hain."
           whenToUse={[
-            'App slow hai — kahan time ja raha hai pata nahi',
-            'High CPU usage — kaunsa function responsible hai',
-            'Response time slow — endpoint specific bottleneck',
-            'Before optimization — baseline measure karo',
+            'App slow hai aur kahan time ja raha hai bilkul pata nahi — profile karo',
+            'CPU 100% hai lekin samajh nahi aa raha kyun — flamegraph dekho',
+            'Response time 2 second + hai — endpoint specific X-ray lo',
+            'Optimize karne se pehle — baseline measure karo, warna kaise pata chalega ki improvement hua?',
           ]}
-          whyUseIt="Bina profiling ke optimize karna andhere mein teer chalana hai. Developers often wrong function optimize karte hain. Flamegraph se visually dikhai deta hai ki 80% time kahan ja raha hai — wahi fix karo, baaki chhod do."
+          whyUseIt="Suno — developers ka sabse bada crime hai premature optimization. Koi sochta hai 'JSON.parse slow hoga' aur usse optimize karte hain, jabki asli bottleneck database query thi. Flamegraph ek sachai dikhata hai — wide bar matlab wo function 80% time le raha hai. Wahi target karo, baaki sab chhod do. Energy invest karo wahan jahan actual pain hai."
           howToUse={{
             filename: 'profiling-workflow.sh',
             language: 'bash',
@@ -110,9 +110,9 @@ npm install -g 0x
 node --inspect app.js
 # Chrome mein: chrome://inspect → Open dedicated DevTools for Node
 # CPU tab mein record karo, phir analyze karo`,
-            explanation: 'Clinic.js sabse beginner-friendly hai — automatically doctor, bubbleprof, flame choose karta hai. 0x best flamegraph deta hai. Flamegraph mein wide (horizontal) bars matlab wo function zyada time le raha hai — wahi target karo.',
+            explanation: 'Ab sawaal ye aata hai — kaunsa tool use karein? Clinic.js sabse beginner-friendly hai — woh khud doctor, bubbleprof, ya flame choose karta hai. 0x best flamegraph deta hai production-level analysis ke liye. Flamegraph mein horizontally wide bars dhundo — unhe pakdo, wahi tumhara dushman hai.',
           }}
-          realWorldScenario="E-commerce site ka /products endpoint 2 seconds le raha tha. 0x flamegraph se pata chala ki JSON.stringify() ek nested 50KB object par 1.8 seconds le raha tha. Solution: pagination add ki aur fields filter kiye — response time 120ms aa gaya. Bina profiling ke kabhi nahi milta."
+          realWorldScenario="Ek e-commerce site ka /products endpoint 2 second le raha tha. Team ko laga DB slow hai, toh unhone DB optimize kiya — koi fark nahi. Phir 0x flamegraph chalaya. Surprise! JSON.stringify() ek nested 50KB object pe 1.8 second kha raha tha. Solution: pagination add ki, sirf zaruri fields bheje — response time 120ms aa gaya. Bina profiling ke yaar, ye kabhi nahi milta. Andhere mein haath maarte rehte."
           commonMistakes={[
             {
               mistake: 'Development mein profile karna instead of production-like load ke saath',
@@ -125,7 +125,7 @@ node --inspect app.js
               fix: 'clinic doctor se shuru karo — ye automatically identify karta hai ki issue CPU hai, I/O hai, ya event loop delay.',
             },
           ]}
-          proTip="async_hooks se custom tracing karo — kaunsi async operation kahan se start hui, kahan gayi. OpenTelemetry ke saath integrate karo distributed tracing ke liye — production mein visibility milti hai."
+          proTip="Ek aur baat — async_hooks se custom tracing karo aur OpenTelemetry ke saath wire karo. Distributed system mein ek request 5 services se guzarti hai — bina tracing ke 3 AM incident mein tum andhere mein ho. Har async operation ka trail rakho, production mein visibility priceless hai."
         />
       </div>
 
@@ -135,14 +135,14 @@ node --inspect app.js
           title="Memory Leak Detection"
           emoji="🧠"
           difficulty="advanced"
-          whatIsIt="Memory leak matlab objects memory mein hain lekin use nahi ho rahe — garbage collector unhe collect nahi kar sakta kyunki koi reference hai. Node.js process time ke saath zyada memory use karta hai aur eventually crash kar deta hai."
+          whatIsIt="Memory leak — naam sunke daro mat, lekin production mein ye ek silent killer hai. Objects memory mein hain lekin use nahi ho rahe — garbage collector unhe collect nahi kar sakta kyunki koi chhupa reference hai. Socho ek bucket mein paani daal rahe ho aur pata nahi hai ki neeche se leak ho raha hai. Node.js process slowly 50MB se 500MB se 2GB ho jaata hai aur ek din KABOOM — crash."
           whenToUse={[
-            'Process ki memory time ke saath badh rahi hai',
-            'Restart ke baad thodi der mein phir slow ho jaata hai',
-            'Heap used constantly increase ho raha hai — kabhi decrease nahi hota',
-            'process.memoryUsage().heapUsed zyada hai',
+            'Process ki memory time ke saath ek hi direction mein badh rahi hai — kabhi neeche nahi aati',
+            'Server restart ke baad thodi der mein phir slow ho jaata hai — ye band-aid solution hai',
+            'Heap used metric monitoring mein hamesha upar hi upar jaata dikhe',
+            'process.memoryUsage().heapUsed check karo — suspiciously high hai?',
           ]}
-          whyUseIt="Memory leaks production mein bahut dangerous hain — server crash ho jaata hai jab memory exhaust ho jaati hai. Early detection se catastrophic failure bachti hai. Node.js built-in --inspect flag se Chrome DevTools se heap analyze kar sakte ho."
+          whyUseIt="Yaar, memory leak wala server ek baar crash hota hai 3 AM ko. Restart karo, 2 din baad phir crash. Weekly restart schedule bana dete hain log — ye jugaad solution hai, engineering nahi! Sahi tarika: heap snapshot lo, compare karo, exactly dekho kaun se objects grow ho rahe hain. Chrome DevTools ka Memory tab tumhara detective partner hai."
           howToUse={{
             filename: 'memory-debug.ts',
             language: 'typescript',
@@ -197,9 +197,9 @@ const cache: Map<string, any> = new Map()
 // ✅ FIX: LRU cache ya TTL se
 import LRU from 'lru-cache'
 const cache = new LRU({ max: 1000, ttl: 1000 * 60 * 5 }) // 5 min TTL`,
-            explanation: 'Heap snapshot Chrome DevTools mein load karo: Memory tab → Load profile. Do snapshots lo — pehle aur kuch requests ke baad. "Objects allocated between snapshots" filter se exactly kya leak ho raha hai pata chalta hai.',
+            explanation: 'Step-by-step trace karo aise: pehle app fresh start karo, heap snapshot lo. Kuch requests karo. Doosra snapshot lo. Chrome DevTools Memory tab mein "Objects allocated between snapshots" filter karo — jo objects dono snapshots mein hain aur grow ho rahe hain, wahi leak hain. Unka constructor name dekho — EventEmitter? Map? Closure? Wahan jaake fix karo.',
           }}
-          realWorldScenario="Chat server mein memory 50MB se start hokar 24 ghante mein 2GB ho jaati thi — weekly restart karna padta tha. Heap snapshot analysis se pata chala ki event listeners accumulate ho rahe the — har WebSocket connection ke liye listeners add ho rahe the lekin remove nahi. Fix: connection close par cleanup. Memory stabilize ho gayi 80MB par."
+          realWorldScenario="Ek chat server mein memory 50MB se start hokar 24 ghante mein 2GB ho jaati thi — weekly restart schedule tha. Heap snapshot analysis se pata chala — har WebSocket connection ke liye process.on('data', handler) add ho raha tha lekin connection close hone par remove nahi ho raha. Thousands of listeners accumulate ho gaye the. Fix: connection.on('close') mein cleanup. Memory 80MB par stabilize ho gayi, weekly restarts band. Tab samjhe ki event listeners bhi ek resource hain!"
           commonMistakes={[
             {
               mistake: 'WeakMap ki jagah Map use karna caches ke liye',
@@ -212,8 +212,19 @@ const cache = new LRU({ max: 1000, ttl: 1000 * 60 * 5 }) // 5 min TTL`,
               fix: 'const interval = setInterval(...) aur clearInterval(interval) jab kaam ho jaaye. Class mein cleanup method banao.',
             },
           ]}
-          proTip="--max-old-space-size se memory limit set karo — process crash hoga instead of system hanging. Production mein PM2 ya Kubernetes readiness probes se unhealthy processes restart karo. Memory leak dhundne ka shortcut: clinic heapprofiler use karo."
+          proTip="--max-old-space-size=512 flag laga do production mein — process 512MB pe crash karega instead of poora server hang karna. Crash is better than hang. PM2 ya Kubernetes readiness probes se auto-restart configure karo. Aur ek shortcut: clinic heapprofiler — ek command mein sab analysis kar deta hai."
         />
+      </div>
+
+      {/* Akshay-style Q&A interlude */}
+      <div
+        className="rounded-2xl p-5"
+        style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}
+      >
+        <p className="text-[#F5F5F7] font-semibold mb-2">Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          "Memory leak fix kiya, profiling bhi kar li — toh ab app fast hai na?" Nahi yaar! Memory aur CPU — ye do alag problems hain. Memory leak matlab objects accumulate ho rahe hain. CPU block matlab event loop ruka hua hai. Ek hi second ki CPU blocking mein 100 users ka request queue mein pada hai — koi response nahi. Is dono ko alag alag solve karna padta hai. Chalo next problem dekho.
+        </p>
       </div>
 
       {/* ConceptCard 3: CPU Optimization */}
@@ -222,14 +233,14 @@ const cache = new LRU({ max: 1000, ttl: 1000 * 60 * 5 }) // 5 min TTL`,
           title="CPU Optimization — Event Loop Free Rakho"
           emoji="⚡"
           difficulty="advanced"
-          whatIsIt="Node.js single-threaded hai — CPU-intensive task karo toh event loop block ho jaata hai aur koi bhi request serve nahi ho sakti. Solution: CPU work yield karo setImmediate se, ya Worker Threads mein offload karo."
+          whatIsIt="Node.js ek single lane highway hai. Ek truck (CPU-intensive task) lane block kar le toh peeche saari gadiyan (HTTP requests) ruk jaati hain. Node.js single-threaded hai — 1 second ka heavy calculation event loop ko completely freeze kar deta hai. 100 users connected hain? Sab 1 second wait karenge. Solution: ya toh kaam ko chunked karo setImmediate se — truck ko thoda aage chalo phir dusron ko jaane do — ya ek alag lane bana do Worker Threads se."
           whenToUse={[
-            'Large data transformation karna ho (10K+ items)',
-            'Heavy JSON parsing ya serialization',
-            'Image processing, PDF generation, encryption',
-            'Complex calculations — ML inference, report generation',
+            'Large array 10K+ items transform karna ho — loop mein heavy computation',
+            'Heavy JSON parsing ya serialization — nested 100KB object',
+            'Image processing, PDF generation, video conversion — bilkul main thread par mat karo',
+            'ML inference, complex report generation, encryption — sab Worker Thread ke kaam hain',
           ]}
-          whyUseIt="1 second CPU blocking = 1 second mein koi HTTP response nahi. 100 concurrent users hain toh sab 1 second wait karte hain. setImmediate se chunked processing karo — event loop ko breathe karne do. Worker threads se true parallelism milti hai CPU tasks ke liye."
+          whyUseIt="Ek thought experiment karo: tumhara server ek single chef hai. Chef report banana shuru karta hai (8 second ka kaam). Iss beech 50 customers aa gaye — koi khaana nahi milega 8 second tak. Agar woh kaam ek alag kitchen mein bhej de (Worker Thread), toh main kitchen free rehta hai. Node.js mein ye exactly setImmediate aur Worker Threads karte hain — main thread ko breathe karne do."
           howToUse={{
             filename: 'cpu-optimization.ts',
             language: 'typescript',
@@ -278,9 +289,9 @@ function runInWorker(input: number): Promise<number> {
 // Usage:
 const result = await runInWorker(largeInput)
 // Main thread free rehta hai dusre requests ke liye!`,
-            explanation: 'setImmediate approach simple hai lekin sab kuch main thread par hi hota hai — bus interleaved. Worker Threads true parallelism deta hai — alag OS thread mein run hota hai. Heavy CPU work ke liye always worker threads prefer karo.',
+            explanation: 'Step by step trace karo: setImmediate approach chunked processing karta hai — 1000 items process karo, phir event loop ko ek turn do, phir agli 1000. Main thread pe hi rehta hai lekin kaam share karta hai. Worker Threads alag OS thread mein run hote hain — true parallelism. Heavy lifting ke liye Worker Threads, light chunking ke liye setImmediate.',
           }}
-          realWorldScenario="Report generation service 10K orders ki Excel file banata tha — 8 seconds mein. Is time mein server completely unresponsive tha. Worker Thread mein offload kiya — Excel generation background mein, main thread free, users ko polling endpoint diya status check ke liye. UX drastically improved."
+          realWorldScenario="Report generation service 10K orders ki Excel file banata tha — 8 second ka kaam. Is poore time mein server completely freeze tha, koi request nahi jaati thi. Worker Thread mein offload kiya — Excel wala kaam alag thread mein, main thread free, users ko ek polling endpoint diya '/report/status/:id' check karne ke liye. UX drastically improved. Users ko lag raha tha app chal raha hai — background mein kaam hota raha."
           commonMistakes={[
             {
               mistake: 'Synchronous crypto operations use karna (crypto.pbkdf2Sync)',
@@ -293,8 +304,19 @@ const result = await runInWorker(largeInput)
               fix: 'Regex validator tools use karo. Simple, linear patterns prefer karo. validator.js library use karo complex validation ke liye.',
             },
           ]}
-          proTip="clinic eventloop tool se event loop delay measure karo. 10ms se zyada consistently toh problem hai. setImmediate vs process.nextTick: nextTick current operation ke immediately baad, setImmediate next iteration mein — yielding ke liye setImmediate use karo."
+          proTip="clinic eventloop chalao aur event loop delay measure karo. 10ms consistently cross ho raha hai? Red flag hai. Aur ek confusion clear karte hain — setImmediate vs process.nextTick: nextTick current operation khatam hote hi fire hota hai (blocking hone ka khatra), setImmediate next event loop iteration mein — yielding ke liye hamesha setImmediate use karo."
         />
+      </div>
+
+      {/* Akshay-style Q&A interlude */}
+      <div
+        className="rounded-2xl p-5"
+        style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}
+      >
+        <p className="text-[#F5F5F7] font-semibold mb-2">Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          "CPU optimize ho gayi, memory bhi theek hai — toh response time kyun slow hai?" Bhai, 99% cases mein asli villain database hota hai. Node.js ki code fast hai lekin database query 3 second le rahi hai — kya fayda? Profiling karo toh dekhoge — 80% time DB wait mein jaata hai. Chalo database ki duniya mein ghuste hain.
+        </p>
       </div>
 
       {/* ConceptCard 4: Database Performance */}
@@ -303,14 +325,14 @@ const result = await runInWorker(largeInput)
           title="Database Performance"
           emoji="🗄️"
           difficulty="advanced"
-          whatIsIt="99% mein application bottleneck database hota hai — slow queries, missing indexes, N+1 queries, ya connection pool exhaustion. Database optimization Node.js optimization se zyada impact karta hai."
+          whatIsIt="Database ek library hai jisme laakhon kitaabein hain. Index nahi hai toh library attendant har shelf check karega — poori library scan. Index hai toh seedha shelf 42, row 7 — milliseconds mein. N+1 problem matlab 100 users ke liye 100 alag queries — ek hi JOIN se ho sakta tha. Connection pool: baar baar naye connections banana — waiter hire karo, kaam karo, fire karo — ek pagalpan hai. Ek pool banao jisme waiters hamesha ready rehte hain."
           whenToUse={[
-            'API response slow hai — DB query time check karo',
-            'N+1 query problem — loop mein DB calls mat karo',
-            'Index missing — EXPLAIN ANALYZE se pata karo',
-            'Connection pool exhausted — too many concurrent queries',
+            'API response 500ms+ le raha hai — Prisma logging on karo, slow queries dekho',
+            'Loop mein DB calls ho rahe hain — N+1 problem, include/JOIN use karo',
+            'EXPLAIN ANALYZE likho query ke aage — Seq Scan dekhe toh index missing',
+            'Connection pool exhaustion errors aa rahe hain — pool size badhao ya queries optimize karo',
           ]}
-          whyUseIt="Indexes se query time seconds se milliseconds aa jaata hai. N+1 fix karne se 100 queries ki jagah 1-2 queries hoti hain. Connection pooling se baar baar connection open/close ka overhead bachta hai. Ye basic optimizations 10x-100x improvement de sakti hain."
+          whyUseIt="Ek true story: ek social media feed query 3 second le rahi thi. Developer ne Node.js optimize kiya — kuch fark nahi. Team ne Redis cache add kiya — thoda better. Phir database index add kiya — 8ms. Socho! Index ek hi cheez thi jo matter karti thi. Node.js ki code theek thi, caching unnecessary thi — bas ek index nahi tha. Database optimization is the highest ROI optimization you will ever do."
           howToUse={{
             filename: 'db-optimization.ts',
             language: 'typescript',
@@ -370,9 +392,9 @@ prismaWithLogging.$on('query', (e) => {
     console.warn(\`Slow query (\${e.duration}ms): \${e.query}\`)
   }
 })`,
-            explanation: 'Connection pool tuning zaroori hai — max connections DB ka limit consider karo. N+1 problem sab se common performance killer hai. EXPLAIN ANALYZE se query plan dekho — Seq Scan bad sign hai, Index Scan good sign hai.',
+            explanation: 'Step-by-step trace karo: Prisma mein log: [query] on karo, slow queries dekho. Koi query 100ms+ le rahi hai? Us query ke aage EXPLAIN ANALYZE lagao PostgreSQL mein. Output mein "Seq Scan on posts (cost=0.00..50000)" dikhe toh — ek index chahiye! Add karo @@index([userId, createdAt]). Run again — "Index Scan using posts_userId_createdAt_idx" aana chahiye. 3000ms se 8ms. Magic nahi, engineering hai.',
           }}
-          realWorldScenario="Social media app mein feed endpoint 3 seconds le raha tha. EXPLAIN ANALYZE se pata chala: posts table par full sequential scan ho raha tha 500K rows mein. Index on (userId, createdAt) add kiya — query 3000ms se 8ms aa gayi. Zero code change, pure index optimization."
+          realWorldScenario="Social media app mein feed endpoint 3 second le raha tha. EXPLAIN ANALYZE chalaya — posts table par 500K rows ka full sequential scan. Har baar! Index on (userId, createdAt) add kiya — query 3000ms se 8ms. Zero code change, zero Node.js optimization, zero extra RAM. Pure database engineering se 375x improvement. Ye story sunao apne interviewer ko!"
           commonMistakes={[
             {
               mistake: 'SELECT * karna instead of specific columns',
@@ -385,7 +407,7 @@ prismaWithLogging.$on('query', (e) => {
               fix: 'Pool size = (core count * 2) + effective spindle count — ya load test se tune karo.',
             },
           ]}
-          proTip="pg-boss ya BullMQ se heavy DB operations async queue mein daalo. User ko immediately respond karo, background mein process karo. Database read replicas use karo read-heavy workloads ke liye — primary DB sirf writes ke liye."
+          proTip="Heavy DB operations ke liye BullMQ queue use karo — user ko immediately 202 Accepted do, background mein process karo. Aur ek senior-level tip: read replicas set karo. Primary DB sirf writes handle kare, read replicas sab read traffic absorb karein. Ek read-heavy app mein ye single change 10x scale de sakta hai."
         />
       </div>
 
@@ -395,14 +417,14 @@ prismaWithLogging.$on('query', (e) => {
           title="Caching Strategies"
           emoji="⚡"
           difficulty="advanced"
-          whatIsIt="Caching matlab frequently accessed data ko fast storage mein rakhna — taaki har request par expensive computation ya DB query na karni pade. In-memory, Redis, HTTP cache headers, aur CDN — sab alag layers hain."
+          whatIsIt="Caching ek photocopy machine hai. Pehli baar DB se original document lo, photocopy rakh lo shelf par. Agli baar shelf se do — DB tak jaane ki zaroorat hi nahi. In-memory (LRU cache), Redis (distributed shelf), HTTP headers (browser ki shelf), CDN (duniya bhar mein distributed shelf) — sab alag caching layers hain, sab ek hi concept ke forms hain."
           whenToUse={[
-            'Frequently read, rarely changed data — user profiles, config',
-            'Expensive computations — analytics aggregations, reports',
-            'External API responses — rate limited APIs',
-            'Static content — images, CSS, JS files',
+            'Frequently read, rarely changed data — user profiles, product catalog, config settings',
+            'Expensive computations — analytics report jo 2 second leti hai aur 1000 users ek saath maangein',
+            'External rate-limited APIs — OpenAI, weather API — baar baar mat maango',
+            'Static content — images, CSS, JS — CDN pe rakh do, server tak aaane hi mat do',
           ]}
-          whyUseIt="Sahi caching se application 10x-100x fast ho sakti hai. DB load drastically reduce hota hai. Redis se distributed cache milti hai — multiple Node instances ek cache share karte hain. HTTP cache headers se browser aur CDN caching milti hai — server tak request bhi nahi aati."
+          whyUseIt="Ek zaruri distinction — cache fast hota hai kyunki RAM memory hai, DB disk ya network call hai. RAM access nanoseconds mein, disk milliseconds mein, network request 50-200ms mein. 10K requests per second wali e-commerce site par agar har request DB hit kare — DB ghutan mein mar jaayega. Redis cache se 99% cache hit rate matlab 99% requests DB tak gaye hi nahi. Ye scalability ka raaz hai."
           howToUse={{
             filename: 'caching-strategies.ts',
             language: 'typescript',
@@ -456,9 +478,9 @@ const memCache = new LRU<string, unknown>({
 function getFromMemCache<T>(key: string): T | undefined {
   return memCache.get(key) as T | undefined
 }`,
-            explanation: 'Cache-aside pattern most flexible hai. TTL carefully choose karo — too short: cache useless, too long: stale data. Cache invalidation hardest part hai — jab bhi data update ho toh cache invalidate karo. Nahi toh stale data serve hoga.',
+            explanation: 'Cache-aside pattern ka flow trace karo: request aaya → cache check karo → miss? DB se lo → cache mein daalo → return karo. Next request → cache check karo → HIT! DB bypass. TTL set karo — too short matlab cache useless, too long matlab stale data serve hoga. Cache invalidation, Phil Karlton ka famous quote hai: "There are only two hard things in Computer Science: cache invalidation and naming things."',
           }}
-          realWorldScenario="Product catalog wali e-commerce site par 10K requests/second aate the. Products page har request par DB hit karta tha — DB overwhelmed. Redis cache add kiya 5 minute TTL ke saath — DB load 95% reduce hua, response time 800ms se 15ms aa gayi. Cache hit rate 99%+ tha."
+          realWorldScenario="Product catalog wali e-commerce site par 10K requests/second. Products page har request DB hit karta tha — DB overwhelmed, 800ms response time. Redis cache 5 minute TTL ke saath add kiya — DB load 95% reduce, response time 800ms se 15ms. Cache hit rate 99%+. Aur sab se mast cheez — DB ki cost bhi 60% kam ho gayi kyunki queries kam ho gayi. Caching = speed + savings."
           commonMistakes={[
             {
               mistake: 'Cache invalidation ignore karna',
@@ -471,7 +493,7 @@ function getFromMemCache<T>(key: string): T | undefined {
               fix: 'Cache lock ya probabilistic early expiration use karo. Redis SETNX se distributed lock implement karo.',
             },
           ]}
-          proTip="Cache key design carefully karo — user:profile:123 format use karo. Redis SCAN se patterns match kar ke bulk delete karo: SCAN 0 MATCH user:* COUNT 100. TTL-based expiry ke saath versioned keys bhi use kar sakte ho — v2:user:profile:123."
+          proTip="Cache key naming convention adopt karo — user:profile:123 jaisi namespace:entity:id format. Redis SCAN se bulk invalidation karo: SCAN 0 MATCH user:* COUNT 100 — sab user cache ek saath delete. Ek advanced trick: versioned keys — v2:user:profile:123. Cache invalidate karne ki jagah version number badhao — instant stale cache bypass."
         />
       </div>
 

@@ -69,13 +69,13 @@ export default function JSChapter12Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Modern JavaScript (ES6+) — Game Changers
+          Modern JavaScript (ES6+) — Ek Naya JavaScript Seekho
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          ES6 (2015) se lekar ES2024 tak JavaScript bahut evolve hui hai. Destructuring, spread/rest, optional chaining — ye features code ko cleaner, safer aur zyada expressive banate hain. Modern JS developer ko ye sab aata hi hona chahiye.
+          ES6 (2015) ne JavaScript ko badal diya — permanently. Usse pehle ka JS aur baad ka JS literally alag languages lagte hain. Destructuring, spread/rest, optional chaining, nullish coalescing — ye sab code ko cleaner, safer, aur zyada expressive banate hain. Modern production code — React apps, Node.js APIs — ye sab ES6+ features daily use karte hain.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum sabse important modern features cover karenge — woh jo aap har production codebase mein dekhoge. No more verbose code!
+          Sawaal: kyun ye features important hain? Jawab: kyunki ye real problems solve karte hain jo developers daily face karte the — verbose object access, null checks, arguments handling, module organization. Har feature ek pain point ka solution hai — samajhoge toh immediately appreciate karoge!
         </p>
       </div>
 
@@ -85,7 +85,7 @@ export default function JSChapter12Content() {
           title="Destructuring — Values Unpack Karo"
           emoji="📦"
           difficulty="intermediate"
-          whatIsIt="Destructuring se objects aur arrays se values seedha variables mein extract kar sakte ho. Default values, renaming, nested destructuring — sab ek clean syntax mein. Function parameters mein bhi use hota hai — APIs bahut cleaner lagti hain."
+          whatIsIt="Destructuring — ek powerful syntax jo objects aur arrays se values seedha variables mein extract karta hai. Pehle ye kaam hota tha: const name = user.name; const age = user.age; — do lines, repetitive. Destructuring ke baad: const { name, age } = user — ek line, clean! Renaming bhi possible: const { name: userName } — collision avoid. Default values: const { salary = 50000 } — agar undefined ho toh default. Sawaal: nested destructuring ka practical use kab aata hai? Jawab: API responses mein — response.data.user.name instead of const { data: { user: { name } } } = response — ek line mein sab."
           whenToUse={[
             'Object se specific properties extract karne ho',
             'Array return karne wale functions — useState, useReducer',
@@ -166,7 +166,7 @@ const [count, setCount] = useState(0)`,
           title="Spread & Rest — Flexibility Ka Mantra"
           emoji="🌊"
           difficulty="intermediate"
-          whatIsIt="Spread operator (...) iterables ko individual values mein expand karta hai. Rest parameters (...) multiple values ko array mein collect karta hai. Same syntax, opposite purpose. Arrays merge karo, objects clone karo, variadic functions likho — sab kuch clean syntax se."
+          whatIsIt="Spread aur rest — same syntax (...), opposite direction! Spread expand karta hai: [...arr] array ko individual values mein phailata hai. Rest collect karta hai: function sum(...numbers) — multiple arguments ek array mein sameta. Ye distinction yaad rakho: context dekho — function parameter mein rest, baaki jagah spread. Spread ke saath ek important gotcha: shallow copy hai! Nested objects copy nahi hote — reference same rehta hai. Ye classic React bug hai — state mutate ho jaati hai kyunki spread shallow tha."
           whenToUse={[
             'Arrays merge ya copy karne ho — spread',
             'Objects clone ya merge karne ho — spread',
@@ -249,7 +249,7 @@ console.log(head, tail)  // 1 [2, 3, 4, 5]`,
           title="Optional Chaining & Nullish Coalescing"
           emoji="🛡️"
           difficulty="intermediate"
-          whatIsIt="Optional chaining (?.) null/undefined pe safely property access karta hai — error ki jagah undefined return karta hai. Nullish coalescing (??) null/undefined ke liye fallback value deta hai — 0 aur '' ko valid values maanta hai jo || nahi karta."
+          whatIsIt="Optional chaining (?.) aur nullish coalescing (??) — ye do features API responses ke saath kaam karte waqt kitne zaroori hain ye tab pata chalta hai jab TypeError: Cannot read property 'name' of undefined aata hai raat ko production mein. Optional chaining solution hai — user?.address?.city: agar user null ya undefined hai toh undefined return karo, TypeError nahi. Nullish coalescing ka ek critical fark: ?? sirf null aur undefined ke liye fallback deta hai. || 0, false, '' ko bhi replace kar deta hai — bug! score || 10 — score 0 hoga toh bhi 10 aa jaayega. score ?? 10 — score 0 hoga toh 0 hi rahega, 10 nahi. Ye fark production bugs ka source hai!"
           whenToUse={[
             'Nested API responses access karte waqt — data?.user?.address?.city',
             'Optional methods call karne ho — obj?.method?.()',
@@ -446,7 +446,7 @@ results.forEach(result => {
           title="ES Modules — Import/Export ka Sahi Tarika"
           emoji="📦"
           difficulty="intermediate"
-          whatIsIt="ES Modules (ESM) JavaScript ka official module system hai. Named exports, default exports, dynamic import() — sab kuch native. Browser aur Node.js dono support karte hain. CommonJS (require) se ESM better hai — static analysis, tree shaking, top-level await."
+          whatIsIt="ES Modules — JavaScript ka official module system. Pehle CommonJS tha (require/module.exports) — Node.js ka original system. Phir ESM aaya (import/export) — browser aur Node.js dono ke liye standard. Kya fark hai? ESM STATIC hai — import statements compile time pe analyze hoti hain, runtime pe nahi. Isliye tree shaking possible hai — unused exports bundle se hata sakte hain. CommonJS dynamic hai — require() runtime pe call hota hai, conditional require possible hai lekin tree shaking nahi. Aaj: browser default ESM, Node.js dono support karta hai (.mjs ya package.json 'type: module'). Dynamic import() — lazy loading ka native solution."
           whenToUse={[
             'Multiple related values export karne ho ek file se — named exports',
             'Main functionality export karni ho — default export',

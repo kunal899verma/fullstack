@@ -58,13 +58,13 @@ export default function TSChapter11Content() {
     <div className="space-y-8">
       <div className="rounded-2xl p-6" style={{ background: 'rgba(49,120,198,0.06)', border: '1px solid rgba(49,120,198,0.25)' }}>
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          tsconfig Deep Dive — TypeScript Ko Configure Karo
+          tsconfig Deep Dive — TypeScript Compiler Ko Samjho
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          tsconfig.json TypeScript compiler ka configuration file hai. Sahi configuration se type safety maximize hoti hai, output correct hoti hai, aur build performance optimize hota hai.
+          Ye fact shocking hai — strict: false hone pe TypeScript sirf JavaScript hai thoda better syntax ke saath. Null pointer exceptions, implicit any, uninitialized properties — sab possible rahenge. Bahut saare tutorials mein strict: false dikhate hain "simple examples" ke liye — ye ek terrible habit set karta hai. Hamesha strict: true se shuru karo.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein hum ek production-ready tsconfig.json banate hain — har important option explain karke.
+          Ab sawaal ye aata hai — tsconfig ke itne options hain, kaunsa set karein? target, module, lib, moduleResolution — ye sab alag alag hain, confusing lagta hai. Is chapter mein systematically samjhenge — har option ka WHY, phir HOW. Ek production-ready tsconfig banate hain saath mein.
         </p>
       </div>
 
@@ -73,13 +73,13 @@ export default function TSChapter11Content() {
           title="Recommended tsconfig.json — Node.js Backend"
           emoji="⚙️"
           difficulty="intermediate"
-          whatIsIt="tsconfig.json compiler options TypeScript ko instruct karte hain — kahan se files padhni hain, output kahan likhna hai, kaunsi checks perform karni hain."
+          whatIsIt="tsconfig.json TypeScript compiler ka complete instruction manual hai — output JavaScript version kya ho, kahan output karo, kaunsi strict checks perform karo, modules kaise resolve karo, source maps banao ya nahi. Ye sab compilerOptions mein jaata hai. include/exclude se control karo kaunse files compile karni hain. Ek sahi tsconfig production aur development dono ke liye foundation hai."
           whenToUse={[
             'Koi bhi TypeScript project shuru karte waqt',
             'Existing project ko strict mode mein migrate karte waqt',
             'Monorepo packages ke liye individual configs',
           ]}
-          whyUseIt="Sahi tsconfig se bugs compile time pe pakde jaate hain, output correct hoti hai, aur IDE IntelliSense best kaam karta hai."
+          whyUseIt="Galat tsconfig se bahut problems hote hain — esModuleInterop: false se import express from 'express' kaam nahi karta. skipLibCheck: false se node_modules ke type errors tumhare code mein aate hain. strict: false se type safety half. Sahi tsconfig ek baar set karo — phir TypeScript tumhara partner hai, dushman nahi."
           howToUse={{
             code: `// tsconfig.json — Node.js Backend (Recommended)
 {
@@ -120,15 +120,15 @@ export default function TSChapter11Content() {
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }`,
             language: 'json',
-            explanation: 'Production Node.js tsconfig. strict: true sab safety checks on. esModuleInterop se default imports kaam karte hain. incremental: true builds speed up karta hai.',
+            explanation: 'Har option ka reason hai. target: ES2022 — Node.js 18+ ES2022 support karta hai, so downcompile nahi karna. esModuleInterop: true — CommonJS default export mechanism se ES module default imports compatible karta hai. incremental: true — .tsbuildinfo file banata hai, next build sirf changed files recompile karta hai. skipLibCheck: true — node_modules ki .d.ts files skip, bahut faster builds.',
             filename: 'tsconfig.json',
           }}
-          realWorldScenario="Naya Node.js + TypeScript project — ye tsconfig copy karo. Zyada projects mein ye baseline config use hoti hai — strict on, paths configured, incremental builds."
+          realWorldScenario="Har naye project mein ye tsconfig copy karo baseline ke taur pe. Team onboarding mein — naya developer clone kare, npm install kare, aur TypeScript sahi kaam kare. Koi 'why is import not working' confusion nahi. Sahi tsconfig ek silent productivity multiplier hai — team ke sab log same rules pe hain."
           commonMistakes={[
             { mistake: 'esModuleInterop: false rakhna', why: 'import fs from "fs" kaam nahi karta — import * as fs from "fs" likhna padta hai', fix: 'esModuleInterop: true rakho — modern import syntax kaam karta hai' },
             { mistake: 'skipLibCheck: false rakhna large projects mein', why: 'node_modules types check karna bahut slow karta hai build', fix: 'skipLibCheck: true — node_modules ke .d.ts files skip hote hain' },
           ]}
-          proTip="tsx aur ts-node ke liye alag tsconfig rakh sakte ho (tsconfig.dev.json) — transpileOnly: true se faster development experience milta hai."
+          proTip="Multiple tsconfig files use karo — tsconfig.json base, tsconfig.build.json production build ke liye (exclude tests), tsconfig.test.json jest ke liye. extends field se base inherit karo. Ye pattern large projects mein bahut useful hai — har environment ke liye slightly different config, lekin DRY principle maintain."
         />
       </div>
 
@@ -137,12 +137,12 @@ export default function TSChapter11Content() {
           title="Strict Mode — TypeScript Ka Safety Net"
           emoji="🛡️"
           difficulty="intermediate"
-          whatIsIt="strict: true ek umbrella flag hai jo kai individual strict checks enable karta hai. Har flag ek specific class of bugs prevent karta hai."
+          whatIsIt="strict: true ek single flag hai jo actually 7+ flags ek saath on karta hai — noImplicitAny, strictNullChecks, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, useUnknownInCatchVariables. Ye sab individually bhi set kar sakte ho. Lekin strict: true best practice hai — sab ek saath on. Har flag ek specific real-world bug class prevent karta hai."
           whenToUse={[
             'Naye projects mein hamesha strict: true se start karo',
             'Existing projects: gradually enable karo individual flags',
           ]}
-          whyUseIt="Strict mode ke bina TypeScript ki type safety incomplete hoti hai — null pointer exceptions, implicit any — sab possible rehte hain."
+          whyUseIt="strictNullChecks off karo — null pointer exceptions TypeScript catch nahi karega. noImplicitAny off karo — any types sirf hote hain, TypeScript chup rahega. Ye TypeScript ki real value khatam ho jaati hai. Strict mode on karne se initially errors aate hain — ye features nahi, ye bugs hain jo pehle se code mein the. Fix karo unhe, phir TypeScript tumhara guardian hai."
           howToUse={{
             code: `// strict: true ke andar ye flags shamil hain:
 
@@ -185,14 +185,14 @@ const obj = {
   }
 }`,
             language: 'typescript',
-            explanation: 'strict: true ke 5+ flags hain. Existing project mein gradually migrate karo — pehle noImplicitAny, phir strictNullChecks, etc. Ek baar mein sab fix karna overwhelming hota hai.',
+            explanation: 'Ab sawaal ye aata hai — legacy project mein strict: true ek baar mein enable karo toh thousands of errors? Haan, isliye gradual approach hai. strict: false rakhte hue individual flags ek ek enable karo. pehle noImplicitAny — sabse zyada bugs pakadta hai. Phir strictNullChecks — sabse zyada production crashes prevent karta hai. Ek sprint mein ek flag, manageable migration.',
             filename: 'strict-mode.ts',
           }}
-          realWorldScenario="Legacy JavaScript project ko TypeScript pe migrate karna — strict: false se start karo, slowly strict flags enable karo. Ek flag per sprint — manageable approach."
+          realWorldScenario="Legacy JS codebase ko TypeScript pe migrate karo — allow-js: true se start karo, strict: false, rename files .ts. Pehle quarter mein sirf noImplicitAny. Dusre mein strictNullChecks. Teen mahine mein significant type coverage. Team frustrated nahi hoti kyunki incremental — har sprint progress visible hai."
           commonMistakes={[
             { mistake: 'Legacy project mein ek baar mein strict: true karna', why: 'Thousands of errors — overwhelming', fix: 'Gradual migration: individual flags one by one enable karo' },
           ]}
-          proTip="strictNullChecks sabse valuable flag hai — null/undefined bugs production mein most common errors hain. Pehle ye enable karo."
+          proTip="TypeScript error count track karo migration mein — tsc --noEmit 2>&1 | grep 'error TS' | wc -l. Sprint start pe count, sprint end pe count. Downward trend motivation deta hai team ko. Ye quantitative progress hai — stakeholders ko bhi samjha sakte ho ki TypeScript migration ke kya tangible benefits hain."
         />
       </div>
 
@@ -201,13 +201,13 @@ const obj = {
           title="target & module — Output Configuration"
           emoji="🎯"
           difficulty="intermediate"
-          whatIsIt="target: output JavaScript version. module: module system (CommonJS, ESM, etc.). lib: TypeScript mein available APIs."
+          whatIsIt="Teen alag options hain jo log confuse karte hain. target — compiled JavaScript mein kaunsi syntax features use hongi (arrow functions, async/await, classes). module — output mein module system kaunsa hoga (require vs import). lib — TypeScript ko batao kaunsi runtime APIs available hain (Promise, Map, Array.at etc.). Teen alag concerns, teen alag options. target aur lib usually sync mein hote hain lekin technically independent hain."
           whenToUse={[
             'Node.js 18+: target: ES2022, module: commonjs (ya node16/nodenext)',
             'Browser/ESM: target: ES2020, module: ESNext',
             'Library: target: ES2015, module: commonjs + types generate karo',
           ]}
-          whyUseIt="Correct target se output readable rehta hai, correct APIs available hote hain, aur target environment ke saath compatible rehta hai."
+          whyUseIt="Galat target — target: ES5 set karo modern Node.js ke liye — sab async/await, destructuring polyfill hoga, output code ugly aur heavy. target: ES2022 set karo Node.js 18 ke liye — modern syntax, readable output, smaller bundle. Galat module — module: ESNext Node.js mein — require nahi chalega, crash. Ye foundations hain — sahi karo ek baar."
           howToUse={{
             code: `// Different project types ke liye configs:
 
@@ -248,14 +248,14 @@ const obj = {
   "strict": true
 }`,
             language: 'json',
-            explanation: 'Node.js backend ke liye commonjs recommend hai. ESM project ke liye node16/nodenext + package.json mein type: module. Browser ke liye moduleResolution: bundler TypeScript 5.0+ se.',
+            explanation: 'Ye different configs kab use karein? CommonJS — existing Node.js projects, compatibility important. node16/nodenext — pure ESM Node.js project, explicit .js extensions imports mein chahiye. bundler — Next.js, Vite, Webpack ke saath — extensionless imports kaam karte hain. noEmit: true — sirf type checking, koi output nahi — CI type check ke liye perfect.',
             filename: 'tsconfig-variants.json',
           }}
-          realWorldScenario="Next.js project mein tsconfig.json already configured hota hai — rarely touch karna padta hai. Custom Node.js API ke liye ye configs use karo."
+          realWorldScenario="New Express API project — target: ES2022, module: commonjs, lib: ['ES2022'], moduleResolution: node. Ready to go. Next.js project — tsconfig Next.js ne already generate kiya, bundler mode se, DOM types included. Ye sab automatically configured hota hai next create-next-app se. Lekin samajhna zaroori hai — jab kuch wrong ho toh troubleshoot kar sako."
           commonMistakes={[
             { mistake: 'module: ESNext Node.js mein use karna', why: 'Node.js CJS expect karta hai by default — import/export nahi samjhega', fix: 'Node.js ke liye module: commonjs ya module: node16 use karo' },
           ]}
-          proTip="TypeScript 5.0+ mein moduleResolution: bundler Vite/webpack projects ke liye best hai — .js extension imports require nahi karta."
+          proTip="moduleResolution: bundler TypeScript 5.0 ka naya mode hai — ye specify karta hai ki TypeScript bundler ke behavior ko match kare. Extensionless imports, path aliases, barrel files — sab correctly handle hote hain. Older node ya node16 modes mein kabhi kabhi weird errors aate hain extensionless imports pe. Bundler mode se ye resolved ho jaata hai."
         />
       </div>
 
@@ -264,12 +264,12 @@ const obj = {
           title="Path Aliases & Project References"
           emoji="🗂️"
           difficulty="advanced"
-          whatIsIt="Path aliases import paths clean karte hain. Project references large monorepos mein packages ko independently compile karne dete hain."
+          whatIsIt="Path aliases — import '../../../utils/database' ki jagah import '@/utils/database'. Clean, readable, refactor-friendly. baseUrl + paths tsconfig mein set karo. Lekin ek gotcha hai — TypeScript type checking ke liye aliases samjhta hai, actual module resolution bundler karta hai. Bundler mein bhi same aliases add karne padte hain. Project references monorepos ke liye hain — packages independently compile, sirf changed rebuild. tsc --build se incremental builds."
           whenToUse={[
             'Path aliases: ../../utils/../config se chutkara pane ke liye',
             'Project references: monorepo ya multi-package setup mein',
           ]}
-          whyUseIt="Path aliases se imports readable hote hain. Project references se incremental builds milti hain — sirf changed packages rebuild hoti hain."
+          whyUseIt="Ab sawaal ye aata hai — path aliases sirf cosmetic hai ya real benefit? Real benefit — directory structure change karo. @/utils/database ke sab imports automatically resolve honge naye location pe. Relative paths ke saath ../../ change karna padta ek ek file mein. Project references ka real benefit monorepo mein — 10 packages hain, sirf 2 change kiye, tsc --build sirf woh 2 rebuild karta hai. Build time 10 minutes se 2 minutes. Real productivity."
           howToUse={{
             code: `// tsconfig.json — Path aliases
 {
@@ -321,14 +321,14 @@ export default {
 
 // Build: tsc --build (builds only changed packages)`,
             language: 'json',
-            explanation: 'Path aliases TypeScript + bundler dono mein configure karne padte hain. Project references se tsc --build sirf changed packages rebuild karta hai — large codebase mein bahut fast.',
+            explanation: 'Ye common mistake hai — tsconfig mein aliases set karo, TypeScript type checking kaam karta hai, lekin Vite/webpack runtime pe error deta hai. Bundler ko bhi batana padta hai. Vite mein resolve.alias, Next.js mein jsconfig.json ya tsconfig paths automatic pick up karta hai. Jest mein moduleNameMapper. Har tool ko separately configure karo — tsconfig sirf TypeScript ke liye hai.',
             filename: 'tsconfig-advanced.json',
           }}
-          realWorldScenario="Monorepo (turborepo/nx) mein project references essential hain. packages/shared change kiya toh sirf packages/api rebuild hoga jo shared depend karta hai — baaki skip."
+          realWorldScenario="Turborepo monorepo — packages/shared change kiya. tsc --build run karo — sirf packages/shared rebuild hota hai aur packages/api jo shared depend karta hai. packages/web, packages/admin — skip. CI time dramatically kam. Ek team ne 15 minutes CI ko 4 minutes pe laya sirf project references add karke. Ye optimization worth it hai large codebases mein."
           commonMistakes={[
             { mistake: 'Path aliases sirf tsconfig mein set karna', why: 'TypeScript resolve karta hai lekin bundler nahi — runtime error', fix: 'Vite/webpack/jest — sab mein same aliases add karo' },
           ]}
-          proTip="typescript-paths-plugin ya tsconfig-paths package se paths automatically resolve hote hain ts-node/jest mein — manually configure nahi karna padta."
+          proTip="tsconfig-paths package ts-node ke saath path aliases automatically resolve karta hai — manually configure nahi karna. tsconfig-paths/register require karo startup pe. Jest ke liye pathsToModuleNameMapper function hai jo tsconfig paths se jest moduleNameMapper automatically generate karta hai. Ek baar setup karo, phir @/ imports everywhere kaam karein."
         />
       </div>
 

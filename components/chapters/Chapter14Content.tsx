@@ -14,10 +14,10 @@ export default function Chapter14Content() {
           Authentication & JWT — Secure Auth System Banao
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Authentication (kaun ho tum?) aur Authorization (kya kar sakte ho?) — ye dono security ke pillars hain. JWT (JSON Web Tokens) modern stateless auth ka standard hai. bcrypt password hashing — production mandatory hai. Ye chapter comprehensive auth system cover karta hai.
+          Ruko ek second — bahut log JWT ko "secure encryption" samajhte hain. Ye GALAT hai! JWT encode karta hai, ENCRYPT nahi. Matlab koi bhi tumhara JWT decode karke payload dekh sakta hai. Toh JWT ka kaam kya hai? Ye <strong className="text-[#F5F5F7]">verification</strong> ke liye hai, not <strong className="text-[#F5F5F7]">secrecy</strong>. Aur ye ek fundamental difference hai jo samjhna zaroori hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Authentication galat implement karna — plaintext passwords, weak tokens, no rate limiting — sabse common security vulnerabilities hain. Sahi karo pehli baar se.
+          Authentication (kaun ho tum?) aur Authorization (kya kar sakte ho?) — ye dono security ke pillars hain. Galat implement karna — plaintext passwords, weak tokens, no rate limiting — ye sabse common security vulnerabilities hain. Ek hi baar sahi karo. Is chapter mein sab kuch step-by-step cover karenge.
         </p>
       </div>
 
@@ -26,14 +26,14 @@ export default function Chapter14Content() {
           title="Sessions vs JWT — Stateful vs Stateless"
           emoji="🔑"
           difficulty="intermediate"
-          whatIsIt="Sessions: Server-side storage — session ID cookie, server session store mein user data. Stateful — server ko state yaad rakhna padta hai. JWT: Client-side storage — token mein user info, server verify karta hai signature se. Stateless — server kuch yaad nahi rakhta. Dono trade-offs hain."
+          whatIsIt="Socho sessions ek hotel room key ki tarah — hotel (server) ke paas tumhara record hai, key sirf room number hai. Har entry pe hotel apna record check karta hai — stateful. JWT ek alag type ki cheez hai — ek sealed tamper-proof envelope jisme tumhari identity likhi hai. Security ke liye — agar envelope open karo ya content change karo, immediately pata chal jaata hai. Server kuch store nahi karta — stateless. Dono approaches ke trade-offs hain aur dono production mein use hote hain."
           whenToUse={[
             'Session: Monolith apps, instant logout zaroorit, sensitive data server par',
             'JWT: Microservices, horizontal scaling, mobile apps, stateless APIs',
             'JWT: Multiple services ek token accept karein — SSO scenarios',
             'Session: Bank-level security — immediate token invalidation critical',
           ]}
-          whyUseIt="Sessions: Instant logout (session delete karo), easy revocation. JWT: No DB lookup per request (fast), horizontally scalable (koi bhi server verify kar sakta hai), mobile-friendly (no cookies needed). Production mein refresh token pattern se JWT ke downsides mitigate hote hain."
+          whyUseIt="Ab sawaal ye aata hai — JWT stateless hai, toh user ko logout kaise karein? JWT expire hone tak valid rehta hai — ek 15 minute token issue kar diya aur user ka account ban kar diya? Woh user 15 minute aur kaam kar sakta hai. Ye JWT ka known limitation hai. Sessions mein instant revocation possible hai — session delete karo, user immediately logged out. Lekin JWT ka fayda: koi bhi server same secret se verify kar sakta hai — horizontal scaling trivial hai. Banking app? Sessions. Social media API? JWT."
           howToUse={{
             filename: 'auth-comparison.ts',
             language: 'typescript',
@@ -87,9 +87,9 @@ app.post('/login-jwt', async (req, res) => {
   res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' })
   res.json({ accessToken })
 })`,
-            explanation: "Session store Redis mein rakho — in-memory store scale nahi hota multiple servers par. JWT short expiry (15 min) + refresh tokens (7 days) — compromise between security aur UX. Refresh token httpOnly cookie mein — XSS se safe. Access token memory mein ya localStorage mein.",
+            explanation: "Under the hood: Session store Redis mein isliye ki in-memory store multiple servers ke beech share nahi hoti — Server A ka session Server B ko nahi pata. JWT short expiry (15 min) ek security decision hai — token stolen bhi ho jaaye, 15 min mein expire. Refresh token (7 days) httpOnly cookie mein — JavaScript XSS attack cookie access nahi kar sakta. Access token memory (JavaScript variable) mein — localStorage avoid karo kyunki third-party scripts bhi localStorage access kar sakte hain.",
           }}
-          realWorldScenario="Banking app: Session prefer karo — instant revocation critical. User login kare doosri device se, pehli device immediately logout ho. JWT se ye possible nahi bina revocation list ke. Social media app: JWT prefer karo — scale horizontally, mobile apps work well."
+          realWorldScenario="Banking app — user ka account suspicious activity ke karan freeze hua. Sessions ke saath: session delete karo, user turant logged out. JWT ke saath: access token 15 minute aur valid — security risk. Banking mein sessions correct choice hai. Social media app — 50 million users, 100 servers — koi bhi server JWT verify kar sakta hai bina shared session store ke — horizontal scaling effortless. JWT correct choice."
           commonMistakes={[
             {
               mistake: 'JWT ko localStorage mein store karna production mein',
@@ -102,8 +102,18 @@ app.post('/login-jwt', async (req, res) => {
               fix: 'JWT mein sirf non-sensitive identifiers: userId, role, sessionId. Sensitive data: password, SSN, card numbers — kabhi JWT mein nahi.',
             },
           ]}
-          proTip="Auth library use karo — Lucia, NextAuth, Clerk, Auth0. Auth scratch se likhna error-prone hai. Lekin samajhna zaroori hai internals — ye chapter isliye hai. Production mein battle-tested library prefer karo aur custom implementation sirf clear business reason ho toh karo."
+          proTip="Ye chapter samajhne ke baad ek important suggestion — production mein auth scratch se mat likho. Lucia, NextAuth v5, Clerk, Auth0 — ye battle-tested libraries hain. Auth edge cases bahut hain: timing attacks, CSRF, session fixation — ye sab handle karna mushkil hai. Theory samjho is chapter se, library use karo production mein. Samajhna aur implement karna — dono alag skills hain."
         />
+      </div>
+
+      <div
+        className="rounded-xl p-5"
+        style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.2)' }}
+      >
+        <p className="text-[#A78BFA] font-semibold mb-2">🤔 Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          JWT use karna decide kar liya — lekin JWT exactly kaam kaise karta hai? Teen parts hain — Header, Payload, Signature. Signature hi wo cheez hai jo JWT ko tamper-proof banata hai. Lekin yaad rakho — payload base64 encoded hai, encrypted nahi. Iska matlab? Koi bhi header aur payload ko decode karke read kar sakta hai. Isliye sensitive data JWT mein kabhi mat daalo.
+        </p>
       </div>
 
       <div id="jwt-implementation">
@@ -111,14 +121,14 @@ app.post('/login-jwt', async (req, res) => {
           title="JWT — Sign, Verify, Decode"
           emoji="🪙"
           difficulty="intermediate"
-          whatIsIt="JWT (JSON Web Token) teen parts hain (dot se separated): Header (algorithm info) + Payload (claims/data) + Signature (HMAC/RSA). Header aur Payload base64url encoded hain. Signature secret se verify hota hai — tampered token reject ho jaata hai. HS256 (symmetric) ya RS256 (asymmetric) algorithms use hote hain."
+          whatIsIt="JWT ek tamper-proof ticket hai. Surprise output pehle dekho: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMjMifQ.signature — ye JWT hai. Dot se teen parts: Header (algorithm info, base64 encoded), Payload (claims/data, base64 encoded — ANYONE can decode this!), Signature (HMAC/RSA — sirf ye secret se protected hai). Server JWT verify karta hai signature check karke — header ya payload tamper hone par signature match nahi karega, token reject."
           whenToUse={[
             'Stateless API authentication',
             'Service-to-service authentication (microservices)',
             'Short-lived tokens — access tokens (15 min)',
             'Claims-based authorization — role, permissions token mein',
           ]}
-          whyUseIt="JWT self-contained hai — server kuch store nahi karta. Scalable — koi bhi server same secret se verify kar sakta hai. Standard format — libraries sabhi languages mein available hain. RS256 se public key verify kar sakta hai — private key sirf auth server ke paas."
+          whyUseIt="JWT self-contained hai — server kuch store nahi karta, stateless. Ab sawaal ye aata hai — agar multiple microservices hain? HS256 (symmetric) mein sab services secret jaanti hain — ek service compromise hone par secret leak. RS256 (asymmetric) better solution: Auth Service private key se sign karta hai, baaki services public key se verify karte hain — private key sirf Auth Service ke paas. Public key share karna safe hai — ussse sign nahi kar sakte."
           howToUse={{
             filename: 'jwt.ts',
             language: 'typescript',
@@ -187,9 +197,9 @@ function decodeToken(token: string) {
   return jwt.decode(token) as AccessTokenPayload | null
   // WARNING: This does NOT verify signature — untrusted data
 }`,
-            explanation: "issuer aur audience claims extra security dete hain — wrong service ka token reject hoga. TokenExpiredError specifically catch karo — client ko refresh karne ke liye clear signal. decode() kabhi trust nahi karo — verify() use karo authentication ke liye. satisfies TypeScript se ensure karta hai payload type correct hai.",
+            explanation: "Under the hood: issuer aur audience claims extra security dete hain — ek service ka token doosri service mein use karo toh reject hoga. jwt.verify() internally: base64 decode karo → signature recalculate karo → match check karo → expiry check karo. TokenExpiredError specifically catch karo — client ko clear signal milna chahiye ki token refresh karo, nahi toh unauthorized jaisa hi treat karega. decode() signature verify nahi karta — kabhi authentication ke liye mat use karo.",
           }}
-          realWorldScenario="Microservices architecture: Auth Service tokens issue karta hai, Product Service aur Order Service same public key se verify karte hain (RS256). Auth Service private key rakhta hai, baaki services public key se validate karte hain — secrets share nahi hote."
+          realWorldScenario="Microservices architecture step-by-step: 1) User login kare Auth Service pe — private key se JWT sign hota hai. 2) User Product Service pe request kare — JWT attach. 3) Product Service public key se verify kare — Auth Service ko contact karna zaroori nahi. 4) Order Service bhi same public key use kare. Private key sirf Auth Service ke paas — compromise surface minimal."
           commonMistakes={[
             {
               mistake: "JWT_SECRET weak ya default value use karna",
@@ -202,7 +212,7 @@ function decodeToken(token: string) {
               fix: "Short expiry (15 min) + refresh token pattern. Token blacklist Redis mein (logout karne par). Aur ya JWT revocation endpoint implement karo.",
             },
           ]}
-          proTip="jose library use karo jsonwebtoken ki jagah — ES module, TypeScript-first, browser bhi support karta hai. RS256 ke liye: node:crypto se key pair generate karo, ya openssl. RS256 microservices mein better hai — private key sirf auth server par, public key distribute karo."
+          proTip="jose library (jsonwebtoken ki replacement) consider karo — ES modules, TypeScript-first, browser support, JWKS (JSON Web Key Sets) support. RS256 ke liye key pair: openssl genrsa -out private.pem 2048 aur openssl rsa -in private.pem -pubout -out public.pem. Private key environment variable mein — kabhi commit mat karo. Public key freely distribute kar sakte ho."
         />
       </div>
 
@@ -211,14 +221,14 @@ function decodeToken(token: string) {
           title="bcrypt — Password Hashing"
           emoji="🔐"
           difficulty="intermediate"
-          whatIsIt="bcrypt password hashing algorithm hai jiske liye specifically kaam karna slow hai — intentionally. MD5, SHA-256 fast hain — millions of passwords per second brute force karo. bcrypt 10 salt rounds mein 100ms+ per hash — brute force impractical. Salt automatic inject karta hai — rainbow table attacks prevent hote hain."
+          whatIsIt="Kya aap jaante ho ki MD5 se hashed password GPU se 10 billion hashes per second crack kiye ja sakte hain? 10 billion! Common password 'password123' MD5 se: milliseconds mein crack. bcrypt deliberately slow hai — intentional design. Salt rounds 12 pe: ek hash ~300ms. Brute force karo toh ek second mein sirf 3-4 attempts. Attacker ke paas million passwords crack karne ke liye centuries lagengi. Slowness feature hai, bug nahi."
           whenToUse={[
             'User passwords store karne se pehle — hamesha hash karo',
             'Login verification — plaintext vs stored hash compare karo',
             'Password change/reset flow',
             'API keys store karna bhi — hash karo, plaintext nahi',
           ]}
-          whyUseIt="Plaintext passwords store karna criminal neglect hai. MD5/SHA simple hashing — 10 billion hashes/second possible hain modern GPU se. bcrypt intentionally slow hai — work factor increase karo as hardware improves. Argon2 aur scrypt alternatives hain — Node.js mein bcrypt most popular aur battle-tested hai."
+          whyUseIt="2012 mein LinkedIn ka data breach hua — 6 million SHA1 unsalted passwords leak hue, crack hue in hours. Agar bcrypt hota? Cracking decades lagte. Plaintext passwords store karna — criminal neglect hai, aur aaj bhi hota hai. bcrypt ki ek aur beauty: automatic salt — har hash alag hota hai. Do users ka same password ho, unka hash alag hoga — rainbow table attacks impossible. Work factor hardware ke saath increase kar sakte ho."
           howToUse={{
             filename: 'bcrypt.ts',
             language: 'typescript',
@@ -277,9 +287,9 @@ class AuthService {
 // bcrypt hash format:
 // $2b$12$saltsaltsaltsaltsaltsahash...
 // $2b = version, $12 = cost factor (2^12 iterations), next 22 chars = salt, rest = hash`,
-            explanation: "SALT_ROUNDS 10-12 production mein (100-400ms per hash). 14+ bahut slow — registration experience degrade. Timing attack: agar user nahi mila toh early return karo — attacker email existence confirm kar sakta hai timing difference se. Dummy compare se constant time ensure hota hai.",
+            explanation: "Under the hood: SALT_ROUNDS 10-12 production mein — 100-400ms per hash. 14+ bahut slow — user registration experience degrade hoti hai. Timing attack ek subtle security hole hai — agar user email exist nahi karta aur immediate return ho (no bcrypt compare), attacker response time measure karke pata lagaa sakta hai ki email registered hai ya nahi. Dummy compare se constant time ensure hota hai — attacker ko koi timing signal nahi milta.",
           }}
-          realWorldScenario="Data breach mein LinkedIn ka 2012 data breach — SHA1 unsalted hashes leak hue, 6 million passwords crack hue in hours. bcrypt hashes ke saath same breach — cracking decades ya centuries lagte. Sahi hashing = breach damage dramatically reduced."
+          realWorldScenario="Step-by-step: User 'mypassword123' enter kara. bcrypt.hash() internally: random 22-char salt generate karo → 2^12 = 4096 iterations of Blowfish cipher run karo → final hash produce karo. Output format: $2b$12$[22 char salt][31 char hash]. Login par: user fir se 'mypassword123' enter kare → bcrypt.compare() stored hash se salt extract kare → same iterations run kare → match check kare. Password kabhi plaintext store nahi hota."
           commonMistakes={[
             {
               mistake: 'Salt rounds 10 se kam rakhna',
@@ -292,7 +302,7 @@ class AuthService {
               fix: 'Hamesha async: await bcrypt.hash() aur await bcrypt.compare(). Node.js async I/O benefits milte hain.',
             },
           ]}
-          proTip="Argon2 (Node.js argon2 package) bcrypt se better hai newer systems ke liye — memory-hard, more resistant to GPU attacks, OWASP recommended. Lekin bcrypt still excellent aur widely supported hai. naye projects mein argon2 consider karo. bcrypt Node.js mein mature aur well-tested hai."
+          proTip="OWASP 2024 recommendation: Argon2id bcrypt se better hai — memory-hard algorithm hai, GPU attacks ke against more resistant. argon2 npm package use karo naye projects mein. Lekin bcrypt still excellent choice hai — mature, battle-tested, widely supported. Existing bcrypt systems ko migrate karne ki zaroorat nahi unless specific security requirement ho. Next login par silently rehash karo — gradual migration."
         />
       </div>
 
@@ -301,14 +311,14 @@ class AuthService {
           title="Refresh Token Pattern — Secure Auth Architecture"
           emoji="🔄"
           difficulty="intermediate"
-          whatIsIt="Access token: short-lived (15 min), stateless JWT — API requests ke saath. Refresh token: long-lived (7-30 days), stored server-side — access token renew karne ke liye. Access token expire hone par refresh token se naya lo. Logout mein refresh token delete karo — access token expire hone do. Security aur UX ka balance."
+          whatIsIt="Ek problem: JWT 15 min mein expire hoti hai — har 15 min user ko login karo? UX disaster. Doosri problem: JWT long expiry rakho — 7 din — stolen token 7 din valid. Refresh token pattern dono ka balance hai. Access token: 15 min, stateless JWT — fast API access ke liye. Refresh token: 7-30 din, server DB mein stored — sirf access token renew karne ke liye. User transparent experience pata hai, security maintain rehti hai."
           whenToUse={[
             'Production JWT auth — hamesha refresh tokens use karo',
             'Mobile apps jahan user stay logged in weeks/months',
             'Web apps jahan seamless experience chahiye — no login every 15 min',
             'Token rotation implement karna — rotate refresh token on use',
           ]}
-          whyUseIt="Short access token — security: compromise hone par 15 min mein expire. Refresh token — UX: user baar baar login nahi karta. Server-side refresh token — revocation possible. Token rotation — stolen refresh token detect karo — ek refresh token ek baar use hoga."
+          whyUseIt="Ab sawaal ye aata hai — refresh token steal ho gaya toh? Token rotation ek clever solution hai. Har refresh par purana token delete karo, naya issue karo. Agar purana token phir se use ho — theft detect! Attacker aur legitimate user ek saath same family ka token use karne ki koshish karte hain — family invalidate karo — dono logout. Security breach detected aur neutralized. Ye pattern bahut elegant hai."
           howToUse={{
             filename: 'refresh-tokens.ts',
             language: 'typescript',
@@ -375,9 +385,9 @@ class TokenService {
     await prisma.refreshToken.delete({ where: { token: hashedToken } }).catch(() => {})
   }
 }`,
-            explanation: "Refresh token opaque (random bytes) hai — JWT nahi. Hashed version store karo DB mein (plaintext leak hone par security). Token rotation: har use par purana delete, naya create. Family invalidation: agar purana (already rotated) token use ho — theft detect! Poori family invalidate karo — attacker aur legitimate user dono logout.",
+            explanation: "Under the hood: Refresh token opaque random string hai — JWT nahi, isliye revoke kar sakte hain. Hashed version DB mein store karo (crypto.createHash sha256) — agar DB breach ho toh plaintext tokens exposed nahi honge. Token rotation step-by-step: 1) Refresh request aaya. 2) Hash match karo DB mein. 3) Old token delete karo. 4) New token pair generate karo. 5) Agar already deleted token aaya — theft detected — family ka sabkuch invalidate karo.",
           }}
-          realWorldScenario="Mobile banking app — user 30 days tak logged in rehta hai. Access token har 15 min renew hota hai — transparent, smooth UX. Logout karo — refresh token delete, next access token use hone par unauthorized. Phone lost — admin se emergency logout — refresh token server-side delete."
+          realWorldScenario="Mobile banking app step-by-step: User login kare — access token (15 min) + refresh token (30 din) milta hai. 15 min baad access token expire — app silently background mein refresh token use karke new access token le leti hai — user ko pata nahi. Phone gum gaya — customer care ko call karo — admin server pe refresh token delete kare — user ka next API call fail hoga, app logout kare — security maintained."
           commonMistakes={[
             {
               mistake: 'Refresh token JWT banana',
@@ -390,7 +400,7 @@ class TokenService {
               fix: 'Har refresh par purana delete, naya issue. Agar purana token use ho — theft! Family invalidate karo. Ye pattern detect karta hai token theft.',
             },
           ]}
-          proTip="Refresh token client mein store karna: Web apps mein httpOnly Secure cookie (XSS safe, CSRF use sameSite=strict se prevent). Mobile apps mein secure storage (iOS Keychain, Android Keystore). Never localStorage. Cookie-based approach simpler hai — backend SameSite=strict CSRF prevent karta hai."
+          proTip="Refresh token storage hierarchy: Web app — httpOnly Secure SameSite=strict cookie (XSS se safe, CSRF se safe). Mobile app — iOS Keychain ya Android Keystore (OS-level secure storage). Kabhi localStorage nahi — ye XSS attacks ke liye open hai. httpOnly cookie JavaScript se accessible nahi hoti — even if XSS attack ho, token steal nahi hoga. Simplest aur most secure approach for web."
         />
       </div>
 
@@ -399,14 +409,14 @@ class TokenService {
           title="OAuth 2.0 — Third-Party Auth"
           emoji="🌐"
           difficulty="intermediate"
-          whatIsIt="OAuth 2.0 authorization framework hai — users apne Google/GitHub/Facebook account se tumhari app mein login kar sakte hain. Password tumhare paas nahi aata — Google authenticate karta hai, Google tumhe access token deta hai, tum user info le lete ho. Authorization Code Flow: most secure, server-side."
+          whatIsIt="Socho OAuth ek reference letter ki tarah — tumhara app Google se kehta hai 'is user ko verify karo.' Google verify karta hai, reference letter (authorization code) deta hai, tumhara server Google se privately code exchange karta hai real access ke liye. Tumhare paas user ka Google password kabhi nahi aata — ye key insight hai. Authorization Code Flow: code exchange server-to-server hota hai — most secure. User ka password kabhi client code tak nahi pahunchta."
           whenToUse={[
             '"Login with Google/GitHub" feature chahiye',
             'User ka social profile access karna — email, name, avatar',
             'Scope-based permissions — calendar read, email send',
             'Third-party integrations — Slack, Salesforce OAuth',
           ]}
-          whyUseIt="User ek aur password yaad nahi karna chahta. Google ka auth UI trusted aur polished hai. 2FA, passkeys — Google already handle karta hai. Tumhara password database kama hota hai — breach risk zero for those users. Social signup conversion rates higher hote hain."
+          whyUseIt="Ab sawaal ye aata hai — OAuth use karne ka real fayda kya hai? Stats batate hain: 'Login with Google' option hone par signup conversion 40-60% increase hoti hai. User ek aur password yaad nahi karna chahta. Google ka 2FA, passkeys — sab Google handle karta hai, tumhe implement karna nahi padta. Aur sabse important — tumhare paas password database nahi hai — breach hone par exposed passwords zero for OAuth users."
           howToUse={{
             filename: 'oauth.ts',
             language: 'typescript',
@@ -461,9 +471,9 @@ app.get('/auth/google/callback',
 
 // State parameter — CSRF protect karo
 // Passport automatically state handle karta hai`,
-            explanation: "Authorization Code Flow: code exchange server-to-server hota hai — client_secret never client par jaata. PKCE (Proof Key for Code Exchange) mobile/SPA ke liye — code_verifier + code_challenge. scope request minimum karo — user consent granular hoti hai. State parameter CSRF prevent karta hai OAuth flow mein.",
+            explanation: "Under the hood step-by-step: 1) User 'Login with Google' click kare. 2) App Google OAuth URL pe redirect kare with client_id, scope, redirect_uri, state parameter. 3) User Google pe login kare. 4) Google app ke redirect_uri pe authorization code bheje. 5) Server-side: code + client_secret Google ko bhejo → access token milta hai. 6) Access token se user profile fetch karo. State parameter CSRF attack prevent karta hai — OAuth flow hijack nahi ho sakta. PKCE mobile/SPA ke liye — client_secret safely store nahi kar sakte.",
           }}
-          realWorldScenario="Productivity SaaS app — 'Login with Google' 60% users use karte hain vs email/password. Gmail calendar integration OAuth se — user grants calendar read permission. Daily standup app pulls meetings automatically. User trust high hoti hai — no new account, Google already trusted."
+          realWorldScenario="Productivity SaaS app — 'Login with Google' option diya toh 60% users ne Google hi choose kiya. Naye features: calendar integration OAuth se — user 'Allow calendar read' permission deta hai. App Google Calendar se meetings pull karta hai. Ye sab user ka Google password jaane bina. User trust high hai — Google pe already trust hai, naya app pe immediately trust extend hoti hai."
           commonMistakes={[
             {
               mistake: 'Client ID aur Client Secret confuse karna',
@@ -476,7 +486,7 @@ app.get('/auth/google/callback',
               fix: 'OAuth flow ke baad apna JWT issue karo user ke liye. Google access token sirf initial profile fetch ke liye use karo, phir discard karo ya securely server mein store karo agar Google API access zaroori ho.',
             },
           ]}
-          proTip="better-auth, Auth.js (NextAuth v5), Lucia — ye libraries OAuth, sessions, JWT sab handle karte hain. Scratch se OAuth implement karna error-prone hai — edge cases, security considerations bahut hain. Production mein library use karo. Is chapter se theory samjho, library se implement karo."
+          proTip="OAuth scratch se likhna mat try karo — edge cases, security considerations, state management, token refresh — bahut complex hai. better-auth, Auth.js (NextAuth v5), Lucia — ye libraries ye sab handle karti hain, battle-tested hain. Theory is chapter se samjho, implementation library se karo. Senior developer wahi hota hai jo janta hai kab library use karni hai aur kab khud likhna hai."
         />
       </div>
     </div>

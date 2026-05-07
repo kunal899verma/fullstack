@@ -11,13 +11,16 @@ export default function ReactChapter13Content() {
         style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          TanStack Query — Server State Ka Sahi Tarika
+          TanStack Query — useEffect Se Fetch Karna Chhodo
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          API se data fetch karna sirf fetch() call nahi hai — loading states, error handling, caching, background refresh, pagination, optimistic updates — ye sab manage karna padta hai. TanStack Query (pehle React Query) ye sab automatically karta hai.
+          Ek honest question — kitne features manually likhe hain aapne jab bhi API call ki? Loading state — useState se. Error state — useState se. Retry on failure — khud logic. Cache — khud manage. Background refresh — setInterval se polling. Race conditions — cancelled flag. Stale data detection — khud logic. Ye sab TanStack Query out of the box deta hai — ek hook mein.
+        </p>
+        <p className="text-[#A1A1AA] leading-relaxed mb-3">
+          Server state aur client state fundamentally alag hain — server data remote hai, stale ho sakta hai, multiple users simultaneously change kar sakte hain. Iske liye specialized tool chahiye — TanStack Query exactly yahi hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Server state client state se fundamentally alag hai — ye remote hai, stale ho sakta hai, multiple users share karte hain. TanStack Query specifically server state ke liye bana hai aur is problem ko perfectly solve karta hai.
+          Ek baar use karo, aur aap kabhi manually useEffect se fetch nahi karoge.
         </p>
       </div>
 
@@ -26,14 +29,14 @@ export default function ReactChapter13Content() {
           title="Server State vs Client State"
           emoji="🔄"
           difficulty="intermediate"
-          whatIsIt="Client state wo state hai jo sirf browser mein exist karta hai — modal open/close, form input, selected tab. Server state wo data hai jo server par hai aur API se aata hai — user profile, products, orders. Dono fundamentally different challenges present karte hain — alag tools chahiye."
+          whatIsIt="Ek critical distinction — client state aur server state alag problems hain. Modal open/close, selected tab, form input — ye client state hai. Ye sirf is user ke browser mein exists karta hai. Products list, user profile, orders — ye server state hai. Ye remote hai, koi bhi kabhi bhi change kar sakta hai, cache ho sakta hai, stale ho sakta hai. Client state ke liye useState/Zustand. Server state ke liye? TanStack Query. Wrong tool use karo — headaches guaranteed."
           whenToUse={[
-            'API data fetch karna — hamesha TanStack Query',
-            'Loading, error, success states manage karna — TanStack Query handle karta hai',
-            'Caching aur background refresh chahiye — TanStack Query',
-            'UI state (modal, tabs, form) — useState ya Zustand',
+            'API data fetch karna — hamesha TanStack Query (no exceptions)',
+            'Loading, error, success states — automatically managed',
+            'Caching, background refresh, stale detection — built-in',
+            'UI state (modal, tab, form input) — useState ya Zustand, not TanStack Query',
           ]}
-          whyUseIt="Server state stale ho sakta hai — koi aur update kar de database ko. Cache invalidation hard hai manually. Background refetch, retry on error, loading states — ye sab manage karna without library repetitive aur bug-prone hai. TanStack Query ye sab out of the box deta hai."
+          whyUseIt="Socho — 1000 users ek product page dekh rahe hain. Manual useEffect: 1000 separate fetch calls. TanStack Query: ek queryClient, shared cache. Multiple components same queryKey use karein — sirf ek fetch, sab share karte hain. Admin product update kare — invalidate query — sab users ko background mein fresh data. Ye magic nahi — ye architecture hai."
           howToUse={{
             filename: 'setup.tsx',
             language: 'typescript',
@@ -63,9 +66,9 @@ function App() {
     </QueryClientProvider>
   )
 }`,
-            explanation: "QueryClient global cache store karta hai. staleTime: kitni der tak data fresh maano — 0 se hamesha stale (har mount pe refetch). retry: error par kitni baar dobara try karo. QueryClientProvider React Context se queryClient sab components ko available karta hai.",
+            explanation: "QueryClient central cache store hai — query results, metadata, observers sab yahan. staleTime kya karta hai: 0 = hamesha stale (har component mount pe refetch). 60000 = 1 minute fresh maano (is dauraan mount pe cached data return, no network call). retry: 2 = error pe 2 baar aur try karo. refetchOnWindowFocus: true = tab switch karte hi background mein latest data.",
           }}
-          realWorldScenario="E-commerce product listing — 1000 users same products page dekh rahe hain. TanStack Query se har user ka data 1 minute cache mein rehta hai — server pe 1000x fewer API calls. Koi admin product update kare toh sab users ko background mein fresh data milta hai."
+          realWorldScenario="E-commerce — 1000 users product listing dekh rahe hain. Manual fetch: 1000 requests/minute. TanStack Query with 5min staleTime: user tab switch karta hai — background refresh — lekin stale nahi hogi 5 minute mein — ek request per user per 5 minutes. Dramatic server cost reduction. Real companies ye measure karte hain dollars mein."
           commonMistakes={[
             {
               mistake: 'TanStack Query mein client state daalna (modals, form values)',
@@ -78,7 +81,7 @@ function App() {
               fix: 'Sane defaults set karo: 1-5 minutes for stable data, real-time data ke liye WebSocket use karo instead of polling.',
             },
           ]}
-          proTip="TanStack Query Devtools production builds mein automatically exclude ho jaate hain. Development mein ye tool invaluable hai — har query ka status, data, stale time, observers sab dikhai deta hai. Browser extension bhi available hai."
+          proTip="ReactQueryDevtools — development mein indispensable tool. Bottom-right corner mein floating panel. Har query: status (fresh/stale/fetching/error), data snapshot, stale time countdown, how many observers. Query manually refetch karo, invalidate karo, remove karo — debug karo without changing code. Browser extension bhi available hai jo production pe bhi kaam karta hai."
         />
       </div>
 
@@ -87,14 +90,14 @@ function App() {
           title="useQuery — Data Fetching"
           emoji="📡"
           difficulty="intermediate"
-          whatIsIt="useQuery hook server se data fetch karne ka primary way hai. Query key (unique identifier), fetch function, aur options pass karo — loading, error, data automatically manage hota hai. Same query key multiple components mein share karte hain — sirf ek fetch hoti hai, cache se serve hota hai."
+          whatIsIt="useQuery ke andar kya hota hai? queryKey se cache entry identify hoti hai. Component mount pe: cache mein data hai? Fresh hai? Return karo instantly (cache hit). Stale hai? Background mein refetch karo, stale data dikhao while fetching. Nahi hai? Fetch karo, loading state. Multiple components same queryKey use karein — sirf ek fetch, shared cache. Ye data synchronization hai — manual useEffect mein ye impossible tha."
           whenToUse={[
             'GET requests — user data, products, orders fetch karna',
-            'Same data multiple components mein — cache se auto-serve hoga',
-            'Dependent queries — ek query ki success par doosri query run karo',
-            'Paginated data — useInfiniteQuery se infinite scroll',
+            'Same data multiple components mein — shared cache, single fetch',
+            'Dependent queries — pehle user, phir user ke posts',
+            'Paginated ya infinite scroll data — useInfiniteQuery',
           ]}
-          whyUseIt="Bina useQuery ke har component mein useEffect + useState pattern repeat karna padta hai. useQuery ek line mein loading, error, data deta hai plus caching, background fetch, retry, devtools integration sab milta hai."
+          whyUseIt="Manual pattern compare karo — useEffect + useState: 15 lines, race condition risk, no caching, no retry, no devtools. useQuery: 5 lines, race condition handled, caching automatic, retry built-in, devtools beautiful. Aur bonus: isFetching — background refresh indicator. User ko pata hai data update ho raha hai — transparent system."
           howToUse={{
             filename: 'useQuery-demo.tsx',
             language: 'typescript',
@@ -144,9 +147,9 @@ function UserPosts({ userId }: { userId: string }) {
 
   return <div>{posts?.map(p => <PostCard key={p.id} post={p} />)}</div>
 }`,
-            explanation: "queryKey array hai — har element change par refetch hota hai. enabled: false se query disable hoti hai (dependent queries ke liye). isFetching background refetch dikhata hai. Data stale hone par background mein silently update hota hai — UI jankhani nahi dikhati.",
+            explanation: "queryKey array trace karo — ['user', userId]. userId '42' hai. Cache mein ['user', '42'] entry hai, fresh hai? Yes → return instantly. userId changes to '43' — ['user', '43'] — new cache entry, fetch starts. enabled: !!userId — userId undefined ya empty? Query disable, no fetch. enabled is powerful for dependent queries.",
           }}
-          realWorldScenario="Dashboard analytics — useQuery(['analytics', dateRange]) — dateRange change karne par automatically naya data fetch hota hai. Data 5 minutes cache mein rehta hai. Tab switch par background mein latest data aata hai. Loading sirf pehli baar dikhti hai — subsequent fetches silently update karte hain."
+          realWorldScenario="Analytics dashboard — useQuery(['analytics', dateRange, metricType]) — dateRange ya metricType change karo — automatic refetch. Cache: same dateRange pe wapas aao (tab switch) — instant data. Background refresh: stale hone pe silently update. User ko loading state pehli baar — aage seamless experience."
           commonMistakes={[
             {
               mistake: 'queryKey mein dynamic values miss karna',
@@ -159,7 +162,7 @@ function UserPosts({ userId }: { userId: string }) {
               fix: 'Hamesha: if (!res.ok) throw new Error(res.statusText). TanStack Query sirf thrown errors ko error state mein capture karta hai.',
             },
           ]}
-          proTip="select option se response data transform karo — heavy computation component mein nahi hogi: useQuery({ queryKey: ['products'], queryFn: fetchProducts, select: (data) => data.filter(p => p.inStock).sort((a,b) => a.price - b.price) }). Select result bhi memoized hota hai."
+          proTip="select option — underused gem. useQuery({ queryKey: ['products'], queryFn: fetchProducts, select: (data) =&gt; data.filter(p =&gt; p.inStock).sort((a,b) =&gt; a.price - b.price) }). Select result memoized hai — same data same transformed result. Component ko raw API response nahi dikhta — clean transformed data milta hai. Plus: different components same query se different transforms le sakte hain!"
         />
       </div>
 
@@ -168,14 +171,14 @@ function UserPosts({ userId }: { userId: string }) {
           title="useMutation — Data Create/Update/Delete"
           emoji="✏️"
           difficulty="intermediate"
-          whatIsIt="useMutation hook data create, update, ya delete karne ke liye hai — POST, PUT, PATCH, DELETE requests. Mutation run hone ke baad related queries invalidate karo — fresh data automatically fetch hoga. onSuccess, onError, onSettled callbacks se side effects handle karo."
+          whatIsIt="useMutation aur useQuery ka combination React apps ka data flow hai. useQuery reads — server se data lo. useMutation writes — server pe data bhejo (POST/PUT/PATCH/DELETE). Mutation success hone ke baad related queries invalidate karo — fresh data automatically aayega. onSuccess, onError, onSettled callbacks — side effects manage karo. isPending state — button disable karo, spinner dikhao. Clean flow, no manual state."
           whenToUse={[
-            'Form submit karke server pe data save karna',
-            'Like, follow, cart add karna — user action pe data mutate karna',
-            'Delete operations',
-            'File upload',
+            'Form submit — server pe data save karna',
+            'Like, follow, cart add — user action pe data mutate karna',
+            'Delete operations — confirm aur delete',
+            'File upload, bulk operations',
           ]}
-          whyUseIt="useMutation loading state, error handling, aur success callbacks manage karta hai. Mutation success ke baad invalidateQueries se related data automatically refetch hota hai — manual state management ki zaroorat nahi. Optimistic updates bhi easily implement hote hain."
+          whyUseIt="Manual mutation: loading state manually, try/catch manually, state update manually, related queries manually refetch, error display manually. useMutation: mutate(data) call karo — sab automatically. isPending loading ke liye, isError error ke liye, onSuccess invalidation ke liye. 5 lines replace karte hain 30 lines."
           howToUse={{
             filename: 'useMutation-demo.tsx',
             language: 'typescript',
@@ -227,9 +230,9 @@ function NewPostForm() {
     </form>
   )
 }`,
-            explanation: "mutation.mutate(data) async call start karta hai. isPending se loading state milti hai. invalidateQueries se ['posts'] query stale mark hoti hai — jo bhi component use kar raha ho wo background mein refetch karta hai. setQueryData se cache directly update karo bina network call ke.",
+            explanation: "invalidateQueries power samjho — onSuccess mein queryClient.invalidateQueries({ queryKey: ['posts'] }) call kiya. Ye ['posts'] query stale mark karta hai. Jo bhi component is query ko use kar raha hai — background mein refetch start. Naya post milta hai — UI update. Koi manual setState nahi, koi useEffect nahi, koi prop drilling nahi. Bus ek invalidate call.",
           }}
-          realWorldScenario="Twitter/X pe tweet like karna — useMutation se like API call hoti hai, onSuccess mein tweet query invalidate hoti hai — updated like count milta hai. Multiple components (feed, profile) dono update hote hain automatically kyunki same queryKey invalidate hua."
+          realWorldScenario="Twitter like button — tap karo, useMutation: like API call. onSuccess: queryClient.invalidateQueries(['tweet', postId]). Feed mein tweet — updated like count. Profile page pe same tweet — bhi updated. Notifications — updated. Sab kyunki same queryKey invalidate hua. Ek mutation, multiple components automatically updated."
           commonMistakes={[
             {
               mistake: 'Mutation ke baad manually state update karna instead of invalidation',
@@ -242,7 +245,7 @@ function NewPostForm() {
               fix: 'const queryClient = useQueryClient() component mein call karo, phir onSuccess mein use karo. QueryClient Provider se milta hai.',
             },
           ]}
-          proTip="Form libraries ke saath useMutation perfect integrate hoti hai: React Hook Form + useMutation — handleSubmit(data => mutation.mutate(data)). Zod validation + React Hook Form + useMutation — complete type-safe form submission pipeline milti hai."
+          proTip="Power combo — Zod + React Hook Form + useMutation. Zod: schema define karo. React Hook Form: validate karo client side. useMutation: server pe bhejo. handleSubmit(data =&gt; mutation.mutate(data)) — ek line connection. Type-safe end to end: form data Zod type → mutation variable Zod type → API response type. Server errors bhi handle karo: onError mein form.setError('email', { message: serverError })."
         />
       </div>
 
@@ -251,14 +254,14 @@ function NewPostForm() {
           title="Cache & Stale Time — Smart Caching"
           emoji="🗄️"
           difficulty="intermediate"
-          whatIsIt="TanStack Query automatically data cache karta hai queryKey se. staleTime se batao kitni der fresh maano — is dauraan component mount ya window focus par refetch nahi hoga. gcTime (garbage collection time) se batao unused cache kitni der rakhni hai. In dono ka balance = optimal performance."
+          whatIsIt="Caching strategy TanStack Query mein do numbers se control hoti hai. staleTime — 'is data ko kitni der fresh maano?' Zero: hamesha stale, har mount pe refetch. 300000 (5 min): 5 minute fresh, is dauraan koi refetch nahi. gcTime — 'unused query cache ko memory mein kitni der rakhon?' Default 5 min. Agar koi component is query use nahi kar raha toh 5 min baad cache GC se clear hoti hai. staleTime <= gcTime — warna stale ban jaayegi GC se pehle."
           whenToUse={[
-            'High staleTime (5-60 min) — rarely changing data: config, metadata, static content',
-            'Low staleTime (0-30 sec) — frequently changing: live prices, notifications',
-            'gcTime adjust karo — rarely accessed pages ke liye cache clear karo',
-            'User-triggered refetch ke liye refetch() function use karo',
+            'High staleTime (5-60 min) — config, metadata, rarely changing data',
+            'Low staleTime (0-30 sec) — live prices, notifications, real-time data',
+            'refetchInterval — polling: har N ms mein auto-refresh',
+            'User-triggered refetch — manual refresh button pe refetch() call',
           ]}
-          whyUseIt="Caching UI fast banata hai — cached data instantly show hota hai background mein update hota hai. staleTime se unnecessary network requests reduce hote hain. gcTime se memory manage hoti hai. Together these controls developer ko fine-grained caching control dete hain."
+          whyUseIt="Caching ke bina — har component mount pe network call. Products page 10 components use kare — 10 calls. Cache hit se: 1 call, 9 instant. User experience: page instant load, stale indicator se pata chale refresh ho raha hai. Server cost: dramatically down. Ye optimization practically free hai — sirf staleTime set karo."
           howToUse={{
             filename: 'caching-demo.ts',
             language: 'typescript',
@@ -304,9 +307,9 @@ function usePrefetch() {
 
   return { prefetchUser }
 }`,
-            explanation: "staleTime: 0 matlab data hamesha stale hai — mount ya focus par refetch hoga. refetchInterval se polling implement hota hai. prefetchQuery user hover karne par data pehle se load kar leta hai — click karne par instant display. gcTime se memory management hoti hai unused queries ke liye.",
+            explanation: "staleTime 0: component mount hota hai, cache mein data hai, lekin stale (age 0ms) — background refetch starts, cached data instantly show. stale data dikhao while fresh data aata hai — ye 'stale-while-revalidate' strategy hai. refetchInterval: internal setInterval jaisa — har 30 seconds refetch. refetchIntervalInBackground: false — hidden tab mein polling band.",
           }}
-          realWorldScenario="Financial dashboard — account balance: staleTime 0 (critical, hamesha fresh), transaction list: staleTime 5 min (stable, rarely changes immediately), currency rates: refetchInterval 60000 (live market data). Sab alag strategies, ek library."
+          realWorldScenario="Fintech dashboard — account balance: staleTime 0 (koi bhi moment balance change ho sakta hai, hamesha fresh). Transaction history: staleTime 5 min (transactions rarely change turant). Currency exchange rates: refetchInterval 30000 (live market data, 30s polling). Teen alag data types, teen alag strategies — ek library."
           commonMistakes={[
             {
               mistake: 'staleTime aur gcTime confuse karna',
@@ -319,7 +322,7 @@ function usePrefetch() {
               fix: 'refetchIntervalInBackground: false add karo — tab hidden ho toh polling ruk jaayegi.',
             },
           ]}
-          proTip="queryClient.prefetchQuery() link hover par call karo — user click karne par instant data milega. React Router loader function mein bhi prefetch karo: export const loader = ({ params }) => queryClient.prefetchQuery(['product', params.id], fetchProduct). Zero loading state UX!"
+          proTip="Prefetching — ye elite UX trick hai. User product card pe hover karta hai — queryClient.prefetchQuery(['product', id], fetchProduct) call karo. User click karta hai — data already cached! Zero loading state. onMouseEnter event handler mein prefetch — 200-300ms lead time milta hai. Ye Netflix aur Amazon use karte hain — hover pe preload, click pe instant. Ye ek event handler change se possible hai."
         />
       </div>
 
@@ -328,14 +331,14 @@ function usePrefetch() {
           title="Optimistic Updates — UI-First Updates"
           emoji="⚡"
           difficulty="intermediate"
-          whatIsIt="Optimistic update matlab server response ka wait kiye bina UI immediately update karna — server confirm karega assumption ke saath. Like button click karte hi count increase karo, server fail karne par rollback karo. User ko instant feedback milta hai — perceived performance bahut better hoti hai."
+          whatIsIt="Optimistic updates — ek psychological trick jo real engineering hai. User like button click karta hai — 200ms baad server respond karega. Agar user 200ms wait kare toh sluggish feel. Optimistic approach: server se pehle hi UI update karo — 'optimistically assume karo ki server agree karega.' 99.9% cases mein agreement hota hai. 0.1% failure — rollback karo. Net result: instant UI, rare rollback, amazing UX."
           whenToUse={[
-            'Like/unlike, follow/unfollow — simple toggle operations',
-            'Todo list — item immediately add karo, server se sync karo',
-            'Comment post karna — immediately show karo, background save hoga',
-            'Fast UI reactions chahiye — social features, real-time feel',
+            'Like/unlike, follow/unfollow — simple toggle, high frequency',
+            'Todo item add/complete — instant feedback',
+            'Cart operations — instant count update',
+            'Comment post — immediately show, background save',
           ]}
-          whyUseIt="Network latency 100-500ms hota hai. Agar user har action ke baad loading wait kare toh UX sluggish lagta hai. Optimistic updates se UI instant respond karta hai — server failure bahut rare hoti hai (99%+ requests succeed karte hain). Rare failures pe rollback elegant hota hai."
+          whyUseIt="Instagram like button example — tap karo, heart instantly filled. 200ms baad server confirms. Agar server fails: heart unfills. User notice karta hai? Rarely — because 99.9% succeed karte hain. Ye psychological trick real engineering ke saath combine hoti hai — perceived performance dramatically better hoti hai. Users feel ki app fast hai."
           howToUse={{
             filename: 'optimistic-demo.tsx',
             language: 'typescript',
@@ -390,9 +393,9 @@ function LikeButton({ postId, initialLiked }: { postId: string; initialLiked: bo
     </button>
   )
 }`,
-            explanation: "onMutate server call se pehle chalta hai — UI immediately update hoti hai. cancelQueries ongoing refetches rok deta hai conflict se bachne ke liye. previousPost snapshot rollback ke liye rakha. onError mein rollback hota hai. onSettled mein server se final state sync hota hai.",
+            explanation: "Step by step trace karo — user like tap karta hai. onMutate: cancelQueries (ongoing refetch rok do, conflict avoid). getQueryData snapshot (rollback ke liye). setQueryData optimistically update. UI instantly updated. Server call starts. Success? onSettled invalidate (server se confirm lo). Fail? onError rollback (snapshot restore). Clean pattern.",
           }}
-          realWorldScenario="Instagram like button — tap karte hi heart filled ho jaata hai (optimistic), 200ms baad server confirm karta hai. Agar koi edge case mein fail ho toh unfilled ho jaata hai — lekin 99.9% mein user ko instant response milta hai. This is exactly what Instagram does."
+          realWorldScenario="Instagram like button — exactly yahi pattern. Tap — heart filled (onMutate). Server call starts. 99.9% success — onSettled final count confirm. 0.1% network error — onError rollback, heart unfills. User briefly confused — but itna rare hai ki acceptable trade-off. Real Instagram engineers ne yahi decision kiya — performance matters more than perfect consistency."
           commonMistakes={[
             {
               mistake: 'cancelQueries miss karna',
@@ -405,7 +408,7 @@ function LikeButton({ postId, initialLiked }: { postId: string; initialLiked: bo
               fix: 'onError mein context.previousPost use karke setQueryData se rollback karo — hamesha implement karo optimistic updates ke saath.',
             },
           ]}
-          proTip="Complex optimistic updates ke liye immer library use karo — produce() se immutable updates easily likho: queryClient.setQueryData(['todos'], produce(draft => { draft.push(newTodo) })). Nested state updates bahut cleaner ho jaati hain."
+          proTip="Immer library optimistic updates ko dramatically clean karta hai. queryClient.setQueryData(['todos'], produce(draft =&gt; { draft.push(newTodo) })). Spread operators nahi, nested updates easy. Complex state — todo items ke andar subtasks add karo — immer se ek line. Zustand bhi immer use karta hai internally. Ye pattern seekhna investment hai — bahut jagah kaam aata hai."
         />
       </div>
     </div>

@@ -67,10 +67,10 @@ export default function TSChapter9Content() {
           Type Guards & Narrowing — TypeScript Ko Smarter Banao
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          TypeScript control flow analysis karta hai — if-else, switch, try-catch blocks mein automatically type narrow karta hai. Lekin kab manual help chahiye? Custom type predicates, in operator, instanceof — ye sab narrowing tools hain. Exhaustiveness checking se ensure karo ki union ke koi bhi case miss na ho.
+          TypeScript ko kaise bataao ki ye string hai ya number? Woh khud deduce karta hai — isko kehte hain narrowing. Tum condition likhte ho, TypeScript automatically type narrow kar deta hai us block ke liye. Magic nahi — science! TypeScript ek control flow graph banata hai tumhare code ka aur track karta hai ki har point pe kaunsi types possible hain.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein TypeScript ke narrowing mechanisms deeply samjhenge — taaki koi bhi runtime type error se bachein aur type-safe code consistently likhein.
+          Ab sawaal ye aata hai — kab TypeScript khud narrow nahi kar paata? Tab custom type predicates kaam aate hain. Ye runtime check functions hain jo TypeScript ko explicitly batate hain "is function true return kare toh ye type hai." Exhaustiveness checking toh aur powerful hai — naya union member add karo, compiler khud guide karta hai kahan kahan handle karna hai. Is chapter mein ye poora narrowing system samjhenge.
         </p>
       </div>
 
@@ -79,14 +79,14 @@ export default function TSChapter9Content() {
           title="typeof & instanceof Guards — Built-in Narrowing"
           emoji="🔎"
           difficulty="advanced"
-          whatIsIt="TypeScript built-in control flow analysis karta hai — typeof, instanceof, equality checks, truthiness checks sab type narrow karte hain. typeof narrowing primitive types ke liye kaam karta hai: string, number, boolean, bigint, symbol, undefined, function, object. instanceof class instances ke liye."
+          whatIsIt="TypeScript ek compiler nahi hai — ek type inference engine hai jo control flow samjhta hai. if (typeof value === 'string') ke baad TypeScript jaanta hai us block mein value string hai — agar string nahi hoti toh woh block execute hi nahi hota. Ye control flow analysis hai. typeof primitives ke liye narrow karta hai, instanceof class instances ke liye. Aur ek caveat — typeof null === 'object' — ye JavaScript ka historic bug hai, TypeScript bhi iska shikaar hota hai."
           whenToUse={[
             'Union types mein primitives distinguish karna — string | number',
             'Class instances check karna — Error, Date, custom classes',
             'null/undefined check — if (value != null)',
             'Truthy/falsy checks — empty string, 0, null sab falsy',
           ]}
-          whyUseIt="typeof aur instanceof most common narrowing tools hain — JS runtime checks directly TypeScript ko samjha dete hain. No extra setup — ye language built-in hai. TypeScript inhe reliably samjhta hai aur type narrow karta hai. Zyada cases ke liye kafi hain — custom predicates edge cases ke liye."
+          whyUseIt="Ye sab JavaScript mein already available hai — typeof, instanceof, in operator. TypeScript ne inhe type narrowing ke liye repurpose kiya hai. No extra syntax, no new keywords seekhne ki zaroorat. Wahi JS checks jo tum already jaante ho — TypeScript automatically type deduce karta hai. Ye WHY important hai — zero learning overhead, maximum type safety. Custom predicates sirf edge cases ke liye chahiye."
           howToUse={{
             filename: 'typeof-instanceof.ts',
             language: 'typescript',
@@ -185,9 +185,9 @@ function processStatus(status: Status | null) {
     console.log(\`Status is: \${status}\`)
   }
 }`,
-            explanation: 'typeof string, number, boolean ke liye. instanceof class instances ke liye. in operator property existence check ke liye. Equality checks literal types narrow karte hain. Ye sab compile-time information dete hain TypeScript ko — no casting needed.',
+            explanation: 'Ek important pattern dekho — value == null (loose equality) ek baar mein null aur undefined dono check karta hai. !== null strict equality sirf null check karta hai. In dono ka fark samjho. Early return pattern — agar condition fail ho toh return karo, baaki code mein type already narrowed. TypeScript is flat code style ko prefer karta hai — nested if-else se better narrowing milti hai.',
           }}
-          realWorldScenario="Express error handler: app.use((err: unknown, req, res, next) => { if (err instanceof ZodError) { res.status(400).json({ errors: err.errors }) } else if (err instanceof PrismaClientKnownRequestError) { res.status(409).json({ error: 'Conflict' }) } else if (err instanceof Error) { res.status(500).json({ error: err.message }) } }). Har error type alag handled — no any."
+          realWorldScenario="Express global error handler — err: unknown type hota hai. instanceof chain se narrow karo: ZodError hai toh 400 validation error, PrismaClientKnownRequestError hai toh 409 conflict, generic Error hai toh 500. Har case mein sahi properties automatically available hain — err.errors, err.message. Koi as casting nahi. Ye pattern production Express apps mein standard hai."
           commonMistakes={[
             {
               mistake: 'typeof null === "object" — JavaScript bug',
@@ -200,7 +200,7 @@ function processStatus(status: Status | null) {
               fix: 'Interface ke liye in operator ya custom type predicate use karo. instanceof sirf classes ke liye.',
             },
           ]}
-          proTip="TypeScript control flow graph banata hai — har branch mein type track karta hai. Agar tum if (cond) return statement likhte ho toh baad ki code mein type already narrowed hoti hai. Early returns se nesting kam hoti hai aur TypeScript ka narrowing bhi better kaam karta hai — prefer flat code with early returns."
+          proTip="TypeScript ka secret weapon — agar tum if (value == null) return likhte ho, toh uske baad poore function mein value guaranteed non-null hai. TypeScript ka control flow graph ye track karta hai. Early return se guard karo, baaki code clean ho jaata hai. Ye ek coding style aur type safety dono ka best combination hai — Effective TypeScript book mein isko 'guard clauses' kehte hain."
         />
       </div>
 
@@ -209,14 +209,14 @@ function processStatus(status: Status | null) {
           title="Custom Type Predicates — is keyword"
           emoji="🧪"
           difficulty="advanced"
-          whatIsIt="Custom type predicates TypeScript ko batate hain ki ek function kisi value ka type check karta hai. Return type: param is SomeType. Jab function true return kare toh TypeScript us parameter ko SomeType maan leta hai. Reusable type guards banane ke liye — ek baar likho, kahin bhi use karo."
+          whatIsIt="Custom type predicates ek special function hain — return type boolean nahi, param is SomeType hota hai. TypeScript ko explicitly bata rahe ho: 'jab ye function true return kare toh trust karo — ye value is type ki hai.' Ye runtime check + compile time type information ka combination hai. Sabse powerful use — Array.filter ke saath. filter(isNotNull) se filtered array ka type automatically correct ho jaata hai, plain arrow function se nahi hota."
           whenToUse={[
             'Complex runtime type check — multiple conditions',
             'Reusable type guard — alag alag jagah same check',
             'Unknown type narrow karna — API responses, JSON.parse',
             'Array filter karna aur type preserve karna',
           ]}
-          whyUseIt="Custom predicates complex narrowing logic encapsulate karte hain. (arr as User[]) casting se better — runtime mein actual check hoti hai. Array.filter(isUser) — filtered array automatically User[] type ka hota hai. Reusable — ek baar define karo, kahin bhi use karo safely."
+          whyUseIt="Ab sawaal ye aata hai — sirf as casting kyun nahi karte? Kyunki as casting sirf TypeScript ko chup karaata hai — runtime mein koi guarantee nahi. Type predicate actual check karta hai runtime pe. Agar check galat hai toh TypeScript galat assume karega — bug. Agar check sahi hai toh compile time pe accurate types milte hain. Predicate ek contract hai: 'meri responsibility hai ye sahi check karna.'"
           howToUse={{
             filename: 'type-predicates.ts',
             language: 'typescript',
@@ -304,9 +304,9 @@ async function fetchAndProcess(id: string) {
   // Yahan: data is User — guaranteed
   return data.name
 }`,
-            explanation: 'value is User return type TypeScript ko signal hai. Actual runtime check karo — fake predicates runtime bugs cause karte hain. Array.filter(isNotNull) — filtered type correctly narrowed. asserts x is T assertion functions ke liye — throw se baad TypeScript narrow karta hai.',
+            explanation: 'Ek critical point — isUser predicate mein galat check likhoge toh TypeScript wrong type assume karega. Ye TypeScript ki limitation hai — woh trust karta hai tum par. Isliye thorough validation karo. asserts value is User — ye alag hai. Ye throw karta hai failure pe, return nahi karta. Baad ka code guaranteed User type treat karta hai. Assertion functions startup validation ke liye perfect hain.',
           }}
-          realWorldScenario="API response validation: function isApiUser(data: unknown): data is ApiUser — Zod se built bhi kar sakte ho. const zodUser = z.object({...}). function isApiUser(x: unknown): x is z.infer<typeof zodUser> { return zodUser.safeParse(x).success }. Ab Zod validation + TypeScript narrowing dono ek saath kaam karte hain."
+          realWorldScenario="API se data aaya — unknown type. Zod schema banao, safeParse karo, aur type predicate return karo. function isApiUser(x: unknown): x is ApiUser { return userSchema.safeParse(x).success }. Ab isApiUser check karo — true hai toh data poori tarah typed hai. Zod validation + TypeScript narrowing ek saath. Ye pattern real production code mein bahut use hota hai — runtime safety + compile time safety dono."
           commonMistakes={[
             {
               mistake: 'Predicate mein actual check nahi karna — return true likhna',
@@ -319,7 +319,7 @@ async function fetchAndProcess(id: string) {
               fix: 'function isNotNull<T>(x: T | null): x is T { return x !== null } — explicit predicate zaroorat hai.',
             },
           ]}
-          proTip="Zod library se automatically type predicates banao: const userSchema = z.object({ name: z.string() }). type User = z.infer<typeof userSchema>. function isUser(x: unknown): x is User { return userSchema.safeParse(x).success }. Zod runtime validation karta hai aur TypeScript type dono milte hain — manually likhne ki zaroorat nahi."
+          proTip="Zod ek game-changer hai type predicates ke liye. Schema ek baar likho — z.object({ name: z.string(), email: z.string().email() }). z.infer se TypeScript type automatically niklo. safeParse.success se type predicate banao. Manually isUser predicate likhne ki zaroorat hi nahi — Zod ne sab handle kar diya. Aur agar schema change hoga? Type aur predicate dono automatically update ho jaayenge."
         />
       </div>
 
@@ -328,14 +328,14 @@ async function fetchAndProcess(id: string) {
           title="Discriminated Union Narrowing — Smart Switch"
           emoji="🎯"
           difficulty="advanced"
-          whatIsIt="Discriminated unions mein common literal property (discriminant) hoti hai — TypeScript switch ya if-else mein automatically narrow karta hai. Har case mein correct properties available hain — no casting. Ye pattern React state management, Redux actions, API responses ke liye ideal hai."
+          whatIsIt="Discriminated union narrowing — TypeScript ka most elegant feature. status ya type property ek discriminant hoti hai. TypeScript switch statement mein isko dekh ke automatically narrow karta hai — case 'loading' mein TypeScript jaanta hai sirf status hai, case 'success' mein data bhi hai. Ye pattern async operations ke liye made for hai — idle, loading, success, error — har state ka apna shape, TypeScript sab track karta hai."
           whenToUse={[
             'Multiple state variants — loading, success, error',
             'Redux/Zustand actions type karna',
             'API responses — different shapes on success vs error',
             'Command pattern — different command types',
           ]}
-          whyUseIt="Discriminated union narrowing zero-overhead type safety deta hai. as casting ki zaroorat nahi — TypeScript khud samjhta hai. IDE exact properties suggest karta hai har case ke liye. Naya variant add karo — TypeScript automatically batata hai kahan handle karna padega."
+          whyUseIt="Socho React component mein data fetch ho raha hai. Bina discriminated union ke — data?.user?.name likhna padega everywhere optional chaining se. Discriminated union ke saath — status check karo, TypeScript ne narrow kar diya, data.user.name directly accessible. No optional chaining, no 'possibly undefined' errors. Aur naya status add karo — compiler EVERY render function mein batayega handle karo. Ye compiler-driven development hai."
           howToUse={{
             filename: 'discriminated-narrowing.ts',
             language: 'typescript',
@@ -414,9 +414,9 @@ function handleResponse<T>(response: ApiResponse<T>): T {
     throw new Error(\`API Error \${response.statusCode}: \${response.error}\`)
   }
 }`,
-            explanation: 'status ya type property discriminant hai. switch case mein TypeScript automatically narrow karta hai. never default case mein exhaustiveness ensure karta hai. Discriminant literal type honi chahiye — string/number literal, boolean.',
+            explanation: 'AsyncState&lt;T&gt; pattern bahut reusable hai — generic T se koi bhi data type support karta hai. const _exhaustive: never = state line — ye sirf tab compile hoti hai agar sab cases handled hain. Agar handle nahi kiya naya case toh TypeScript error: "Type X is not assignable to never." Ye compile-time guarantee hai ki koi case miss nahi hua.',
           }}
-          realWorldScenario="React data fetching hook: const [state, setState] = useState<AsyncState<User>>({ status: 'idle' }). useEffect mein setState({ status: 'loading' }) phir setState({ status: 'success', data: user }). Render mein switch(state.status) — har case mein exactly sahi properties available hain. Type safety throughout!"
+          realWorldScenario="React TanStack Query ya SWR use karte ho — unka internal state discriminated union pe based hai. Khud banao useQuery hook: useState&lt;AsyncState&lt;User&gt;&gt;({ status: 'idle' }) se start karo. setState({ status: 'loading' }) fetch ke pehle, setState({ status: 'success', data }) success pe, setState({ status: 'error', error }) failure pe. Component mein switch — TypeScript sab handle karta hai. No undefined, no null checks everywhere."
           commonMistakes={[
             {
               mistake: 'Sab variants mein same discriminant value rakhna',
@@ -429,7 +429,7 @@ function handleResponse<T>(response: ApiResponse<T>): T {
               fix: 'Ye intentional hai! Error matlab hai ki naya variant add hua hai aur switch mein case handle karna hai.',
             },
           ]}
-          proTip="Discriminated unions ke liye match function likhna handy hai: function match<T extends { status: string }>(state: T, handlers: { [K in T['status']]: (s: Extract<T, { status: K }>) => void }): void. Type-safe pattern matching — JavaScript mein Haskell-style. ts-pattern library ye already provide karti hai production-ready tarike se."
+          proTip="ts-pattern library dekhte hain — match(state).with({ status: 'success' }, s => s.data).with({ status: 'error' }, s => s.error).exhaustive(). Ye JavaScript mein Haskell-style pattern matching hai. .exhaustive() method compile-time exhaustiveness check karta hai. TypeScript ke saath perfectly typed. Agar switch-case zyada verbose lage toh ts-pattern ek clean alternative hai."
         />
       </div>
 
@@ -438,14 +438,14 @@ function handleResponse<T>(response: ApiResponse<T>): T {
           title="Exhaustiveness Checking — Never Miss A Case"
           emoji="✅"
           difficulty="advanced"
-          whatIsIt="Exhaustiveness checking ensure karta hai ki union type ke sab cases handle kiye hain. never type ko pattern: jab TypeScript narrow karta karta actual never pahunch jaaye — koi value left nahi — toh _: never assignment compile error deta hai agar koi case miss ho. TypeScript 4.9+ mein satisfies bhi help karta hai."
+          whatIsIt="Exhaustiveness checking — ye TypeScript ka never type ka sabse practical use hai. never ek special type hai jo koi bhi value nahi le sakti. Switch statement mein jab sab cases handle ho jaate hain toh remaining value never type ki ho jaati hai. const _: never = value likhne se TypeScript check karta hai — agar value never nahi hai (matlab koi case bacha hua hai) toh compile error. Ye compile-time guarantee hai ki union ke sab cases handled hain."
           whenToUse={[
             'Switch statements pe discriminated unions',
             'Agar future mein union mein naye variants add honge',
             'Compiler help chahiye — "kahan kahan update karna hai?"',
             'Runtime-safe aur compile-time-safe dono chahiye',
           ]}
-          whyUseIt="Exhaustiveness checking refactoring safe banata hai. Naya union member add karo — TypeScript immediately batata hai kahan kahan handle karna hai. Bina ye check ke silent bug ho sakta hai — naya case silently default pe fall kare. This is TypeScript ki best safety feature — never type ka practical use."
+          whyUseIt="Ye situation imagine karo — 3 mahine baad product team bolta hai 'naya payment method add karo — wallet.' Tum union mein add karo PaymentMethod type mein. Bina exhaustiveness ke — compiler chup rahega, wallet ka fee silently 0 rahega, production bug. Exhaustiveness ke saath — compiler immediately 5 files mein error dega jahan getPaymentFee, displayPaymentIcon, etc. hain. Ek type change se poori codebase guided update. Ye compiler-driven refactoring hai."
           howToUse={{
             filename: 'exhaustiveness.ts',
             language: 'typescript',
@@ -521,9 +521,9 @@ function describeShape(shape: Shape): string {
   // TypeScript knows: shape is never here — all cases handled
   return assertNever(shape)  // Only needed if return required
 }`,
-            explanation: 'never type ko koi value assign nahi ho sakti. assertNever(x) function parameter never type leta hai — agar x never nahi hai (unhandled case) toh compile error. Record<StatusCode, string> object exhaustive map ke liye alternate approach hai.',
+            explanation: 'assertNever helper function — ye pattern bahut reusable hai. Ek baar banao, saare switch statements mein use karo. function assertNever(value: never): never — parameter type bhi never, return type bhi never. Agar value never nahi hai, TypeScript aise hi compile error deta hai. Record&lt;StatusCode, string&gt; approach bhi dekhte hain — object map se bhi exhaustiveness check hoti hai, switch se zyada readable kabhi kabhi.',
           }}
-          realWorldScenario="E-commerce project mein OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'. 3 mahine baad 'refunded' add karna pada. Bina exhaustiveness ke — silent bug, refunded orders wrong state. Exhaustiveness checking ke saath — compiler immediately 5 alag files mein switch statements pe error deta hai."
+          realWorldScenario="E-commerce project — OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'. 3 mahine baad 'refunded' add kiya. Exhaustiveness checking hai — compiler ne immediately bataya: getOrderLabel, getOrderIcon, sendOrderEmail, updateOrderUI — in 4 files mein handle nahi kiya. Team ne 1 ghante mein sab fix kar diya. Bina exhaustiveness ke — refunded orders mein wrong label, wrong emails — customer support tickets aate, production hotfix lata."
           commonMistakes={[
             {
               mistake: 'assertNever call karna agar cases actually incomplete hain',
@@ -536,7 +536,7 @@ function describeShape(shape: Shape): string {
               fix: 'Hamesha discriminated unions ke switch mein default: assertNever(x) likho — compiler guide karega.',
             },
           ]}
-          proTip="ts-pattern library (github.com/gvergnaud/ts-pattern) TypeScript mein pattern matching implement karta hai: match(shape).with({ kind: 'circle' }, s => Math.PI * s.radius ** 2).with({ kind: 'rect' }, s => s.w * s.h).exhaustive(). .exhaustive() call compile-time check karta hai — agar case miss hua toh error. Very readable pattern matching!"
+          proTip="Record approach ek hidden gem hai — const feeMap: Record&lt;PaymentMethod, number&gt; = { credit_card: 0.02, upi: 0 ... }. Agar PaymentMethod mein naya member add karo, Record compile error deta hai — key missing. Switch se zyada clean, same exhaustiveness guarantee. Simple static mappings ke liye Record pattern prefer karo, complex logic ke liye switch. Choose the right tool."
         />
       </div>
 

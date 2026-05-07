@@ -325,10 +325,10 @@ export default function Chapter2Content() {
         }}
       >
         <h2 className="text-2xl md:text-3xl font-display font-bold text-[#F5F5F7] mb-3">
-          Event Loop — Node ka Dil ❤️
+          Event Loop JavaScript ka part hi nahi hai — phir bhi har cheez isi par depend hai!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-4 text-base">
-          Ye ek concept hai jo sab cheezein explain karta hai. Agar ye samajh aa gaya, tum kabhi frustrated nahi hoge.
+          Suno — bahut log sochte hain Event Loop JavaScript ka feature hai. GALAT! JavaScript engine (V8) khud akela sirf ek kaam karta hai: ek line execute karo. Event Loop Node.js (ya browser) ka feature hai — JS engine ke bahar. Ye ek gatekeeper ki tarah hai jo decide karta hai ki JavaScript kab kya chalayega. Aur yahi woh mechanism hai jo Node.js ko non-blocking banata hai.
         </p>
 
         {/* Quote callout */}
@@ -340,7 +340,7 @@ export default function Chapter2Content() {
           }}
         >
           <p className="text-sm text-[#C4B5FD] leading-relaxed italic font-medium">
-            &ldquo;Single thread hai Node.js, phir bhi 10,000 concurrent requests handle karta hai. Kaise? Event loop. Bas.&rdquo;
+            &ldquo;Bhai, Event Loop ka ek hi kaam hai — gatekeeper banna. Call Stack khaali hai? Callback queue mein kuch hai? Toh andar aao. Nahi hai? Wait karo.&rdquo;
           </p>
         </div>
 
@@ -364,13 +364,13 @@ export default function Chapter2Content() {
           title="Call Stack"
           emoji="📚"
           difficulty="beginner"
-          whatIsIt="Call stack ek data structure hai jahan JavaScript apne currently executing functions track karta hai. Jab function call hota hai, stack par push hota hai. Jab return karta hai, stack se pop hota hai. LIFO (Last In, First Out) order follow karta hai. Simple baat: ye hi wo jagah hai jahan tumhara JS code actually 'chalta' hai."
+          whatIsIt="Pehle ye samjho — JavaScript ka koi bhi code chalane ke liye ek 'dabba' chahiye. Woh dabba hai Call Stack. Jab function call hota hai, woh dabba Call Stack mein push hota hai. Jab return karta hai, pop hota hai. LIFO — Last In, First Out. Andar aakhri aaya, bahar pehle jaayega, jaise ek dabbon ki stack. Ye hi woh jagah hai jahan tumhara poora JS code actually 'jeeta hai'. Koi bhi function chalao — Call Stack mein. Error aata hai? Stack trace yahin se nikalta hai!"
           whenToUse={[
             "Jab tumhe samajhna ho ki 'Maximum call stack size exceeded' error kyun aaya",
             'Stack traces debug karte waqt — console.error mein jo lines dikhti hain woh call stack hai',
             'Recursive functions ka behavior samajhna ho — kitna deep jayega recursion?',
           ]}
-          whyUseIt="Call stack ke bina JavaScript ka execution track karna impossible hota. Har function apna context stack par rakhta hai — local variables, return address sab kuch. Ye hi enable karta hai ki ek function doosre ko call kar sake, aur doosra khatam ho toh pehla resume ho. Bhai, ye JavaScript ka backbone hai."
+          whyUseIt="Jab greet() function chalata hai, Call Stack mein push hota hai. Andar sayName() call hota hai — woh bhi push. sayName() return karta hai — pop. greet() return karta hai — pop. Stack empty. Ye poori story ek baar mein trace kar sakte ho! Step 1: greet() push hoti hai. Step 2: sayName() push hoti hai. Step 3: sayName() return karta hai, pop. Step 4: greet() return karta hai, pop. Stack saaf! Samjhe? Ab infinite recursion mein kya hoga — stack kabhi khaali nahi hogi, overflow ho jaayegi. 'Maximum call stack size exceeded' yahin se aata hai!"
           howToUse={{
             filename: 'call-stack.js',
             language: 'javascript',
@@ -400,7 +400,7 @@ console.log(factorial(5)); // 120`,
             explanation:
               "greet() call hone par stack mein push hota hai. Andar sayName() call hone par wo bhi stack par aata hai. sayName() return karta hai, pop hota hai. greet() return karta hai, pop hota hai. Stack empty. Aur agar base case na ho, stack overflow — 'Maximum call stack size exceeded' error!",
           }}
-          realWorldScenario="Jab tum Express route handler mein ek function call karte ho jo doosra function call karta hai, sab call stack mein track hota hai. Isliye stack trace mein error kahan se start hua aur kahan tak gaya — sab dikh jaata hai. Bhai, agle time error aaye toh stack trace bottom se upar padho — sabse neeche wali line asli culprit hoti hai!"
+          realWorldScenario="Express route handler error aaya — stack trace dikhti hai console mein. Zyada tar developers sirf pehli line dekhte hain. GALAT! Stack trace bottom se upar padhte hain — sabse neeche wali line asli culprit hoti hai, wahan se error start hua. Upar waalay lines batate hain error kaun si functions ke through travel karke aaya. Ye ek professional debugging skill hai jo 99% developers nahi jaante!"
           commonMistakes={[
             {
               mistake: 'Infinite recursion — function khud ko call karta rehta hai bina base case ke',
@@ -423,13 +423,13 @@ console.log(factorial(5)); // 120`,
           title="Node.js APIs — Async Ka Secret"
           emoji="🔌"
           difficulty="beginner"
-          whatIsIt="Jab tum setTimeout(), fs.readFile(), fetch() etc. call karte ho, ye call stack mein execute nahi hota directly. Ye Node.js ki internal APIs ko pass ho jaata hai — libuv ya browser mein Web APIs. Ye APIs background mein kaam karti hain bina JS thread ko rokne ke. Tumhara JS code aage badhta rehta hai!"
+          whatIsIt="Ab asli magic samjhte hain! Jab tum setTimeout() likhte ho, woh Call Stack mein nahi chalti — woh Node.js API (libuv) ko jaati hai. Matlab: JS thread ne kaha 'ye kaam libuv ko de do, main aage badhta hoon'. Libuv background mein timer chalata hai, file padhta hai, network request karta hai. Jab kaam ho jaata hai, woh callback ko Callback Queue mein daalta hai. Event Loop tab callback ko Call Stack par lata hai. Ye saara flow bina main thread ruke hota hai — yahi 'non-blocking' ka matlab hai!"
           whenToUse={[
             'Koi bhi async operation — file reading, network call, timer, database query',
             "Wo sab jo 'wait' karta ho — time-consuming kaam jaise AI API calls",
             'Real-time events — WebSocket messages, file watchers, timers',
           ]}
-          whyUseIt="Agar setTimeout synchronously run hota, toh 1000ms ka timeout tumhara poora program 1 second ke liye freeze kar deta. Ye APIs background mein chalti hain — Node.js free rehta hai doosra kaam karne ke liye. Isi wajah se ek Node.js server 10,000 concurrent requests handle kar sakta hai!"
+          whyUseIt="Soch ke dekho — agar setTimeout synchronously run hota, toh 2 second ka timeout entire program ko 2 seconds freeze kar deta. Server completely unresponsive! Lekin Node.js mein aisa nahi hota. setTimeout libuv ko jaata hai, libuv OS ko deta hai, main thread FREE. Is code ka output yaad karo: 1, 2, 4, 3 — kyunki file read (~5ms) setTimeout (~2000ms) se pehle complete hoti hai. Ye Node.js APIs ka asar hai — har cheez Event Loop ke through jaati hai!"
           howToUse={{
             filename: 'node-apis-demo.js',
             language: 'javascript',
@@ -456,7 +456,7 @@ console.log('2: End'); // Immediately — kisi ka wait nahi karta!
             explanation:
               'setTimeout aur fs.readFile dono Node.js APIs ko pass hote hain — libuv. JS continue karta hai bina ruke. 2 second baad setTimeout callback queue mein aata hai, file read hote hi file callback queue mein aata hai. Event loop inhe call stack mein dalta hai ek ek karke.',
           }}
-          realWorldScenario="ResumeATS mein jab AI API call hoti hai (30 seconds tak lag sakti hai), ye bhi Node.js API ke through jaati hai. Request ek thread ko block nahi karti — tum 100 aur requests simultaneously handle kar sakte ho. Ye hi Node.js ki superpower hai I/O-heavy apps ke liye!"
+          realWorldScenario="AI chatbot API sochte hain — ek request mein OpenAI call hoti hai jo 30 seconds le sakti hai. Agar synchronous hoti, 30 seconds mein server ek bhi doosri request handle nahi karta. Node.js APIs se ye call libuv ke paas jaati hai, main thread free rehta hai. 30 seconds mein 1000 aur requests handle ho sakti hain. Ye hi production-grade Node.js ki superpower hai!"
           commonMistakes={[
             {
               mistake: 'setTimeout(fn, 0) sochte hain immediate execute hoga — synchronous code se pehle',
@@ -474,13 +474,13 @@ console.log('2: End'); // Immediately — kisi ka wait nahi karta!
           title="Callback Queue"
           emoji="📋"
           difficulty="intermediate"
-          whatIsIt="Callback queue (ya macrotask queue) woh waiting area hai jahan completed async operations ke callbacks wait karte hain. setTimeout, setInterval, I/O operations (fs.readFile, network) ke callbacks yahan aate hain. Event loop inhe uthata hai aur call stack mein dalta hai — par tab jab stack bilkul empty ho aur microtask queue bhi clear ho jaaye."
+          whatIsIt="Callback Queue ek waiting lounge hai — jab async kaam complete ho jaata hai (timer expire hua, file read hui, network response aayi), unki callbacks yahan queue mein line lagate hain. Ab sawaal ye aata hai — Event Loop inhe kab Call Stack par laayega? Tab jab: (1) Call Stack bilkul khaali ho, aur (2) Microtask Queue bhi completely khaali ho. Tab ek macrotask uthega aur chalega. Ek ek karke, orderly, no chaos!"
           whenToUse={[
             'setTimeout / setInterval callbacks — timers expire hone ke baad',
             'I/O callbacks — fs.readFile, net module, http requests complete hone ke baad',
             'setImmediate() — I/O phase ke turant baad run karna ho',
           ]}
-          whyUseIt="Ye queue ensure karti hai ki async operations ka result orderly process ho. Bhai, sochlo — 50 alag file reads chal rahe hain, sab ek saath ready ho gaye. Callback queue ensure karti hai ki ye ek ek karke, predictable order mein process ho. Chaos nahi, order!"
+          whyUseIt="50 file reads ek saath chal rahi hain, sab different times par complete ho rahi hain. Callback Queue ek civil system hai — jaise hospital mein patients queue mein wait karte hain. Koi bhi callback seedha 'jump in' nahi kar sakti. Event Loop ek ek karke process karta hai. Isliye Node.js race conditions se free hai — ek waqt ek hi callback chalti hai. No mutex, no locks, no nightmare!"
           howToUse={{
             filename: 'callback-queue.js',
             language: 'javascript',
@@ -526,7 +526,7 @@ console.log('1b: Sync end');
             explanation:
               'Sync code pehle. Phir microtask queue (Promise). Phir event loop phases: setImmediate check phase mein, I/O callbacks poll phase mein, setTimeout timers phase mein. I/O ke andar setImmediate setTimeout se pehle aata hai — ye guaranteed behaviour hai.',
           }}
-          realWorldScenario="Jab tumhara Express server 100 database queries parallel run karta hai — sab ke callbacks callback queue mein lined up hote hain. Event loop ek ek karke process karta hai. Isliye Node.js safe hai without mutex ya locks — single-threaded queue ensures no race conditions!"
+          realWorldScenario="Express server 100 concurrent database queries chalata hai. Sab queries libuv thread pool mein jaati hain, alag alag time par complete hoti hain. Jaise jaise complete hoti hain, unki callbacks Callback Queue mein line lagate hain. Event Loop ek ek karke uthata hai aur execute karta hai. Koi collision nahi, koi data corruption nahi — single-threaded queue ki guarantee hai ye. Java developers ke liye ye revolutionary concept tha!"
           commonMistakes={[
             {
               mistake: 'Assume karna ki callback immediately execute hoga jab async operation done ho',
@@ -539,7 +539,7 @@ console.log('1b: Sync end');
               fix: 'I/O callbacks ke andar setImmediate hamesha setTimeout se pehle aata hai — guaranteed! Isliye I/O ke andar setImmediate use karo agar order important hai.',
             },
           ]}
-          proTip="Bhai, ek important baat: jab bhi tum Node.js mein koi long-running sync operation karte ho (heavy for loop, JSON.parse on 50MB data), ye callback queue ke saare pending callbacks ko delay kar deta hai. Server ke baaki requests wait karengi! Isliye always: async raho ya Worker Threads use karo."
+          proTip="Bhai, ye golden rule tattoo karwa lo: Long-running synchronous code = Callback Queue frozen. Ek heavy JSON.parse(), ek tight loop, ek synchronous crypto operation — ye sab pending callbacks ko delay karte hain. 100 requests queue mein wait karengi jab tak tumhara heavy sync code complete na ho. Rule: Main thread pe sirf I/O coordination karo, CPU kaam Worker Threads mein daalo!"
         />
       </div>
 
@@ -549,14 +549,14 @@ console.log('1b: Sync end');
           title="Microtask Queue — Promises Ki Priority Lane"
           emoji="⚡"
           difficulty="intermediate"
-          whatIsIt="Microtask queue ek SPECIAL high-priority queue hai specifically Promises (.then, .catch, .finally) aur queueMicrotask() ke liye. Ye callback queue se pehle execute hoti hai — HAMESHA. Ek bhi macrotask execute hone se pehle, puri microtask queue clear honi chahiye. Ye Promise-based code itna predictable feel karta hai iski wajah se!"
+          whatIsIt="Ruko — abhi bada twist aata hai! Callback Queue ke baare mein sab samjhe, lekin ek aur queue hai jo usse hamesha peeche chhod deti hai — Microtask Queue! Ye special VIP lane hai sirf Promises (.then, .catch, .finally) aur queueMicrotask() ke liye. Rule simple hai: Ek macrotask complete hone ke baad, poori Microtask Queue clear hoti hai — tab agla macrotask chalega. Matlab har macrotask ke baad Promises priority pe hain. Yahi wajah hai Promise.then() hamesha setTimeout se pehle chalti hai — chahe setTimeout(fn, 0) hi kyun na ho!"
           whenToUse={[
             'Promise.then() / .catch() / .finally() callbacks',
             'async/await internally Promise use karta hai — ye bhi microtask queue mein',
             'queueMicrotask() — directly microtask queue mein kuch dalna ho',
             'MutationObserver callbacks (browser mein)',
           ]}
-          whyUseIt="Promises ko high priority isliye milti hai kyunki ye generally application logic ke close hote hain. Agar setTimeout aur Promise ek saath resolve ho, Promise pehle handle hona chahiye — isiliye framework authors ne microtask queue banaya. Ye ensure karta hai ki async logic consistent aur predictable ho."
+          whyUseIt="Ye output dekho — Sync start, Sync end, Promise.then, setTimeout. Promise hamesha pehle. Kyon? Kyunki Promise logic application ka core hai — data processing, state updates. setTimeout typically delay ya scheduling ke liye hai. Framework designers ne decide kiya: application logic (Promises) ko priority milni chahiye UI/timer logic (setTimeout) se. Ye ensure karta hai ki Promise chains ek baar start ho ke complete hon — koi timer beech mein interrupt na kare!"
           howToUse={{
             filename: 'microtask-queue.js',
             language: 'javascript',
@@ -593,7 +593,7 @@ setTimeout(() => console.log('Macrotask — baad mein'), 0);
             explanation:
               "Sync code pehle. Phir microtask queue clear (Promise.then). Phir macrotask queue (setTimeout). Ye order FIXED hai — always. Microtask chain bhi sari ek saath complete hogi macrotask se pehle. Ye hi 'micro' ka matlab hai — har macrotask ke 'micro' pause mein process hoti hai.",
           }}
-          realWorldScenario="Jab tum await API call karte ho, phir response process karte ho, ye sab microtask queue ke through hota hai. Isliye Promise-based code ka execution order itna predictable feel karta hai — microtask queue ensure karti hai ki async operations ka chain complete ho pehle, koi bhi timer ya I/O callback interfere na kare."
+          realWorldScenario="Tumhara Express middleware chain sochte hain — authentication Promise, validation Promise, database query Promise. Ye sab microtask queue ke through jaate hain ek ke baad ek — koi timeout ya I/O callback beech mein nahi aa sakti. Isliye async/await code itna linear aur predictable lagta hai — microtask queue guarantee karta hai ki Promise chain atomic-jaisi complete hogi!"
           commonMistakes={[
             {
               mistake: 'Endless microtask loop — microtask andar se microtask add karte rehna',
@@ -601,7 +601,7 @@ setTimeout(() => console.log('Macrotask — baad mein'), 0);
               fix: 'Microtask chains carefully design karo. Agar recursion chahiye, setImmediate ya setTimeout use karo toh I/O aur timers bhi run ho sakein bich mein.',
             },
           ]}
-          proTip="process.nextTick() microtask queue se bhi pehle aata hai — ye alag 'nextTick queue' mein jaata hai! Priority order: nextTick queue > Microtask queue (Promises) > Macrotask queue (setTimeout/I/O). Ye bahut confusing lag sakta hai pehle — but chart yaad kar lo aur life easy ho jaayegi!"
+          proTip="Ek aur twist — process.nextTick() microtask queue se BHI pehle aata hai! Ye apni alag 'nextTick queue' mein hai. Priority order tattoo karwa lo: nextTick queue > Microtask queue (Promises) > Macrotask queue (setTimeout/I/O). Ab ek aur warning: Microtask chaining mein ghum jaao — agar microtasks continuously nayi microtasks add karti rahen, macrotasks kabhi chalenge hi nahi. Infinite microtask loop = server freeze!"
         />
       </div>
 
@@ -611,14 +611,14 @@ setTimeout(() => console.log('Macrotask — baad mein'), 0);
           title="Event Loop — Sab Ka Conductor"
           emoji="🔄"
           difficulty="intermediate"
-          whatIsIt="Event loop ek continuously running loop hai jo check karta rehta hai: 'Call stack khaali hai? Agar haan, toh queues mein kuch hai kya?' Pehle nextTick queue check karta hai, phir microtask queue, phir 6 phases mein se guzarta hai. Ye hi Node.js ki concurrency ka magic hai — single thread, lekin har cheez orchestrated!"
+          whatIsIt="Ab sab pieces ek saath aate hain! Event Loop ek continuously running loop hai — literally ek infinite while loop jo check karta rehta hai: 'Call Stack khaali hai? nextTick queue mein kuch hai? Microtask Queue mein? Koi timer expire hua? Koi I/O callback?' Ye ek specific order mein — 6 phases mein — sab check karta hai. Dekho ye code: output A, D, C, B hoga — kyunki Sync pehle (A, D), phir Microtasks (C), phir Macrotasks (B). Event Loop is order ki guarantee deta hai. Ye guarantee nahi hoti toh Node.js kabhi production-ready nahi hoti!"
           whenToUse={[
             'Jab async code unexpected order mein execute ho — event loop phases samjho',
             'Performance bottleneck dhundhna ho — kaun sa code loop block kar raha hai?',
             "setTimeout vs setImmediate vs process.nextTick — 'kab chalega?' samajhna ho",
             'Production server ka CPU 100% ho — blocking operations identify karna ho',
           ]}
-          whyUseIt="Event loop ke bina Node.js sirf ek synchronous script runner hoti. Event loop hi usse production-grade async server banata hai. Ye ensure karta hai ki I/O, timers, aur application code sab milkar kaam karen bina ek doosre ko block kiye. Ye samajhna mandatory hai serious Node.js developer ke liye."
+          whyUseIt="Ye complete code trace karo: Step 1 — Sync code chalti hai (1 aur 1b print). Step 2 — nextTick queue drain hoti hai (2 print). Step 3 — Microtask queue drain hoti hai (3 print). Step 4 — Event Loop phases shuru: setImmediate ya setTimeout (non-deterministic outside I/O). Step 5 — File read complete: I/O callback (6 print). Step 6 — I/O ke andar setImmediate (7) hamesha setTimeout (8) se pehle — guaranteed! Har step predictable hai. Ye hi Node.js ko reliable banata hai production mein."
           howToUse={{
             filename: 'event-loop-complete.js',
             language: 'javascript',
@@ -664,7 +664,7 @@ console.log('=== 1b: Sync code end ===');
             explanation:
               'Ye complete example sab queues aur phases cover karta hai. Key points: 1) Sync pehle. 2) nextTick aur microtasks har phase ke baad (always). 3) setImmediate vs setTimeout order outside I/O non-deterministic hai. 4) Inside I/O callbacks, setImmediate ALWAYS setTimeout se pehle — ye guaranteed hai!',
           }}
-          realWorldScenario="Express.js server mein jab request aati hai, request handler execute hota hai (sync), phir middleware promises resolve hote hain (microtasks), phir database queries complete hoti hain (I/O callbacks), phir response send hoti hai. Ye poora flow event loop manage karta hai. Koi bhi step block ho toh poora server slow ho jaata hai!"
+          realWorldScenario="Ek real production incident: Express.js server slow ho gaya. CPU usage 100%. Koi I/O heavy nahi tha. Reason? Ek developer ne ek route handler mein 10MB JSON.parse() likha tha — sync operation jo poore Event Loop ko 2-3 seconds block karta tha. Baaki saari requests wait karti thi. Fix? Worker Thread mein move kiya, main thread free hua. Server response time 2000ms se 5ms ho gaya. Yahi Event Loop ki practical importance hai!"
           commonMistakes={[
             {
               mistake: 'Event loop ko block karna — heavy synchronous operations main thread par',
@@ -677,7 +677,7 @@ console.log('=== 1b: Sync code end ===');
               fix: 'Agar guaranteed order chahiye I/O ke bahar, explicit chaining use karo. I/O ke andar setImmediate hamesha pehle — ye use karo.',
             },
           ]}
-          proTip="Event loop ko block mat karo! JSON.parse() large data par, synchronous crypto operations, heavy regex, tight CPU loops — sab block karte hain. Worker threads use karo CPU-intensive kaam ke liye. Aur clinic.js ya 0x tool se event loop lag profile karo production mein — kya block kar raha hai easily dikhega!"
+          proTip="Event Loop ko block mat karo — ye Node.js developers ka sab se bada mantra hai! Production monitoring ke liye: require('perf_hooks').monitorEventLoopDelay() se event loop lag measure karo. 10ms+ lag dikhta hai toh block ho raha hai. clinic.js tool se poori breakdown milti hai — kaunsa function loop block kar raha hai visually dikhaata hai. Ye tools production incidents mein lifesaver hain!"
           demo={
             <div className="space-y-4">
               <EventLoopPhaseDiagram />
@@ -706,14 +706,14 @@ console.log('=== 1b: Sync code end ===');
           title="process.nextTick vs setImmediate — Ye Dono Kab?"
           emoji="🤔"
           difficulty="advanced"
-          whatIsIt="process.nextTick() current operation ke IMMEDIATELY baad run karta hai — microtask queue se bhi pehle, apni special 'nextTick queue' mein. setImmediate() I/O phase ke baad 'check' phase mein run karta hai. Dono 'immediate' lagte hain naam se, par difference critical hai aur real bugs produce karta hai jab galat use ho."
+          whatIsIt="Ye dono ke naam bahut confusing hain — 'next' aur 'immediate' dono lagta hai 'abhi chahiye'. Lekin ye ek common trap hai! process.nextTick() — ye naam misleading hai, ye 'next tick of event loop' nahi hai. Ye CURRENT operation ke IMMEDIATELY baad, microtask queue se bhi pehle chalti hai apni special nextTick queue mein. setImmediate() — naam se 'immediate' lagta hai, lekin ye I/O phase ke baad check phase mein chalti hai. Ek real bug: developer ne nextTick mein recursive heavy processing ki, I/O starve ho gayi. setImmediate se replace kiya — fixed!"
           whenToUse={[
             'process.nextTick() — jab current operation ke turant baad kuch run karna ho, koi bhi I/O ya timer se pehle',
             'process.nextTick() — error-first callback pattern mein error emit karne ke liye (EventEmitter pattern)',
             'setImmediate() — jab I/O ke baad next iteration mein run karna ho',
             "setImmediate() — Node.js docs recommend karte hain 'use setImmediate() in most cases for clarity'",
           ]}
-          whyUseIt="Dono different use cases ke liye hain. process.nextTick() ensure karta hai ki kuch current synchronous block ke baad, par kisi bhi async operation se pehle, run ho. setImmediate() ensure karta hai ki event loop ka ek poora pass complete ho pehle. Galat choice se subtle bugs aate hain jo reproduce karna mushkil hota hai!"
+          whyUseIt="Output dekho: sync → nextTick → Promise → setImmediate. Priority clearly dikhti hai. Ab sawaal ye aata hai — kab kaunsa use karein? Rule: process.nextTick() sirf jab genuinely current operation ke baad, kisi bhi I/O se pehle kuch chahiye — jaise EventEmitter mein error emit karna. setImmediate() jab heavy processing ko chunks mein karna ho — har chunk ke baad I/O callbacks bhi run ho sakein. Recursion mein hamesha setImmediate, nextTick kabhi nahi — warna I/O starvation!"
           howToUse={{
             filename: 'nexttick-vs-immediate.js',
             language: 'javascript',
@@ -761,7 +761,7 @@ function doWork(item) { /* heavy processing */ }`,
             explanation:
               'setImmediate I/O ke baad check phase mein aata hai. process.nextTick nextTick queue mein — har kuch se pehle. Promise microtask queue mein — nextTick ke baad, macrotasks se pehle. Recursive work ke liye setImmediate use karo — I/O callbacks bich mein run ho sakenge. nextTick use kiya toh I/O starve ho jaayegi!',
           }}
-          realWorldScenario="Bhai, real bug scenario: ek developer ne large CSV processing mein process.nextTick() recursive use ki. Server ke saare HTTP requests queue mein wait karne lage — I/O kabhi run hi nahi hoi! setImmediate se replace kiya toh server responsive ho gaya. Ye ek line ka difference tha, par production incident!"
+          realWorldScenario="Ek production incident: bulk CSV processing ke liye developer ne process.nextTick() recursive loop banaya. 1 million rows process karne tha. Kya hua? Server ke saare HTTP requests freeze ho gaye — 30 minutes tak! nextTick queue kabhi khaali nahi hoti thi. Fix? setImmediate() use kiya — same kaam, lekin har chunk ke baad HTTP callbacks bhi run hote the. Server responsive raha throughout. Ek word ka change, production incident solved!"
           commonMistakes={[
             {
               mistake: 'process.nextTick() recursive use karna heavy processing mein',
@@ -769,7 +769,7 @@ function doWork(item) { /* heavy processing */ }`,
               fix: 'Recursive async work ke liye setImmediate() use karo — ye I/O phase ke baad aata hai, bich mein I/O callbacks run ho sakti hain.',
             },
           ]}
-          proTip="Node.js docs officially recommend: 'Use setImmediate() in most cases for clarity and portability.' process.nextTick() reserved karo specific use cases ke liye: error emission in EventEmitters, ya koi aise case jahan truly 'before any I/O' chahiye. Doubt mein? setImmediate()."
+          proTip="Node.js official docs literally kehti hain: 'Use setImmediate() in most cases for clarity and portability.' Ye Node.js team ki recommendation hai, mere opinion nahi! process.nextTick() sirf do specific cases ke liye — EventEmitter error emission, ya jahan genuinely 'kisi bhi I/O se pehle' guarantee chahiye. Doubt? setImmediate(). Recursion? setImmediate(). Heavy processing chunks? setImmediate(). process.nextTick pe trust mat karo jab tak zaroorat na ho!"
           demo={
             <div className="space-y-3">
               <p className="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-3">

@@ -185,10 +185,10 @@ export default function GenAIChapter11Content() {
         }}
       >
         <h1 className="text-4xl font-display font-bold text-[#F5F5F7] mb-3">
-          RAG — Retrieval Augmented Generation 🔍
+          RAG — LLM Ka Open-Book Exam 🔍
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          LLM ki training data outdated hoti hai aur private documents nahi jaanta. RAG iska solution hai — apna data LLM ko dynamically dedo, accurate answers pao.
+          LLM ki training ka cutoff hai — wo 2024 ke baad ki news nahi jaanta, tumhari company ke internal documents nahi jaanta, tumhare product ke latest features nahi jaanta. Ye fundamental limitation hai. RAG kya karta hai? Simple hai — Retrieval: pehle relevant docs dhundo, phir LLM ko context mein do. Ye open-book exam jaisa hai — LLM books dekh ke answer deta hai. Bina RAG ke? Closed-book — model guesses aur hallucinate karta hai.
         </p>
         <div
           className="rounded-xl p-4"
@@ -198,7 +198,7 @@ export default function GenAIChapter11Content() {
           }}
         >
           <p className="text-[#67E8F9] text-sm italic">
-            &quot;RAG = LLM ki reasoning power + apna data ki accuracy. Dono ka best.&quot;
+            &quot;RAG ek open-book exam hai LLM ke liye — pehle relevant docs dhundo, phir LLM ko context mein do. Hallucination dramatically kam ho jaata hai.&quot;
           </p>
         </div>
       </div>
@@ -209,14 +209,14 @@ export default function GenAIChapter11Content() {
           title="RAG Kya Hai?"
           emoji="🔍"
           difficulty="intermediate"
-          whatIsIt="Retrieval Augmented Generation (RAG) ek architecture hai jisme LLM ko answer generate karne se pehle relevant documents retrieve karke context mein diye jaate hain. LLM ki knowledge cutoff hoti hai aur private/company data nahi jaanta — RAG ye problem solve karta hai bina fine-tuning ke."
+          whatIsIt="RAG ka full form yaad karo: Retrieval-Augmented Generation. Retrieval = relevant documents dhundho. Augmented = LLM ke context ko augment karo. Generation = LLM answer generate kare. Do phases hain: offline (ingestion — documents embed karo, store karo) aur online (query — user question aaya, relevant docs retrieve karo, LLM ko do, answer lo). Fine-tuning se compare karo: RAG cheap, fast, updatable. Fine-tuning expensive, slow, static."
           whenToUse={[
             'Company internal documents pe Q&A — HR policies, product docs, SOPs.',
             'Latest news ya real-time data pe questions — LLM ki knowledge cutoff ke baad ki info.',
             'Domain-specific knowledge bases — legal, medical, technical documentation.',
             'Hallucination reduce karna chahte ho — retrieved context se grounded answers.',
           ]}
-          whyUseIt="Fine-tuning se RAG zyada flexible hai — naya data add karo bina model retrain kiye. LLM training expensive hai (thousands of dollars), RAG database update karna sirf vector upsert hai. Aur faithfulness measure kar sakte ho — answer ki grounding verify ho sakti hai."
+          whyUseIt="Company ne naya product launch kiya — RAG mein sirf naye docs add karo, vector upsert karo. Done. Fine-tuning mein? Phir se thousands of dollars aur weeks ka training. RAG ka economics completely different hai. Aur ek bonus: faithfulness measure kar sakte ho — kya model ne answer sirf retrieved docs se diya ya hallucinate kiya? Ye verifiability production mein gold standard hai."
           howToUse={{
             filename: 'rag-basic.ts',
             language: 'typescript',
@@ -254,9 +254,9 @@ const chunks = [
 ];
 const answer = await ragQuery('NodeMaster mein kitne chapters hain?', chunks);
 console.log(answer);`,
-            explanation: 'Simple RAG: retrieved chunks context mein dedo, LLM sirf us context se answer kare. System prompt mein explicitly bolo ki hallucinate mat karo — "Only from context" constraint crucial hai.',
+            explanation: 'Simple RAG ka core pattern: chunks join karo context string mein, LLM ko explicitly bolo "sirf is context se answer karo." Ye "only from context" instruction critical hai — bina iske model apni training se fabricate kar deta hai. Grounded responses chahiye toh ye constraint strict karo.',
           }}
-          realWorldScenario="Ek law firm apne case documents (thousands of PDFs) pe RAG build karti hai. Lawyer query karta hai: 'Section 302A ke precedents kya hain?' — system relevant case excerpts retrieve karta hai aur Claude un documents se accurate summary deta hai. Bina RAG ke Claude outdated ya fabricated cases bata sakta tha."
+          realWorldScenario="Ek law firm: thousands of case PDFs, lawyers manually search karte the — hours lagte the. RAG pipeline banaya: docs embed kiye, lawyer query kare — relevant case excerpts milliseconds mein. Claude un documents se accurate summary deta hai. Bina RAG ke? Claude fabricated cases bata sakta tha — hallucination ka risk high tha. RAG ne legal research time 70% reduce kiya."
           commonMistakes={[
             {
               mistake: 'RAG mein LLM ko bina retrieved context ke hi poochh lena',
@@ -269,7 +269,7 @@ console.log(answer);`,
               fix: 'Retrieval evaluate karo — context precision aur recall metrics measure karo. RAGAS library use kar sakte ho evaluation ke liye.',
             },
           ]}
-          proTip="RAG pipeline mein sabse zyada impact chunking strategy ka hota hai — embedding model ya LLM se zyada. Perfect chunking = relevant retrieval = accurate answers. Experiment karo: fixed, semantic, sentence-level — apne data pe evaluate karo."
+          proTip="RAG mein sabse underrated decision: chunking strategy. Ye embedding model choice se zyada impact karta hai retrieval quality pe. GPT-4o se GPT-4o-mini switch karne ka impact zyada nahi, lekin chunking fix karne ka impact dramatic hota hai. Test set banao (20-30 representative questions), retrieval evaluate karo, chunk strategy tune karo."
           demo={<RAGPipelineDiagram />}
         />
       </div>
@@ -280,14 +280,14 @@ console.log(answer);`,
           title="RAG Pipeline — Step by Step"
           emoji="🔄"
           difficulty="intermediate"
-          whatIsIt="RAG pipeline 6 steps mein hoti hai: (1) Document Loading, (2) Chunking, (3) Embedding generation, (4) Vector storage, (5) Query-time retrieval, (6) LLM generation with context. Ye pipeline offline (ingestion) aur online (query) — do parts mein hoti hai."
+          whatIsIt="Pipeline ko do parts mein samjho — ek baar run hone wala offline aur har query pe run hone wala online. Offline (ingestion): documents load karo, chunk karo, embed karo, vector DB mein store karo. Ye slow ho sakta hai — koi baat nahi, ek baar kaam hai. Online (query): user question embed karo, similar chunks retrieve karo, LLM ko context ke saath do. Ye fast hona chahiye — user wait kar raha hai."
           whenToUse={[
             'Ingestion pipeline (offline): naye documents add hone pe run karo.',
             'Query pipeline (online): user ke har sawal pe run karo — retrieval + generation.',
             'Batch ingestion: pehli baar poora knowledge base index karna.',
             'Incremental updates: naye documents aane pe sirf unhe add karna.',
           ]}
-          whyUseIt="Pipeline ko clearly split karna (ingestion vs query) architecture clean rakhta hai. Ingestion slow ho sakti hai (embedding generation takes time) — offline karo. Query pipeline fast honi chahiye — pre-computed embeddings retrieval instant karte hain."
+          whyUseIt="Ingestion pipeline slow ho sakti hai — 1000 PDFs embed karo, ghante lagte hain. Ye theek hai kyunki ye offline kaam hai. Query pipeline ka every millisecond matter karta hai — user real-time wait kar raha hai. Pre-computed embeddings ki wajah se query time pe sirf ek embedding API call chahiye (user question ke liye), baaki sab instant vector search hai."
           howToUse={{
             filename: 'rag-pipeline.ts',
             language: 'typescript',
@@ -341,9 +341,9 @@ function cosineSimilarity(a: number[], b: number[]): number {
   const normB = Math.sqrt(b.reduce((sum, bi) => sum + bi * bi, 0));
   return dot / (normA * normB);
 }`,
-            explanation: 'Ingestion: documents load → chunk → embed → store vector DB mein. Query: user query embed → similar chunks retrieve → LLM ko context + query do → answer generate. Ingestion ek baar, retrieval + generation har query pe.',
+            explanation: 'Ingestion flow: load → chunk → embed → store (ek baar ya naye docs aane pe). Query flow: embed query → similarity search → top-K chunks → LLM context mein dalo → generate. Ingestion ke baad vector DB mein sab stored hai — query time pe sirf ek embedding call + vector search + LLM call. Clean separation.',
           }}
-          realWorldScenario="Startup ek customer support bot banata hai apne product documentation pe. Naye docs aane pe ingestion pipeline automatically run hoti hai (CI/CD ke saath). Customer question aane pe — embed, retrieve top 5 chunks, Claude se answer generate karo. Support tickets 60% reduce ho gayi."
+          realWorldScenario="Startup ne product docs pe support bot banaya. CI/CD mein ingestion hook add kiya — naye docs commit hone pe automatically embed hote hain, vector DB update ho jaata hai. Customer question aane pe: embed → retrieve → Claude answer. Support tickets 60% reduce hue. Engineering effort: 1 week setup, maintenance near-zero."
           commonMistakes={[
             {
               mistake: 'Query time pe embedding generate karna slow hai — cache karo',
@@ -351,7 +351,7 @@ function cosineSimilarity(a: number[], b: number[]): number {
               fix: 'Common queries ke embeddings cache karo (Redis mein). Semantic caching — similar queries ek hi cached result return kare.',
             },
           ]}
-          proTip="OpenAI text-embedding-3-small kaafi zyada bang-for-buck deta hai — cheap, fast, aur dimensions reducible hain (Matryoshka embeddings). Production mein isse start karo, performance compare karke upgrade karo zarurat padne pe."
+          proTip="text-embedding-3-small se start karo — $0.02/1M tokens, fast, aur Matryoshka embeddings support (dimensions reduce karo). 99% projects ke liye kaafi hai. text-embedding-3-large try karo sirf agar specific accuracy benchmarks meet nahi ho rahe. Don't over-engineer ingestion — simple pipeline pehle, optimize baad mein."
         />
       </div>
 
@@ -361,7 +361,7 @@ function cosineSimilarity(a: number[], b: number[]): number {
           title="Chunking Strategies"
           emoji="✂️"
           difficulty="intermediate"
-          whatIsIt="Chunking matlab documents ko LLM-processable pieces mein todna. Strategy matter karti hai — galat chunking se relevant content miss ho sakta hai ya irrelevant noise aa sakta hai. Main strategies: Fixed size, Semantic, Sentence-level, Recursive, aur Overlap-based chunking."
+          whatIsIt="Chunking — ye RAG ka underappreciated hero hai. Documents ko chhote pieces mein todne ki ye process actually retrieval quality ko LLM choice se zyada affect karti hai. Bahut bade chunks: ek chunk mein relevant content diluted hota hai — precision kam. Bahut chhote chunks: context lose hota hai — incomplete information. Sweet spot dhundna hi chunking strategy hai."
           whenToUse={[
             'Fixed size chunking: quick prototype, uniform content (articles, blogs).',
             'Semantic chunking: legal/medical docs jahan paragraph boundaries meaningful hain.',
@@ -369,7 +369,7 @@ function cosineSimilarity(a: number[], b: number[]): number {
             'Recursive chunking: hierarchical documents — headers → paragraphs → sentences.',
             'Overlap chunking: jab boundary context loss concern ho.',
           ]}
-          whyUseIt="Chunking RAG ki sabse important parameter hai. Bahut bade chunks: precise retrieval fails (relevant info ek bade noise chunk mein). Bahut chote chunks: context lost ho jaata hai (ek fact ka surrounding context miss). Sweet spot find karna crucial hai — task-specific experimentation zaroori hai."
+          whyUseIt="Ek analogy: kisi book ka ek page chunk hai vs ek paragraph chunk hai vs ek sentence chunk. Page-level: retrieval retrieve karta hai page, lekin 80% irrelevant content hoti hai. Sentence-level: precise lekin context missing. Paragraph (800-1000 tokens): sweet spot mostly. Lekin ye document type pe depend karta hai — code ke liye function-level, legal docs ke liye clause-level. Experiment karo."
           howToUse={{
             filename: 'chunking-strategies.ts',
             language: 'typescript',
@@ -421,9 +421,9 @@ function recursiveChunk(text: string, maxSize = 500): string[] {
 
 // Best practice: experiment with chunk sizes!
 // Eval: does retrieval return the expected chunk for test queries?`,
-            explanation: 'Fixed: simple lekin boundary-unaware. Sentence: natural units, good for Q&A. Recursive: smart separator hierarchy, most used in practice. Overlap: boundary context preserve karta hai. LangChain ka RecursiveCharacterTextSplitter recursive approach use karta hai.',
+            explanation: 'Fixed chunking: simple, boundary-unaware — sentence beech mein toot sakti hai. Sentence chunking: natural units, FAQs/reviews ke liye great. Recursive (recommended for most cases): paragraph → sentence → word hierarchy se split — sentence middle mein nahi tootega. Overlap 50-100 tokens: boundary pe context loss avoid karta hai. LangChain RecursiveCharacterTextSplitter production default hai.',
           }}
-          realWorldScenario="Code documentation ke liye function-level chunking best hai — ek chunk = ek function + docstring. Legal documents ke liye section-level chunking — ek chunk = ek clause. Medical literature ke liye paragraph-level chunking. Content type ke hisaab se strategy choose karo."
+          realWorldScenario="Ek platform ne teen types ke docs handle kiye: API documentation (function-level chunking best — ek chunk = ek endpoint), legal contracts (clause-level — ek chunk = ek legal provision), blog posts (paragraph-level). Ek single chunking strategy sab ke liye wrong thi. Type-specific strategy se retrieval accuracy 35% improve hua."
           commonMistakes={[
             {
               mistake: 'Default chunk size blindly use karna (512 tokens) without evaluation',
@@ -431,7 +431,7 @@ function recursiveChunk(text: string, maxSize = 500): string[] {
               fix: 'Test queries banao aur retrieve karo — kya expected chunks aa rahe hain? Chunk size tune karo retrieval quality ke hisaab se, word count se nahi.',
             },
           ]}
-          proTip="LangChain ka RecursiveCharacterTextSplitter production ke liye solid default hai — paragraph → sentence → word hierarchy se split karta hai, sentence middle mein nahi toot-ta. chunk_size=800, chunk_overlap=100 se start karo phir tune karo."
+          proTip="LangChain RecursiveCharacterTextSplitter se start karo: chunk_size=800, chunk_overlap=100. Ye solid default hai. Phir test set se evaluate karo — kya expected chunks retrieve ho rahe hain? Nahi? chunk_size tune karo. Pro insight: overlap size bhi matter karta hai — 10% of chunk_size ek good starting point hai."
         />
       </div>
 
@@ -441,7 +441,7 @@ function recursiveChunk(text: string, maxSize = 500): string[] {
           title="Embedding & Semantic Search"
           emoji="🔢"
           difficulty="intermediate"
-          whatIsIt="Embeddings text ko numbers ke arrays mein convert karte hain (vectors) jahan similar meanings similar directions mein hote hain. 'King - Man + Woman ≈ Queen' — ye embeddings ki power hai. Semantic search in vectors ke beech cosine similarity calculate karke works karti hai — exact words match nahi, meaning match."
+          whatIsIt="Ye analogy samjho: ek 2D map pe cities ke coordinates hain — Delhi aur Jaipur close hain, Mumbai aur Pune close hain. Embeddings bhi waise hain lekin 1536 dimensions mein — similar meaning = close vectors. 'Node.js performance tips' aur 'how to speed up Node apps' dono ke vectors close honge. Cosine similarity ye closeness measure karta hai — 1.0 = same, 0 = unrelated, -1 = opposite."
           whenToUse={[
             'Search engine banao jo "car" search kare aur "automobile" bhi find kare.',
             'Recommendation system — similar content find karo meaning se.',
@@ -449,7 +449,7 @@ function recursiveChunk(text: string, maxSize = 500): string[] {
             'Duplicate detection — same meaning wale different-worded documents.',
             'Clustering — similar topics ke documents group karo.',
           ]}
-          whyUseIt="Embeddings semantic meaning capture karte hain jo keyword search kabhi nahi kar sakti. 'Best Node.js framework for beginners' aur 'Easy to learn server framework JavaScript' — keyword overlap kam hai lekin embedding space mein ye close hain. Isse retrieval dramatically better hoti hai real user queries ke liye."
+          whyUseIt="Keyword search ka fundamental flaw: 'Best Node.js framework for beginners' search karo, 'Express.js easy to learn for JavaScript developers' nahi milega — keyword overlap nahi. Embedding search mein dono vectors close hain kyunki meaning same hai. Real users exact words nahi use karte — wo meaning se search karte hain. Embeddings ye gap bridge karte hain."
           howToUse={{
             filename: 'embeddings-search.ts',
             language: 'typescript',
@@ -497,9 +497,9 @@ async function semanticSearch(query: string, docs: Document[], topK = 3): Promis
 // text-embedding-3-small dimensions: 1536
 // text-embedding-3-large dimensions: 3072 (more accurate, 2x cost)
 // text-embedding-ada-002: legacy, 1536 dims (less accurate than v3)`,
-            explanation: 'Embed karo → cosine similarity calculate karo → top-K closest vectors return karo. Vector DB (Pinecone, pgvector) ye computation billion documents mein milliseconds mein karte hain using ANN algorithms. In-memory sirf small demos ke liye theek hai.',
+            explanation: 'Cosine similarity formula: dot product divided by product of magnitudes. 1.0 = identical direction (same meaning), 0 = perpendicular (unrelated). Ye calculation 1536-dimensional vectors pe karte hain. In-memory brute force: 10K docs tak theek, 100K+ pe vector DB zaruri hai — Pinecone ya pgvector HNSW indexing se millisecond search karte hain.',
           }}
-          realWorldScenario="E-learning platform pe student search karta hai 'arrays kaisa banate hain JavaScript mein' — semantic search 'JavaScript Array creation tutorial' aur 'Array data structure in JS' dono retrieve karta hai, bhale hi exact words match na hon. Click-through rate 3x improve hua keyword search se."
+          realWorldScenario="E-learning platform pe student search karta hai 'arrays kaisa banate hain JavaScript mein' — semantic search 'JavaScript Array creation tutorial' aur 'Array data structure in JS' dono retrieve karta hai even though exact words match nahi. Click-through rate 3x improve hua. Keyword search se ye same queries zero results deti thi — students frustrated ho ke chale jaate the."
           commonMistakes={[
             {
               mistake: 'Query aur documents ko alag models se embed karna',
@@ -507,7 +507,7 @@ async function semanticSearch(query: string, docs: Document[], topK = 3): Promis
               fix: 'Hamesha same embedding model use karo ingestion aur query time pe. Model upgrade karne pe poora database re-embed karo.',
             },
           ]}
-          proTip="Matryoshka Representation Learning — text-embedding-3-small dimensions reduce kar sakte ho (1536 → 256) storage aur speed ke liye, accuracy thodi kam hogi. Production mein: full dimensions ke saath start karo, performance bottleneck pe truncate karo aur measure karo quality trade-off."
+          proTip="Ek money-saving trick: text-embedding-3-small ke dimensions reduce karo (1536 → 512 ya 256). Storage aur compute 3x-6x kam, accuracy sirf slightly lower. 1M documents ke liye: 1536 dims = 57GB vs 256 dims = 9.5GB. Pehle 1536 se benchmark karo, phir reduce karo aur quality compare karo — often negligible difference hai real use cases mein."
         />
       </div>
 
@@ -517,7 +517,7 @@ async function semanticSearch(query: string, docs: Document[], topK = 3): Promis
           title="RAG Evaluation — Kitna Acha Kaam Kar Raha Hai?"
           emoji="📊"
           difficulty="intermediate"
-          whatIsIt="RAG system evaluate karna zaroori hai — retrieval aur generation dono separately measure karo. Key metrics: Faithfulness (answer context se grounded hai?), Answer Relevance (answer sawal se relevant hai?), Context Precision (retrieved chunks relevant the?), Context Recall (sahi chunks retrieve hue?). RAGAS framework ye sab automate karta hai."
+          whatIsIt="RAG banao, deploy karo — phir check karo ki kaam kar raha hai ya nahi. Ye step skip mat karo. Char metrics hain: Faithfulness (kya answer sirf retrieved docs se hai ya model hallucinate kar raha hai?), Answer Relevance (kya answer actually question ka answer hai?), Context Precision (retrieved chunks relevant the ya noise?), Context Recall (sahi chunks retrieve hue?). RAGAS ye sab automatically measure karta hai LLM-as-judge se."
           whenToUse={[
             'Production deploy se pehle — baseline establish karo.',
             'Chunking strategy change karne pe — kya retrieval improve hua?',
@@ -525,7 +525,7 @@ async function semanticSearch(query: string, docs: Document[], topK = 3): Promis
             'Prompt engineering changes pe — faithfulness improve hua?',
             'A/B testing different RAG configurations.',
           ]}
-          whyUseIt="Bina evaluation ke RAG 'feel' se tune karna expensive guess-work hai. Metrics se data-driven decisions possible hain — kya chunking strategy A se B better retrieve ho raha hai? Kya model hallucinate kar raha hai? Systematic improvement ke liye systematic measurement zaroori hai."
+          whyUseIt="Bina evaluation ke RAG tune karna andhere mein teer chalana hai. Ek example: ek company ne RAG deploy kiya, 40% answers hallucinated content contain karte the — unhe pata hi nahi tha. RAGAS se evaluate kiya, issue identify kiya, chunk size fix kiya — faithfulness 0.89 ho gayi. Data-driven iteration se quality measurably improve hoti hai. Gut feel se nahi."
           howToUse={{
             filename: 'rag-evaluation.ts',
             language: 'typescript',
@@ -568,9 +568,9 @@ const testSet = [
 // pip install ragas (Python)
 // Ya use LangSmith for tracing + evaluation
 console.log('Evaluation complete. Faithfulness:', 0.92);`,
-            explanation: 'RAG evaluation ke liye test set banao (question + expected answer + expected context). LLM-as-judge approach: Claude ko judge banao faithfulness check karne ke liye. RAGAS Python library iska full framework deti hai. Node.js mein LangSmith + custom evaluators use kar sakte ho.',
+            explanation: 'LLM-as-judge pattern: Claude ko judge banao — context diya, answer diya, "0.0 to 1.0 mein faithfulness rate karo" prompt karo. Ye scalable evaluation hai. RAGAS Python library ye sab automate karti hai (faithfulness, answer_relevance, context_precision, context_recall). Node.js project ke liye: evaluation script Python mein likho, CI/CD mein run karo.',
           }}
-          realWorldScenario="EdTech company ne RAG chatbot build kiya. Before evaluation: 40% answers hallucinated content contain karte the. After evaluation + iteration: faithfulness 0.89 ho gayi. Key insight: chunk size 256 → 512 tokens karne se context precision 0.65 → 0.82 ho gayi. Data-driven improvement."
+          realWorldScenario="EdTech company ne RAG chatbot build kiya — 'works lag raha tha'. RAGAS se evaluate kiya: faithfulness 0.61 (40% hallucination!). Investigation: chunk size 256 se 512 kiya. Context precision 0.65 → 0.82 ho gayi. Faithfulness 0.89 ho gayi. Sirf ek parameter change se quality dramatically improve hua — measurement ne ye possible banaya."
           commonMistakes={[
             {
               mistake: 'Sirf vibe check se RAG quality judge karna',
@@ -578,7 +578,7 @@ console.log('Evaluation complete. Faithfulness:', 0.92);`,
               fix: 'Minimum 50-100 test questions banao representative use cases se. Automatic evaluation har deployment pe run karo CI/CD mein.',
             },
           ]}
-          proTip="RAGAS (Python) RAG evaluation ke liye best open-source framework hai. Ye faithfulness, answer relevance, context precision, context recall — sab automatically LLM-as-judge se evaluate karta hai. Node.js project ke liye: evaluation script Python mein likh lo aur CI/CD mein run karo."
+          proTip="RAGAS install karo (Python): pip install ragas. Test dataset banao: 20-50 representative questions with expected answers. Evaluation run karo — faithfulness, answer_relevance, context_precision, context_recall sab ek command mein milenge. CI/CD mein include karo: deployment se pehle evaluation threshold check karo. Agar faithfulness drop ho toh deployment block karo — quality regression prevent karo."
         />
       </div>
 

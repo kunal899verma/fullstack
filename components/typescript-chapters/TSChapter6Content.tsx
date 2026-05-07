@@ -95,11 +95,10 @@ export default function TSChapter6Content() {
     <div className="space-y-8">
       <div className="rounded-2xl p-6" style={{ background: 'rgba(49,120,198,0.06)', border: '1px solid rgba(49,120,198,0.25)' }}>
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Generics — Reusable Type-Safe Code
+          Generics — Ek Baar Likho, Har Type Ke Liye Kaam Karo
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Generics TypeScript ka most powerful feature hai. Ek function ya class likhte ho jo kisi bhi type ke saath kaam kare — lekin any ki tarah type safety kho nahi jaati.{' '}
-          <code className="text-[#3178C6]">Array&lt;T&gt;</code>, <code className="text-[#3178C6]">Promise&lt;T&gt;</code>, React ka <code className="text-[#3178C6]">useState&lt;T&gt;</code> — sab generics use karte hain.
+          Generics TypeScript ka most powerful feature hai — aur sabse zyada misunderstood bhi. Problem ye hai: agar any use karo toh type safety gone, agar specific type use karo toh reusability gone. Generics dono ka best of worlds dete hain — <strong className="text-[#F5F5F7]">type-safe aur reusable</strong>. Aur interesting baat — tum roz generics use karte ho: <code className="text-[#3178C6]">Array&lt;T&gt;</code>, <code className="text-[#3178C6]">Promise&lt;T&gt;</code>, React ka <code className="text-[#3178C6]">useState&lt;T&gt;</code> — sab generics pe based hain.
         </p>
       </div>
 
@@ -108,14 +107,14 @@ export default function TSChapter6Content() {
           title="Generic Functions — Ek Function Har Type Ke Liye"
           emoji="♾️"
           difficulty="intermediate"
-          whatIsIt="Generic function mein ek ya zyada type parameters hote hain (T, U, K). Caller ke argument se TypeScript automatically infer karta hai ki T kya hai."
+          whatIsIt="Generic function mein type parameters hote hain — T, U, K (sirf naming convention, kuch bhi rakh sakte ho). Caller jab function call karta hai, TypeScript argument dekh ke T ka actual type infer karta hai. Ek baar samjho: identity('hello') mein TypeScript jaanta hai T = string. identity(42) mein T = number. Same function, alag types, full type safety."
           whenToUse={[
             'Jab function different types ke saath same logic apply kare',
             'Wrapper functions (identity, map, filter)',
             'Data transformation utilities',
             'API response wrappers',
           ]}
-          whyUseIt="any ki jagah generics use karo — type information preserve rehti hai. Input T doge toh output bhi T milega — TypeScript guarantee karta hai."
+          whyUseIt="Any vs Generic ka fark code mein dekho: identityBad('hello') ka return type any — useless. identity('hello') ka return type string — TypeScript ne infer kiya. Input output relationship preserve hai. Ye generics ka core value hai: type information flow karta hai through function, lost nahi hota. Jitna specific input, utna specific output."
           howToUse={{
             code: `// any use karna — type information kho jaati hai
 function identityBad(arg: any): any {
@@ -151,14 +150,14 @@ function zip<A, B>(a: A[], b: B[]): [A, B][] {
 const pairs = zip([1, 2, 3], ['a', 'b', 'c'])
 // pairs: [number, string][] — fully typed!`,
             language: 'typescript',
-            explanation: 'identity<T> function T ko preserve karta hai. ApiResponse<T> wrapper mein T woh type hai jo server return karta hai. zip<A, B> multiple type params use karta hai.',
+            explanation: 'ApiResponse<T> wrapper pattern note karo — fetchUser() returns Promise<ApiResponse<User>>. TypeScript poora chain track karta hai — data ka type User, status number, message string. Zero any, zero casting. zip<A, B> multiple type params ka example — pairs: [number, string][] automatically inferred. Type information complete preserved hai.',
             filename: 'generic-functions.ts',
           }}
-          realWorldScenario="useLocalStorage<T>(key) custom hook — T se TypeScript jaanta hai ki stored value ka type kya hai. string, number, object — koi bhi type safely use kar sakte hain."
+          realWorldScenario="Custom hook banao — useLocalStorage<T>(key: string, defaultValue: T): [T, (value: T) => void]. T koi bhi type ho — string, number, User object. TypeScript automatically infer karta hai: useLocalStorage('theme', 'dark') mein T = string, useLocalStorage('user', null) mein T = null. Ek hook, infinite types, poori safety."
           commonMistakes={[
             { mistake: '<T> ko any ki tarah use karna', why: 'Generic ka purpose type information preserve karna hai — any ki tarah use karna benefits khatam', fix: 'Generic function ke andar T se operations karo jo T ke liye valid hain' },
           ]}
-          proTip="Type inference bahut smart hai — zyada cases mein explicitly T specify nahi karna padta: identity('hello') automatically T = string infer kar leta hai."
+          proTip="Type inference kitni smart hai dekhte hain: identity('hello') — TypeScript automatic T = string. Tum identity<string>('hello') explicitly nahi likhna. Inference pe rely karo — verbose type parameters avoid karo jab TypeScript khud figure out kar sake. Explicitly tab likho jab inference wrong ho ya multiple type params mein ambiguity ho."
         />
       </div>
 
@@ -167,13 +166,13 @@ const pairs = zip([1, 2, 3], ['a', 'b', 'c'])
           title="Generic Interfaces & Classes"
           emoji="🏗️"
           difficulty="intermediate"
-          whatIsIt="Interface aur class bhi generic ho sakte hain — type parameter ek variable ki tarah kaam karta hai jo use karte waqt specific type se fill hota hai."
+          whatIsIt="Generic classes aur interfaces — same concept, zyada power. Stack<T> ek template hai — Stack<number> banao, Stack<string> banao, Stack<User> banao. Ek hi class, infinite variations, har variation type-safe. Repository<T, ID> pattern isse aur aage le jaata hai — har entity ke liye alag class likhne ki zaroorat nahi."
           whenToUse={[
             'Repository pattern mein generic base repository',
             'Container types (Stack, Queue, LinkedList)',
             'Service classes jo different data types handle karein',
           ]}
-          whyUseIt="Generic classes ek template hain — UserRepository aur ProductRepository ke liye alag code likhne ki zaroorat nahi."
+          whyUseIt="Problem without generics: UserRepository, ProductRepository, OrderRepository — same CRUD code, different types. With generics: BaseRepository<T, ID> — ek baar likho, sab entities ke liye kaam kare. Code duplication zero. Aur bade fayde mein: CRUD logic change karo ek jagah — sab automatically update. DRY principle at type level."
           howToUse={{
             code: `// Generic Stack class
 class Stack<T> {
@@ -216,14 +215,14 @@ class UserRepository implements Repository<User, number> {
   // ... implement other methods
 }`,
             language: 'typescript',
-            explanation: 'Stack<T> kisi bhi type store kar sakta hai. Repository<T, ID> generic interface — UserRepository User ke liye implement karta hai. Type safety full maintain hoti hai.',
+            explanation: 'Stack<T> mein numStack.push("hello") — compile error! Number stack mein string nahi jaati. Repository<T, ID> interface mein T entity type hai, ID identifier type. UserRepository implements Repository<User, number> — TypeScript verify karta hai findById(id: number) signature sahi hai. Type safety implementation tak flow karta hai.',
             filename: 'generic-classes.ts',
           }}
-          realWorldScenario="Generic Repository pattern real-world mein bahut common hai — UserRepo, ProductRepo, OrderRepo sab ek BaseRepository<T, ID> se extend karte hain. CRUD code once likho."
+          realWorldScenario="NestJS ya any backend framework mein TypeORM ke saath BaseRepository<T, ID> pattern standard practice hai. findAll, findById, save, delete — once likhte hain. UserRepository, ProductRepository sab extend karte hain. Agar pagination add karni ho BaseRepository mein — sab repositories automatically paginated. Ek change, poori benefit."
           commonMistakes={[
             { mistake: 'Too many type parameters', why: 'Code unreadable ho jaata hai', fix: '2-3 se zyada type params avoid karo — object type use karo config ke liye' },
           ]}
-          proTip="Generic class extend karte waqt type specify kar sakte ho: class UserRepo extends BaseRepo<User, number>. Ya generic rakh sakte ho: class BaseRepo<T> extends EventEmitter."
+          proTip="Generic classes extend karte waqt type fix karo: class UserRepo extends BaseRepo<User, number>. Ya generic rakho: class ReadonlyRepo<T> extends BaseRepo<T, number>. Dono valid. Choose based on use case — entity-specific extension ya further generic abstraction."
         />
       </div>
 
@@ -232,13 +231,13 @@ class UserRepository implements Repository<User, number> {
           title="Generic Constraints — extends Keyword"
           emoji="🔗"
           difficulty="intermediate"
-          whatIsIt="extends se generic type ko constrain kar sakte ho — T sirf woh types ho sakti hain jo certain structure ya interface follow karein."
+          whatIsIt="Generics powerful hain lekin kabhi kabhi too permissive hote hain — T pe koi bhi property access karo toh TypeScript complaint karta hai: 'T mein ye property guaranteed nahi.' Constraints isko solve karte hain: T extends HasLength matlab T ko length property guarantee milti hai. Constraints TypeScript ko batate hain ki T ka minimum structure kya hoga."
           whenToUse={[
             'Function ko specific properties wale objects chahiye hon',
             'keyof constraints ke liye',
             'Specific interface implement karne wale types',
           ]}
-          whyUseIt="Without constraints T mein koi bhi property access karna type error hai. Constraint se TypeScript guarantee karta hai ki required property exist karta hai."
+          whyUseIt="keyof constraint wala pattern — getProperty(obj, key) — ek underrated gem hai. Object ka property safely access karo without any. getProperty(user, 'phone') — compile error, 'phone' user mein exist hi nahi karta. Runtime pe koi crash nahi — compile time pe pakad liya. Ye 'safe property access' pattern production code mein bahut use hota hai."
           howToUse={{
             code: `// Without constraint — error!
 function getLength<T>(arg: T): number {
@@ -268,14 +267,14 @@ const name = getProperty(user, 'name')   // string
 const age = getProperty(user, 'age')     // number
 // getProperty(user, 'phone')  // ❌ Type error — 'phone' not in User!`,
             language: 'typescript',
-            explanation: '<T extends HasLength> se T ko length property guarantee milti hai. <K extends keyof T> ensures K is a valid key of T — runtime errors impossible.',
+            explanation: 'Dekho — getLength(42) compile error: number mein length nahi. getLength("hello") — works: string mein length hai. Constraint ne filter kar diya. getProperty(user, "phone") — compile error: phone User keys mein nahi. getProperty(user, "name") — string milega. K extends keyof T se TypeScript return type bhi T[K] infer karta hai — automatic.',
             filename: 'constraints.ts',
           }}
-          realWorldScenario="Database helper: function findBy<T extends Model, K extends keyof T>(model: T[], key: K, value: T[K]) — type-safe model querying bina any ke."
+          realWorldScenario="Form validation helper: function validateField<T extends Record<string, unknown>, K extends keyof T>(form: T, field: K, validator: (v: T[K]) => boolean): boolean. Galat field naam doge — compile error. Validator wrong type expect kare — compile error. Type-safe form handling bina any ke, poori pipeline guaranteed."
           commonMistakes={[
             { mistake: 'extends aur implements confuse karna generic constraints mein', why: 'Generic constraints mein extends both class inheritance aur interface implementation ke liye use hota hai', fix: 'T extends Serializable — T must have serialize/deserialize methods' },
           ]}
-          proTip="Conditional generics: function first<T extends unknown[]>(arr: T): T[0] — array ka first element ka type exactly infer hota hai."
+          proTip="Conditional types constraints ke saath bahut powerful hote hain: type IsArray<T> = T extends any[] ? true : false. Aur infer keyword se types extract karo: type UnwrapPromise<T> = T extends Promise<infer U> ? U : T. Ye advanced TypeScript hai — foundation strong hoga toh yahan naturally pahunchoge."
         />
       </div>
 
@@ -284,14 +283,14 @@ const age = getProperty(user, 'age')     // number
           title="keyof & typeof — Type-Level Operators"
           emoji="🔑"
           difficulty="intermediate"
-          whatIsIt="keyof T object ke saare property names ka union type deta hai. typeof value — value ka TypeScript type deta hai. Dono type-level operators hain."
+          whatIsIt="keyof aur typeof — do type-level operators jo bahut zyada use hote hain. keyof T se object ke property names ka union milta hai — keyof User = 'id' | 'name' | 'email'. typeof value se runtime value ka TypeScript type milta hai — compile time pe. Ye dono milke type duplication khatam karte hain aur refactoring automatically propagate karte hain."
           whenToUse={[
             'keyof: Safe property access ke liye',
             'keyof: Object iterate karne ke liye',
             'typeof: Existing value se type derive karne ke liye',
             'typeof: Function return type extract karne ke liye',
           ]}
-          whyUseIt="Type duplication avoid hoti hai — ek baar define karo, types automatically derived hoti hain. Refactoring mein automatically update hota hai."
+          whyUseIt="Ek real pain point — Config object hai, interface bhi likhna pada, dono sync mein rakhna hai. typeof defaultConfig se interface ki zaroorat nahi — object se directly type derive hoti hai. User ke properties update karo — keyof User automatically update. Ye DRY principle type level pe hai. DIRECTIONS as const pattern enums ka lightweight alternative hai — type safe, no runtime overhead."
           howToUse={{
             code: `interface User {
   id: number
@@ -329,14 +328,14 @@ const DIRECTIONS = {
 type Direction = (typeof DIRECTIONS)[keyof typeof DIRECTIONS]
 // 'north' | 'south' | 'east' | 'west'`,
             language: 'typescript',
-            explanation: 'keyof User se property names ka union milta hai. typeof defaultConfig se object ka type derive hota hai — duplicate interface likhne ki zaroorat nahi. DIRECTIONS pattern enum ka type-safe alternative hai.',
+            explanation: 'typeof defaultConfig see — type Config automatically bana, koi duplicate interface nahi likha. DIRECTIONS as const se Direction type = "north" | "south" | "east" | "west" — enum ki tarah typed, enum ki complexity nahi. (typeof DIRECTIONS)[keyof typeof DIRECTIONS] pattern yaad karo — ye idiom bahut common hai TypeScript codebases mein.',
             filename: 'keyof-typeof.ts',
           }}
-          realWorldScenario="Form validation: type FormFields = keyof typeof initialFormState — ek hi jagah field names define karo, form handlers automatically typed ho jaate hain."
+          realWorldScenario="Form handling: const initialState = { name: '', email: '', age: 0 }. type FormFields = keyof typeof initialState = 'name' | 'email' | 'age'. Generic handler: function updateField(field: FormFields, value: ...). Field naam galat likhne ka koi way nahi — autocomplete available, typo compile error. Ye pattern React forms mein extensively use hota hai."
           commonMistakes={[
             { mistake: 'typeof aur TypeScript type annotation confuse karna', why: 'Runtime typeof (string, number, object) aur TypeScript typeof type operator alag hain', fix: 'type T = typeof value — TypeScript type operator. typeof x === "string" — runtime JavaScript check' },
           ]}
-          proTip="as const assertion ke saath typeof bahut powerful ho jaata hai — string literals narrow ho jaate hain, const enums bana sakte hain bina actual enum ke."
+          proTip="as const + typeof = const enum without enum. ROUTES = { HOME: '/', ABOUT: '/about' } as const — type narrowing se ROUTES.HOME ka type '/' hai, string nahi. Narrow types IDE mein zyada helpful hote hain — exact values dikhte hain. Ye pattern config objects mein everywhere use hota hai."
         />
       </div>
 
@@ -349,14 +348,14 @@ type Direction = (typeof DIRECTIONS)[keyof typeof DIRECTIONS]
           title="Utility Types in Practice"
           emoji="🛠️"
           difficulty="intermediate"
-          whatIsIt="TypeScript built-in utility types common type transformations provide karte hain — in generic patterns ko bar-bar likhna nahi padta."
+          whatIsIt="Utility types TypeScript ka pre-built toolkit hai — Partial, Required, Readonly, Pick, Omit, Record, ReturnType — sab built-in hain. Khud se implement nahi karne padte. Real world mein sabse common use case: Create/Update DTOs for APIs — CreateUserDto, UpdateUserDto, UserResponse — sab existing User interface se derived, manually duplicate nahi likhna."
           whenToUse={[
             'Partial: Update/patch operations mein',
             'Pick/Omit: API responses mein sensitive fields hide karne ke liye',
             'Record: Dynamic key-value maps ke liye',
             'ReturnType: Function return types derive karne ke liye',
           ]}
-          whyUseIt="DRY principle — types ek baar define karo, utility types se variations derive karo. Refactoring mein automatically update hota hai."
+          whyUseIt="Ek simple example: User interface mein password field hai. API response mein password kabhi nahi bhejna chahiye. Omit<User, 'password'> — done. Manually copy-paste nahi kiya, User update karo — PublicUser automatically update. Partial<User> update operations ke liye — sirf jo fields change karne hain woh pass karo. Ye patterns daily production code mein use hote hain."
           howToUse={{
             code: `interface User {
   id: number
@@ -393,14 +392,14 @@ type CreateUserDto = Omit<User, 'id' | 'createdAt'>
 type UpdateUserDtoFull = Partial<CreateUserDto>
 type UserResponse = Omit<User, 'password'>`,
             language: 'typescript',
-            explanation: 'UpdateUserDto = Partial<Omit<...>> — update mein sirf optional fields jo id/createdAt nahi hain. PublicUser se password automatic hata. DTOs pattern compose kiye utility types se.',
+            explanation: 'Ye poora DTO pattern dekho — User ek baar define hua. CreateUserDto = Omit id/createdAt. UpdateUserDto = Partial of Create (sab optional). UserResponse = Omit password. Teen types, zero code duplication. User mein phone field add karo — teen DTOs automatically update. Refactoring ka sapna hai ye.',
             filename: 'utility-types.ts',
           }}
-          realWorldScenario="REST API mein: CreateUserDto (no id/createdAt), UpdateUserDto (all optional), UserResponse (no password). Utility types compose karke manually duplicate nahi likhna padta."
+          realWorldScenario="Real production pattern — NestJS ya Express REST API mein User entity ek baar define karo. CreateUserDto = Omit<User, 'id' | 'createdAt'>, UpdateUserDto = Partial<CreateUserDto>, UserResponseDto = Omit<User, 'password'>. Poori API type-safe, zero duplication, ek jagah change sab jagah reflect. Ye professional TypeScript code hai."
           commonMistakes={[
             { mistake: 'Too many nested utility types — unreadable', why: 'Partial<Required<Omit<Pick<T, K>, J>>> — koi nahi samjhega', fix: 'Intermediate types banao: type UserBase = Omit<User, "password">, type CreateDto = Omit<UserBase, "id">' },
           ]}
-          proTip="Utility types compose hote hain — chaining se complex transformations banti hain. Lekin zyada nesting se readability khatam — intermediate named types prefer karo."
+          proTip="Ek readability rule: Partial<Required<Omit<Pick<T, K>, J>>> — koi nahi samjhega, tum bhi nahi 2 hafte baad. Intermediate named types banao: type UserBase = Omit<User, 'password'>, type CreateDto = Omit<UserBase, 'id'>. Step by step, readable, maintainable. Complex type combinations helpful hote hain sirf jab naam clear ho."
         />
       </div>
 

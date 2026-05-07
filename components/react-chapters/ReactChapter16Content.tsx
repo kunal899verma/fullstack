@@ -14,10 +14,10 @@ export default function ReactChapter16Content() {
           Testing React — Confidence Ke Saath Ship Karo
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Tests likho taaki fearlessly refactor kar sako, new features add karo, aur bugs production mein ja ne se pehle pakdo. React Testing Library ka philosophy: test karo jo user dekhta aur karta hai — implementation details nahi. Ye philosophy everything change kar deta hai.
+          Bata dete hain ek shocking truth — tests likhna tumhari coding speed slow nahi karta, fast karta hai. "Yaar tests likhne ka time nahi" wale log 6 mahine baad sabse zyada time waste karte hain production bugs fix karne mein. Testing ka funda simple hai: ek baar test likho, hazaar baar fearlessly refactor karo. Bina test ke refactor? Gambling hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Sahi tests: fast, reliable, maintenance-friendly. Galat tests: brittle, slow, false confidence dete hain. Is chapter mein dono ka fark samjhein.
+          React Testing Library ka ek revolutionary idea hai — implementation details mat test karo, user behavior test karo. Ye ek line itna kuch change kar deti hai ki testing ka poora philosophy badal jaata hai. Sahi tests refactoring survive karte hain. Galat tests ek rename se toot jaate hain. Is chapter mein ye fark seekhenge.
         </p>
       </div>
 
@@ -26,14 +26,14 @@ export default function ReactChapter16Content() {
           title="React Testing Library Philosophy"
           emoji="🧪"
           difficulty="advanced"
-          whatIsIt="RTL (React Testing Library) ka core principle: 'The more your tests resemble the way your software is used, the more confidence they can give you.' Matlab test karo ki user kya dekhta hai aur kya karta hai — internal state, component methods, implementation details nahi. Ye user-centric approach brittle tests se bachati hai."
+          whatIsIt="RTL ke creator Kent C. Dodds ne ek baat likhi jo testing ki duniya badal di: 'The more your tests resemble the way your software is used, the more confidence they can give you.' Padhte hain phir se — 'the way your software is used.' User test karo, not code. Agar user button pe click karta hai aur text dikhta hai — test karo. Agar internal setState se count++ hota hai — user ko kya fark? Woh nahi dekhta. Toh test kyun karo? Implementation test = fragile tests. User behavior test = bulletproof tests."
           whenToUse={[
             'Component render hone ke baad correct output check karna',
             'User interactions (click, type, submit) test karna',
             'Async operations ke baad UI state check karna',
             'Accessibility attributes test karna',
           ]}
-          whyUseIt="Implementation-based tests (enzyme style) fragile hote hain — component refactor karo, test break. RTL style tests refactoring survive karte hain — behavior same rahega toh test pass karega. 100% confidence + maintainability = RTL philosophy."
+          whyUseIt="Purana Enzyme style test dekho — wrapper.state('count') check karta tha. Ab useState ko useReducer se replace kiya? Test toot gaya. Lekin RTL test mein? screen.getByText('Count: 1') — mujhe nahi pata andar useState hai ya useReducer. Mujhe bas pata hai 'Count: 1' dikhna chahiye. Refactor karo useState se useReducer mein — test ek bhi break nahi hoga. Ye hai RTL ki real value. Tests maintenance burden nahi, safety net hai."
           howToUse={{
             filename: 'rtl-intro.test.tsx',
             language: 'typescript',
@@ -74,9 +74,9 @@ describe('Counter component', () => {
     expect(decrementBtn).toBeDisabled()  // Button disable hona chahiye
   })
 })`,
-            explanation: "getByRole('button', { name: /increment/i }) accessibility-first selector hai — screen reader bhi yahi use karta hai. toBeInTheDocument jest-dom matcher hai. userEvent real browser events simulate karta hai — fireEvent se better. User journey test karo, not internal mechanics.",
+            explanation: "getByRole('button', { name: /increment/i }) — ye kya hai? Ye accessibility tree ko query karta hai, DOM nahi. Screen reader exactly ise hi use karta hai. Iska matlab? Agar ye test pass karta hai, screen reader bhi button dhundh sakta hai. Ek test — dono test ho gaye. Smart! toBeInTheDocument — jest-dom ka magic matcher. userEvent vs fireEvent — userEvent real browser jaisa behave karta hai, poori event chain fire karta hai. fireEvent direct ek event. Simple cases mein dono kaam karte hain, complex mein userEvent more reliable.",
           }}
-          realWorldScenario="Sequifi mein billing form component — test karo ki sahi error message dikhta hai jab invalid card number daalo, payment button disable rehta hai jab form incomplete ho, success message aata hai valid submission par. Implementation details nahi — user experience test karo."
+          realWorldScenario="Billing form hai — payment gateway integration. Kya test karoge? Invalid card number daalo — error message 'Invalid card number' dikhna chahiye. Form incomplete ho — Submit button disabled rehna chahiye. Valid form submit karo — 'Payment successful' message aana chahiye. In teen tests ne cover kar liye saare critical user journeys. Implementation mein Stripe hai ya koi aur library — test ko fark nahi padta. Ye hai user-centric testing."
           commonMistakes={[
             {
               mistake: 'getByTestId prefer karna',
@@ -89,7 +89,7 @@ describe('Counter component', () => {
               fix: 'Targeted assertions prefer karo: expect(screen.getByText("Hello")).toBeInTheDocument() — specific behavior test karo.',
             },
           ]}
-          proTip="@testing-library/jest-dom install karo — extra matchers milti hain: toBeInTheDocument, toBeVisible, toBeDisabled, toHaveClass, toHaveValue. Ye matchers assertions much more readable banate hain. setupFilesAfterEach mein import karo: import '@testing-library/jest-dom'."
+          proTip="Ek package install karo aaj: @testing-library/jest-dom. Ye matchers deta hai jaise — toBeInTheDocument, toBeVisible, toBeDisabled, toHaveValue. Compare karo: expect(el !== null).toBe(true) vs expect(el).toBeInTheDocument(). Dono same kaam karte hain, lekin doosra padhne pe instantly samajh aata hai. Tests documentation bhi hote hain — readable tests = better docs."
         />
       </div>
 
@@ -98,14 +98,14 @@ describe('Counter component', () => {
           title="render, screen, fireEvent, userEvent"
           emoji="🔧"
           difficulty="advanced"
-          whatIsIt="RTL ke core APIs: render() component mount karta hai jsdom mein. screen queries se elements dhundho — getBy (throws if not found), queryBy (null if not found), findBy (async, waits). userEvent real user interactions simulate karta hai. fireEvent lower-level, specific events trigger karta hai."
+          whatIsIt="RTL ke paas teen query families hain — ye yaad karna critical hai. getBy — element dhundha nahi toh test toot jaata hai (element HONA chahiye). queryBy — element nahi mila toh null milta hai (element NA hone ka test). findBy — promise return karta hai, element appear hone tak wait karta hai (async ke liye). Ye teen ko sahi jagah use karna testing ki 80% galtiyan khatam kar deta hai. Aur userEvent? Real browser jaisi typing, clicking — sabse realistic simulation."
           whenToUse={[
             'render — component test setup',
             'screen.getByRole — accessible elements find karo',
             'userEvent — typing, clicking, selecting test karo',
             'screen.findBy — async elements jo eventually appear hote hain',
           ]}
-          whyUseIt="Ye APIs mila ke poora test workflow cover karte hain. getBy/queryBy/findBy naming convention clear hai — getBy throws (element hona chahiye), queryBy null return karta hai (element nahi hona check), findBy promise return karta hai (async wait). Sahi query choose karna tests robust banata hai."
+          whyUseIt="Ek confusing scenario — tum test kar rahe ho ki error message nahi dikhna chahiye page load par. getByText('Error') use kiya — test toot gaya, throw hua. Kyon? Element hi nahi tha! getBy expects element to exist. Solution: queryByText('Error') use karo — null milega, expect(el).not.toBeInTheDocument() pass karega. Ye naming convention ek baar samjh lo — baaki automatically follow hoga."
           howToUse={{
             filename: 'core-apis.test.tsx',
             language: 'typescript',
@@ -158,9 +158,9 @@ test('list rendering', () => {
   expect(listItems).toHaveLength(2)
   expect(listItems[0]).toHaveTextContent('React')
 })`,
-            explanation: "userEvent.setup() recommended approach hai v14+ mein — proper event sequencing, pointer events, keyboard events all correctly simulated. getByRole accessibility tree use karta hai — semantic HTML correct likhne ko enforce karta hai. findBy use karo jab koi element async aata ho — automatic wait with timeout.",
+            explanation: "userEvent.setup() v14 ka recommended way — pehle const user = userEvent.setup() karo, phir user.type(), user.click(). Kyon? Proper event sequencing ensure hoti hai. userEvent.type keyboard events ek-ek karke fire karta hai, real user jaisa. getByRole accessibility tree query karta hai — iska side effect: tumhara HTML semantic nahi hai toh test dhundh nahi payega. Test failure = accessibility bug! findBy — internally waitFor wrap hai. Automatic retry karta hai 1000ms tak. Element appear hua toh resolve, nahi hua toh reject.",
           }}
-          realWorldScenario="Login form test: render karo, email input mein type karo (userEvent.type), password type karo, submit button click karo, loading state check karo, success message ka wait karo (findBy). User ka exact journey replicate hota hai test mein."
+          realWorldScenario="Login form ka test ek movie jaisa hota hai — scene by scene. Render hota hai, form dikhta hai. Email type karte hain. Password type karte hain. Submit click karte hain. Loading spinner aata hai — check karo. Success message eventually aata hai — findBy se wait karo. Ye ek test mein poora user journey cover ho gaya. Test fail hua matlab koi cheez user ke liye broken hai — exactly wahi production mein bhi fail hoga."
           commonMistakes={[
             {
               mistake: 'getBy use karna jab element exist nahi karta',
@@ -173,7 +173,7 @@ test('list rendering', () => {
               fix: 'findBy use karo — ye wait karta hai element appear hone tak: const msg = await screen.findByText("Success").',
             },
           ]}
-          proTip="screen.debug() test ke andar call karo — current DOM pretty-print hota hai console mein. Troubleshoot karne ke liye perfect: render(<MyComponent />); screen.debug(); — exactly dekhta hai React kya render kar raha hai. Production tests mein remove karo."
+          proTip="Test fail ho raha hai, samajh nahi aa raha DOM mein kya hai? Ek line daal do — screen.debug(). Console mein poora DOM pretty-print ho jaata hai. Exact HTML dekhoge jo React render kar raha hai us moment. Element dhundh sakte ho manually. Debugging ka sabse underrated tool. Sirf yaad raho — production commit se pehle remove karo."
         />
       </div>
 
@@ -182,14 +182,14 @@ test('list rendering', () => {
           title="Mocking — Modules, APIs, Hooks"
           emoji="🎭"
           difficulty="advanced"
-          whatIsIt="Mocking matlab actual implementation ko fake se replace karna tests mein. API calls mock karo — server ki zaroorat nahi. External modules mock karo — behavior control karo. Custom hooks mock karo — complex setup se bachao. Mocking fast, reliable, isolated tests enable karta hai."
+          whatIsIt="Test mein real Stripe API call karo — slow, flaky, aur ek din accidentally real charge ho jaaye! Ye nahi chalega. Mocking ka matlab: production wali cheez ko test mein ek samajhdaar replacement se swap karo. MSW (Mock Service Worker) network requests intercept karta hai — component ko pata bhi nahi lagta ki fake data aa raha hai. jest.mock() module ko replace karta hai — useAuth hook ko mock karo, fake user inject karo. Tests fast, reliable, isolated."
           whenToUse={[
             'API calls — msw (Mock Service Worker) ya jest.fn() se',
             'Browser APIs — localStorage, sessionStorage, navigator',
             'Date/time — jest.useFakeTimers(), jest.setSystemTime()',
             'Third party libraries — jest.mock("library-name")',
           ]}
-          whyUseIt="Real API calls tests slow aur flaky banate hain — server down ho toh tests fail. Mocking isolation ensure karta hai — component ek unit hai, external dependencies fake hain. Fast, reproducible tests milte hain."
+          whyUseIt="Bina mocking ke test suite ka kya haal hota hai? CI pe 3 baje raat server down ho gaya — poore tests fail. Developer subah aaye, samjhe nahi production issue hai ya test issue. Panic. Aur ye test backend team ke kaam pe depend karta hai tumhara frontend test. MSW se? Network intercept hoti hai, real server ki zaroorat nahi. Tests offline bhi chalte hain. CI server restart se tests nahi tooton ge. Isolation = sanity."
           howToUse={{
             filename: 'mocking.test.tsx',
             language: 'typescript',
@@ -239,9 +239,9 @@ const localStorageMock = {
   clear: jest.fn(),
 }
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })`,
-            explanation: "MSW (Mock Service Worker) best approach hai API mocking ke liye — actual fetch intercept karta hai, component level mein koi change nahi. setupServer Node.js mein use hota hai tests ke liye, setupWorker browser development mein. jest.mock module ko completely replace karta hai — all exports mock ho jaate hain.",
+            explanation: "MSW kaise kaam karta hai under the hood? Service Worker register hota hai jo network requests intercept karta hai browser level pe. fetch('/api/user') call hoti hai — MSW pakad leta hai, real server tak jaane nahi deta, fake response return karta hai. Component ko pata nahi — real response lag raha hai. Node.js mein tests ke liye setupServer use hota hai (no Service Worker, just interceptor). jest.mock() ka hoisting trick yaad rakho — module top pe hoist hota hai, variables capture nahi hote. MSW is more predictable.",
           }}
-          realWorldScenario="Payment component test — real Stripe API call nahi karni. jest.mock('@stripe/stripe-js') se fake Stripe client inject karo. Success scenario test karo (mock resolve), failure test karo (mock reject). Test fast (no network), reliable (no flaky API), isolated (no real charges)."
+          realWorldScenario="Payment component test karna hai — Stripe integration. Real card charge nahi karna test mein obviously! MSW se '/api/checkout' ko mock karo — success response dete hain pehle test mein, failure response ek test mein. jest.mock('@stripe/stripe-js') se Stripe ka mock inject karo. Test fast (milliseconds), reliable (koi network nahi), safe (koi real charge nahi), aur repeatably run hota hai. Yahi real-world mocking ka power hai."
           commonMistakes={[
             {
               mistake: 'jest.mock hoisting ignore karna',
@@ -254,7 +254,7 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock })`,
               fix: 'afterEach mein jest.clearAllMocks() ya jest.resetAllMocks() call karo. MSW mein server.resetHandlers() afterEach mein.',
             },
           ]}
-          proTip="MSW v2 + vitest perfect combo hai modern testing ke liye. msw passthrough karta hai real requests jo mock nahi hain — gradual adoption easy hai. Chrome extension bhi hai — network tab mein MSW intercepted requests dikhaata hai. Production debugging mein bhi helpful."
+          proTip="Modern stack recommendation: MSW v2 + Vitest. Vitest Jest-compatible hai lekin 10x faster — Vite pe based hai. MSW v2 ka passthrough feature — sirf jo mock kiya wahi intercept karo, baaki real server jaate hain. Gradual migration easy. MSW Chrome extension bhi hai — DevTools network tab mein exactly dikhega kya intercept hua. Development mein bhi use karo — backend ready nahi toh MSW pe kaam karo. Frontend + backend parallel develop karo."
         />
       </div>
 
@@ -263,14 +263,14 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock })`,
           title="Async Testing — waitFor & findBy"
           emoji="⏳"
           difficulty="advanced"
-          whatIsIt="React components async hote hain — API calls, useEffect delays, setState batching. Tests mein async operations await karne ke liye waitFor utility aur findBy queries hain. waitFor ek condition satisfied hone tak retry karta hai. findBy async version hai getBy ka — element appear hone tak wait karta hai."
+          whatIsIt="Ye scenario imagine karo — button click karte ho, API call hoti hai, data aata hai, UI update hota hai. Synchronous test likhoge toh? Test button click karega, immediately check karega — data abhi aaya nahi! Test fail. Async testing ka kaam yahi hai — 'ruko, jab tak data aa nahi jaata.' findBy ek element ka wait karta hai. waitFor ek condition ka wait karta hai. Dono retry karte hain baar baar jab tak succeed na ho ya timeout na ho. Real async world ke liye real async tests."
           whenToUse={[
             'Loading state ke baad content appear hone ka wait — findByText',
             'Multiple updates ke baad stable state check karna — waitFor',
             'User action ke baad async side effect verify karna',
             'Error states jo async aate hain — API failure ke baad',
           ]}
-          whyUseIt="Bina proper async handling ke tests flaky hote hain — race conditions. waitFor automatic retries karta hai default timeout (1000ms) tak. findBy cleaner API hai simple cases ke liye. Both ensure tests properly async operations await karte hain."
+          whyUseIt="Flaky tests — ye sabse frustrating cheez hai testing mein. Kabhi pass, kabhi fail, same code. 99% cases mein cause kya hota hai? Race condition — test async operation ka wait nahi karta. findBy aur waitFor se race conditions khatam ho jaati hain. waitFor 1000ms tak retry karta hai — agar element 800ms mein aaya toh bhi test pass karega. Ye resilience hai. No more random failures."
           howToUse={{
             filename: 'async-testing.test.tsx',
             language: 'typescript',
@@ -327,9 +327,9 @@ test('timer-based update', async () => {
   expect(screen.getByText('4 seconds left')).toBeInTheDocument()
   jest.useRealTimers()
 })`,
-            explanation: "findBy = getBy + waitFor ek saath. waitFor jab multiple checks ek saath karne hoon ya complex conditions ho. Fake timers jest.useFakeTimers() se — time manually control karo bina real waiting ke. act() React state updates flush karta hai — RTL internally use karta hai, manually sirf edge cases mein.",
+            explanation: "findBy internally waitFor wrap karta hai — ek shorthand hai. waitFor use karo jab multiple assertions ek sath check karni hoon ya complex condition ho. Fake timers ka magic — jest.useFakeTimers() ke baad time real mein nahi beetha. jest.advanceTimersByTime(1000) call karo — JavaScript sochta hai 1 second beeth gaya. CountdownTimer test milliseconds mein run hota hai, real 5 second nahi wait karna. act() ke baare mein — RTL automatically sab ko act() mein wrap karta hai. Manual act() sirf third-party async operations ya rare edge cases mein.",
           }}
-          realWorldScenario="Real-time chat app testing — message bhejo, API call hoti hai, response aata hai, message list mein dikhna chahiye. findByText(sentMessage) wait karega message appear hone tak. Race conditions automatically handle hoti hain."
+          realWorldScenario="Chat app testing — user message type karta hai, Send press karta hai, API call hoti hai, message list mein naya message appear hona chahiye. Test: user.type, user.click, phir `await screen.findByText('Hello World')` — ye wait karega jab tak message list mein nahi dikhta. API 300ms mein respond kare ya 700ms mein — findBy ka wait handle kar lega. Race condition zero."
           commonMistakes={[
             {
               mistake: 'waitFor mein side effects karna (click, type)',
@@ -342,7 +342,7 @@ test('timer-based update', async () => {
               fix: 'Hamesha await findBy: const el = await screen.findByText("Success"). ESLint plugin testing-library/await-async-queries ye enforce karta hai.',
             },
           ]}
-          proTip="Testing mein `act` warning: 'An update to X inside a test was not wrapped in act(...)' — ye usually await miss karne ka sign hai. RTL ke async utilities (findBy, waitFor, userEvent) internally act() wrap karte hain. Manual act() rarely zaroori hota hai."
+          proTip="'An update to X inside a test was not wrapped in act(...)' — ye warning dikhti hai toh ghabrao nahi. 99% cases mein matlab simple hai: koi await miss ho raha hai. findBy ke aage await nahi daala? userEvent ke aage await nahi daala? Add karo, warning gayab. RTL automatically act() wrap karta hai apni async utilities mein. Manual act() likhna usually signal hai ki kuch aur approach better hoga."
         />
       </div>
 
@@ -351,14 +351,14 @@ test('timer-based update', async () => {
           title="Custom Hooks Testing — renderHook"
           emoji="🎣"
           difficulty="advanced"
-          whatIsIt="renderHook utility se custom hooks independently test kar sakte ho — koi component render kiye bina. Hook ka return value, state updates, side effects — sab test hote hain. act() se state updates trigger karo aur result check karo. Pure hook logic test hoti hai — UI concern nahi."
+          whatIsIt="Custom hook ka test component ke through karo toh kya hoga? Component UI bhi mock karna padega, rendering bhi handle karna padega — testing ki focus blur ho jaati hai. renderHook magic yahan kaam karta hai — hook directly chalao, koi component nahi. result.current se hook ka return value milta hai. act() se manually state update trigger karo. Pure hook behavior test karo — UI ka koi jhanjhat nahi."
           whenToUse={[
             'Custom hook ek complex logic implement kare',
             'Hook ka behavior independently verify karna ho',
             'Hook ki different argument combinations test karni hoon',
             'Error handling hook mein — kya correct error throw hota hai',
           ]}
-          whyUseIt="Custom hooks ka test component ke through hoga toh component ka UI bhi mock karna padega — complex setup. renderHook se direct hook logic test hoti hai — simpler, more focused. Unit test philosophy: ek unit ek kaam, ek test ek behavior."
+          whyUseIt="Unit test philosophy ka core — ek test ek cheez. useDebounce hook test karo toh sirf debounce logic test hona chahiye — koi button, koi form, koi UI nahi. renderHook se hook izolate hoti hai. result.current hamesha latest value deta hai — stale reference problem nahi. rerender se naye props ke saath hook dobara chalao. wrapper se Context inject karo. Ye tool set custom hooks ko ek first-class citizen banata hai — components ki tarah testable."
           howToUse={{
             filename: 'hook-testing.test.tsx',
             language: 'typescript',
@@ -420,9 +420,9 @@ test('useAuth needs AuthContext', () => {
   const { result } = renderHook(() => useAuth(), { wrapper })
   expect(result.current.user).toBeNull()
 })`,
-            explanation: "result.current hook ka latest return value hai. rerender se naye props ke saath hook re-run karo — dependency changes test karo. wrapper option context providers inject karta hai. act() state updates synchronize karta hai — result.current update ke baad expect karo.",
+            explanation: "result kya hai? Ek live reference hai — result.current hamesha hook ka latest return value hai. Koi destructuring mat karo pehle se — const { count } = result.current kiya toh snapshot ban jaata hai, update nahi hoga. Hamesha result.current.count expect mein likhna. act() zaroorat kab? Jab state update manually trigger karo — result.current.increment() call karna act() mein wrap karo. Fake timers ke saath bhi act() wrap karo. Async operations ke liye await act(async () => {...}).",
           }}
-          realWorldScenario="useLocalStorage hook test: initial value localStorage se load hoti hai — set karo localStorage, render karo hook, check karo initial value. Update karo — localStorage update ho — rerender ke baad value persist ho. Complete contract test."
+          realWorldScenario="useLocalStorage hook — test kaise karoge? localStorage mock karo, renderHook se hook chalao, initial value check karo localStorage se aata hai. setValue call karo — localStorage update hua? renderHook ke result mein naya value reflect hua? Page reload simulate karo — renderHook dobara, value localStorage se read ho? Teen scenarios, teen tests, hook ka complete contract verified. Ye hai systematic hook testing."
           commonMistakes={[
             {
               mistake: 'act() ke bahar state updates check karna',
@@ -435,7 +435,7 @@ test('useAuth needs AuthContext', () => {
               fix: 'Hamesha result.current access karo expect mein: expect(result.current.count).toBe(1). Pehle destructure nahi karo.',
             },
           ]}
-          proTip="Hook tests component tests se zyada stable hote hain — implementation details change karo (e.g. useState to useReducer), hook test same rahega agar behavior same hai. Yahi test philosophy ka benefit hai. Library developers primarily hooks test karte hain — components ke liye minimal integration tests."
+          proTip="Hook tests sabse stable tests hote hain poore codebase mein. Reason? Implementation details se completely decoupled. useState se useReducer migrate karo — behavior same raha toh hook test ek bhi break nahi hoga. UI change hogi — hook test same rahega. Ye hai separation of concerns ka testing benefit. Library authors mostly hooks test karte hain, components mein minimal integration tests. Tumhara custom logic agar hooks mein hai — well-tested hai."
         />
       </div>
     </div>

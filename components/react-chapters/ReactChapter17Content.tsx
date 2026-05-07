@@ -14,10 +14,10 @@ export default function ReactChapter17Content() {
           Next.js — Full Stack React Ka Future
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Next.js ne React ko ek meta-framework mein badal diya — file-based routing, server-side rendering, API routes, Server Components sab ek jagah. Vercel ne banaaya, lekin ye open source hai aur self-host bhi kar sakte ho. Modern web development ka go-to choice ban gaya hai.
+          Next.js React ka 'grown-up version' nahi hai — ye ek completely alag mental model hai! Server Components, Client Components, Edge Runtime — pehle ye samjho phir Next.js samjho. Jo log Next.js ko sirf 'React with routing' samjhte hain — unhe App Router dekhke brain freeze hota hai. Aaj hum seedha mental model se shuru karenge.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          App Router (Next.js 13+) ek paradigm shift hai — React Server Components default hain, client components opt-in hain. Is chapter mein dono samjhein aur kab kya use karein decide karna seekhein.
+          Plain React kya hai? Browser mein JavaScript chalti hai, HTML generate hoti hai. Next.js kya hai? Server pe bhi React chalta hai — HTML server se aata hai, JavaScript baad mein hydrate hoti hai. Ye shift sab kuch change kar deta hai — performance, SEO, data fetching, architecture sab. App Router (Next.js 13+) ek paradigm shift hai — React Server Components default hain. Is chapter mein ye mental model build karenge.
         </p>
       </div>
 
@@ -26,14 +26,14 @@ export default function ReactChapter17Content() {
           title="Next.js Kya Hai? SSR, SSG, ISR"
           emoji="⚡"
           difficulty="advanced"
-          whatIsIt="Next.js React ke upar ek framework hai jo rendering strategies provide karta hai: SSR (Server-Side Rendering — har request pe server render), SSG (Static Site Generation — build time render), ISR (Incremental Static Regeneration — static + periodic refresh), CSR (Client-Side Rendering — browser mein render, traditional React). Sahi strategy sahi use case ke liye choose karo."
+          whatIsIt="Ek sawaal pehle — user jab tumhari site kholta hai toh kya hota hai? Plain React mein: blank HTML milta hai, JavaScript load hoti hai, component render hota hai, data fetch hoti hai. Total: 3-4 seconds first meaningful paint. Next.js mein? Server pehle data fetch karta hai, HTML generate karta hai, user ko ready-made page milta hai. Aur Next.js mein teen strategies hain. SSG — build time pe banao, CDN pe serve karo. ISR — mostly static, periodically refresh. SSR — har request pe fresh. CSR — traditional React. Sahi jagah sahi strategy — ye Next.js ki asli skill hai."
           whenToUse={[
             'SSR: User-specific content, real-time data, SEO important content',
             'SSG: Blog posts, docs, marketing pages — rarely changing content',
             'ISR: Product pages — mostly static but occasionally update',
             'CSR: Dashboards, admin panels — SEO nahi chahiye, rich interactivity chahiye',
           ]}
-          whyUseIt="Plain React CSR hai — initial HTML empty hota hai, browser JavaScript load karta hai, phir render hota hai. SEO suffer karta hai, First Contentful Paint slow. Next.js SSR/SSG se pre-rendered HTML milta hai — fast load, excellent SEO, better performance. Full-stack capabilities bhi hain."
+          whyUseIt="Google bot aata hai tumhari plain React site pe — blank page milti hai, JavaScript run hota hai, content dikhta hai. Google bot ko JavaScript run karna pasand nahi — SEO suffer karta hai. Next.js SSG se? Google bot aaya, HTML already ready hai — content seedha readable. SEO excellent. Performance? SSG pages CDN pe hote hain — duniya mein kahi se bhi milliseconds mein load. Ye sirf framework ka fark nahi — business impact hai."
           howToUse={{
             filename: 'next-rendering.tsx',
             language: 'typescript',
@@ -72,9 +72,9 @@ async function DashboardPage() {
   }).then(r => r.json())
   return <Dashboard data={data} />
 }`,
-            explanation: "App Router mein Server Components default hain — async function directly render karta hai. fetch mein cache option se behavior control: no-store = SSR, revalidate = ISR, default = SSG. generateStaticParams se dynamic routes build time par generate hote hain.",
+            explanation: "Step by step trace karte hain. generateStaticParams kab chalta hai? Build time pe — next build ke dauran. Ye function sab possible slugs return karta hai, Next.js har slug ke liye BlogPost function call karta hai, HTML generate karta hai, file system mein save karta hai. User request aati hai — pre-built HTML serve. Zero computation at request time! ISR mein — first request ke baad page serve hota hai. Background mein revalidate time pe fresh generate hota hai. SSR mein — har request pe server function chalata hai, fresh data fetch karta hai, HTML banata hai, response bhejta hai. cache: 'no-store' = har request pe fresh.",
           }}
-          realWorldScenario="Blog site: posts SSG se build time render hain — instant load, excellent SEO. Dashboard SSR se — user-specific data fresh milta hai. Product pages ISR se — mostly static but daily price update hoti hai. Ek Next.js app mein sab strategies coexist karte hain."
+          realWorldScenario="Ek e-commerce site hai. Blog posts? SSG — content roz nahi badlata, CDN pe fast. Product catalog? ISR — har ghante refresh, prices update hote hain. User dashboard? SSR — personal data, har request fresh. Shopping cart? CSR — heavy interactivity, SEO ki zaroorat nahi. Ek hi Next.js app mein charon strategies apni jagah perfect kaam kar rahe hain. Ye hai Next.js ka real power."
           commonMistakes={[
             {
               mistake: 'Har page SSR karna unnecessarily',
@@ -87,7 +87,7 @@ async function DashboardPage() {
               fix: 'Naye projects mein App Router use karo (Next.js 13+ default). Legacy projects gradually migrate karo. Ek time pe ek use karo.',
             },
           ]}
-          proTip="Next.js analytics build mein time check karo: next build output mein har page ka render type dikhata hai (SSG, ISR, SSR, Dynamic). Static pages (SSG) green, dynamic pages (SSR) orange — optimize karo static pages maximize karne ke liye. Better CDN caching = faster users."
+          proTip="next build run karo aur output dhyan se padho. Har page ke aage symbols hain — circle = SSG, lambda = SSR, clock = ISR. Kitne pages static hain? Kitne dynamic? Target: static pages maximum, dynamic minimum. Ek orange SSR page dikhta hai jo actually static ho sakta tha? Fix karo — cache: 'no-store' hata do. CDN caching improve hogi, users ko faster pages milenge. Build output = performance audit free mein."
         />
       </div>
 
@@ -96,14 +96,14 @@ async function DashboardPage() {
           title="App Router — The New Way"
           emoji="📁"
           difficulty="advanced"
-          whatIsIt="App Router (Next.js 13+ /app directory) file-based routing system hai jahan folders = URL segments, page.tsx = route component, layout.tsx = shared layout, loading.tsx = loading UI, error.tsx = error boundary. Ye convention-over-configuration approach development speed dramatically increase karta hai."
+          whatIsIt="App Router ek convention-over-configuration masterpiece hai. Ek sawaal pehle — tumne kabhi routes configure karne mein ghanta lagaya hai? React Router mein routes.tsx banao, paths define karo, components match karo. App Router mein? Folder banao, page.tsx rakho — done. Route ready. Lekin isse bhi zyada — folder ke andar loading.tsx rakho — automatic Suspense boundary. error.tsx — automatic error boundary. not-found.tsx — 404 automatic. Convention se sab automatic — configuration zero."
           whenToUse={[
             'New Next.js project — hamesha App Router se shuru karo',
             'Nested layouts chahiye — admin panel, dashboard jahan tabs/sidebar consistent hain',
             'Loading UI per-route chahiye — automatic Suspense boundaries',
             'Server Components default behavior chahiye',
           ]}
-          whyUseIt="App Router mein har segment apna loading.tsx, error.tsx, not-found.tsx define kar sakta hai — granular UX control. Parallel routes, intercepting routes — complex UI patterns possible hain. React Server Components default — client bundle smaller hota hai."
+          whyUseIt="Sochte hain — dashboard mein analytics section slow load hota hai. Loading state sirf analytics section mein dikhni chahiye, baaki dashboard intact rahna chahiye. App Router mein? /dashboard/analytics/loading.tsx — bas itna. Sirf analytics ka loading UI, sidebar chal raha hai, header chal raha hai. Ye granular control pehle manually Suspense wrap se hota tha — ab file system se automatic. Development speed dramatically increase hoti hai."
           howToUse={{
             filename: 'app-structure.txt',
             language: 'bash',
@@ -154,9 +154,9 @@ export default function DashboardLayout({
 export default function Loading() {
   return <DashboardSkeleton />
 }`,
-            explanation: "File naming conventions strict hain: page.tsx, layout.tsx, loading.tsx, error.tsx, not-found.tsx, route.ts (API). Dynamic segments: [id] = /users/123. Catch-all: [...slug] = /blog/2024/post-title. Groups: (dashboard) = folder without URL segment.",
+            explanation: "Convention yaad karo ek baar — page.tsx (route), layout.tsx (shared wrapper, state preserve), loading.tsx (Suspense fallback), error.tsx (error boundary), not-found.tsx (404), route.ts (API endpoint). [id] — dynamic segment, URL pe /users/123 toh params.id = '123'. [...slug] — catch-all, /blog/2024/jan/post toh params.slug = ['2024','jan','post']. (parentheses) — route group, URL mein visible nahi — sirf organize karne ke liye. Ye conventions ek baar internalize karo — mentally file structure se URL map ho jaayega.",
           }}
-          realWorldScenario="SaaS dashboard — /app/(auth)/login sirf auth pages ke liye layout, /app/(dashboard)/analytics dashboard layout ke saath. (auth) aur (dashboard) route groups hain — URL mein nahi dikhte. Alag layouts, same domain."
+          realWorldScenario="SaaS product example — login page aur dashboard ka layout bilkul alag hai. Login pe navbar nahi chahiye, sirf centered card. Dashboard pe sidebar chahiye, top nav chahiye. Route groups se: /(auth)/login apna layout, /(dashboard)/analytics apna layout. URL mein (auth) aur (dashboard) dikhai nahi dete — /login aur /analytics clean URLs. Architecture clean, URLs clean, layouts separate. Ye real projects mein rozana kaam aata hai."
           commonMistakes={[
             {
               mistake: 'layout.tsx aur template.tsx confuse karna',
@@ -169,7 +169,7 @@ export default function Loading() {
               fix: 'File ke top par "use client" directive add karo. Ya component ko alag file mein nikalo aur import karo.',
             },
           ]}
-          proTip="Route groups (parentheses mein folder name) se URL mein affect kiye bina organize karo: /app/(marketing)/about, /app/(marketing)/pricing — alag layout, /about aur /pricing URLs clean. Authentication middleware bhi route groups se target karo."
+          proTip="Route groups ka ek aur underrated use — middleware targeting. middleware.ts mein config.matcher se specific route groups target karo. /(protected) ke sab pages authentication require karte hain, /(public) mein koi check nahi. Ek file mein poora auth gating — saari protected pages automatically covered. Ye pattern large apps mein badi time saver hai."
         />
       </div>
 
@@ -178,14 +178,14 @@ export default function Loading() {
           title="Server vs Client Components"
           emoji="🖥️"
           difficulty="advanced"
-          whatIsIt="Server Components: server par render hote hain, HTML client ko jaata hai, JavaScript bundle mein nahi hote — direct database access, async/await, no hooks. Client Components: 'use client' directive, browser mein hydrate hote hain, hooks aur interactivity support karte hain. Default Server, opt-in Client."
+          whatIsIt="Ye Next.js ka sabse important mental model hai — seedha dimaag mein daal lo. Server Component: server pe chalega, JS bundle mein nahi jaayega, database seedha access kar sako, async/await directly likh sako, useState use mat karo. Client Component: 'use client' likho, browser pe chalega, useState/useEffect sab milega, interactivity possible. Default Server, opt-in Client. Kyon? Kyunki zyada components actually interactivity chahte hi nahi — sirf data render karte hain. Unhe client bundle mein bhejne ki kya zaroorat?"
           whenToUse={[
             'Server Component: Data fetching (DB, API), heavy computations, no interactivity',
             'Client Component: useState, useEffect, onClick, browser APIs',
             'Server: Sensitive credentials hide karna — API keys server par rehti hain',
             'Client: Forms, animations, real-time updates, local state',
           ]}
-          whyUseIt="Server Components se bundle size dramatically kam hoti hai — heavy libraries server par run hoti hain, client ko sirf HTML aata hai. Better performance, faster load. Client Components sirf jahan interactivity chahiye wahan use karo — minimal JavaScript to browser."
+          whyUseIt="Ek example — markdown syntax highlight karna hai. Plain React mein: highlight.js bundle mein jaata hai — 150KB user ke browser pe. Next.js Server Component mein: highlighting server pe hoti hai, HTML already highlighted client ko aata hai — highlight.js client bundle mein zero KB. 150KB JavaScript save! Page load dramatically faster. Ye ek example tha — heavy libraries jo server pe hi run ho sakti hain, unhe client bundle se nikalo. Users ko faster experience milega."
           howToUse={{
             filename: 'server-client.tsx',
             language: 'typescript',
@@ -240,9 +240,9 @@ async function UserProfile({ userId }: { userId: string }) {
   if (!user) notFound()
   return <div>{user.name}</div>  // Direct render
 }`,
-            explanation: "'use client' boundary — ye file aur iske import chain client bundle mein jaate hain. Server Component children prop se Client Component receive kar sakta hai — composition pattern. Direct DB access Server Component mein — Prisma, SQL sab theek hai. Client Component mein API call karni padegi.",
+            explanation: "Under the hood kya hota hai — 'use client' ek boundary mark karta hai. Ye file aur is file ke sare imports client bundle mein jaate hain. Server Component db.product.findMany() call karta hai — ye server pe chalta hai, Prisma client, DB credentials — sab server pe. ProductCard Server Component hai — DB data direct receive karta hai. AddToCartButton 'use client' hai — useState hai, onClick hai — ye client bundle mein jaata hai. Lekin Server Component AddToCartButton ko children ki tarah pass kar sakta hai — composition pattern. Sahi architecture: data fetching server pe, interactivity client pe.",
           }}
-          realWorldScenario="E-commerce product page — ProductPage (Server Component) se DB se product data fetch karo. Product images, description server-rendered. Add to Cart, Size selector, Reviews tab — Client Components. Server renders static content, client handles interactions."
+          realWorldScenario="Product page anatomy — ProductPage Server Component (DB se product fetch, description render, SEO metadata). ProductImages Server Component (images render — no interactivity). AddToCartButton Client Component (useState, onClick — basket mein add). SizeSelector Client Component (selected state, user interaction). ReviewsTab Client Component (tab switch, load more). Server: content aur SEO. Client: sirf jahan click, type, state chahiye. JavaScript bundle minimum — user happy."
           commonMistakes={[
             {
               mistake: '"use client" unnecessarily puri page par lagana',
@@ -255,7 +255,7 @@ async function UserProfile({ userId }: { userId: string }) {
               fix: 'Browser APIs sirf Client Components mein use karo. Ya dynamic import with ssr: false: import dynamic from "next/dynamic"; const Comp = dynamic(() => import("./BrowserOnly"), { ssr: false }).',
             },
           ]}
-          proTip="Server Components mein heavy libraries import karo — markdown parsers, syntax highlighters, PDF generators. Client bundle mein nahi jaate — zero impact on JS bundle size. Next.js bundle analyzer (@next/bundle-analyzer) se dekho kya client bundle mein ja raha hai."
+          proTip="@next/bundle-analyzer install karo — visual treemap milta hai client bundle ka. Kya heavy library unnecessarily client bundle mein hai? Server Component mein move karo. Markdown parser, syntax highlighter, PDF generator, date library — sab potential candidates hain server-only ke liye. Bundle size se performance directly correlate karta hai. 1 second faster load = zyada conversions. Bundle analyzer = money saver."
         />
       </div>
 
@@ -264,14 +264,14 @@ async function UserProfile({ userId }: { userId: string }) {
           title="Data Fetching in Next.js"
           emoji="🌊"
           difficulty="advanced"
-          whatIsIt="Next.js App Router mein Server Components mein directly async/await se data fetch karo — useEffect nahi chahiye. Route Handlers (/api/route.ts) REST API endpoints banate hain. Server Actions form submissions aur mutations ke liye — type-safe, progressive enhancement ke saath."
+          whatIsIt="Ek shocking realization — App Router mein useEffect se data fetch karna zyada zaroori nahi raha. Server Component directly async function hai — awaitt karo, data lo, render karo. Khatam. No useEffect, no loading state, no empty state. Route Handlers REST API endpoints hain — /api/users/route.ts aur /api/users kaam karta hai. Server Actions — form submission ke liye API route banana bhi optional ho gaya. 'use server' mark karo, form mein action prop deo — JavaScript bhi band kar do toh bhi kaam karega. Progressive enhancement real mein."
           whenToUse={[
             'Page data — Server Component mein fetch directly (no useEffect)',
             'API endpoints — Route Handlers in app/api/route.ts',
             'Form mutations — Server Actions (no separate API needed)',
             'Revalidation — on-demand cache invalidation',
           ]}
-          whyUseIt="App Router mein data fetching dramatically simpler hai — Server Components async functions hain, seedha data fetch karo, render karo. Client-side loading states, error states — sab Next.js handle karta hai loading.tsx aur error.tsx se. Server Actions form submission ke liye API route create karna obsolete kar deta hai."
+          whyUseIt="Gino — plain React mein form submit karne ke liye kya karna padta tha? useState se form state manage karo, onSubmit handler likho, fetch('/api/submit') call karo, loading state handle karo, error state handle karo — minimum 50 lines. Server Action se? createPost function likho, form ka action prop do — 10 lines. API route banana nahi pada. Client JavaScript kam hua. TypeScript end-to-end type safe raha. Progressive enhancement bonus. Ye hai simplification ka real impact."
           howToUse={{
             filename: 'data-fetching.tsx',
             language: 'typescript',
@@ -328,9 +328,9 @@ async function Dashboard() {
 
   return <DashboardUI user={user} stats={stats} notifications={notifications} />
 }`,
-            explanation: "Route Handlers HTTP methods export karte hain — GET, POST, PUT, DELETE. Server Actions 'use server' directive se mark hote hain — server par run karte hain. Form action prop directly Server Action accept karta hai — JavaScript disable hone par bhi kaam karta hai (progressive enhancement). Promise.all se parallel fetching — waterfall avoid karo.",
+            explanation: "Route Handler file mein GET, POST, PUT, DELETE — functions export karo. URL automatically handle hota hai. Server Action mein 'use server' — Next.js guarantee karta hai ye code sirf server pe chalega, client bundle mein nahi jaayega. Form ki action prop ek function accept karta hai — browser built-in form submission use hoti hai. JavaScript disabled ho toh bhi form submit hoti hai — HTML form POST. Parallel fetching — Promise.all se teen API calls simultaneously. Ek await karo — teeno ek saath chalenge. Waterfall vs parallel — 3x performance difference possible.",
           }}
-          realWorldScenario="Blog platform: Post list page (Server Component, DB fetch, SSG), Create post form (Server Action, no separate API needed), Post detail (ISR, revalidateTag se on-demand refresh). Saari data patterns Next.js mein cleanly handled."
+          realWorldScenario="Blog platform complete data flow — Post list Server Component hai, DB se directly posts fetch karta hai, SSG generate hota hai. Create post form — Server Action createPost hai, API route nahi banaya. revalidatePath('/blog') call hota hai — ISR cache invalidate hoti hai, next visitor ko fresh list milti hai. Post detail ISR hai — mostly static, on-demand refresh possible. Ek Next.js app mein sab data patterns elegantly handled."
           commonMistakes={[
             {
               mistake: 'Sequential fetch instead of parallel',
@@ -343,7 +343,7 @@ async function Dashboard() {
               fix: 'Specific fields return karo: return { id: user.id, name: user.name } — never full DB object. Passwords, internal fields strip karo.',
             },
           ]}
-          proTip="Server Actions + zod validation + useFormState hook = complete type-safe form pipeline without any separate API layer. useFormState client component mein hota hai jo Server Action state receive karta hai — validation errors, success messages sab handle hoti hain."
+          proTip="Full type-safe form pipeline without API layer — Server Action + Zod validation + useFormState. Server Action Zod se input validate karta hai, errors return karta hai. Client Component useFormState hook se server state receive karta hai — validation errors inline dikhao, success state handle karo. No REST API, no extra fetch, no manual error state — end-to-end type safe form in 30 lines. Ye 2024 ka modern full-stack React pattern hai."
         />
       </div>
 
@@ -352,14 +352,14 @@ async function Dashboard() {
           title="Deployment — Vercel, Static, Env Vars"
           emoji="🚀"
           difficulty="advanced"
-          whatIsIt="Next.js deploy karna Vercel se easiest hai — git push karo, automatic deploy hota hai. Self-host bhi possible hai Node.js server par. Static export bhi possible hai (sirf SSG/CSR apps ke liye). Environment variables — public (.env.local, NEXT_PUBLIC_ prefix), server-only (.env) — sahi configuration zaroori hai."
+          whatIsIt="Next.js deploy karna simple hai, lekin environment variables ka ek critical gotcha hai jo beginners har baar miss karte hain. NEXT_PUBLIC_ prefix wale variables client bundle mein jaate hain — browser mein visible, source code mein readable. Bina NEXT_PUBLIC_ wale sirf server pe. Ye distinction security ke liye critical hai. API keys, DB passwords — kabhi NEXT_PUBLIC_ nahi. Publishable keys, public URLs — NEXT_PUBLIC_ theek hai. Ye rule ek baar dil pe likh lo."
           whenToUse={[
             'Vercel: Simplest deployment, automatic previews, Edge network',
             'Self-hosted: Custom infrastructure, more control, cost optimization',
             'Static export: Pure static site, CDN par host karo — no Node.js server needed',
             'Docker: Containerized deployment, Kubernetes, enterprise environments',
           ]}
-          whyUseIt="Deployment correctly configure karna performance aur security dono affect karta hai. Vercel Next.js ke liye optimized hai — automatic SSR, ISR, Edge Functions sab work karte hain. Environment variables properly split karo — public variables client bundle mein jaate hain."
+          whyUseIt="Vercel choose kyon karein? Kyunki Vercel ne Next.js banaya — dono ek sath evolve hote hain. ISR, Edge Functions, Image Optimization, Analytics — sab Vercel pe out of the box kaam karta hai. Self-host pe manually configure karna padta hai. But Vercel costly ho sakta hai scale pe — tab Docker + VPS. Environment variables — Vercel dashboard mein set karo, never .env.production file mein commit karo. Git history permanent hai — ek baar secret commit hua toh rotate karna padega."
           howToUse={{
             filename: 'deployment.env',
             language: 'bash',
@@ -403,9 +403,9 @@ export default nextConfig
 # COPY . .
 # RUN npm ci && npm run build
 # CMD ["npm", "start"]  -- next start`,
-            explanation: "NEXT_PUBLIC_ prefix se variable client bundle mein jaata hai — sensitive values kabhi NEXT_PUBLIC_ se mark nahi karo. .env.local gitignore mein hona chahiye. Vercel mein environment variables dashboard se set karo — automatically inject hoti hain. next start production mode mein run karta hai.",
+            explanation: "Ek mental model — NEXT_PUBLIC_ = public announcement. Sab sun sakte hain. Bina prefix = secret meeting. Sirf server ko pata hai. Database URL, JWT secret, Stripe secret key — ye sab server-only. Koi bhi browser DevTools khol ke network tab mein bundle dekhe toh NEXT_PUBLIC_ variables seedhe readable hain. .env.local file gitignore mein hona MANDATORY hai — .env.example template file banao, real values nahi, sirf keys. Naye developer clone kare toh samjhe kaun se variables chahiye.",
           }}
-          realWorldScenario="SaaS product: Development mein .env.local, staging mein Vercel preview environment variables, production mein Vercel production environment. API keys, DB URLs — sab environment-specific. NEXT_PUBLIC_STRIPE_KEY sirf Stripe publishable key hai — secret key server-only."
+          realWorldScenario="Proper setup kaise karta hai — .env.local development mein hai, gitignored. .env.example template GitHub pe hai — sirf key names, no values. Vercel mein teen environments hain — development, preview, production. Staging PR pe deploy hota hai — preview environment variables lagti hain. Production merge hota hai — production variables. Alag Stripe keys har environment ke liye — test keys staging pe, live keys production pe. Koi accidental charge nahi, koi secret leak nahi."
           commonMistakes={[
             {
               mistake: 'SECRET keys NEXT_PUBLIC_ se prefix karna',
@@ -418,7 +418,7 @@ export default nextConfig
               fix: '.env.local gitignore mein rakho. Production variables Vercel dashboard ya server environment mein set karo. .env.example file rakho template ke liye (no real values).',
             },
           ]}
-          proTip="Vercel Speed Insights aur Analytics — @vercel/analytics package install karo, layout.tsx mein <Analytics /> add karo. Real User Metrics (Core Web Vitals) automatically track hote hain. Free plan mein limited, Pro mein full analytics. Production performance data se optimize karo."
+          proTip="@vercel/analytics package — ek component, real user data. layout.tsx mein <Analytics /> add karo — Core Web Vitals real users ka track hona shuru. Ye lab data nahi, field data hai — actual users ke actual devices pe actual network speeds. LCP slow hai Mumbai mein? Bangalore mein theek hai? Ye granularity Lighthouse nahi deta. Real data se optimize karo — guesswork khatam, impact maximum."
         />
       </div>
     </div>

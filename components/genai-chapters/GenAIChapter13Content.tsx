@@ -150,10 +150,10 @@ export default function GenAIChapter13Content() {
         }}
       >
         <h1 className="text-4xl font-display font-bold text-[#F5F5F7] mb-3">
-          AI Agents & Tool Use — Autonomous AI 🤖
+          AI Agents — LLM + Tools = Autonomous Worker 🤖
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          Single LLM call se aage — agents jo khud sochte hain, tools use karte hain, aur multi-step tasks complete karte hain. Ye AI ka next level hai.
+          AI Agent kya hai? Simple definition: ek LLM jisko tools diye gaye hain. Tools = functions jo wo call kar sakta hai. Decide karna ki kaunsa tool use karein — ye LLM ka kaam. Execute karna — ye tumhara code karta hai. Ye simple loop — perceive → reason → act → observe → repeat — AI automation ka core hai. Single LLM call? Input → output. Agent? Goal batao, wo khud sochta hai, tools use karta hai, task complete karta hai.
         </p>
         <div
           className="rounded-xl p-4"
@@ -163,7 +163,7 @@ export default function GenAIChapter13Content() {
           }}
         >
           <p className="text-[#FCA5A5] text-sm italic">
-            &quot;Agent wo hai jo sirf jawaab nahi deta — jo kaam karta hai. Research karo, code likho, email bhejo — AI agent ye sab akela kar sakta hai.&quot;
+            &quot;Agent wo hai jo sirf jawaab nahi deta — jo kaam karta hai. Aur kaam karte karte khud decide karta hai next step kya hai.&quot;
           </p>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default function GenAIChapter13Content() {
           title="AI Agent Kya Hai? — Perception → Reasoning → Action"
           emoji="🤖"
           difficulty="advanced"
-          whatIsIt="AI agent ek system hai jo environment ko perceive karta hai, reasoning karta hai, tools use karke actions leta hai, aur results observe karke agle steps decide karta hai — ye cycle repeat hoti hai jab tak task complete na ho. Single LLM call (input → output) se fundamentally alag: agent autonomous multi-step problem solver hai."
+          whatIsIt="Agent loop itna simple hai ki aashcharya hoga: (1) task do, (2) LLM tools decide karta hai, (3) tumhara code execute karta hai, (4) results wapas LLM ko, (5) repeat until done. Ye hi poora agent hai. Magic nahi — sirf ek while loop with LLM calls aur tool execution. Lekin is simple loop se complex multi-step automation possible ho jaati hai jo single LLM call se impossible thi."
           whenToUse={[
             'Research tasks — multiple sources se information gather karo, synthesize karo.',
             'Code generation + testing — write code, run tests, fix errors, repeat.',
@@ -182,7 +182,7 @@ export default function GenAIChapter13Content() {
             'Complex customer support — issue diagnose karo, multiple systems check karo, resolve karo.',
             'Content creation pipeline — research → outline → write → edit → format.',
           ]}
-          whyUseIt="Agents wo tasks handle karte hain jo ek LLM call se possible nahi — jahan intermediate results pe based next steps depend karte hain. 'Research top 5 Node.js frameworks aur comparison table banao' — agent searches, reads each framework docs, compares, formats output. Ek prompt se ye impossible tha."
+          whyUseIt="'Top 5 Node.js frameworks ka comparison table banao' — single prompt se nahi hoga accurately. Agent kya karta hai: search karo frameworks, har ek ke docs read karo, pricing check karo, GitHub stars dekho, comparison compile karo. Har step pichle step ke results pe depend karta hai. Ye sequential reasoning + tool use = agent's core use case hai."
           howToUse={{
             filename: 'basic-agent.ts',
             language: 'typescript',
@@ -273,9 +273,9 @@ async function runAgent(task: string, maxIterations = 10): Promise<string> {
 
   return 'Max iterations reached — task may be incomplete';
 }`,
-            explanation: 'Agent loop: task diya → LLM tools decide karta hai → tool execute karo → result wapas diya → LLM next step decide karta hai → repeat until done. stop_reason === "end_turn" matlab LLM ne final answer de diya, aur tool calls nahi chahiye. maxIterations runaway loop se protect karta hai.',
+            explanation: 'Agent loop pattern: response le, stop_reason check karo. "end_turn" = LLM done, final answer hai. "tool_use" = tools execute karo, results wapas bhejo, loop continue karo. Tool implementations real honi chahiye (search API, DB query, etc.) — ye mock sirf demonstration ke liye hai. maxIterations: 10-20 typical tasks ke liye kaafi hai.',
           }}
-          realWorldScenario="DevOps agent: 'Production server slow hai — diagnose karo aur fix karo.' Agent: (1) logs check karta hai, (2) CPU/memory metrics query karta hai, (3) slow database queries identify karta hai, (4) index add karta hai, (5) improvement verify karta hai — sab akele bina human intervention ke."
+          realWorldScenario="DevOps agent real example: 'Production server slow hai.' Agent ka loop: (1) logs fetch karo → nginx timeouts dikhte hain, (2) DB metrics query karo → slow queries hain, (3) EXPLAIN ANALYZE run karo → missing index, (4) index create karo, (5) performance verify karo → latency 80% better. Sab akele. Human ne sirf task diya, agent ne sab kiya."
           commonMistakes={[
             {
               mistake: 'Agent ko maxIterations limit ke bina run karna',
@@ -288,7 +288,7 @@ async function runAgent(task: string, maxIterations = 10): Promise<string> {
               fix: 'Human-in-the-loop: destructive operations pe confirm karo. Staging environment pe pehle test karo. Read-only access se start karo, gradually write access do.',
             },
           ]}
-          proTip="Claude pe tool calling sabse reliable hai complex agents ke liye — Anthropic ne specifically tool use pe heavy optimization kiya hai. claude-sonnet-4-6 complex multi-step reasoning ke liye best hai, claude-haiku-4-5 simple tool calls ke liye fast aur cheap hai."
+          proTip="Agents ke liye Claude Sonnet best choice hai — Anthropic ne tool use specifically optimize kiya hai. Haiku simple routing ke liye theek hai lekin complex multi-step reasoning mein Sonnet dramatically better hai. Claude ka extended thinking mode agent tasks mein exceptional results deta hai — enable karo agar complex reasoning required hai."
         />
       </div>
 
@@ -298,7 +298,7 @@ async function runAgent(task: string, maxIterations = 10): Promise<string> {
           title="ReAct Pattern — Reason + Act"
           emoji="🧠"
           difficulty="advanced"
-          whatIsIt="ReAct (Reasoning + Acting) ek prompting pattern hai jisme LLM apni reasoning explicitly likhta hai tool calls se pehle. 'Thought: Maine Mumbai ka weather dhundna chahiye. Action: web_search(Mumbai weather today). Observation: 35°C, sunny. Thought: Ab answer de sakta hoon. Final Answer: Mumbai mein aaj 35°C hai.' Ye chain-of-thought + tool use combination hai."
+          whatIsIt="ReAct = Reasoning + Acting. Ye prompting pattern hai jisme model explicitly sochta hai pehle, phir action leta hai, phir observation karta hai. Format: Thought (kya karna chahiye) → Action (tool call) → Observation (result) → Thought (next step decide karo) → ... → Final Answer. ChatGPT aur Claude.ai internally yahi karte hain. Explicitly prompt karo toh reasoning transparent ho jaata hai — debugging ke liye invaluable."
           whenToUse={[
             'Complex multi-step tasks jahan reasoning explicit hona zaroori hai.',
             'Debugging agent behavior — thoughts dekh ke samjho kyun kuch kiya.',
@@ -306,7 +306,7 @@ async function runAgent(task: string, maxIterations = 10): Promise<string> {
             'User ko agent progress dikhana chahte ho (transparency).',
             'Error recovery — agent apni mistake pehchane aur correct kare.',
           ]}
-          whyUseIt="ReAct bina explicit reasoning ke agent ek step pe wrong decision le sakta hai aur notice nahi karta. Explicit 'Thought' blocks se: (1) agent reasoning ko verify kar sakte ho, (2) agent apni galti khud pakad sakta hai ('ye approach kaam nahi kar raha, different try karta hoon'), (3) debugging bahut easier ho jaata hai."
+          whyUseIt="Bina ReAct ke agent blind hai — ek wrong tool call se agent spiral karta hai. ReAct se: (1) har step pe reasoning dekhte ho — 'kyon ye kiya?', (2) agent khud galti pakad sakta hai aur course correct kar sakta hai, (3) bugs fix karna simple ho jaata hai (reasoning trace dekho, fault dhundo). Production agents ke liye thought logging ka audit trail bhi valuable hai."
           howToUse={{
             filename: 'react-agent.ts',
             language: 'typescript',
@@ -381,9 +381,9 @@ async function reactAgent(question: string): Promise<void> {
 
 // Usage
 await reactAgent('Node.js aur Deno mein 2025 mein kya differences hain?');`,
-            explanation: 'ReAct system prompt explicit karta hai thought → action → observation cycle. Claude naturally is pattern ko follow karta hai. Thoughts print karo debugging ke liye — agent ki reasoning transparent ho jaati hai. Production mein thoughts log karo, user ko sirf final answer dikhao.',
+            explanation: 'REACT_SYSTEM_PROMPT format explicitly define karta hai thinking structure. Claude naturally follow karta hai. Development mein: thoughts console pe print karo — reasoning step by step dikhti hai. Production mein: thoughts structured logs mein store karo (debugging ke liye), user ko sirf Final Answer dikhao (clean UX ke liye). Ye separation important hai.',
           }}
-          realWorldScenario="Customer support agent ReAct pattern se: User: 'Mera order kahan hai?' Thought: Order ID dhundna chahiye. Action: get_order_id(user_id). Observation: Order #12345. Thought: Ab tracking check karo. Action: check_tracking(12345). Observation: Out for delivery. Final Answer: 'Aapka order aaj deliver hoga!'"
+          realWorldScenario="Customer support agent ReAct trace: User: 'Mera order kahan hai?' → Thought: 'Pehle order ID dhundna hai.' → Action: get_order_id(userId) → Observation: #12345 → Thought: 'Ab tracking check karo.' → Action: check_tracking(12345) → Observation: Out for delivery → Thought: 'Answer dene ke liye kaafi hai.' → Final Answer: 'Aapka order aaj deliver hoga!' — Human-readable reasoning trace = debuggable, trustworthy agent."
           commonMistakes={[
             {
               mistake: 'Thought blocks ko production user mein dikhana',
@@ -391,7 +391,7 @@ await reactAgent('Node.js aur Deno mein 2025 mein kya differences hain?');`,
               fix: "Thoughts sirf logs mein rakho. User ko sirf 'Final Answer' section dikhao. Progress indicator alag se show karo.",
             },
           ]}
-          proTip="Claude ka extended thinking mode ReAct ka supercharged version hai — model internally chain-of-thought karta hai (visible thinking tokens). 'thinking' parameter enable karo complex agent tasks ke liye — significantly better results aate hain."
+          proTip="Claude ka extended thinking (beta) ReAct ka supercharged version hai — model internally deep chain-of-thought karta hai. Thinking tokens visible hote hain. Complex multi-step tasks pe enable karo: significantly better reasoning quality aati hai. Thoda expensive hai (thinking tokens bhi charge hote hain) lekin complex agents ke liye ROI positive hai."
         />
       </div>
 
@@ -401,7 +401,7 @@ await reactAgent('Node.js aur Deno mein 2025 mein kya differences hain?');`,
           title="Tool Calling Deep Dive — Definition, Execution, Results"
           emoji="🛠️"
           difficulty="advanced"
-          whatIsIt="Tool calling (function calling) mein developer tools define karta hai JSON schema se, LLM decide karta hai kab use karna hai, developer ka code execute karta hai, result wapas LLM ko jaata hai. LLM internet pe nahi jaata, code execute nahi karta — sirf structured JSON generate karta hai. Developer ko execution implement karna padta hai."
+          whatIsIt="Tool calling ka ek critical misconception clear karo: LLM functions execute NAHI karta. LLM sirf JSON output deta hai — 'main get_weather call karna chahta hoon, {city: Mumbai} ke saath'. Tumhara code actual API call karta hai, result lo, wapas LLM ko do. LLM JSON generator hai, executor nahi. Ye distinction matter karta hai security ke liye — LLM ko sensitive operations direct access nahi do."
           whenToUse={[
             'Real-time data chahiye — weather, stock prices, live search.',
             'Database queries — user-specific data retrieve karo.',
@@ -409,7 +409,7 @@ await reactAgent('Node.js aur Deno mein 2025 mein kya differences hain?');`,
             'Calculations — math, date operations, unit conversions.',
             'File operations — read/write files, process documents.',
           ]}
-          whyUseIt="Tool calling LLM ko real world se connect karta hai. Bina tools ke LLM training data tak limited hai — no real-time info, no user-specific data, no side effects. Tools se: 'current Bitcoin price kya hai?' — LLM price API call kare aur accurate answer de. Knowledge cutoff irrelevant ho jaata hai."
+          whyUseIt="Tool calling se LLM ki limitations solve hoti hain: training cutoff (live data chahiye toh search tool do), user-specific data (database query tool do), calculations (math tool do), file operations (file tool do). Effectively tum decide karte ho LLM ki capabilities ko extend karna — apna tool box tum define karte ho. LLM decide karta hai kab use karna hai."
           howToUse={{
             filename: 'tool-calling-deep-dive.ts',
             language: 'typescript',
@@ -505,9 +505,9 @@ async function runWithTools(userMessage: string): Promise<string> {
 
   return 'Task incomplete after max iterations';
 }`,
-            explanation: 'Tool definition: name + description (LLM ko samjhana hai kab use karna hai) + input_schema (what arguments). Tool implementation: actual code jo kaam karta hai. Tool result: JSON string as tool_result message. Description quality matter karta hai — vague description se LLM wrong tool choose karta hai.',
+            explanation: 'Tool definition ke teen parts: name (function name), description (LLM ye padhta hai kab call karna hai — zyada detail = better selection), input_schema (Zod/JSON schema se parameters define). Tool result: JSON string as tool_result. Dispatcher pattern: ek function jo tool name se appropriate implementation call kare — clean, maintainable. Vague description = wrong tool selection = bad agent.',
           }}
-          realWorldScenario="E-commerce chatbot: User: 'Mera last order cancel karo aur refund initiate karo.' Agent: (1) get_user_orders() call → order ID mila, (2) cancel_order(order_id) → cancelled, (3) initiate_refund(order_id) → refund ID mila, (4) send_email(confirmation) → done. Ek conversation mein 4 tools, zero human support needed."
+          realWorldScenario="E-commerce: User bolta hai 'Last order cancel karo aur refund do.' Agent: (1) get_user_orders() → order #12345 mila, (2) cancel_order(12345) → cancelled, (3) initiate_refund(12345) → refund ID #REF789, (4) send_email(confirmation) → done. Ek conversation, 4 tool calls, zero human support needed. Customer satisfaction instant. Support team free hua higher value problems ke liye."
           commonMistakes={[
             {
               mistake: 'Tool description vague likhna',
@@ -515,7 +515,7 @@ async function runWithTools(userMessage: string): Promise<string> {
               fix: "Specific descriptions likho: 'Fetch a user's order history from the orders database. Use when user asks about their purchases, order status, or delivery.' Examples help.",
             },
           ]}
-          proTip="Tool ko test karo tool_choice: { type: 'tool', name: 'tool_name' } se — ye force karta hai LLM ko specific tool use karne ke liye. Development mein helpful hai tool behavior test karne ke liye bina full conversation simulate kiye."
+          proTip="Tool description mein ek 'When to use' sentence add karo: 'Use this when user asks about order status, cancellation, or tracking.' Ye Claude ko exact signal deta hai. Development trick: tool_choice: { type: 'tool', name: 'tool_name' } se force karo specific tool test karne ke liye — full conversation simulate karne ki zarurat nahi."
         />
       </div>
 
@@ -525,7 +525,7 @@ async function runWithTools(userMessage: string): Promise<string> {
           title="Multi-step Agents — Planning & Error Recovery"
           emoji="🗺️"
           difficulty="advanced"
-          whatIsIt="Multi-step agents complex tasks handle karte hain jo multiple sub-tasks mein break hote hain — planning, execution, error recovery, aur final synthesis. Agent pehle poora plan banata hai, phir execute karta hai, intermediate results check karta hai, aur failures se recover karta hai next steps adjust karke."
+          whatIsIt="Simple agent: ek task, ek ya do tools. Multi-step agent: complex goal, 10-15 tools, multiple iterations, intermediate results pe decisions. Planning ek game changer hai — agent pehle poora roadmap banata hai, phir execute karta hai. Planning ke bina: reactive, error-prone. Planning ke saath: structured, fewer dead-ends, better outcomes. Ye maturity level hai agentic systems mein."
           whenToUse={[
             'Research reports — multiple sources, synthesis, formatting.',
             'Code projects — design, implement, test, debug, document.',
@@ -533,7 +533,7 @@ async function runWithTools(userMessage: string): Promise<string> {
             'Business workflows — approval chains, notifications, updates.',
             'Travel planning — flights, hotels, activities — end to end.',
           ]}
-          whyUseIt="Simple single-step agents often fail on complex tasks — ek tool fail hone pe pure task fail ho jaata hai. Multi-step agents planning se: (1) sub-tasks identify karte hain, (2) dependencies samajhte hain, (3) parallel aur sequential steps organize karte hain, (4) failure pe alternate approach try karte hain."
+          whyUseIt="Bina planning ke agent ek wrong turn pe stuck ho jaata hai — koi recovery plan nahi. Planning ke saath agent upfront sochta hai: 'ye task ke liye 5 steps hain, step 3 step 2 pe depend karta hai, step 4 aur 5 parallel ho sakte hain.' Errors aate hain? Agent alternate approach try karta hai — is_error: true flag se agent ko signal milta hai ki kuch galat hua, wo recover kare."
           howToUse={{
             filename: 'multi-step-agent.ts',
             language: 'typescript',
@@ -617,9 +617,9 @@ async function executeWithTimeout(
     ),
   ]);
 }`,
-            explanation: 'Planning phase: agent plan banata hai phir execute karta hai. Error recovery: is_error: true se agent ko pata chalta hai step fail hua — wo alternate approach try karta hai. executeWithTimeout: hanging tool calls se protect karta hai. 15 iterations complex tasks ke liye enough hoti hain.',
+            explanation: 'PLANNING_SYSTEM prompt agent ko structure deta hai: pehle plan banao, phir execute karo. is_error: true flag critical hai — tool failure ka signal Claude ko milta hai, wo alternate approach try karta hai. executeWithTimeout: external APIs hang ho sakte hain — 30 second timeout hard limit hai. 15 iterations complex tasks ke liye usually enough hai.',
           }}
-          realWorldScenario="Market research agent: 'Top 5 SaaS pricing pages ka analysis karo aur recommendations do.' Agent: (1) competitors identify kare, (2) each page scrape kare (parallel), (3) pricing models analyze kare, (4) comparison table banaye, (5) recommendations write kare. 5 minute ka kaam, agent 20 minutes mein complete karta hai autonomously."
+          realWorldScenario="Market research task: 'Top 5 SaaS pricing pages ka analysis, recommendations ke saath.' Agent plan karta hai, execute karta hai: competitors identify → pages scrape (parallel, 5x faster) → pricing models analyze → comparison table → recommendations. 20 minute ka autonomous kaam. Human ne sirf task diya — agent ne poora research kiya."
           commonMistakes={[
             {
               mistake: 'Agent ko sensitive operations bina confirmation ke karne dena',
@@ -627,7 +627,7 @@ async function executeWithTimeout(
               fix: 'Destructive operations ke liye human confirmation require karo. Dry-run mode implement karo: plan dikhao, confirm lo, phir execute karo.',
             },
           ]}
-          proTip="Parallel tool execution agent ko significantly faster banati hai. Claude ek message mein multiple tool_use blocks return kar sakta hai — in sab ko concurrently execute karo (Promise.all). Sequential vs parallel: research agent 5 websites fetch kare — sequential = 5x latency, parallel = 1x latency."
+          proTip="Parallel tool execution ka power: Claude ek message mein multiple tool_use blocks return kar sakta hai. Unhe Promise.all se simultaneously execute karo. 5 websites fetch karna: sequential = 5x latency. Parallel = 1x latency. Simple optimization, massive impact. Production agents mein hamesha check karo ki konse tool calls parallel ho sakte hain."
         />
       </div>
 
@@ -637,7 +637,7 @@ async function executeWithTimeout(
           title="Agent Safety — Guardrails & Human-in-the-Loop"
           emoji="🛡️"
           difficulty="advanced"
-          whatIsIt="Autonomous agents powerful hain aur dangerous bhi — galat tool call production database wipe kar sakti hai, wrong email bhej sakti hai, financial transactions execute kar sakti hai. Safety guardrails: max iterations, timeouts, permission scopes, confirmation for destructive ops, cost limits, aur human-in-the-loop (HITL) for critical decisions."
+          whatIsIt="Agents powerful hain — aur isliye dangerous bhi. Ek real incident: Air Canada ka support bot ne wrong refund policy batayi, court ne airline ko liable maana (2024). Autonomous agents real consequences hain. Defense in depth: max iterations (infinite loop prevent), timeouts (hanging tools block karo), permission scoping (least privilege), confirmation for destructive ops (human-in-the-loop), cost limits (unexpected bills se bachao), audit logs (kya hua track karo)."
           whenToUse={[
             'Max iterations: hamesha — runaway loops prevent karo.',
             'Timeouts: hamesha — hanging tools prevent karo.',
@@ -645,7 +645,7 @@ async function executeWithTimeout(
             'Permission scoping: ek agent sirf uska zaroori access de — least privilege.',
             'Cost limits: production agents pe spend limit set karo.',
           ]}
-          whyUseIt="Agent incidents real hain — 'Air Canada agent ne wrong refund policy batayi, court ne airline ko liable maana' (2024). Autonomous agents production mein real consequences hain. Defense in depth: multiple safety layers layero — ek fail ho toh doosra catch kare. Safety cost nahi hai, insurance hai."
+          whyUseIt="Safety cost nahi hai — ye insurance hai. Production agent deployment ke liye checklist: max iterations set karo (hamesha), timeouts har tool pe, destructive operations ke liye HITL confirm karo, read-only se start karo (write access gradual do), audit logs production mein mandatory hain (compliance + debugging). Ye checklist follow karo, incidents avoid karo."
           howToUse={{
             filename: 'agent-safety.ts',
             language: 'typescript',
@@ -724,9 +724,9 @@ function auditLog(entry: Omit<AuditEntry, 'timestamp'>): void {
   // Send to your logging service (DataDog, CloudWatch, etc.)
   console.log('[AUDIT]', JSON.stringify(logEntry));
 }`,
-            explanation: 'SafeAgent class limits track karta hai — iterations, time, cost. requireHumanApproval destructive tools ke liye gate karta hai. auditLog har tool call track karta hai compliance ke liye. Production mein: audit logs searchable database mein rakho (ki agent ne kya kiya, kab, kiske behalf mein).',
+            explanation: 'SafeAgent class: iterations, elapsed time, aur estimated cost track karta hai — limit exceed hone pe throw karta hai. requireHumanApproval: dangerous tools ke liye human confirmation wait karta hai (production mein webhook/WebSocket se implement karo). auditLog: compliance ke liye critical — every tool call, kab, kiske behalf mein, kya result. Ye logs searchable database mein rakho.',
           }}
-          realWorldScenario="Financial services firm ne agent deploy kiya trade recommendations ke liye. Safety layers: (1) read-only database access, (2) trade execution confirm karo human se, (3) max $10K trade limit, (4) all actions audit logged, (5) 30-second timeout per tool. Zero incidents 6 months mein — safety framework ne potential $200K mistake rok li."
+          realWorldScenario="Financial services firm: trade recommendation agent. Safety layers: read-only DB access, trade execution ke liye human confirm, max $10K per trade limit, all actions audit logged, 30-second timeout per tool. Result: zero incidents 6 months mein. Ek near-miss tha — agent wrong price pe trade suggest kiya, human ne catch kiya. HITL ne $200K potential loss roka."
           commonMistakes={[
             {
               mistake: 'Agent ko production database pe direct write access dena',
@@ -734,7 +734,7 @@ function auditLog(entry: Omit<AuditEntry, 'timestamp'>): void {
               fix: 'Start karo read-only access se. Write operations ke liye separate approval layer banao. Staging pe test karo pehle.',
             },
           ]}
-          proTip="Anthropic ka Computer Use (beta) aur tool use best practices guide zarur padho before production agent deployment. Especially: tool descriptions carefully likhne se misuse significantly reduce hota hai, aur is_error: true use karo tool failures ke liye taaki agent gracefully recover kare."
+          proTip="Anthropic ka 'Building effective agents' guide ek must-read hai production deployment se pehle. Key insights: tool descriptions carefully likhne se misuse aur errors significantly reduce hoti hai, is_error: true flagging se agent gracefully recover karta hai, aur simple agents often better perform karte hain complex ones se. Less is more in agent design."
         />
       </div>
 

@@ -153,7 +153,7 @@ export default function GenAIChapter20Content() {
           Local LLMs — AI Offline Chalao 🖥️
         </h1>
         <p className="text-[#A1A1AA] text-lg mb-6">
-          Privacy chahiye? Cloud costs avoid karna chahte ho? Ollama se LLaMA, Mistral, aur 100+ models apne machine pe chalao — zero API cost, zero data leak.
+          Cloud AI APIs convenient hain — lekin kuch scenarios mein viable nahi hain. Patient records, client legal documents, proprietary source code — ye data cloud pe nahi ja sakta. Aur kuch cases mein scale pe cost prohibitive ho jaati hai. Local LLMs: apne machine ya server pe run karo, koi data bahar nahi jaata, zero per-token cost. Ollama se ye sab ek command mein possible hai.
         </p>
         <div
           className="rounded-xl p-4"
@@ -163,7 +163,7 @@ export default function GenAIChapter20Content() {
           }}
         >
           <p className="text-[#67E8F9] text-sm italic">
-            &quot;Local LLMs matlab apna data apne paas. No API key, no per-token cost, no internet required.&quot;
+            &quot;Local LLMs ka matlab: apna data apne paas, apna model apne server pe. Cloud ki zarurat nahi — privacy aur control tumhare haath mein.&quot;
           </p>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default function GenAIChapter20Content() {
           title="Local LLMs Kyun? — Privacy, Cost, Control"
           emoji="🔒"
           difficulty="advanced"
-          whatIsIt="Local LLMs apne machine ya server pe run hote hain — koi data external API se nahi guzarti. Use cases: sensitive data (medical records, legal docs, financial data), offline environments, regulatory compliance (data residency), high-volume use cases jahan API cost prohibitive ho."
+          whatIsIt="Local LLMs ka core idea: model apne machine ya server pe run karo, external API call hi nahi hoti — isliye data external server pe kabhi jaata hi nahi. Use cases: sensitive data (medical records, legal documents, financial data), air-gapped/offline environments, regulatory compliance jahan data residency required hai, aur high-volume scenarios jahan per-token API cost prohibitive ho jaaye. Cloud convenience vs data control — ye tradeoff hai."
           whenToUse={[
             'Healthcare: patient records AI se process karna — HIPAA compliance.',
             'Legal: confidential client documents — attorney-client privilege.',
@@ -183,7 +183,7 @@ export default function GenAIChapter20Content() {
             'High volume: millions of API calls cheaper GPU server se.',
             'Offline: remote locations, air-gapped systems.',
           ]}
-          whyUseIt="Cloud AI API trust model: you trust OpenAI/Anthropic with your data. For many use cases ye acceptable hai. But: hospital patient data, law firm client files, defense contractor code — local LLM only option hai. Additionally: ek GPU server pe 100K+ requests/day cost efficient ho sakta hai vs per-token billing."
+          whyUseIt="Cloud AI ka trust model samjho: tumhara data OpenAI/Anthropic ke servers se guzarti hai. Many use cases ke liye ye fine hai. Lekin hospital patient data, law firm client files, defense contractor source code — ye data cloud pe jaana hi nahi chahiye, legally aur ethically. Local LLM only option hai in cases mein. Economics bhi: ek GPU server pe 100K+ requests/day API cost se kaafi sasta ho sakta hai — break-even calculate karo apne use case pe."
           howToUse={{
             filename: 'why-local-llm.ts',
             language: 'typescript',
@@ -240,9 +240,9 @@ function costComparison(monthlyTokens: number) {
   console.log(\`Cloud: $\${cloudCost.toFixed(0)}/month | Local GPU: $\${gpuCost}/month\`);
   // Break-even: ~100M tokens/month
 }`,
-            explanation: 'Decision factors: data sensitivity (regulated? → local), volume (very high? → local economics better), quality (state-of-the-art needed? → cloud), offline requirement (→ local). Most cases: cloud API easiest. Specific cases: local justified.',
+            explanation: 'Decision framework: data sensitivity regulated? → local mandatory. Volume bahut high hai? → local economics better. State-of-the-art quality chahiye? → cloud. Offline operation chahiye? → local. costComparison function dekho — ~100M tokens/month pe break-even hota hai Sonnet vs A10G GPU. Most cases: cloud API simplest. Specific justified cases mein local use karo.',
           }}
-          realWorldScenario="Mumbai-based legaltech startup: client documents process karna tha — bar association rules kehte hain data India mein rahna chahiye. AWS Mumbai pe Ollama + Mistral deploy kiya. Local model quality 85% of GPT-4 on their tasks. Data compliance ✓, cost $200/month (vs $2000+ API), latency better (local network). Win-win."
+          realWorldScenario="Mumbai-based legaltech startup: bar association rules — client data India mein rehna chahiye, foreign servers pe nahi ja sakta. AWS Mumbai region pe Ollama + Mistral deploy kiya. Quality: 85% of GPT-4 on their specific tasks — acceptable. Data compliance: check. Cost: $200/month vs $2000+ API. Latency: better (local network). Bar association requirement bhi meet hua. Har constraint se solution nikal sakta hai."
           commonMistakes={[
             {
               mistake: 'Local LLM use karna sirf cost save karne ke liye without quality benchmark',
@@ -250,7 +250,7 @@ function costComparison(monthlyTokens: number) {
               fix: 'Benchmark karo pehle: apne specific use case pe quality test karo local vs cloud. If >90% quality maintained → local justified. Agar significant drop → cost saving worth nahi.',
             },
           ]}
-          proTip="Private Cloud option: Azure, AWS, GCP pe managed LLM services hain jo data residency guarantee karte hain — Vertex AI (Google), Azure OpenAI (EU regions), AWS Bedrock. Enterprise ke liye ye middle ground hai: cloud convenience + data residency compliance. Fully self-hosted se zyada managed hain."
+          proTip="Fully self-hosted aur cloud ke beech ek middle ground hai: Azure OpenAI (EU regions), AWS Bedrock, Google Vertex AI — managed services hain data residency guarantees ke saath. Enterprise ke liye often best option: cloud ki convenience + data residency compliance. Fully self-hosted se zyada managed, pure cloud se zyada controlled. Compliance requirements ke hisaab se evaluate karo."
         />
       </div>
 
@@ -260,14 +260,14 @@ function costComparison(monthlyTokens: number) {
           title="Ollama Setup — Install, Pull, Run"
           emoji="🦙"
           difficulty="advanced"
-          whatIsIt="Ollama open-source tool hai local LLM running ke liye — Docker jaise models ke liye. macOS, Linux, Windows support. One command install, one command model pull, one command run. HTTP API expose karta hai, OpenAI API compatible. Models: ollama.com/library pe 100+ available."
+          whatIsIt="Ollama ko Docker ka equivalent samjho — lekin models ke liye. macOS, Linux, Windows pe kaam karta hai. Ek command install, ek command model pull, ek command run. HTTP API automatically expose hoti hai, aur OpenAI API compatible hai — matlab existing OpenAI code mein sirf baseURL change karo. ollama.com/library pe 100+ models available hain. Ye democratization hai local AI ka."
           whenToUse={[
             'Local development: fast iteration bina API costs ke.',
             'Privacy-sensitive prototyping: code share kiye bina test karo.',
             'Offline demos: internet unavailable hone pe bhi kaam kare.',
             'Personal productivity tools: private notes assistant, local code helper.',
           ]}
-          whyUseIt="Ollama ne local LLM experience democratize kiya — ek command mein LLaMA-3 run hota hai. Docker jitna simple hai. No CUDA setup complexity, no Python environment. macOS pe Metal GPU acceleration built-in. Windows pe DirectML. Linux pe CUDA."
+          whyUseIt="Pehle local LLM setup karna ek hafte ka kaam tha — CUDA setup, Python environments, model conversion. Ollama ne ye sab hide kar diya. macOS pe Metal GPU acceleration built-in, Windows pe DirectML, Linux pe CUDA — sab automatic. Developer ek command run kare, model download ho, API ready. Ye simplicity real value hai — experimentation fast hoti hai."
           howToUse={{
             filename: 'ollama-setup.sh',
             language: 'bash',
@@ -308,9 +308,9 @@ ollama serve   # start server manually (usually auto-starts)
 # ─── API is now available ─────────────────────────────────────────
 # curl http://localhost:11434/api/generate -d '{"model":"llama3.2","prompt":"Hello!"}'
 # OpenAI compatible: http://localhost:11434/v1`,
-            explanation: 'Ollama install → pull model → run. Server automatically starts on port 11434. API: /api/generate (Ollama native) aur /v1/chat/completions (OpenAI compatible). Models download hote hain ~/.ollama/models mein. ollama rm model_name se delete karo. Model sizes: 1B ~600MB, 3B ~2GB, 7B ~4GB, 13B ~8GB.',
+            explanation: 'Install → pull → run — teen commands, model ready. Port 11434 pe server automatic start hota hai. Two API endpoints: /api/generate Ollama-native hai, /v1/chat/completions OpenAI-compatible hai — existing code ke saath use karo. Models ~/.ollama/models mein store hote hain. Size guide: 1B ~600MB, 3B ~2GB, 7B ~4GB, 13B ~8GB. ollama ps se current RAM usage check karo.',
           }}
-          realWorldScenario="Developer conference demo: presenter ne live internet-free demo kiya — local LLaMA 3.2 pe code generation feature. No API costs, no latency spikes, no internet dependency. Audience impressed. Event success. Ollama ne 30-minute setup mein offline demo possible banaya."
+          realWorldScenario="Developer conference: presenter ne live internet-free demo plan kiya. Venue WiFi unreliable tha. Ollama + LLaMA 3.2 locally setup kiya — 30 minute ka kaam. Demo: flawless. No API costs, no latency spikes, no 'please wait, API call ho rahi hai'. Audience impressed. Ek presentation jo internet outage se affected nahi ho sakti — ye practical value hai Ollama ki."
           commonMistakes={[
             {
               mistake: 'GPU RAM pe dhyan nahi dena — model RAM exceed karne se crash',
@@ -318,7 +318,7 @@ ollama serve   # start server manually (usually auto-starts)
               fix: 'ollama ps se VRAM usage dekho. Model size guide: 7B Q4 ~4GB VRAM, 13B Q4 ~8GB, 70B Q4 ~40GB. Apne GPU ke hisaab se model choose karo.',
             },
           ]}
-          proTip="ollama serve --port 8080 se alag port pe chalao. OLLAMA_NUM_PARALLEL=4 environment variable se parallel requests enable karo (multi-user scenarios). OLLAMA_MAX_LOADED_MODELS=3 se multiple models memory mein rakho. Docker image bhi available hai: docker pull ollama/ollama."
+          proTip="Multi-user scenarios ke liye: OLLAMA_NUM_PARALLEL=4 se parallel requests enable karo. OLLAMA_MAX_LOADED_MODELS=3 se multiple models memory mein rakho — model switching fast hota hai. Custom port: OLLAMA_HOST=0.0.0.0:8080 se network accessible banao. Docker bhi available hai: docker pull ollama/ollama — production deployments ke liye cleaner approach."
         />
       </div>
 
@@ -328,14 +328,14 @@ ollama serve   # start server manually (usually auto-starts)
           title="Ollama API — OpenAI SDK Compatible"
           emoji="🔌"
           difficulty="advanced"
-          whatIsIt="Ollama ka API OpenAI compatible hai — existing OpenAI SDK code mein sirf baseURL change karo. /v1/chat/completions, /v1/embeddings, streaming — sab support karta hai. Migration cost: 2 lines of code. Benefit: zero API bills, private, offline."
+          whatIsIt="Ye Ollama ka sabse underrated feature hai — API design OpenAI ka exact mirror hai. /v1/chat/completions, /v1/embeddings, streaming — sab support. Existing OpenAI SDK code mein kya change karo? Sirf baseURL aur apiKey. Baaki poora codebase same. Migration cost: 2 lines. Development mein zero API costs, private data, offline operation."
           whenToUse={[
             'Existing OpenAI code ko local mein test karna.',
             'Development environment mein free iteration.',
             'Privacy-sensitive features prototype karna.',
             'OpenAI se migrate karna cost reasons se.',
           ]}
-          whyUseIt="2 line migration: baseURL + apiKey change karo, rest sab same. OpenAI SDK (npm) use karo — no new library sikho. Streaming, tool calls, embeddings — sab supported. Production se development tk seamless transition."
+          whyUseIt="Do line migration ke baad: zero API cost development mein, no rate limits, no internet dependency, private data. Aur team ko koi nayi library seekhni nahi — OpenAI SDK wahi use karo. Environment variable se switch karo: USE_LOCAL_LLM=true development mein, false production mein. Same codebase, different configs."
           howToUse={{
             filename: 'ollama-nodejs.ts',
             language: 'typescript',
@@ -404,9 +404,9 @@ async function flexibleChat(message: string): Promise<string> {
 // Usage:
 // USE_LOCAL_LLM=true npx ts-node script.ts  → uses Ollama
 // npx ts-node script.ts                     → uses OpenAI`,
-            explanation: 'Ollama + OpenAI SDK: baseURL aur apiKey change karo — baaki sab same. getClient() factory se environment variable se switch karo. Development: local. Production: cloud. Same codebase, different config. nomic-embed-text: free local embedding model, 768 dimensions, decent quality.',
+            explanation: 'baseURL: "http://localhost:11434/v1", apiKey: "ollama" (any non-empty string) — ye do changes kaafi hain. getClient() factory pattern: env variable se local ya cloud switch karo. Development: local, zero cost. Production: cloud, better quality. nomic-embed-text: free local embedding model, 768 dimensions, RAG ke liye decent quality. Streaming aur tool calling dono supported hain newer Ollama versions mein.',
           }}
-          realWorldScenario="Team ne OpenAI se Ollama local dev environment switch kiya. Development mein: zero API costs, instant iteration, no rate limits. CI/CD: lightweight model (phi3) se fast tests. Production: still OpenAI for quality. Monthly savings: $800 (team API costs in dev) → $0. Same codebase, environment variable switch."
+          realWorldScenario="Ek team ne development environment mein OpenAI se Ollama switch kiya. Result: zero API costs dev mein, no rate limits, instant iteration. CI/CD: phi3 (lightweight, fast) se automated tests. Production: OpenAI quality ke liye. Monthly team API dev costs: $800 → $0. Codebase: same, sirf environment variable alag. Ye ek smart engineering decision tha — convenience maintain karo, costs eliminate karo."
           commonMistakes={[
             {
               mistake: 'Model name OpenAI format mein likhna — gpt-4 vs llama3.2',
@@ -414,7 +414,7 @@ async function flexibleChat(message: string): Promise<string> {
               fix: 'ollama list se available models check karo. Model names exactly match karni chahiye. Config mein model name environment variable se control karo: MODEL=llama3.2 vs MODEL=gpt-4o.',
             },
           ]}
-          proTip="Ollama ke tool calling support bhi aa gaya hai — function calling with local models. Llama 3.1+, Mistral, Qwen models tool calling support karte hain. Anthropic-style tool definitions use karo ya OpenAI format — dono kaam karte hain. Local agents banana ab possible hai bina cloud costs ke."
+          proTip="Ollama mein tool calling support aa gaya hai — Llama 3.1+, Mistral, Qwen models function calling support karte hain. OpenAI format use karo — same syntax. Local agents banana ab possible hai bina cloud costs ke. Privacy-sensitive agentic workflows ke liye ye game-changer hai. Test karo: ollama pull llama3.1 aur tool calling experiment karo."
         />
       </div>
 
@@ -424,14 +424,14 @@ async function flexibleChat(message: string): Promise<string> {
           title="Quantization — Quality vs Resource Trade-off"
           emoji="⚖️"
           difficulty="advanced"
-          whatIsIt="Quantization: model weights ko lower precision mein store karna. Float32 (full precision) → Float16 (half) → Int8 (Q8) → Int4 (Q4). Lower precision: kam memory, faster inference, thodi quality loss. Ollama models GGUF format mein aate hain jo multiple quantization levels support karta hai."
+          whatIsIt="Quantization: model weights ko lower precision mein store karna — Float32 se Float16, Int8 (Q8), Int4 (Q4). Har step: half the memory, thodi quality loss. Tradeoff: 7B model full precision 14GB VRAM vs Q4 4GB VRAM — same model. Ollama models GGUF format mein aate hain jo multiple quantization levels support karta hai. Default pull usually Q4_K_M hoti hai — generally good balance."
           whenToUse={[
             'Q4_K_M: default recommendation — good balance quality/speed/memory.',
             'Q8_0: better quality, 2x more RAM. 16GB+ RAM available ho toh.',
             'Full precision (F16): research, maximum quality, lots of RAM.',
             'Q2/Q3: extreme memory constraints — quality significantly worse.',
           ]}
-          whyUseIt="7B model full precision: ~14GB VRAM. Q4: ~4GB VRAM. Same model, 3.5x less memory = run karo cheaper GPU pe. Quality loss: Q4 vs full precision usually <5% on most benchmarks — acceptable for production. Smaller models + higher quantization vs larger models + lower quantization — benchmark karo apne task pe."
+          whyUseIt="7B model full precision: 14GB VRAM. Q4: 4GB VRAM. Same model, 3.5x less memory — cheaper GPU pe chalta hai. Quality loss: Q4 vs full precision usually less than 5% most benchmarks pe — production ke liye often acceptable. Ek counterintuitive finding: smaller model + higher quantization vs larger model + lower quantization — apne specific task pe benchmark karo, theory se alag results aate hain."
           howToUse={{
             filename: 'quantization-guide.ts',
             language: 'typescript',
@@ -489,9 +489,9 @@ function recommendModel(vramGB: number): string {
   if (vramGB >= 4) return 'llama3.2:3b';        // Acceptable
   return 'llama3.2:1b';                          // Minimum viable
 }`,
-            explanation: 'Q4_K_M = default sweet spot. RAM guide: 8GB laptop → Q4 7B. 16GB → Q8 7B ya Q4 13B. 32GB → F16 7B ya Q4 34B. Benchmarking zaroori hai: quality gap kaafi baar smaller hai theory se practice mein. GGUF format: CPU pe bhi kaam karta hai without GPU.',
+            explanation: 'quantizationGuide table: har level ka bits per weight, RAM, quality percentage. Q4_K_M = default sweet spot. RAM guide: 8GB laptop → Q4 7B. 16GB → Q8 7B ya Q4 13B. 32GB → F16 7B ya Q4 34B. benchmarkQuantization function tokens/sec measure karta hai — apne hardware pe run karo. GGUF format CPU pe bhi kaam karta hai — no GPU required, just slow.',
           }}
-          realWorldScenario="Small team ne on-premise AI server banaya — Dell server, RTX 4090 (24GB VRAM). Choice: llama3.1:13b-Q8 vs llama3.2:7b-F16. Both fit in 24GB. Benchmark: 13B-Q8 better quality on their tasks (code review) by ~8%. 13B-Q8 choose kiya. Same hardware, significantly better quality with right model+quantization combo."
+          realWorldScenario="Team ne on-premise server banaya — RTX 4090 (24GB VRAM). Choice: llama3.1:13b-Q8 vs llama3.2:7b-F16 — dono 24GB mein fit hote hain. Pehle assume kiya 7B-F16 better hoga (full precision). Benchmark kiya code review task pe: 13B-Q8 quality 8% better tha. Larger model + Q8 better than smaller model + F16. Assumption galat nikla. Benchmark karo, assume mat karo."
           commonMistakes={[
             {
               mistake: 'Sabse large model choose karna without GPU check',
@@ -499,7 +499,7 @@ function recommendModel(vramGB: number): string {
               fix: 'ollama ps se current usage check karo. Model download karne se pehle: expected RAM = model size * 1.1. Available VRAM se compare karo. Conservative rahna better hai.',
             },
           ]}
-          proTip="Apple Silicon (M1/M2/M3) pe Ollama excellent hai — unified memory architecture (CPU + GPU same RAM share karte hain). M2 Pro 16GB pe llama3.2:7b comfortably run karta hai 30+ tokens/sec. Mac pe local AI development best experience hai — plug karo, run karo."
+          proTip="Apple Silicon (M1/M2/M3) pe Ollama exceptionally well kaam karta hai — unified memory architecture mein CPU aur GPU same RAM share karte hain. M2 Pro 16GB pe llama3.2:7b 30+ tokens/sec pe comfortable chalta hai. Mac users ke liye local AI development best experience hai — koi separate GPU nahi chahiye, plug karo aur run karo. Mac bhav ka ek solid justification."
         />
       </div>
 
@@ -509,14 +509,14 @@ function recommendModel(vramGB: number): string {
           title="Local RAG — ChromaDB + Ollama"
           emoji="📚"
           difficulty="advanced"
-          whatIsIt="Local RAG: poora stack local mein — no internet, no API keys, no data leakage. Stack: Ollama (LLM) + nomic-embed-text (embeddings) + ChromaDB ya pgvector (vector store). Private document Q&A system jo company confidential data pe kaam kare bina cloud pe data bheje."
+          whatIsIt="Local RAG = poora stack local mein. Koi internet nahi, koi API keys nahi, koi data leakage nahi. Stack: Ollama (LLM serve karo) + nomic-embed-text (local embeddings, Ollama mein hi) + ChromaDB ya pgvector (local vector store). Result: private document Q&A system jo company confidential data pe kaam kare — zero external dependencies. Ye use case jahan local LLM genuinely shine karta hai."
           whenToUse={[
             'Confidential documents: legal, medical, financial.',
             'Offline environments: no reliable internet.',
             'Compliance: data must stay on-premise.',
             'Development: free iteration without API costs.',
           ]}
-          whyUseIt="Full stack: ChromaDB Python API, Ollama embeddings (nomic-embed-text, 768 dims), LLaMA 3 responses — sab local. Zero API calls, zero cost beyond hardware. For privacy-critical use cases ye only option hai."
+          whyUseIt="ChromaDB local vector store, nomic-embed-text local embeddings (768 dims), LLaMA 3 local responses — sab local, sab free post hardware cost. Zero API calls, zero per-query cost. Ek baar hardware invest karo, unlimited queries karo. Privacy-critical use cases ke liye ye only viable architecture hai — no cloud option acceptable."
           howToUse={{
             filename: 'local-rag.ts',
             language: 'typescript',
@@ -607,9 +607,9 @@ async function demo() {
   console.log('Answer:', answer);
   // Zero API calls, zero cost, zero data leakage
 }`,
-            explanation: 'Local RAG stack: nomic-embed-text (Ollama pe, 768 dims), ChromaDB (in-process vector DB), llama3.2 (local LLM). Chroma JS client direct Python ChromaDB server se connect karta hai. Alternative: pgvector (PostgreSQL) for production local RAG. Fully private, fully local, zero external dependencies.',
+            explanation: 'Stack pieces: nomic-embed-text Ollama mein pull karo (ollama pull nomic-embed-text), ChromaDB Python server run karo, JS client connect karo. localEmbed function Ollama ke embeddings API use karta hai — sirf baseURL change. ingestDocument: embed + ChromaDB store. localRAGQuery: question embed karo, similar chunks find karo, local LLM se answer lo. Zero API calls anywhere.',
           }}
-          realWorldScenario="Law firm: attorney-client privileged documents RAG system. Stack: HP server (RTX 3090), Ollama (Mistral 7B), ChromaDB, nomic-embed-text. 50K documents indexed. Latency: 2s per query (acceptable). Privacy: zero data leaves office network. Cost: one-time server $3000 vs $800/month API. ROI in 4 months."
+          realWorldScenario="Law firm: attorney-client privileged documents ke liye RAG system. Stack: HP server with RTX 3090, Ollama (Mistral 7B), ChromaDB, nomic-embed-text. 50K documents indexed. Latency: 2 seconds per query — firm ke liye acceptable. Privacy: zero data leaves office network. Cost: one-time $3,000 hardware vs $800/month API. ROI: 4 months mein. Phir pure savings. Bar association compliance bhi meet. Ye local RAG ka textbook use case hai."
           commonMistakes={[
             {
               mistake: 'ChromaDB ko production mein default in-memory mode pe use karna',
@@ -617,7 +617,7 @@ async function demo() {
               fix: 'chromadb.Client(Settings(chroma_db_impl="duckdb+parquet", persist_directory="./chromadb")) ya PostgreSQL backend. Restart-safe storage zaroori hai production mein.',
             },
           ]}
-          proTip="Qdrant (open-source vector DB) ChromaDB se better hai production local RAG ke liye — Rust-based, fast, GRPC/REST APIs, persistent by default, Docker image available. docker run -p 6333:6333 qdrant/qdrant — production-ready local vector DB in one command. ChromaDB better hai quick prototyping ke liye."
+          proTip="Prototyping ke liye ChromaDB perfect hai. Production ke liye Qdrant consider karo — Rust-based, fast, persistent by default, Docker image hai. docker run -p 6333:6333 qdrant/qdrant — ek command, production-ready local vector DB. GRPC aur REST dono support karta hai. ChromaDB se migrate karna relatively easy hai — embedding format same hai."
         />
       </div>
 

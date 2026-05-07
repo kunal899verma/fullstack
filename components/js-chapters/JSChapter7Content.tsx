@@ -66,10 +66,10 @@ export default function JSChapter7Content() {
         style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.2)' }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3">
-          Strings & Template Literals — Text Ka Duniya
+          Strings &amp; Template Literals — Immutable Primitives Ka Duniya
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Strings har JavaScript application mein hain — user names, API responses, HTML generation, file paths, error messages. Strings ki basics clear honi chahiye aur modern template literals ka full power aana chahiye. Template literals ne string manipulation ka tarika hi badal diya hai!
+          <strong className="text-[#F5F5F7]">Ye shocking hai</strong> — <code className="text-[#06B6D4]">let str = &apos;hello&apos;; str.toUpperCase();</code> ke baad str kya hoga? <strong className="text-[#F59E0B]">&apos;hello&apos;</strong> — unchanged! Kyunki strings immutable hain — har method ek nayi string return karta hai, original kabhi nahi badlata. Reassign karna padta hai: <code className="text-[#06B6D4]">str = str.toUpperCase()</code>. Aur <code className="text-[#06B6D4]">&apos;😀&apos;.length</code> kya hoga? <strong className="text-[#F59E0B]">2</strong> — kyunki emoji UTF-16 surrogate pair hai! Strings mein depth hai yaar.
         </p>
         <div
           className="rounded-xl p-4 mt-4"
@@ -81,13 +81,27 @@ export default function JSChapter7Content() {
         </div>
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}
+      >
+        <p className="text-sm font-bold text-[#F59E0B] mb-1">String Immutability — Ek Common Mistake</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ye kitne log karte hain</strong> —<br/>
+          <code className="text-[#06B6D4]">str.trim()  // result use nahi kiya!</code><br/>
+          <code className="text-[#06B6D4]">console.log(str)  // still untrimmed!</code><br/>
+          Strings immutable hain — trim(), toUpperCase(), replace() sab nayi string return karte hain. <strong className="text-[#F59E0B]">str = str.trim()</strong> — reassign karo tabhi kaam karega. Ye gotcha beginners aur experienced developers dono se hoti hai!
+        </p>
+      </div>
+
       {/* Card 1: String Basics */}
       <div id="string-basics">
         <ConceptCard
-          title="String Creation & Immutability"
+          title="String Creation &amp; Immutability — Primitive Ka Raaz"
           emoji="📝"
           difficulty="beginner"
-          whatIsIt="Strings JavaScript mein primitive values hain — immutable, indexed, iterable. Teen ways se create karo: single quotes, double quotes, ya backtick template literals. String ke characters index se access hote hain — str[0]. length property total length deta hai. Strings immutable hain — koi bhi method original string nahi badalta, hamesha new string return karta hai."
+          whatIsIt="Strings JavaScript mein primitive values hain — Stack mein store hoti hain, copy by value. Teen ways se create karo: single quotes, double quotes, ya backtick template literals. String ke characters index se access hote hain — str[0]. Strings immutable hain — koi bhi method original string nahi badalta, hamesha new string return karta hai. Ye Execution Context ke Stack mein directly store hoti hain — koi Heap reference nahi. Ye bhool gaye toh bugs dhundna mushkil hoga!"
           whenToUse={[
             'String primitive: user input, names, emails, messages store karne ke liye',
             'String indexing [i]: specific character access, parsing',
@@ -160,13 +174,26 @@ emoji.length  // 2 — emoji are 2 chars in JS (UTF-16 surrogate pairs)`,
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#10B981] mb-1">includes vs indexOf — Clarity vs Confusion</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Purana tarika</strong>: <code className="text-[#06B6D4]">str.indexOf(&apos;hello&apos;) !== -1</code> — kya check kar rahe ho? Unclear! <br/>
+          <strong className="text-[#F5F5F7]">Modern tarika</strong>: <code className="text-[#06B6D4]">str.includes(&apos;hello&apos;)</code> — instantly readable! <br/>
+          Aur <code className="text-[#06B6D4]">str.startsWith(&apos;http&apos;)</code>, <code className="text-[#06B6D4]">str.endsWith(&apos;.pdf&apos;)</code> — ye sab slice se behtar hain specific checks ke liye. Modern methods = readable code = happy team!
+        </p>
+      </div>
+
       {/* Card 2: Essential Methods */}
       <div id="string-methods">
         <ConceptCard
-          title="Essential String Methods"
+          title="Essential String Methods — Woh Sab Jo Roz Use Hote Hain"
           emoji="🔧"
           difficulty="beginner"
-          whatIsIt="JavaScript strings ke paas rich methods hain. slice(start, end): substring nikalo, negative indices support. indexOf/lastIndexOf: position dhundho. includes/startsWith/endsWith: presence check — readable boolean returns. split(separator): string ko array mein todo. Joining arrays: arr.join(separator). Ye sab non-mutating hain."
+          whatIsIt="JavaScript strings ke paas rich methods hain — sab non-mutating, sab new string return karte hain. slice(start, end): substring nikalo, negative indices support (end se count). includes/startsWith/endsWith: presence checks — indexOf !== -1 se zyada readable! split(separator): string ko array mein todo. arr.join(separator): array ko string mein joino. Ye combo — split aur join milke — powerful text processing enable karta hai!"
           whenToUse={[
             'slice(): substring extract karna — email domain, file extension, path components',
             'includes(): simple presence check — case-sensitive by default',
@@ -240,13 +267,24 @@ const count = text.split('a').length - 1  // 3 — count 'a's`,
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#7C3AED] mb-1">Template Literals Se styled-components Kaise Bana?</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Ye shocking hai</strong> — styled-components ka yeh syntax: <code className="text-[#06B6D4]">styled.button`background: blue`</code> — ye sirf backtick string nahi hai! Ye <strong className="text-[#F5F5F7]">tagged template</strong> hai — ek function call hai jahan styled.button ko strings array aur expressions milte hain. CSS-in-JS, GraphQL gql``, i18n t`` — sab tagged templates pe hain. Ye JavaScript ki ek advanced lekin powerful feature hai!
+        </p>
+      </div>
+
       {/* Card 3: Template Literals */}
       <div id="template-literals">
         <ConceptCard
-          title="Template Literals — Backtick Magic"
+          title="Template Literals — Backtick Magic Jo Frameworks Chalata Hai"
           emoji="✨"
           difficulty="beginner"
-          whatIsIt="Template literals backtick (`) use karte hain. Features: ${expression} interpolation — koi bhi JavaScript expression. Multiline strings natively — no \\n needed. Tagged templates — function se template process karo. Raw strings — String.raw. Template literals ne string concatenation ko almost obsolete bana diya hai modern JavaScript mein."
+          whatIsIt="Template literals backtick (`) use karte hain — string concatenation ki zaroorat khatam! Features: ${'{'}expression{'}'} interpolation — koi bhi JS expression, ternary, function call. Multiline strings natively — no \\n needed. Tagged templates — function se template process karo (styled-components, gql, sql isi pe built hain!). SQL injection risk yaad rakho — user input ko directly template mein mat daalo!"
           whenToUse={[
             'Hamesha string concatenation ki jagah template literals prefer karo',
             'Multiline strings: SQL queries, HTML templates, multiline messages',
@@ -328,13 +366,24 @@ const path = String.raw\`C:\\Users\\Rahul\\Documents\`
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(236,72,153,0.07)', border: '1px solid rgba(236,72,153,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#EC4899] mb-1">replace() Ka Common Trap — Global Nahi Hai!</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Yahan sabse common mistake</strong> — <code className="text-[#06B6D4]">&apos;hello world&apos;.replace(&apos;l&apos;, &apos;L&apos;)</code> kya dega? <strong className="text-[#F59E0B]">&apos;heLlo world&apos;</strong> — sirf pehla match! Agar sab replace karne hain: <code className="text-[#06B6D4]">&apos;hello world&apos;.replaceAll(&apos;l&apos;, &apos;L&apos;)</code> ya <code className="text-[#06B6D4]">.replace(/l/g, &apos;L&apos;)</code>. Aur trim() karo hamesha user input pe — &quot;rahul@example.com &quot; aur &quot;rahul@example.com&quot; alag hain!
+        </p>
+      </div>
+
       {/* Card 4: String Manipulation */}
       <div id="string-manipulation">
         <ConceptCard
-          title="String Manipulation — replace, trim, pad"
+          title="String Manipulation — replace, trim, pad — Input Sanitization Ke Tools"
           emoji="✂️"
           difficulty="beginner"
-          whatIsIt="String manipulation methods: replace/replaceAll pattern-based replacement. trim/trimStart/trimEnd whitespace removal. padStart/padEnd padding add karna. repeat string repeat karna. Ye sab non-mutating hain — new string return karte hain. replace() with regex powerful patterns enable karta hai — groups, flags, replacer functions."
+          whatIsIt="String manipulation methods sab non-mutating hain — new string return karte hain. replace() sirf pehla match replace karta hai! replaceAll() (ES2021) ya /g flag use karo sab replace karne ke liye. trim() user input ke liye critical hai — trailing space se comparison fail hota hai. padStart() time format karne ke liye elegant hai (09:05 not 9:5). Ye daily use patterns hain!"
           whenToUse={[
             'trim(): user input sanitize karna — spaces hata do before validation',
             'padStart: time format (09:05), ID padding, table alignment',
@@ -413,13 +462,24 @@ progress(60)  // [████████████████████�
         />
       </div>
 
+      {/* Akshay-style insight box */}
+      <div
+        className="rounded-xl p-4"
+        style={{ background: 'rgba(6,182,212,0.07)', border: '1px solid rgba(6,182,212,0.2)' }}
+      >
+        <p className="text-sm font-bold text-[#06B6D4] mb-1">Regex — Ek Tool Jo Jab Samajh Aata Hai, Sab Kuch Change Hota Hai</p>
+        <p className="text-sm text-[#A1A1AA] leading-relaxed">
+          <strong className="text-[#F5F5F7]">Pehli baar regex dekhte ho</strong> toh lagta hai alien language hai. Lekin yaar, teen methods yaad karo: <code className="text-[#06B6D4]">regex.test(str)</code> — boolean (valid email?), <code className="text-[#06B6D4]">str.match(regex)</code> — matches array, <code className="text-[#06B6D4]">str.replace(regex, fn)</code> — transform. Aur regex101.com pe jao — best tool hai learn karne ke liye. Real-time explanation milti hai!
+        </p>
+      </div>
+
       {/* Card 5: Regular Expressions */}
       <div id="regex-basics">
         <ConceptCard
-          title="Regular Expressions — Pattern Matching"
+          title="Regular Expressions — Pattern Matching Ka Superpower"
           emoji="🎯"
           difficulty="beginner"
-          whatIsIt="Regular expressions (regex) string patterns define karte hain — find karo, test karo, replace karo. Syntax: /pattern/flags. Common flags: g (global), i (case-insensitive), m (multiline). Methods: regex.test(str) — boolean, str.match(regex) — array of matches, str.replace(regex, replacement). Regex powerful hai lekin initially complex lagta hai — basics se shuru karo."
+          whatIsIt="Regular expressions (regex) string patterns define karte hain — find karo, test karo, replace karo. Syntax: /pattern/flags. Common flags: g (global — sab matches), i (case-insensitive), m (multiline). Methods: regex.test(str) — boolean (fastest check), str.match(regex) — array of matches, str.replace(regex, fn) — powerful transform. Named capture groups (?&lt;name&gt;...) code readable banate hain positional groups se!"
           whenToUse={[
             'Email/phone/URL validation — test() se',
             'Pattern-based search aur replace — /pattern/g ke saath replace()',
@@ -494,9 +554,9 @@ const patterns = {
       <div id="chapter-quiz">
         <div className="mb-4">
           <h3 className="text-lg font-display font-bold text-[#F5F5F7] mb-1">
-            Chapter 7 Quiz — Strings & Template Literals
+            Chapter 7 Quiz — Strings, Immutability &amp; Regex
           </h3>
-          <p className="text-sm text-[#71717A]">5 questions — 80%+ chahiye clear karne ke liye!</p>
+          <p className="text-sm text-[#71717A]">Immutability samajhi? Template literals ka tagged form? 5 sawaal, 80%+ chahiye — confidence se karo!</p>
         </div>
         <QuizSection questions={quizQuestions} chapterSlug="strings-template-literals" />
       </div>

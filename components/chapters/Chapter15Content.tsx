@@ -14,10 +14,10 @@ export default function Chapter15Content() {
           Caching with Redis — App Ko 10x Fast Karo
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          Database queries expensive hoti hain — disk I/O, CPU, network. Redis in-memory data store hai — RAM se data serve karta hai, microseconds mein. Right caching strategy se database load 90% tak kam ho sakta hai aur API response time milliseconds mein aata hai.
+          Kya aap jaante ho ki ek well-cached app same hardware par 10x zyada users serve kar sakti hai? Database query: 50ms. Redis read: 0.1ms. 500x faster. Ye sirf numbers nahi — ye user experience ka fark hai 50ms response vs 500ms response ke beech. Right caching strategy se database load 90% tak kam ho sakta hai.
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Redis sirf cache nahi hai — queues, pub/sub, leaderboards, session storage, distributed locks — ye sab Redis se implement hote hain. Swiss army knife of modern backends.
+          Redis sirf cache nahi hai — ye Swiss army knife of modern backends hai. Queues, pub/sub messaging, leaderboards, session storage, distributed locks, rate limiting — ye sab Redis se implement hote hain. Ek tool jo 10 problems solve karta hai.
         </p>
       </div>
 
@@ -26,14 +26,14 @@ export default function Chapter15Content() {
           title="Why Cache? — DB Load & Latency"
           emoji="⚡"
           difficulty="advanced"
-          whatIsIt="Caching ka matlab hai frequently accessed ya expensive-to-compute data ko fast storage mein store karna. Database query: 10-100ms. Redis read: 0.1-1ms. 100x faster. User profile jo har request mein chahiye — DB se har baar nahi, Redis se lo. Compute-heavy reports — ek baar calculate, 1 ghante cache mein."
+          whatIsIt="Caching socho ek shortcut ki tarah — kisi cheez ko baar baar calculate karne ki bajaye, pehli baar calculate karo aur paas mein rakh lo. User profile jo har request mein chahiye — DB se har baar nahi, Redis se lo. Cache hit: Redis se 0.1ms. Cache miss: DB se 50ms, phir Redis mein store karo. Hit rate 80% — effectively 80% requests 500x faster. DB pe load dramatically kam, server costs down."
           whenToUse={[
             'Frequently read, rarely changed data — product catalog, user profiles',
             'Expensive computations — analytics reports, recommendation scores',
             'Session storage — stateless auth ke saath sessions',
             'Rate limiting counters — distributed rate limits across servers',
           ]}
-          whyUseIt="Cache hit aur miss: Hit — Redis se fast response. Miss — DB se slow query, cache mein store, next time hit. Hit rate 80-90% — effectively 80% requests 100x faster. Database connections kam lagti hain — server costs down. Scaling much easier hota hai cache ke saath."
+          whyUseIt="Ab sawaal ye aata hai — agar data change ho jaaye aur cache purana data serve kare? Ye cache invalidation problem hai — caching ka hard part. Solution: TTL (Time-To-Live) — cache automatically expire hota hai. Ya data change hone par manually cache delete karo. Ye tension hamesha rahegi — consistency vs speed. Business logic decide karta hai kitna stale data acceptable hai: product price har 30 sec fresh chahiye, static config har 1 ghanta."
           howToUse={{
             filename: 'redis-setup.ts',
             language: 'typescript',
@@ -91,9 +91,9 @@ const user = await getOrSet(
   () => prisma.user.findUnique({ where: { id: userId } }),
   300  // 5 minutes
 )`,
-            explanation: "Reconnect strategy exponential backoff implement karta hai — Redis temporarily unavailable hone par crash nahi karo. getOrSet pattern (cache-aside) standard caching pattern hai. JSON serialize/deserialize overhead hai — msgpack ya cbor se faster binary serialization possible hai large objects ke liye.",
+            explanation: "Under the hood: Reconnect strategy exponential backoff implement karta hai — 100ms, 200ms, 400ms, 800ms... Redis temporarily down ho toh app crash nahi karo, retry karo. getOrSet pattern cache-aside standard pattern hai. JSON.parse/stringify overhead hai — large objects ke liye msgpack ya cbor faster binary serialization dete hain. Graceful degradation: Redis fail hone par fetchFn directly call karo — functionality break nahi honi chahiye.",
           }}
-          realWorldScenario="E-commerce homepage — best sellers list database se calculate hone mein 2 seconds lagti hai. Redis mein 1 hour cache karke — pehla user 2s wait karta hai, baaki 999 users instant response. Database par sirf 1 query per hour instead of 1000 per minute."
+          realWorldScenario="E-commerce homepage — best sellers list calculate hone mein 2 seconds lagti hai (complex JOINs, aggregations). Redis mein 1 hour cache karke: pehla user 2s wait karta hai, baaki 999 users instant response milta hai. Math karo: bina cache 1000 users/minute = 1000 expensive queries/minute. Cache ke saath: 1 query per hour. Database pe 60,000x kam load — server costs dramatically down."
           commonMistakes={[
             {
               mistake: 'Redis connection error ignore karna',
@@ -106,7 +106,7 @@ const user = await getOrSet(
               fix: 'Hamesha TTL set karo — setEx() use karo (set + expire). Business logic pe based TTL: static config 1 day, user data 5 min, real-time prices 30 sec.',
             },
           ]}
-          proTip="ioredis library Node.js mein popular alternative hai — better TypeScript support, cluster support, built-in retry logic. Upstash (serverless Redis) consider karo serverless environments ke liye — per-request billing, no always-on server. Free tier bhi available hai."
+          proTip="ioredis library official redis package se better hai TypeScript support aur cluster support ke liye. Serverless environments ke liye Upstash Redis — per-request billing, no always-on server, free tier available. Upstash HTTP API bhi support karta hai — edge functions mein kaam karta hai jahan TCP connections nahi hote. Aur ek golden rule: Redis ke bina app kaam karna chahiye — cache optional layer hai, core functionality nahi."
         />
       </div>
 
@@ -115,7 +115,7 @@ const user = await getOrSet(
           title="Redis Data Types — String se Sorted Set Tak"
           emoji="📊"
           difficulty="advanced"
-          whatIsIt="Redis sirf key-value store nahi hai — 5+ data structures support karta hai: String (basic), Hash (object), List (queue/stack), Set (unique values), Sorted Set (ranked leaderboard). Sahi data structure use karne se dramatically better performance aur simpler code milta hai."
+          whatIsIt="Redis ko sirf key-value store samajhna aise hai jaise Swiss army knife ko sirf ek blade wala samajhna. Redis 5+ data structures deta hai. String (simple values, counters), Hash (object fields — user profile), List (queue ya stack — notifications), Set (unique members — online users), Sorted Set (ranked data — leaderboard). Sahi data structure = cleaner code + dramatically better performance."
           whenToUse={[
             'String: Simple values, JSON objects, counters, flags',
             'Hash: User objects, session data — multiple fields ek key mein',
@@ -123,7 +123,7 @@ const user = await getOrSet(
             'Set: Unique values, tags, friend lists, online users',
             'Sorted Set: Leaderboards, priority queues, expiry timestamps',
           ]}
-          whyUseIt="Wrong data type use karna performance aur simplicity dono hurt karta hai. Counter ke liye List use karna awkward hai — INCR command String par atomic counter deta hai. Leaderboard ke liye multiple keys update karna vs Sorted Set automatic sorting — asmaan zameen ka fark."
+          whyUseIt="Ab sawaal ye aata hai — sab kuch String mein JSON.stringify karke store karo toh kya problem hai? Problem ye hai: user profile ka sirf 'lastSeen' update karna ho — JSON string read karo, parse karo, modify karo, serialize karo, write karo — 5 steps, race condition prone. Hash use karo — HSET user:123 lastSeen now — 1 step, atomic. INCR command counter ke liye atomic hai — concurrent requests race condition nahi create karte. Sahi data structure = simpler code + no bugs."
           howToUse={{
             filename: 'redis-types.ts',
             language: 'typescript',
@@ -164,9 +164,9 @@ await redis.zAdd('leaderboard', [
 ])
 const rank = await redis.zRevRank('leaderboard', 'user:456')  // 0 = top
 const topPlayers = await redis.zRevRangeWithScores('leaderboard', 0, 9)  // Top 10`,
-            explanation: "lTrim list ka size bounded rakhta hai — memory efficient. zRevRank sorted set mein rank dhundta hai — O(log N). INCR atomic operation hai — race conditions nahi hote multiple servers par. hGetAll poora hash ek baar fetch karta hai — multiple hGet calls se efficient.",
+            explanation: "Under the hood: lTrim list ko bounded rakhta hai — notifications indefinitely grow nahi hongi, memory safe. zRevRank sorted set mein O(log N) hai — million players ke saath bhi instant rank. INCR atomic hai — under the hood single-threaded Redis mein ye ek operation hai, race condition impossible. hGetAll ek round trip mein sab fields — multiple hGet calls multiple round trips. Network latency matter karta hai.",
           }}
-          realWorldScenario="Gaming leaderboard: Sorted Set — player score update karo (zAdd), top 100 lo (zRevRange 0 99), player ka rank lo (zRevRank) — real-time updates support karta hai millions of players ke saath. SQL COUNT query se 1000x faster."
+          realWorldScenario="Gaming leaderboard with 1 million players: SQL approach — SELECT rank FROM (SELECT user_id, RANK() OVER (ORDER BY score DESC)) — full table scan, seconds lagte hain. Redis Sorted Set: zAdd pe O(log N), zRevRank pe O(log N), top 100 pe O(log N + 100). Real-time updates, instant reads, millions of players — ye SQL se 1000x faster hai aur code bhi simple hai."
           commonMistakes={[
             {
               mistake: 'Sab kuch String mein JSON.stringify karke store karna',
@@ -179,7 +179,7 @@ const topPlayers = await redis.zRevRangeWithScores('leaderboard', 0, 9)  // Top 
               fix: 'lTrim se list bounded rakho. Set ke liye regular cleanup ya TTL. Redis maxmemory policy configure karo (allkeys-lru ya similar).',
             },
           ]}
-          proTip="Redis Streams (XADD, XREAD) event streaming ke liye — Kafka-like functionality Redis ke andar. Consumer groups, message acknowledgment, persistent messages — powerful event bus implementation possible hai. BullMQ internally Redis Streams jaisa kaam karta hai."
+          proTip="Redis Streams (XADD, XREAD) ek hidden gem hai — Kafka-like event streaming Redis ke andar. Consumer groups, message acknowledgment, persistent messages — lightweight event bus possible hai bina Kafka setup kiye. BullMQ internally Redis Lists/Streams use karta hai. Jab Kafka overkill lage aur simple pub/sub se zyada chahiye — Redis Streams perfect middle ground hai."
         />
       </div>
 
@@ -188,14 +188,14 @@ const topPlayers = await redis.zRevRangeWithScores('leaderboard', 0, 9)  // Top 
           title="Cache Strategies — Cache-Aside, Write-Through"
           emoji="🗺️"
           difficulty="advanced"
-          whatIsIt="Teen main caching strategies: Cache-Aside (lazy loading) — app cache check kare, miss hone par DB se load aur cache mein store. Write-Through — write cache aur DB dono mein simultaneously. Write-Behind (cache-behind) — cache mein likho, async DB update. Har strategy alag tradeoffs ke saath aati hai."
+          whatIsIt="Caching ki duniya mein ek famous quote hai: 'There are only two hard problems in computer science: cache invalidation and naming things.' Cache strategies ye decide karti hain ki data kab cache mein store ho, kab update ho, kab delete ho. Teen main strategies: Cache-Aside (app manage kare), Write-Through (write pe dono update), Write-Behind (cache mein likho, DB async). Har strategy alag tradeoffs ke saath hai — koi silver bullet nahi."
           whenToUse={[
             'Cache-Aside: Most common — read-heavy, tolerate slightly stale data',
             'Write-Through: Data must be consistent — financial data, inventory',
             'Write-Behind: High write throughput — analytics, logging, counters',
             'Read-Through: Cache automatically handles miss — libraries implement karte hain',
           ]}
-          whyUseIt="Wrong strategy cache consistency problems deti hai — stale data, race conditions, cache aur DB out of sync. Cache-Aside simple aur effective hai most cases mein. Write-Through consistency guarantee karta hai cost par. Write-Behind throughput maximize karta hai durability risk par."
+          whyUseIt="Ab sawaal ye aata hai — kaunsi strategy use karein? Business requirement decide karta hai. E-commerce product price: Write-Through — price update ho toh immediately cache bhi update, customer galat price nahi dekhna chahiye. Blog view count: Write-Behind — thodi delay okay hai, high write throughput chahiye. User profile: Cache-Aside with 5 min TTL — mostly read, kabhi kabhi update, slight staleness acceptable. Rule: higher consistency cost = slower writes."
           howToUse={{
             filename: 'cache-strategies.ts',
             language: 'typescript',
@@ -247,9 +247,9 @@ async function syncPageViewsWorker({ pageId }: { pageId: string }) {
     data: { views: { increment: parseInt(views ?? '0') } },
   })
 }`,
-            explanation: "Cache invalidation ya write-through — consistency requirement pe decide karo. Delete (invalidation) simple hai — next read fresh data lata hai. Write-through both updated karta hai — consistent but two operations. Write-behind fastest writes — durability risk: Redis crash par unsynced data lose.",
+            explanation: "Under the hood: Cache invalidation (del) simplest approach — next read cache miss karega aur fresh DB se fetch karke store karega. Write-through: DB update hone par immediately cache update — consistency guarantee lekin har write 2 operations. Write-behind: Redis incr immediate — background worker periodic DB sync karta hai. Redis crash se unsynced data lost — durability trade-off. Thundering herd problem: popular item TTL expire hone par 1000 requests simultaneously DB hit — mutex/lock se prevent karo.",
           }}
-          realWorldScenario="E-learning platform — video views: Write-Behind (high volume, eventual consistency okay), user subscription status: Write-Through (payment critical, must be consistent), course content: Cache-Aside with 1 hour TTL (rarely changes, read heavy)."
+          realWorldScenario="E-learning platform — teen alag use cases, teen alag strategies: Video views counter (Write-Behind — thousands per second, 1-2 min delay acceptable), User subscription status (Write-Through — payment critical, stale data = wrong access), Course content pages (Cache-Aside 1 hour TTL — rarely changes, 1000x more reads than writes). Ek app mein teen strategies — ye real world hai."
           commonMistakes={[
             {
               mistake: 'Cache invalidation complex logic ignore karna',
@@ -262,8 +262,18 @@ async function syncPageViewsWorker({ pageId }: { pageId: string }) {
               fix: 'Cache stampede prevention: mutex/lock — sirf pehli request DB fetch kare, baaki wait karein. Ya cache miss par probabilistic early expiration.',
             },
           ]}
-          proTip="Cache-aside pattern mein cache warmup implement karo: deploy ke baad important keys pre-populate karo. Script likho jo frequently accessed data cache mein daale. Cold start mein DB hammering avoid hogi. Scheduled job se popular items regularly refresh karo — proactive caching."
+          proTip="Cache warmup ek important production technique hai — deploy ke turant baad cache empty hoti hai, sab requests DB hit karti hain (cold start problem). Solution: deploy script mein top-N popular items pre-populate karo. Ya scheduled job se har hour fresh data cache mein push karo — proactive caching. User kabhi cold cache experience nahi karta. Deploy timing bhi matter karta hai — traffic low hone par deploy karo jab cold start damage minimum ho."
         />
+      </div>
+
+      <div
+        className="rounded-xl p-5"
+        style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.2)' }}
+      >
+        <p className="text-[#A78BFA] font-semibold mb-2">🤔 Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          Strategy choose kar liya — lekin Redis ki memory toh limited hai. Kya hoga jab memory full ho jaaye? TTL aur eviction policies ye handle karte hain. Aur ek aur gotcha: agar sab cached keys ek saath expire hoti hain toh? Thundering herd problem — production mein ye ek disaster hai. Neeche dekhte hain kaise prevent karein.
+        </p>
       </div>
 
       <div id="ttl-eviction">
@@ -271,14 +281,14 @@ async function syncPageViewsWorker({ pageId }: { pageId: string }) {
           title="TTL & Eviction — Memory Management"
           emoji="⏰"
           difficulty="advanced"
-          whatIsIt="TTL (Time-To-Live) key lifetime define karta hai — expire hone par automatically delete. Redis memory limit hone par eviction policy decide karta hai konsa data remove ho. Common policies: allkeys-lru (least recently used — any key evict), volatile-lru (only TTL wali keys), noeviction (OOM error — no data remove). Production mein allkeys-lru safest hai."
+          whatIsIt="TTL socho food ki expiry date ki tarah — milk 3 din mein expire, canned food 2 saal mein. Redis mein har key ko TTL lagana aise hi zaroori hai. Bina TTL ke Redis memory indefinitely badhti rehti hai. Aur jab memory full ho? Eviction policy kaam aati hai — kaun hata? allkeys-lru: recently used nahi kiya gaya data hata do. volatile-lru: sirf TTL wali keys hata do. noeviction: OOM error throw karo — app crash. Production mein allkeys-lru safest default hai."
           whenToUse={[
             'TTL: Hamesha set karo — static config ke liye bhi',
             'allkeys-lru: General cache — memory fill hone par oldest evict',
             'volatile-lru: Important non-expiring data bhi hai (session)',
             'noeviction: Redis as primary store — memory must not be lost',
           ]}
-          whyUseIt="Bina TTL ke data indefinitely grow karta hai — OOM kill. Eviction policy without understanding use karne se important data delete ho sakta hai. TTL data freshness guarantee karta hai — stale data automatically cleanup. Memory management predictable rehta hai."
+          whyUseIt="Ab sawaal ye aata hai — agar sab keys same TTL rakho toh kya hoga? Thundering herd problem! 1000 keys same time expire hoti hain — 1000 simultaneous DB queries. Server kneel karta hai. Solution: TTL mein jitter add karo — Math.random() se thoda variation daalo. Sab keys alag alag time expire hongi — load spread out. Ye ek simple trick hai jo production disasters prevent karti hai."
           howToUse={{
             filename: 'ttl-eviction.ts',
             language: 'typescript',
@@ -328,9 +338,9 @@ const TTL = {
 function cacheKey(type: keyof typeof TTL, id: string) {
   return \`\${type}:\${id}\`
 }`,
-            explanation: "Sliding expiry (expire reset on access) — active sessions alive rakhta hai, inactive expire hoti hain. Redis INFO command memory usage real-time dikhata hai. evicted_keys counter badh raha hai — maxmemory badhaao ya cache size reduce karo ya TTL kam karo. allkeys-lru LRU eviction karta hai — recently accessed data survive karta hai.",
+            explanation: "Under the hood: Sliding expiry session management ke liye ideal — har request pe TTL reset hota hai, inactive sessions naturally expire. Redis single-threaded hai — expire check lazy hota hai (access pe) aur periodic background cleanup bhi. INFO memory command Redis pe directly run karo — used_memory_human real-time dikhata hai. evicted_keys badhna warning hai — ya maxmemory badhao ya data reduce karo ya TTL adjust karo. allkeys-lru internally approximate LRU use karta hai — exact LRU nahi (performance reasons).",
           }}
-          realWorldScenario="Session cache — user active hai toh session alive rahe, inactive 30 min ke baad expire. Sliding TTL: har request par session TTL reset. User 30 min inactive ho toh session expire — security best practice."
+          realWorldScenario="Session management step-by-step: User login kare — session Redis mein store karo, TTL 30 min. User har request pe active hai — har request pe expire reset (sliding TTL). User browser band kare — koi request nahi — 30 min baad session automatically expire. User wapas aaye login kar liya aur session expire hua — fresh login. Security aur UX ka perfect balance — user repeatedly login nahi karta, lekin idle sessions clean up hoti hain."
           commonMistakes={[
             {
               mistake: 'maxmemory-policy noeviction production mein',
@@ -343,7 +353,7 @@ function cacheKey(type: keyof typeof TTL, id: string) {
               fix: 'Jitter add karo TTL mein: const ttl = baseTtl + Math.random() * (baseTtl * 0.1). Expiry spread out hoti hai — thundering herd prevent.',
             },
           ]}
-          proTip="Redis keyspace notifications subscribe karo expired events ke liye: CONFIG SET notify-keyspace-events Ex; PSUBSCRIBE __keyevent@0__:expired. Ye expired keys real-time notify karta hai — follow-up cleanup actions trigger karo. Session expired hone par cleanup, order expired hone par inventory release."
+          proTip="Redis keyspace notifications ek powerful hidden feature hai — CONFIG SET notify-keyspace-events Ex karke expired keys real-time subscribe kar sakte ho. Order expire ho — inventory release karo. Session expire ho — cleanup karo. Ye event-driven architecture Redis ke andar possible banata hai. Lekin caution: high-volume expirations pe notifications flood kar sakte hain — carefully use karo sirf important keys ke liye."
         />
       </div>
 
@@ -352,14 +362,14 @@ function cacheKey(type: keyof typeof TTL, id: string) {
           title="BullMQ — Job Queues with Redis"
           emoji="📬"
           difficulty="advanced"
-          whatIsIt="BullMQ Redis-backed job queue library hai — background jobs reliably process karo. Email send karna, PDF generate karna, image resize karna — ye sab async background mein karo. Retry on failure, scheduled jobs, concurrency control, job progress tracking — sab built-in. Producer (job add karo) aur Consumer (job process karo) pattern."
+          whatIsIt="Socho BullMQ ek post office ki tarah — tum letter (job) daalte ho mailbox mein (queue) aur apna kaam karo. Postman (worker) apne time par letter deliver karta hai. Agar delivery fail ho? Retry karta hai. Ye async decoupling hai — user ka request turant complete, heavy kaam background mein. BullMQ Redis pe built hai — server restart hone par bhi jobs nahi khoote. Producer aur Consumer alag processes mein bhi chal sakte hain."
           whenToUse={[
             'Email/SMS send karna — async, retry on failure',
             'Image/video processing — CPU intensive background mein',
             'Scheduled tasks — daily reports, cleanup jobs',
             'Webhooks deliver karna — retry policy with backoff',
           ]}
-          whyUseIt="API request mein synchronously email bhejne par: email server slow = API slow. Exception = email nahi gaya = user angry. BullMQ se: API instantly returns, background worker email bhejta hai, failure par retry karta hai. Reliability dramatically improve hoti hai."
+          whyUseIt="Ab sawaal ye aata hai — sirf async/await se background nahi chal sakta? Problem ye hai: agar server crash hota hai job execute hone ke beech mein — job lost. Network timeout hota hai — job nahi chala. BullMQ Redis mein jobs persist karta hai — server restart ke baad bhi jobs queue mein hain. Exponential backoff retry — email server temporarily down tha, 5s baad retry, phir 10s, phir 20s — email eventually deliver hoga. Reliability guarantee milti hai jo plain async se nahi milti."
           howToUse={{
             filename: 'queue.ts',
             language: 'typescript',
@@ -416,9 +426,9 @@ const emailWorker = new Worker(
 // Events
 emailWorker.on('completed', (job) => console.log(\`Job \${job.id} completed\`))
 emailWorker.on('failed', (job, err) => console.error(\`Job \${job?.id} failed:\`, err))`,
-            explanation: "Producer (API server) jobs queue mein daalta hai. Consumer (separate process ya worker threads) jobs process karta hai. Redis jobs reliably store karta hai — server restart ke baad bhi jobs nahi khoote. Exponential backoff retry se temporary failures handle hote hain. concurrency multiple jobs parallel process karta hai.",
+            explanation: "Under the hood: Producer queue mein job add karta hai — Redis LIST mein store hoti hai. Consumer BRPOPLPUSH se atomically job pick karta hai (processing list mein move). Job complete: done. Job fail: exponential backoff ke baad retry queue mein wapas. Concurrency: 5 workers simultaneously 5 jobs process karte hain. Cron job: BullMQ internally Redis sorted set use karta hai scheduled jobs ke liye — score = next execution time.",
           }}
-          realWorldScenario="E-commerce order placed: API immediately 200 response deta hai. Background mein queue: confirmation email, inventory decrease, fulfillment system notify, analytics event. 5 parallel background tasks — user instantly response milta hai, sab kaam reliable background mein hota hai."
+          realWorldScenario="E-commerce order placed — step-by-step: 1) API order DB mein save kare, 5 jobs queue mein daale — return 200 response (50ms). 2) Background workers parallel: confirmation email (emailQueue), inventory update (inventoryQueue), fulfillment notify (fulfillmentQueue), analytics event (analyticsQueue), loyalty points add (loyaltyQueue). 5 workers parallel kaam karte hain. User instant response pata hai. Sab kaam reliably hota hai even if individual workers fail karte hain."
           commonMistakes={[
             {
               mistake: 'Heavy CPU work main process mein BullMQ worker se',
@@ -431,7 +441,7 @@ emailWorker.on('failed', (job, err) => console.error(\`Job \${job?.id} failed:\`
               fix: 'Job mein reference store karo — userId, fileId — actual data S3/DB mein. Worker DB/S3 se data load kare.',
             },
           ]}
-          proTip="Bull Board (@bull-board/express) UI install karo — web dashboard se job queues monitor karo. Active jobs, completed, failed — sab visual. Retry failed jobs dashboard se. Production monitoring ke liye invaluable: npm install @bull-board/express @bull-board/api."
+          proTip="Bull Board (@bull-board/express) install karo — ye ek visual dashboard hai jahan active jobs, completed, failed sab dikhta hai. Failed jobs retry karo one click se. Production debugging ke liye invaluable — email nahi gaya? Queue mein dekho, failed jobs mein dekho, error message padho. npm install @bull-board/express @bull-board/api. Admin route pe mount karo lekin auth lagana mat bhoolna — ye sensitive queue data expose karta hai."
         />
       </div>
     </div>

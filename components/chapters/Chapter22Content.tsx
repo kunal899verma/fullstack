@@ -59,13 +59,13 @@ export default function Chapter22Content() {
         }}
       >
         <h2 className="text-2xl font-display font-bold text-[#F5F5F7] mb-3" id="intro">
-          Docker — Apni App Ko Anywhere Chalao
+          Docker — "Works On My Machine" Ka Ant!
         </h2>
         <p className="text-[#A1A1AA] leading-relaxed mb-3">
-          &ldquo;Works on my machine&rdquo; — ye excuse Docker ke baad band ho gaya. Docker se apni Node.js app ek container mein pack karo — development, staging, production sab jagah same environment milti hai.
+          &ldquo;Mere machine par toh chal raha tha!&rdquo; — ye chhah shabd tumne sune honge ya khud bole honge. Node.js version mismatch, missing native dependencies, alag OS configurations — production server pe app crash. <strong className="text-[#F5F5F7]">Docker ne ye excuse hamesha ke liye band kar diya.</strong>
         </p>
         <p className="text-[#A1A1AA] leading-relaxed">
-          Is chapter mein Dockerfile, Docker Compose, GitHub Actions CI/CD, Nginx reverse proxy, aur zero-downtime deployment cover karenge — production-ready patterns ke saath.
+          Docker ek shipping container ki tarah hai. Same container — developer laptop, CI server, AWS EC2, kahi bhi — same behavior. Dockerfile app ka recipe hai, image ek sealed package hai, container ek running instance hai. Is chapter mein production-ready Dockerfile likhna, Docker Compose se full stack local chalana, GitHub Actions CI/CD, Nginx reverse proxy, aur zero-downtime deployment master karenge.
         </p>
       </div>
 
@@ -75,14 +75,14 @@ export default function Chapter22Content() {
           title="Docker for Node.js"
           emoji="🐳"
           difficulty="advanced"
-          whatIsIt="Docker container mein apni app, dependencies, aur runtime sab kuch pack hota hai. Kahi bhi run karo — developer laptop, CI server, AWS EC2 — sab jagah same behavior. Dockerfile image banana ka recipe hai."
+          whatIsIt="Docker container ek sealed lunch box hai — ander food (app), plate (runtime), napkin (dependencies) — sab kuch. Kisi ko bhi do — woh exactly wahi milega jo tumne pack kiya. Dockerfile recipe hai — step by step instructions: kaunsa base image, kaunsi files copy karo, kya install karo, kaise run karo. Docker image ek snapshot hai — immutable, versioned. Container ek running instance hai — ek image se hazaron containers."
           whenToUse={[
-            'App deploy karna hai — server par consistent environment chahiye',
-            'Team mein development environment standardize karna',
-            'Multiple Node.js versions different projects ke liye',
-            'Microservices — har service ka alag container',
+            'App deploy karna hai — server par consistent, reproducible environment chahiye',
+            'Team mein development standardize karna — docker compose up, sab ready',
+            'Multiple Node.js versions different projects ke liye — containers isolate karte hain',
+            'Microservices — har service ka alag container, alag lifecycle',
           ]}
-          whyUseIt="Bina Docker ke deployment mein: server par Node.js version mismatch, missing system dependencies, configuration drift. Docker se: immutable image, reproducible builds, easy rollback, horizontal scaling. alpine images small hain — node:20-alpine 150MB vs node:20 900MB."
+          whyUseIt="Bina Docker ke horror story: server par Node 16 hai, app ko Node 20 chahiye, package manager alag hai, native module compile nahi ho raha, deployment team DevOps se argue kar raha hai. Docker ke baad: Dockerfile mein FROM node:20-alpine — everywhere same. Developer machine pe test karo, CI pe same image build hogi, production pe same image run hogi. Immutable infrastructure — no snowflake servers. Rollback? Purani image tag, ek command."
           howToUse={{
             filename: 'Dockerfile',
             language: 'dockerfile',
@@ -121,9 +121,9 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
 
 # App start karo
 CMD ["node", "src/index.js"]`,
-            explanation: 'Multi-stage build — builder stage mein npm ci, production stage mein sirf needed files. USER node se non-root user se run — security best practice. HEALTHCHECK se Docker automatically unhealthy container restart karta hai.',
+            explanation: 'Multi-stage build trace karo: Stage 1 (builder) — full Node.js + npm + all tools, npm ci run karo, dependencies install. Stage 2 (production) — fresh alpine, builder se sirf node_modules copy karo, source code copy karo. Dev tools? Nahi gaye. TypeScript compiler? Nahi gaya. Final image sirf jo runtime chahiye. USER node — root se nahi chalana. HEALTHCHECK — Docker khud monitor karta hai, unhealthy container restart karta hai.',
           }}
-          realWorldScenario="Startup ka Node.js API pehle 850MB Docker image tha — deploy time 8 minutes. Multi-stage alpine build: 95MB image, deploy time 90 seconds. Cost bhi kam hua — ECR storage aur transfer costs. Rollback 30 seconds mein — previous image tag par."
+          realWorldScenario="Startup ka Node.js API pehla image 850MB tha — ECR pe push 8 minute, EC2 pe pull 3 minute. Multi-stage alpine Dockerfile: 95MB! Deploy time 90 second. ECR storage cost 90% kam, data transfer cost 90% kam. Rollback? Purani image tag — docker pull, docker run — 30 second. Ek Dockerfile rewrite ne deploy workflow completely change kar diya."
           commonMistakes={[
             {
               mistake: 'node_modules host se container mein COPY karna',
@@ -136,7 +136,7 @@ CMD ["node", "src/index.js"]`,
               fix: 'Environment variables runtime par inject karo — docker run -e SECRET=value ya docker-compose.yml environment section.',
             },
           ]}
-          proTip="Docker layer caching ka maximum faayda uthao — rarely changing files pehle COPY karo. package.json → npm ci → src COPY — agar source code change ho lekin dependencies nahi, npm ci layer cache se milega. Build time 3 minutes se 20 seconds aa jaata hai."
+          proTip="Layer caching — ye Docker ka sabse underused superpower hai. Order matter karta hai: pehle package.json copy karo, npm ci run karo, phir src copy karo. Kyun? Agar sirf source code change hai, Docker package.json + npm ci layers cache se lega — rebuild nahi hoga. Build time 3 minute se 20 second. Ek simple reordering se CI pipeline 9x faster. Ye magic nahi — ye understanding hai."
         />
       </div>
 
@@ -146,14 +146,14 @@ CMD ["node", "src/index.js"]`,
           title="Docker Compose — Multi-Service Setup"
           emoji="🎻"
           difficulty="advanced"
-          whatIsIt="Docker Compose se multiple containers ek saath define aur run karo — Node.js app + MongoDB + Redis + Nginx ek command se. Development environment standardize karo puri team ke liye."
+          whatIsIt="Docker Compose ek conductor hai — multiple musicians (containers) ko ek saath direct karta hai. Node.js app + MongoDB + Redis + Nginx — sab alag containers, sab ek network mein, ek YAML file se manage. docker compose up ek command se poori orchestra ready. docker compose down se sab clean. Developer ka dream: koi manual setup nahi, koi 'README par 15 steps install karo' nahi."
           whenToUse={[
-            'Development environment — Node + DB + Redis locally chalao',
-            'Integration testing — real services ke saath test karo',
-            'Small production deployments — single server',
-            'Demo environments — clients ko dikhane ke liye',
+            'Development environment — Node + DB + Redis + everything locally, ek command mein',
+            'Integration testing — real services ke saath test karo, mock nahi',
+            'Small single-server production deployments',
+            'Demo environments — client ko dikhao, pure environment spin up karo',
           ]}
-          whyUseIt="docker compose up se puri stack ek command mein start hoti hai. Team join karne wale new developer 5 minutes mein ready ho jaate hain — koi manual setup nahi. Services ek network mein hain — service names se communicate karo."
+          whyUseIt="Naya developer join kiya. Bina Docker Compose: README padho, Node install karo, MongoDB install karo, Redis install karo, environment variables set karo — 2 ghante. Docker Compose ke saath: git clone, docker compose up — 10 minutes. Sab kuch version controlled, sab kuch reproducible. Team mein 'works on my machine' problem permanently solved. Environment drift banda — har developer same exact environment chalata hai."
           howToUse={{
             filename: 'docker-compose.yml',
             language: 'yaml',
@@ -219,9 +219,9 @@ services:
 volumes:
   mongo_data:
   redis_data:`,
-            explanation: 'docker compose up -d se background mein start. docker compose logs -f app se logs follow karo. docker compose down -v se sab stop aur volumes delete. volumes: .:/app se hot reload hota hai — file save = container mein visible.',
+            explanation: 'Step by step usage: docker compose up -d — background mein start. docker compose logs -f app — logs tail karo. docker compose ps — running containers dekho. File change? App container mein hot reload (volumes mount ki wajah se). DB schema change? docker compose down -v — volumes bhi delete. docker compose up phir — fresh DB. One important trick: volumes: /app/node_modules (anonymous volume) — host ke node_modules container ke node_modules override na karein.',
           }}
-          realWorldScenario="8 developers ki team thi — har kisi ka local environment different tha. 'Works on my machine' issues roz. Docker Compose add kiya — docker compose up ek command. Naya developer join kiya, 10 minutes mein running. Environment parity ne integration bugs 80% reduce kiye."
+          realWorldScenario="8 developers ki team — har kisi ke machine par alag environment tha. 'Node version mismatch', 'Redis nahi hai mere machine par', 'MongoDB version different' — roz ki problems. Docker Compose add kiya. Pehle din: docker compose up — sab live. Naya developer join kiya, 10 minutes mein full stack running. Integration bugs 80% reduce — kyunki environment production se match karta tha. Sabse zyada savings: onboarding time 2 days se 30 minutes."
           commonMistakes={[
             {
               mistake: 'Production mein docker compose use karna without proper setup',
@@ -234,7 +234,7 @@ volumes:
               fix: 'Anonymous volume use karo: - /app/node_modules — ye container ke node_modules protect karta hai host se.',
             },
           ]}
-          proTip="docker compose --profile tools up se optional services (mongo-express, pgadmin) conditionally start karo. profiles: [tools] set karo optional services par — default up mein nahi aayenge. Resources save hote hain."
+          proTip="Profiles feature use karo — profiles: [tools] set karo mongo-express, pgadmin jaisi optional services par. docker compose up sirf core services start karega. docker compose --profile tools up se tools bhi. RAM save hoti hai, startup fast hota hai. Aur ek shortcut: docker compose watch (newer feature) se hot reload bhi Compose level par manage hoti hai — volumes manually configure nahi karne padte."
         />
       </div>
 
@@ -244,14 +244,14 @@ volumes:
           title="GitHub Actions CI/CD"
           emoji="⚙️"
           difficulty="advanced"
-          whatIsIt="GitHub Actions se automated pipeline banao — code push hone par automatically test karo, Docker image build karo, aur server par deploy karo. YAML files .github/workflows/ mein define hote hain."
+          whatIsIt="GitHub Actions ek robot hai jo tumhare liye kaam karta hai — code push hone par automatically jagta hai, tests run karta hai, Docker image build karta hai, server par deploy karta hai. Sab kuch YAML file mein define hai — .github/workflows/deploy.yml. Ye CI/CD (Continuous Integration / Continuous Deployment) hai — code merge karo, deployment automatically ho jaata hai, zero manual SSH karo."
           whenToUse={[
-            'Har PR par automatically tests run karo',
-            'Main branch par push hone par production deploy karo',
-            'Docker image build aur registry push automate karo',
-            'Environment-specific deployments — staging vs production',
+            'Har PR par tests automatically run karo — broken code main mein nahi jaana chahiye',
+            'Main branch push hone par production deploy karo — push = deploy',
+            'Docker image build aur registry push automate karo — manual docker build khatam',
+            'Staging aur production alag-alag environments — same pipeline, different targets',
           ]}
-          whyUseIt="Manual deployment error-prone aur slow hota hai. GitHub Actions se: tests pass → build → deploy — fully automated. Deployment history milti hai, rollback easy hai, team ko visibility milti hai. Free minutes GitHub par public repos ke liye unlimited, private repos ke liye 2000 min/month."
+          whyUseIt="Manual deployment ki kahani: Developer SSH karta hai server par, git pull, npm install, pm2 restart — 15 minutes. Teen baar mein ek baar kuch galat hota hai — wrong branch pull, npm install fail, downtime. GitHub Actions se: code push karo, chai peeyo, 5 minutes mein production live. Audit trail milti hai — kaun ne kab kya deploy kiya. Rollback? Purani commit pe workflow manually trigger. Ye speed + reliability + visibility — teeno saath."
           howToUse={{
             filename: '.github/workflows/deploy.yml',
             language: 'yaml',
@@ -332,9 +332,9 @@ jobs:
               -e DATABASE_URL=\$DATABASE_URL \\
               --restart unless-stopped \\
               ghcr.io/\${{ github.repository }}:latest`,
-            explanation: 'needs: test ensure karta hai deploy sirf test pass hone par hoga. docker/build-push-action cache-from/to se Docker layer cache GitHub Actions mein persist hota hai — subsequent builds fast. SSH action se remote server par deploy karo.',
+            explanation: 'Pipeline trace karo: push to main → test job starts → npm ci, lint, test → pass? build job starts (needs: test) → Docker image build → GHCR push → deploy job starts (needs: build) → SSH to server → docker pull latest → docker stop old → docker run new. Har step fail hone par pipeline rukti hai — broken code production nahi jaata. cache-from/to: type=gha se Docker layers GitHub cache mein store — repeat builds 3 min se 20 sec.',
           }}
-          realWorldScenario="Team mein manual deployment tha — developer SSH karke server par, git pull, npm install, pm2 restart. 15 minute process, 2-3 errors per week. GitHub Actions CI/CD: push to main → test → build → deploy — 4 minutes, zero errors, full audit trail. Developer confidence badhi."
+          realWorldScenario="Team mein manual deployment tha. Developer SSH karta tha, git pull, npm install, pm2 restart — 15 minute process. Week mein 2-3 errors — wrong branch, partial npm install. GitHub Actions pipeline: push to main, chai peeyo, 4 minute mein production live, full audit log, zero human errors. Developer ne itna time bacha liya ki usne usi time mein ek naya feature build kar diya. CI/CD ek multiplier hai — team output badhta hai bina headcount badhaye."
           commonMistakes={[
             {
               mistake: 'Secrets directly workflow YAML mein likhna',
@@ -347,8 +347,19 @@ jobs:
               fix: 'needs: test aur needs: build always rakho deploy job mein. "Fast" deployment broken deployment se better nahi hai.',
             },
           ]}
-          proTip="GitHub Environments (Settings → Environments) se production deployment protection rules add karo — required reviewers, deployment branches restrict karo. environment: production workflow mein set karo. Manual approval gate milta hai production deployment ke liye."
+          proTip="GitHub Environments set karo — Settings → Environments → production → Required reviewers. Ab production deploy hone se pehle designated reviewer approve karega. Ye one extra step bahut badi mistakes rokta hai. Deployment branches restrict karo — sirf main branch se production deploy ho sake. Ye maturity hai — speed aur safety dono."
         />
+      </div>
+
+      {/* Akshay-style Q&A interlude */}
+      <div
+        className="rounded-2xl p-5"
+        style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}
+      >
+        <p className="text-[#F5F5F7] font-semibold mb-2">Ab sawaal ye aata hai...</p>
+        <p className="text-[#A1A1AA] leading-relaxed">
+          "App Docker mein hai, CI/CD set ho gayi — toh kya seedha port 3000 internet pe expose karein?" Bilkul nahi! Node.js ko directly internet pe expose karna risky hai — root access chahiye port 80 ke liye, SSL certificate manage karna mushkil hai, static files serve karna inefficient hai. Nginx — ek proven, battle-tested reverse proxy — aage rakho. Node.js ko shield karo.
+        </p>
       </div>
 
       {/* ConceptCard 4: Nginx */}
@@ -357,14 +368,14 @@ jobs:
           title="Nginx Reverse Proxy"
           emoji="🌐"
           difficulty="advanced"
-          whatIsIt="Nginx lightweight, high-performance web server aur reverse proxy hai. Node.js ko directly internet par expose mat karo — Nginx ke peeche rakho. SSL termination, static file serving, load balancing, aur rate limiting Nginx handle karta hai."
+          whatIsIt="Nginx ek bouncer cum traffic cop hai — internet aur Node.js ke beech. HTTP port 80 par request aaya? Nginx leta hai, HTTPS par redirect karta hai. HTTPS par aaya? SSL decrypt karta hai, Node.js ko plain HTTP forward karta hai. Static file maanga? Nginx seedha disk se deta hai — Node.js tak request jaati hi nahi. Multiple Node instances hain? Nginx load balance karta hai — ek simple upstream block mein."
           whenToUse={[
-            'Node.js app ko production mein serve karna — SSL ke saath',
-            'Multiple Node.js instances ke saath load balancing',
-            'Static files serve karna (images, CSS, JS) — Node.js se zyada fast',
-            'WebSocket proxying ke liye',
+            'Production mein Node.js serve karna — SSL termination aur HTTP/2 ke saath',
+            'Multiple Node.js instances ke beech load balancing',
+            'Static files (images, CSS, JS) serve karna — Node.js ke 10x fast',
+            'WebSocket proxying — real-time apps ke liye Upgrade headers set karna zaroori',
           ]}
-          whyUseIt="Node.js ko directly port 80/443 par expose karna security risk hai — root access chahiye hota hai. Nginx low privileges mein run karta hai, battle-tested hai, aur SSL certificate management (Let's Encrypt) easy hai. Static files Nginx se 10x faster serve hote hain Node.js se."
+          whyUseIt="Node.js ko seedha port 80 pe chalana: root access chahiye (security risk), ek hi instance (no load balancing), SSL certificates manually manage karo. Nginx ke saath: non-root user, battle-tested SSL (certbot ek command), gzip compression automatic, static files C language ki speed pe serve. Nginx ek C-written, 20+ saal battle-tested tool hai — Node.js uske liye sirf ek upstream server hai."
           howToUse={{
             filename: 'nginx.conf',
             language: 'nginx',
@@ -423,9 +434,9 @@ server {
         proxy_read_timeout 60s;
     }
 }`,
-            explanation: 'upstream block mein multiple Node instances add karo — automatic load balancing. proxy_set_header X-Forwarded-For se Node.js mein real client IP milti hai. WebSocket ke liye Upgrade aur Connection headers zaroori hain.',
+            explanation: 'Config trace karo: listen 80 → return 301 https → SSL terminated → proxy_pass upstream. upstream block mein multiple servers — round-robin load balancing automatic. proxy_set_header X-Forwarded-For — Node.js mein req.ip real client IP dega nahi toh Nginx ka IP milega. WebSocket ke liye Upgrade + Connection headers critical — bina inke WebSocket connection upgrade nahi hoga.',
           }}
-          realWorldScenario="Production Node.js app pehle direct port 3000 par thi — no SSL, no compression, no caching. Nginx add kiya: Let's Encrypt SSL free mein, gzip se response size 70% kam, static files cache hone se API load 40% reduce. Nginx se node_modules folder kabhi expose nahi hoga accidentally."
+          realWorldScenario="Production Node.js app seedha port 3000 par — no SSL, no compression. Users HTTP pe the — insecure. Nginx add kiya: certbot --nginx se free Let's Encrypt SSL, gzip compression se JSON responses 70% smaller, static /public/ folder Nginx se serve — Node.js tak request nahi. API server load 40% down. Performance up, security up, cost down. Nginx ek investment hai jo immediately pays off."
           commonMistakes={[
             {
               mistake: 'proxy_set_header Host set nahi karna',
@@ -438,7 +449,7 @@ server {
               fix: 'nginx -t se test karo pehle. Sab OK hone par sudo systemctl reload nginx — no downtime.',
             },
           ]}
-          proTip="certbot --nginx -d api.myapp.com se automatic SSL install aur Nginx config update hoti hai Let's Encrypt se. Auto-renewal cron job automatically set hota hai. SSL Labs test (ssllabs.com) se A+ grade check karo configuration ke baad."
+          proTip="certbot --nginx -d api.myapp.com — ye command SSL install karta hai, Nginx config update karta hai, auto-renewal cron job set karta hai. Free SSL, ek command. Baad mein ssllabs.com pe check karo — A+ grade target karo. nginx -t hamesha config test karo badlav ke baad — galat config se service restart nahi hogi, downtime hoga. Test first, reload second."
         />
       </div>
 
@@ -448,14 +459,14 @@ server {
           title="Zero-Downtime Deployment"
           emoji="🔄"
           difficulty="advanced"
-          whatIsIt="Zero-downtime deployment matlab app update karo bina users ko downtime feel kiye. PM2 cluster mode, rolling updates, aur blue-green deployment strategies se achieve karte hain."
+          whatIsIt="Zero-downtime deployment — sochte hain ye kya hai? Simple: app update karo, user ko feel hi na ho. PM2 cluster mode ke 4 instances hain — reload command pe ek ek karke restart hote hain, always at least 3 instances alive. Blue-green deployment alag strategy hai — do complete environments (blue aur green), traffic switch karo — instant rollback possible hai. Kubernetes natively rolling update karta hai."
           whenToUse={[
-            'Production app update karna — users affected na hon',
-            '24/7 service chahiye — maintenance window nahi',
-            'Frequent deployments — daily ya multiple times per day',
-            'Critical applications — banking, healthcare, e-commerce',
+            'Production app 24/7 available rehni chahiye — koi maintenance window acceptable nahi',
+            'Frequent deployments karo — din mein 10 baar deploy karo bina downtime ke',
+            'Critical applications — banking, healthcare, e-commerce — ek second ka downtime unacceptable',
+            'Kisi bhi production app ke liye — downtime = revenue loss + user frustration',
           ]}
-          whyUseIt="Har deployment par downtime = revenue loss + user frustration. PM2 cluster mode se: app ke multiple instances hain — ek ek karke restart hote hain. Puri duration mein traffic handle hota rehta hai. Blue-green se instant rollback possible hai."
+          whyUseIt="Calculation karo: app 5 minutes per deployment neeche jaati hai, din mein 2 deployments, 20 users active har minute — 200 users frustrate per day. Week mein 1400. Month mein? Ye revenue hai jo tumse door jaata hai. PM2 cluster + reload: zero users frustrate. Ye feature nahi — ye professional responsibility hai."
           howToUse={{
             filename: 'pm2.config.js',
             language: 'javascript',
@@ -508,9 +519,9 @@ module.exports = {
 // 4. nginx reload — instant traffic switch
 // 5. Green band karo
 // Rollback: nginx config revert, reload`,
-            explanation: 'PM2 cluster mode mein instances ek ek karke restart hote hain — hamesha at least one instance available. wait_ready: true se PM2 wait karta hai jab tak app ready signal bheje — premature traffic routing se bachata hai.',
+            explanation: 'PM2 cluster mode trace karo: 4 instances chal rahi hain. pm2 reload myapp command. Instance 1 ko SIGINT milta hai. wait_ready: true — instance 1 server.close() karta hai, existing requests complete hone deta hai, process.send("ready") bhejta hai. Naya instance 1 ready — traffic milta hai. Instance 2 reload. Aur aage. Puri duration mein 3 instances alive — zero downtime. Graceful shutdown zaroori hai — process.on("SIGINT") handle karo.',
           }}
-          realWorldScenario="E-commerce site peak hours mein deploy karna mushkil tha. PM2 cluster (4 instances) + reload command: ek ek instance reload hota hai — users kabhi downtime experience nahi karte. 50 daily deployments possible ho gaye bina business impact ke. Rollback 5 seconds mein — pm2 revert myapp."
+          realWorldScenario="E-commerce site peak sales hours mein deploy karna risk tha — maintenance window dhundni padti thi. PM2 cluster (4 instances) setup kiya, pm2 reload — ek ek instance reload, hamesha 3 instances alive. Ek baar 50 deployments ek din mein kiye bina single user complaint ke. Rollback? pm2 revert myapp — 5 seconds, purani version live. Deploy confidence itna badha ki team roz naye features ship karne lagi. Ye culture shift hai."
           commonMistakes={[
             {
               mistake: 'Graceful shutdown implement nahi karna',
@@ -523,7 +534,7 @@ module.exports = {
               fix: 'Zero-downtime ke liye hamesha pm2 reload use karo. restart sirf debugging/troubleshooting ke liye.',
             },
           ]}
-          proTip="Kubernetes deployment strategy: RollingUpdate se maxUnavailable: 0, maxSurge: 1 set karo — hamesha all instances available. readinessProbe set karo — ready hone se pehle traffic nahi milti. Kubernetes native zero-downtime deta hai bina PM2 ke."
+          proTip="Kubernetes mein: strategy: RollingUpdate, maxUnavailable: 0, maxSurge: 1 — hamesha all replicas available, ek extra during update. readinessProbe lazmi hai — naya pod ready hone se pehle traffic nahi milta. PM2 aur Kubernetes dono zero-downtime dete hain, approach alag hai. Single server? PM2. Kubernetes? Native rolling update use karo."
         />
       </div>
 
@@ -562,7 +573,7 @@ EXPOSE 3000
 CMD ["node", "src/index.js"]`}</code>
         </pre>
         <p className="text-sm text-[#71717A] mt-3">
-          Multi-stage build: builder mein dependencies install, final image mein sirf runtime. USER node se non-root security.
+          Multi-stage build ka essence: builder stage mein dependencies install, production stage mein sirf runtime zaroori files. USER node se non-root user — container security best practice. Ye ek template hai — copy karo, customize karo, production mein use karo.
         </p>
       </div>
 
